@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=&quot;C:\Users\baccarani.m\Documents\Visual Studio 2013\Projects\Great\Great\DB\main.db3&quot;" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Car">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="LicensePlate" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="Brand" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Model" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CarRentalCompany" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CarRentalCompany">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CarRentalHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Car" Type="int" Nullable="false" />
+          <Property Name="StartKm" Type="int" Nullable="false" />
+          <Property Name="EndKm" Type="int" />
+          <Property Name="StartLocation" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EndLocation" Type="nvarchar" MaxLength="50" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="StartFuelLevel" Type="tinyint" Nullable="false" />
+          <Property Name="EndFuelLevel" Type="tinyint" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="ExpenseAccount">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="FDL" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Factory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="TransferType" Type="int" Nullable="false" />
+          <Property Name="IsForfait" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FDL">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="SheetNumber" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="Order" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="Factory" Type="int" Nullable="false" />
+          <Property Name="OutwardCar" Type="bit" />
+          <Property Name="ReturnCar" Type="bit" />
+          <Property Name="OutwardTaxi" Type="bit" />
+          <Property Name="ReturnTaxi" Type="bit" />
+          <Property Name="OutwardFlight" Type="bit" />
+          <Property Name="ReturnFlight" Type="bit" />
+          <Property Name="PerformanceDescription" Type="nvarchar" MaxLength="460" />
+          <Property Name="Result" Type="tinyint" />
+          <Property Name="ResultNotes" Type="nvarchar" MaxLength="496" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="596" />
+        </EntityType>
+        <EntityType Name="Timesheet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="TravelStartTimeAM" Type="datetime" />
+          <Property Name="TravelEndTimeAM" Type="datetime" />
+          <Property Name="TravelStartTimePM" Type="datetime" />
+          <Property Name="TravelEndTimePM" Type="datetime" />
+          <Property Name="WorkStartTimeAM" Type="datetime" />
+          <Property Name="WorkEndTimeAM" Type="datetime" />
+          <Property Name="WorkStartTimePM" Type="datetime" />
+          <Property Name="WorkEndTimePM" Type="datetime" />
+          <Property Name="FDL" Type="int" />
+        </EntityType>
+        <Association Name="FK_Car_0_0">
+          <End Role="CarRentalCompany" Type="Self.CarRentalCompany" Multiplicity="1" />
+          <End Role="Car" Type="Self.Car" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CarRentalCompany">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Car">
+              <PropertyRef Name="CarRentalCompany" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CarRentalHistory_0_0">
+          <End Role="Car" Type="Self.Car" Multiplicity="1" />
+          <End Role="CarRentalHistory" Type="Self.CarRentalHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Car">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CarRentalHistory">
+              <PropertyRef Name="Car" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseAccount_0_0">
+          <End Role="FDL" Type="Self.FDL" Multiplicity="1" />
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDL">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseAccount">
+              <PropertyRef Name="FDL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FDL_0_0">
+          <End Role="Factory" Type="Self.Factory" Multiplicity="1" />
+          <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Factory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FDL">
+              <PropertyRef Name="Factory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Timesheet_0_0">
+          <End Role="FDL" Type="Self.FDL" Multiplicity="0..1" />
+          <End Role="Timesheet" Type="Self.Timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDL">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Timesheet">
+              <PropertyRef Name="FDL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DBModelStoreContainer">
+          <EntitySet Name="Car" EntityType="Self.Car" store:Type="Tables" />
+          <EntitySet Name="CarRentalCompany" EntityType="Self.CarRentalCompany" store:Type="Tables" />
+          <EntitySet Name="CarRentalHistory" EntityType="Self.CarRentalHistory" store:Type="Tables" />
+          <EntitySet Name="ExpenseAccount" EntityType="Self.ExpenseAccount" store:Type="Tables" />
+          <EntitySet Name="Factory" EntityType="Self.Factory" store:Type="Tables" />
+          <EntitySet Name="FDL" EntityType="Self.FDL" store:Type="Tables" />
+          <EntitySet Name="Timesheet" EntityType="Self.Timesheet" store:Type="Tables" />
+          <AssociationSet Name="FK_Car_0_0" Association="Self.FK_Car_0_0">
+            <End Role="CarRentalCompany" EntitySet="CarRentalCompany" />
+            <End Role="Car" EntitySet="Car" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CarRentalHistory_0_0" Association="Self.FK_CarRentalHistory_0_0">
+            <End Role="Car" EntitySet="Car" />
+            <End Role="CarRentalHistory" EntitySet="CarRentalHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
+            <End Role="FDL" EntitySet="FDL" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_0_0" Association="Self.FK_FDL_0_0">
+            <End Role="Factory" EntitySet="Factory" />
+            <End Role="FDL" EntitySet="FDL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timesheet_0_0" Association="Self.FK_Timesheet_0_0">
+            <End Role="FDL" EntitySet="FDL" />
+            <End Role="Timesheet" EntitySet="Timesheet" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Car">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="LicensePlate" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Brand" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CarRentalCompany" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CarRentalCompany1" Relationship="Self.FK_Car_0_0" FromRole="Car" ToRole="CarRentalCompany" />
+          <NavigationProperty Name="CarRentalHistory" Relationship="Self.FK_CarRentalHistory_0_0" FromRole="Car" ToRole="CarRentalHistory" />
+        </EntityType>
+        <EntityType Name="CarRentalCompany">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Car" Relationship="Self.FK_Car_0_0" FromRole="CarRentalCompany" ToRole="Car" />
+        </EntityType>
+        <EntityType Name="CarRentalHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Car" Type="Int32" Nullable="false" />
+          <Property Name="StartKm" Type="Int32" Nullable="false" />
+          <Property Name="EndKm" Type="Int32" />
+          <Property Name="StartLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" />
+          <Property Name="EndDate" Type="DateTime" />
+          <Property Name="StartFuelLevel" Type="Byte" Nullable="false" />
+          <Property Name="EndFuelLevel" Type="Byte" />
+          <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Car1" Relationship="Self.FK_CarRentalHistory_0_0" FromRole="CarRentalHistory" ToRole="Car" />
+        </EntityType>
+        <EntityType Name="ExpenseAccount">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FDL" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FDL1" Relationship="Self.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDL" />
+        </EntityType>
+        <EntityType Name="Factory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TransferType" Type="Int32" Nullable="false" />
+          <Property Name="IsForfait" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="FDL" Relationship="Self.FK_FDL_0_0" FromRole="Factory" ToRole="FDL" />
+        </EntityType>
+        <EntityType Name="FDL">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="SheetNumber" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Order" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Factory" Type="Int32" Nullable="false" />
+          <Property Name="OutwardCar" Type="Boolean" />
+          <Property Name="ReturnCar" Type="Boolean" />
+          <Property Name="OutwardTaxi" Type="Boolean" />
+          <Property Name="ReturnTaxi" Type="Boolean" />
+          <Property Name="OutwardFlight" Type="Boolean" />
+          <Property Name="ReturnFlight" Type="Boolean" />
+          <Property Name="PerformanceDescription" Type="String" MaxLength="460" FixedLength="false" Unicode="true" />
+          <Property Name="Result" Type="Byte" />
+          <Property Name="ResultNotes" Type="String" MaxLength="496" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="596" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ExpenseAccount" Relationship="Self.FK_ExpenseAccount_0_0" FromRole="FDL" ToRole="ExpenseAccount" />
+          <NavigationProperty Name="Factory1" Relationship="Self.FK_FDL_0_0" FromRole="FDL" ToRole="Factory" />
+          <NavigationProperty Name="Timesheet" Relationship="Self.FK_Timesheet_0_0" FromRole="FDL" ToRole="Timesheet" />
+        </EntityType>
+        <EntityType Name="Timesheet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="TravelStartTimeAM" Type="DateTime" />
+          <Property Name="TravelEndTimeAM" Type="DateTime" />
+          <Property Name="TravelStartTimePM" Type="DateTime" />
+          <Property Name="TravelEndTimePM" Type="DateTime" />
+          <Property Name="WorkStartTimeAM" Type="DateTime" />
+          <Property Name="WorkEndTimeAM" Type="DateTime" />
+          <Property Name="WorkStartTimePM" Type="DateTime" />
+          <Property Name="WorkEndTimePM" Type="DateTime" />
+          <Property Name="FDL" Type="Int32" />
+          <NavigationProperty Name="FDL1" Relationship="Self.FK_Timesheet_0_0" FromRole="Timesheet" ToRole="FDL" />
+        </EntityType>
+        <Association Name="FK_Car_0_0">
+          <End Role="CarRentalCompany" Type="Self.CarRentalCompany" Multiplicity="1" />
+          <End Role="Car" Type="Self.Car" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CarRentalCompany">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Car">
+              <PropertyRef Name="CarRentalCompany" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CarRentalHistory_0_0">
+          <End Role="Car" Type="Self.Car" Multiplicity="1" />
+          <End Role="CarRentalHistory" Type="Self.CarRentalHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Car">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CarRentalHistory">
+              <PropertyRef Name="Car" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseAccount_0_0">
+          <End Role="FDL" Type="Self.FDL" Multiplicity="1" />
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDL">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseAccount">
+              <PropertyRef Name="FDL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FDL_0_0">
+          <End Role="Factory" Type="Self.Factory" Multiplicity="1" />
+          <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Factory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FDL">
+              <PropertyRef Name="Factory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Timesheet_0_0">
+          <End Role="FDL" Type="Self.FDL" Multiplicity="0..1" />
+          <End Role="Timesheet" Type="Self.Timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDL">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Timesheet">
+              <PropertyRef Name="FDL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Car" EntityType="Self.Car" />
+          <EntitySet Name="CarRentalCompany" EntityType="Self.CarRentalCompany" />
+          <EntitySet Name="CarRentalHistory" EntityType="Self.CarRentalHistory" />
+          <EntitySet Name="ExpenseAccount" EntityType="Self.ExpenseAccount" />
+          <EntitySet Name="Factory" EntityType="Self.Factory" />
+          <EntitySet Name="FDL" EntityType="Self.FDL" />
+          <EntitySet Name="Timesheet" EntityType="Self.Timesheet" />
+          <AssociationSet Name="FK_Car_0_0" Association="Self.FK_Car_0_0">
+            <End Role="CarRentalCompany" EntitySet="CarRentalCompany" />
+            <End Role="Car" EntitySet="Car" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CarRentalHistory_0_0" Association="Self.FK_CarRentalHistory_0_0">
+            <End Role="Car" EntitySet="Car" />
+            <End Role="CarRentalHistory" EntitySet="CarRentalHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
+            <End Role="FDL" EntitySet="FDL" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_0_0" Association="Self.FK_FDL_0_0">
+            <End Role="Factory" EntitySet="Factory" />
+            <End Role="FDL" EntitySet="FDL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timesheet_0_0" Association="Self.FK_Timesheet_0_0">
+            <End Role="FDL" EntitySet="FDL" />
+            <End Role="Timesheet" EntitySet="Timesheet" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DBModelStoreContainer" CdmEntityContainer="DBEntities">
+          <EntitySetMapping Name="Car">
+            <EntityTypeMapping TypeName="DBModel.Car">
+              <MappingFragment StoreEntitySet="Car">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LicensePlate" ColumnName="LicensePlate" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="CarRentalCompany" ColumnName="CarRentalCompany" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CarRentalCompany">
+            <EntityTypeMapping TypeName="DBModel.CarRentalCompany">
+              <MappingFragment StoreEntitySet="CarRentalCompany">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CarRentalHistory">
+            <EntityTypeMapping TypeName="DBModel.CarRentalHistory">
+              <MappingFragment StoreEntitySet="CarRentalHistory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Car" ColumnName="Car" />
+                <ScalarProperty Name="StartKm" ColumnName="StartKm" />
+                <ScalarProperty Name="EndKm" ColumnName="EndKm" />
+                <ScalarProperty Name="StartLocation" ColumnName="StartLocation" />
+                <ScalarProperty Name="EndLocation" ColumnName="EndLocation" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartFuelLevel" ColumnName="StartFuelLevel" />
+                <ScalarProperty Name="EndFuelLevel" ColumnName="EndFuelLevel" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseAccount">
+            <EntityTypeMapping TypeName="DBModel.ExpenseAccount">
+              <MappingFragment StoreEntitySet="ExpenseAccount">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FDL" ColumnName="FDL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Factory">
+            <EntityTypeMapping TypeName="DBModel.Factory">
+              <MappingFragment StoreEntitySet="Factory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="TransferType" ColumnName="TransferType" />
+                <ScalarProperty Name="IsForfait" ColumnName="IsForfait" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FDL">
+            <EntityTypeMapping TypeName="DBModel.FDL">
+              <MappingFragment StoreEntitySet="FDL">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SheetNumber" ColumnName="SheetNumber" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="Factory" ColumnName="Factory" />
+                <ScalarProperty Name="OutwardCar" ColumnName="OutwardCar" />
+                <ScalarProperty Name="ReturnCar" ColumnName="ReturnCar" />
+                <ScalarProperty Name="OutwardTaxi" ColumnName="OutwardTaxi" />
+                <ScalarProperty Name="ReturnTaxi" ColumnName="ReturnTaxi" />
+                <ScalarProperty Name="OutwardFlight" ColumnName="OutwardFlight" />
+                <ScalarProperty Name="ReturnFlight" ColumnName="ReturnFlight" />
+                <ScalarProperty Name="PerformanceDescription" ColumnName="PerformanceDescription" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="ResultNotes" ColumnName="ResultNotes" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Timesheet">
+            <EntityTypeMapping TypeName="DBModel.Timesheet">
+              <MappingFragment StoreEntitySet="Timesheet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="TravelStartTimeAM" ColumnName="TravelStartTimeAM" />
+                <ScalarProperty Name="TravelEndTimeAM" ColumnName="TravelEndTimeAM" />
+                <ScalarProperty Name="TravelStartTimePM" ColumnName="TravelStartTimePM" />
+                <ScalarProperty Name="TravelEndTimePM" ColumnName="TravelEndTimePM" />
+                <ScalarProperty Name="WorkStartTimeAM" ColumnName="WorkStartTimeAM" />
+                <ScalarProperty Name="WorkEndTimeAM" ColumnName="WorkEndTimeAM" />
+                <ScalarProperty Name="WorkStartTimePM" ColumnName="WorkStartTimePM" />
+                <ScalarProperty Name="WorkEndTimePM" ColumnName="WorkEndTimePM" />
+                <ScalarProperty Name="FDL" ColumnName="FDL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

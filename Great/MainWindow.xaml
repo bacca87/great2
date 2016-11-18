@@ -1,0 +1,67 @@
+﻿<Fluent:RibbonWindow x:Class="Great.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
+    Title="Great 2.0" 
+    Width="789" 
+    Height="684.438" 
+    Loaded="RibbonWindow_Loaded">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Fluent:Ribbon Grid.Row="0">
+            <!--Backstage-->
+            <Fluent:Ribbon.Menu>
+                <Fluent:Backstage>
+                    <Fluent:BackstageTabControl>
+                        <Fluent:BackstageTabItem Header="New"/>
+                        <Fluent:BackstageTabItem Header="Print"/>
+                        <Fluent:Button Header="Blue" Icon="Images\Blue.png"/>
+                    </Fluent:BackstageTabControl>
+                </Fluent:Backstage>
+            </Fluent:Ribbon.Menu>
+            <!--Tabs-->
+            <Fluent:RibbonTabItem Header="Tab">
+                <Fluent:RibbonGroupBox Header="Group">
+                    <Fluent:Button Name="buttonGreen" Header="Green"
+                           Icon="Images\Green.png"
+                           LargeIcon="Images\GreenLarge.png" />
+                    <Fluent:Button Name="buttonGray" Header="Grey" Icon="Images\Gray.png"
+                           LargeIcon="Images\GrayLarge.png" />
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+        <DataGrid x:Name="workingDaysDataGrid"
+                  Grid.Row="2"
+                  HorizontalAlignment="Stretch" 
+                  Margin="0,0,0,0" 
+                  VerticalAlignment="Stretch" 
+                  AutoGenerateColumns="False" 
+                  CanUserReorderColumns="False" 
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False" 
+                  CanUserSortColumns="False" 
+                  IsReadOnly="True">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                    </Style.Setters>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr}" />
+                <DataGridTextColumn Header="Day" Binding="{Binding DayString}" />
+                <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTimeString}" />
+                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTimeString}" />
+                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34}" />
+                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50}" />
+                <DataGridTextColumn Header="Overtime 85%" Binding="{Binding Overtime85}" />
+                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Fluent:RibbonWindow>
