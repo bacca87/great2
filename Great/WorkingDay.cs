@@ -21,12 +21,16 @@ namespace Great
                 if (Timesheets == null || Timesheets.Count == 0)
                     return totalTime;
 
-                foreach(Timesheet ts in Timesheets)
+                foreach (Timesheet ts in Timesheets)
                 {
-                    totalTime += (ts.TravelEndTimeAM.Value - ts.TravelStartTimeAM.Value) +
-                                 (ts.TravelEndTimePM.Value - ts.TravelStartTimePM.Value) +
-                                 (ts.WorkEndTimeAM.Value - ts.WorkStartTimeAM.Value) +
-                                 (ts.WorkEndTimePM.Value - ts.WorkStartTimePM.Value);
+                    if (ts.TravelEndTimeAM != null && ts.TravelStartTimeAM != null)
+                        totalTime += (ts.TravelEndTimeAM.Value - ts.TravelStartTimeAM.Value);                 
+                    if (ts.TravelEndTimePM != null && ts.TravelStartTimePM != null)
+                        totalTime += (ts.TravelEndTimePM.Value - ts.TravelStartTimePM.Value);
+                    if (ts.WorkEndTimeAM != null && ts.WorkStartTimeAM != null)
+                        totalTime += (ts.WorkEndTimeAM.Value - ts.WorkStartTimeAM.Value);
+                    if (ts.WorkEndTimePM != null && ts.WorkStartTimePM != null)
+                        totalTime += (ts.WorkEndTimePM.Value - ts.WorkStartTimePM.Value);
                 }
 
                 return totalTime;

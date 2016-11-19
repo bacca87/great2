@@ -3,6 +3,7 @@ using Great.DB;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -41,8 +42,8 @@ namespace Great
                 {
                     try
                     {
-                        WorkingDay day = new WorkingDay { WeekNr = cal.GetWeekOfYear(date, dfi.CalendarWeekRule, dfi.FirstDayOfWeek), Day = date, Timesheets = db.Timesheet.Where(t => t.Date == date.Date).ToList() };
-                        days.Add(day);
+                        WorkingDay day = new WorkingDay { WeekNr = cal.GetWeekOfYear(date, dfi.CalendarWeekRule, dfi.FirstDayOfWeek), Day = date, Timesheets = db.Timesheet.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", date.ToString("yyyy-MM-dd"))).ToList() };
+                        days.Add(day);                        
                     }
                     catch (Exception ex)
                     {
