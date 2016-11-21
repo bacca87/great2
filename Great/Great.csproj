@@ -126,6 +126,7 @@
     <Compile Include="DB\Timesheet.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Timesheet.cs" />
     <Compile Include="WorkingDay.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
