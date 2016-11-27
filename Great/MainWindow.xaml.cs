@@ -25,6 +25,30 @@ namespace Great
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        #region Properties
+        private DateTime _currentDate;
+        public DateTime currentDate
+        {
+            get
+            {
+                return _currentDate;
+            }
+
+            set
+            {
+                using (new WaitCursor())
+                {
+                    _currentDate = value;
+
+                    currentMonthLabel.Content = new DateTime(_currentDate.Year, _currentDate.Month, 1).ToString("y").ToUpper();
+                    selectDateCalendar.SelectedDate = (DateTime?)_currentDate;
+                    selectDateCalendar.DisplayDate = _currentDate;
+                    UpdateWorkingDaysView();
+                }
+            }
+        }
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -32,10 +56,10 @@ namespace Great
 
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateWorkingDaysView(DateTime.Now.Year, DateTime.Now.Month);
+            currentDate = DateTime.Now;
         }
 
-        private void UpdateWorkingDaysView(int year, int month)
+        private void UpdateWorkingDaysView()
         {
             IList<WorkingDay> days = new List<WorkingDay>();
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
@@ -43,22 +67,19 @@ namespace Great
 
             using (var db = new DBEntities())
             {
-                foreach (DateTime date in AllDatesInMonth(year, month))
-                {
-                    try
-                    {
-                        WorkingDay day = new WorkingDay { WeekNr = cal.GetWeekOfYear(date, dfi.CalendarWeekRule, dfi.FirstDayOfWeek), Day = date, Timesheets = db.Timesheet.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", date.ToString("yyyy-MM-dd"))).ToList() };
-                        days.Add(day);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.ToString();
-                    }
+                foreach (DateTime day in AllDatesInMonth(currentDate.Year, currentDate.Month))
+                {   
+                    WorkingDay workingDay = new WorkingDay { 
+                                                WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek), 
+                                                Day = day, 
+                                                Timesheets = db.Timesheet.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", day.ToString("yyyy-MM-dd"))).ToList() 
+                                            };
+
+                    days.Add(workingDay);                    
                 }
             }
 
             workingDaysDataGrid.ItemsSource = days;
-            currentMonthLabel.Content = new DateTime(year, month, 1).ToString("y").ToUpper();
         }
 
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
@@ -73,6 +94,7 @@ namespace Great
         void ShowHideDetails(object sender, RoutedEventArgs e)
         {
             for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
+            {
                 if (vis is DataGridRow)
                 {
                     var row = (DataGridRow)vis;
@@ -80,6 +102,7 @@ namespace Great
                       row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     break;
                 }
+            }
         }
 
         void selectDateCalendar_DisplayModeChanged(object sender, CalendarModeChangedEventArgs e)
@@ -91,13 +114,27 @@ namespace Great
                     selectDateCalendar.SelectedDate = new DateTime(selectDateCalendar.DisplayDate.Year, selectDateCalendar.DisplayDate.Month, 1);
 
                 selectDateCalendar.DisplayMode = CalendarMode.Year;
+                selectMonthButton.IsDropDownOpen = false;
                 Mouse.Capture(null);
             }
         }
 
         private void selectDateCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateWorkingDaysView(selectDateCalendar.SelectedDate.Value.Year, selectDateCalendar.SelectedDate.Value.Month);
+            if (selectDateCalendar.SelectedDate == null)
+                return;
+
+            currentDate = selectDateCalendar.SelectedDate.Value;
+        }
+
+        private void nextMonthButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentDate = currentDate.AddMonths(1);
+        }
+
+        private void previousMonthButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentDate = currentDate.AddMonths(-1);
         }
     }
 }

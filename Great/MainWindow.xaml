@@ -20,7 +20,7 @@
         <Fluent:Ribbon Grid.Row="0" Grid.ColumnSpan="2">
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
-                <Fluent:Backstage>
+                <Fluent:Backstage Header="FILE">
                     <Fluent:BackstageTabControl>
                         <Fluent:BackstageTabItem Header="New"/>
                         <Fluent:BackstageTabItem Header="Print"/>
@@ -30,10 +30,25 @@
             </Fluent:Ribbon.Menu>            
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="HOME">
-                <Fluent:RibbonGroupBox Header="Select Date">
-                    <Fluent:DropDownButton Name="selectMonthButton" LargeIcon="Images\calendar.png" >
-                        <Calendar x:Name="selectDateCalendar" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDatesChanged="selectDateCalendar_SelectedDatesChanged"/>
+                <Fluent:RibbonGroupBox Header="Date">
+                    <Fluent:DropDownButton Name="selectMonthButton" LargeIcon="Images\calendar.png">
+                        <Fluent:DropDownButton.ToolTip>
+                            <Fluent:ScreenTip Title="Select Period" Text="Select the period to display." />
+                        </Fluent:DropDownButton.ToolTip>
+                        <Calendar x:Name="selectDateCalendar" Margin="3,0,3,0" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDatesChanged="selectDateCalendar_SelectedDatesChanged"/>                            
                     </Fluent:DropDownButton>
+                    <Fluent:Gallery MaxItemsInRow="1">                        
+                        <Fluent:Button Name="nextMonthButton" SizeDefinition="Small" Icon="Images\sign-right.png" Click="nextMonthButton_Click">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Month" Text="Set the next month as current." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Name="previousMonthButton" SizeDefinition="Small" Icon="Images\sign-left.png" Click="previousMonthButton_Click">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Month" Text="Set the previous month as current." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
