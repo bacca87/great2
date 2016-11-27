@@ -32,18 +32,23 @@ namespace Great
 
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateWorkingDaysView(DateTime.Now.Year, DateTime.Now.Month);
+        }
+
+        private void UpdateWorkingDaysView(int year, int month)
+        {
             IList<WorkingDay> days = new List<WorkingDay>();
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             System.Globalization.Calendar cal = dfi.Calendar;
 
             using (var db = new DBEntities())
             {
-                foreach (DateTime date in AllDatesInMonth(2016, 11))
+                foreach (DateTime date in AllDatesInMonth(year, month))
                 {
                     try
                     {
                         WorkingDay day = new WorkingDay { WeekNr = cal.GetWeekOfYear(date, dfi.CalendarWeekRule, dfi.FirstDayOfWeek), Day = date, Timesheets = db.Timesheet.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", date.ToString("yyyy-MM-dd"))).ToList() };
-                        days.Add(day);                        
+                        days.Add(day);
                     }
                     catch (Exception ex)
                     {
@@ -51,7 +56,7 @@ namespace Great
                     }
                 }
             }
-            
+
             workingDaysDataGrid.ItemsSource = days;
         }
 
@@ -74,6 +79,24 @@ namespace Great
                       row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     break;
                 }
+        }
+
+        void selectDateCalendar_DisplayModeChanged(object sender, CalendarModeChangedEventArgs e)
+        {
+            // hack for using the calendar component just for selecting month and year
+            if (selectDateCalendar.DisplayMode == CalendarMode.Month)
+            {
+                if (selectDateCalendar.DisplayDate != null)
+                    selectDateCalendar.SelectedDate = new DateTime(selectDateCalendar.DisplayDate.Year, selectDateCalendar.DisplayDate.Month, 1);
+
+                selectDateCalendar.DisplayMode = CalendarMode.Year;
+                Mouse.Capture(null);
+            }
+        }
+
+        private void selectDateCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateWorkingDaysView(selectDateCalendar.SelectedDate.Value.Year, selectDateCalendar.SelectedDate.Value.Month);
         }
     }
 }

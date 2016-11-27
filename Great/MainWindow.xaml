@@ -3,16 +3,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
     Title="Great 2.0" 
-    Width="789" 
-    Height="684.438" 
+    Width="1024" 
+    Height="768"
+    WindowStartupLocation="CenterScreen" 
+    WindowState="Maximized"
     Loaded="RibbonWindow_Loaded">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />            
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Fluent:Ribbon Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Fluent:Ribbon Grid.Row="0" Grid.ColumnSpan="2">
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage>
@@ -22,20 +27,27 @@
                         <Fluent:Button Header="Blue" Icon="Images\Blue.png"/>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
-            </Fluent:Ribbon.Menu>
+            </Fluent:Ribbon.Menu>            
             <!--Tabs-->
-            <Fluent:RibbonTabItem Header="Tab">
-                <Fluent:RibbonGroupBox Header="Group">
-                    <Fluent:Button Name="buttonGreen" Header="Green"
-                           Icon="Images\Green.png"
-                           LargeIcon="Images\GreenLarge.png" />
-                    <Fluent:Button Name="buttonGray" Header="Grey" Icon="Images\Gray.png"
-                           LargeIcon="Images\GrayLarge.png" />
+            <Fluent:RibbonTabItem Header="HOME">
+                <Fluent:RibbonGroupBox Header="Select Date">
+                    <Fluent:DropDownButton Name="selectMonthButton" LargeIcon="Images\calendar.png" >
+                        <Calendar x:Name="selectDateCalendar" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDatesChanged="selectDateCalendar_SelectedDatesChanged" />
+                    </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <DataGrid x:Name="workingDaysDataGrid"
-                  Grid.Row="2"
+        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Content="November 2016" FontSize="20" FontWeight="Bold">
+            <Label.LayoutTransform>
+                <TransformGroup>
+                    <RotateTransform Angle="90" />
+                    <ScaleTransform ScaleX="-1" ScaleY="-1"/>
+                </TransformGroup>
+            </Label.LayoutTransform>
+        </Label>
+        <DataGrid Name="workingDaysDataGrid"
+                  Grid.Row="1"
+                  Grid.Column="2"
                   HorizontalAlignment="Stretch" 
                   Margin="0,0,0,0" 
                   VerticalAlignment="Stretch" 
@@ -45,24 +57,44 @@
                   CanUserResizeRows="False" 
                   CanUserSortColumns="False" 
                   IsReadOnly="True"
-                  RowDetailsVisibilityMode="Collapsed">
+                  RowDetailsVisibilityMode="Collapsed"
+                  SelectionMode="Single">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        <Setter Property="TextBlock.FontSize" Value="15" />
+                        <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                     </Style.Setters>
                 </Style>
-                <Style TargetType="DataGridRowHeader">
-                    <Setter Property="VerticalAlignment" Value="Top" />
-                </Style>
-            </DataGrid.Resources>
+            </DataGrid.Resources>            
             <DataGrid.RowHeaderTemplate>
                 <DataTemplate>
-                    <!--<Button VerticalAlignment="Top" Click="ShowHideDetails" 
-                            Visibility="{Binding DataContext.HasDetails}">+</Button>-->
-                    <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
-                                      AncestorType={x:Type DataGridRow}}, 
-                                      Path=WeekNr}"/>
+                    <ToggleButton
+                        Click="ShowHideDetails"
+                        Visibility="{Binding DataContext.HasDetails, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <ToggleButton.Resources>
+                            <Image x:Key="Expand" Source="Images\ExpandArrow.png" />
+                            <Image x:Key="Collapse" Source="Images\CollapseArrow.png" />
+                        </ToggleButton.Resources>
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}">
+                                <Setter Property="Content" Value="{StaticResource Expand}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="{StaticResource Collapse}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Grid>
+                                    <ContentPresenter Content="{TemplateBinding Content}" Width="16" Height="16" />
+                                </Grid>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
                 </DataTemplate>
             </DataGrid.RowHeaderTemplate>
             <DataGrid.Columns>
@@ -87,7 +119,7 @@
                                   ItemsSource="{Binding Timesheets}"
                                   Grid.Row="2"
                                   HorizontalAlignment="Stretch" 
-                                  Margin="40,5,5,5"
+                                  Margin="5,5,5,5"
                                   VerticalAlignment="Stretch" 
                                   AutoGenerateColumns="False" 
                                   CanUserReorderColumns="False" 

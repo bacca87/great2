@@ -63,10 +63,71 @@ namespace Great
             }
         }
 
-        public int Overtime34 { get; set; }
-        public int Overtime50 { get; set; }
-        public int Overtime85 { get; set; }
-        public int Overtime100 { get; set; }
+        public TimeSpan Overtime34 
+        {
+            get 
+            {
+                TimeSpan overtime34 = new TimeSpan(0,0,0);
+
+                if (Day.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    if (TotalTime.Hours > 4)
+                        overtime34 = TimeSpan.Parse("04:00:00");
+                    else
+                        overtime34 = TotalTime;
+                }
+                else
+                {
+                    if (TotalTime.Hours > 8)
+                    {
+                        if (TotalTime.Hours >= 10)
+                            overtime34 = TimeSpan.Parse("02:00:00");
+                        else
+                            overtime34 = TotalTime - TimeSpan.Parse("08:00:00");
+                    }
+                }
+
+                return overtime34;
+            }
+        }
+
+        public TimeSpan Overtime50
+        {
+            get
+            {
+                TimeSpan overtime50 = new TimeSpan(0, 0, 0);
+
+                if (Day.DayOfWeek == DayOfWeek.Saturday && TotalTime.Hours > 4)
+                {
+                    overtime50 = TotalTime - TimeSpan.Parse("04:00:00");
+                }
+                else
+                {
+                    if (TotalTime.Hours > 10)
+                    {
+                        overtime50 = TotalTime - TimeSpan.Parse("10:00:00");
+                    }
+                }
+
+                return overtime50;
+            }
+        }
+
+        public TimeSpan Overtime85 { get; set; }
+        public TimeSpan Overtime100
+        {
+            get
+            {
+                TimeSpan overtime100 = new TimeSpan(0, 0, 0);
+                
+                if (Day.DayOfWeek == DayOfWeek.Sunday) //TODO: aggiungere festivi
+                {
+                    overtime100 = TotalTime;
+                }
+
+                return overtime100;
+            }
+        }
 
         #region Display Properties
         private static TimeSpan TimeZero = new TimeSpan(0, 0, 0);
@@ -74,10 +135,10 @@ namespace Great
         public string TotalTime_Display { get { return TotalTime != TimeZero ? TotalTime.ToString(@"hh\:mm") : ""; } }
         public string WorkingTime_Display { get { return WorkingTime != TimeZero ? WorkingTime.ToString(@"hh\:mm") : ""; } }
         public string TravelTime_Display { get { return TravelTime != TimeZero ? TravelTime.ToString(@"hh\:mm") : ""; } }
-        public string Overtime34_Display { get { return Overtime34 > 0 ? Overtime34.ToString() : ""; } }
-        public string Overtime50_Display { get { return Overtime50 > 0 ? Overtime50.ToString() : ""; } }
-        public string Overtime85_Display { get { return Overtime85 > 0 ? Overtime85.ToString() : ""; } }
-        public string Overtime100_Display { get { return Overtime100 > 0 ? Overtime100.ToString() : ""; } }
+        public string Overtime34_Display { get { return Overtime34 != TimeZero ? Overtime34.ToString(@"hh\:mm") : ""; } }
+        public string Overtime50_Display { get { return Overtime50 != TimeZero ? Overtime50.ToString(@"hh\:mm") : ""; } }
+        public string Overtime85_Display { get { return Overtime85 != TimeZero ? Overtime85.ToString(@"hh\:mm") : ""; } }
+        public string Overtime100_Display { get { return Overtime100 != TimeZero ? Overtime100.ToString(@"hh\:mm") : ""; } }
         #endregion
 
         public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
