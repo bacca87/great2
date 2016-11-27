@@ -32,12 +32,12 @@
             <Fluent:RibbonTabItem Header="HOME">
                 <Fluent:RibbonGroupBox Header="Select Date">
                     <Fluent:DropDownButton Name="selectMonthButton" LargeIcon="Images\calendar.png" >
-                        <Calendar x:Name="selectDateCalendar" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDatesChanged="selectDateCalendar_SelectedDatesChanged" />
+                        <Calendar x:Name="selectDateCalendar" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDatesChanged="selectDateCalendar_SelectedDatesChanged"/>
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Content="November 2016" FontSize="20" FontWeight="Bold">
+        <Label Name="currentMonthLabel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Content="November 2016" FontSize="20" FontWeight="Bold">
             <Label.LayoutTransform>
                 <TransformGroup>
                     <RotateTransform Angle="90" />

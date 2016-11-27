@@ -58,6 +58,7 @@ namespace Great
             }
 
             workingDaysDataGrid.ItemsSource = days;
+            currentMonthLabel.Content = new DateTime(year, month, 1).ToString("y").ToUpper();
         }
 
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
