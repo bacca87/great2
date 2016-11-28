@@ -1,4 +1,6 @@
 ﻿using Fluent;
+using GMap.NET;
+using GMap.NET.MapProviders;
 using Great.DB;
 using System;
 using System.Collections.Generic;
@@ -135,6 +137,47 @@ namespace Great
         private void previousMonthButton_Click(object sender, RoutedEventArgs e)
         {
             currentDate = currentDate.AddMonths(-1);
+        }
+        
+        private void exitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+                
+        private void BackstageTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(menuBackstageTabControl.SelectedValue == null)
+                return;
+
+            switch((menuBackstageTabControl.SelectedValue as BackstageTabItem).Name)
+            {
+                case "factoriesBackstageTab":
+                    LoadFactoriesTab();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void LoadFactoriesTab()
+        {
+            try
+            {
+                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry("google.com");
+            }
+            catch
+            {
+                mapControl.Manager.Mode = AccessMode.CacheOnly;
+                MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "GMap.NET Demo", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+            mapControl.MapProvider = GMapProviders.GoogleMap;
+            mapControl.MinZoom = 2; //Minimal Shrink + Grow
+            mapControl.MaxZoom = 17; //Maximal Shrink + Grow
+            mapControl.Zoom = 5; //Current Shrink + Grow
+            mapControl.ShowCenter = false; //The block of wood display centre cross burns
+            mapControl.DragButton = MouseButton.Left; //The key drags left dragging a map
+            mapControl.Position = new PointLatLng(0, 0); //Map centre positionNanjing
         }
     }
 }
