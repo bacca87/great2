@@ -99,7 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BoolToVisibilityConverter.cs" />
+    <Compile Include="Pages\FactoriesManagerPage.xaml.cs">
+      <DependentUpon>FactoriesManagerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\BoolToVisibilityConverter.cs" />
     <Compile Include="DB\Car.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -137,8 +140,19 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\Timesheet.cs" />
-    <Compile Include="WaitCursor.cs" />
+    <Compile Include="UserControls\FactoryMarkerShape.xaml.cs">
+      <DependentUpon>FactoryMarkerShape.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\WaitCursor.cs" />
     <Compile Include="WorkingDay.cs" />
+    <Page Include="Pages\FactoriesManagerPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\FactoryMarkerShape.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -215,6 +229,15 @@
   <ItemGroup>
     <Resource Include="Images\sign-left.png" />
     <Resource Include="Images\sign-right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\map-marker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\map-map-marker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\globe.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.103\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.103\build\net451\System.Data.SQLite.Core.targets')" />

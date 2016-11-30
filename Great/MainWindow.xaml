@@ -1,8 +1,7 @@
 ﻿<Fluent:RibbonWindow x:Class="Great.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
-    xmlns:Gmap="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
+    xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"    
     Title="Great 2.0" 
     Width="1024" 
     Height="768"
@@ -11,7 +10,7 @@
     Loaded="RibbonWindow_Loaded">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />            
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -22,42 +21,10 @@
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage Header="FILE">
-                    <Fluent:BackstageTabControl Name="menuBackstageTabControl" SelectionChanged="BackstageTabControl_SelectionChanged">
+                    <Fluent:BackstageTabControl Name="menuBackstageTabControl">
                         <Fluent:BackstageTabItem Header="Informations"/>
                         <Fluent:BackstageTabItem Name="factoriesBackstageTab" Header="Factories">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition></RowDefinition>
-                                    <RowDefinition></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <DataGrid Name="factoriesDataGrid"
-                                    Grid.RowSpan="2" 
-                                    Grid.Column="0" 
-                                    Grid.Row="0"
-                                    Margin="0,0,0,0" 
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch" 
-                                    AutoGenerateColumns="False" 
-                                    CanUserReorderColumns="False" 
-                                    CanUserResizeColumns="False" 
-                                    CanUserResizeRows="False" 
-                                    CanUserSortColumns="False" 
-                                    IsReadOnly="True"                                    
-                                    SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                                        <DataGridTextColumn Header="CompanyName" Binding="{Binding CompanyName}" />
-                                        <DataGridTextColumn Header="Address" Binding="{Binding Address}" />
-                                        <DataGridTextColumn Header="TransferType" Binding="{Binding TransferType}" />
-                                        <DataGridCheckBoxColumn Header="IsForfait" Binding="{Binding IsForfait}" />
-                                    </DataGrid.Columns>                                    
-                                </DataGrid>
-                                <Gmap:GMapControl x:Name="mapControl" Grid.Column="1" Grid.Row="1" Zoom="13" MaxZoom="24" MinZoom="1" />
-                            </Grid>
+                            <Frame Source="/Pages/FactoriesManagerPage.xaml"/>                            
                         </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem />
                         <Fluent:BackstageTabItem Header="Settings"/>

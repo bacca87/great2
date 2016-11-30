@@ -1,0 +1,37 @@
+﻿<Page x:Class="Great.Pages.FactoriesManagerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:Gmap="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
+      mc:Ignorable="d"       
+	  Title="FactoriesManagerPage"
+      Loaded="Page_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Gmap:GMapControl x:Name="mapControl" Grid.Row="0" Zoom="17" MaxZoom="24" MinZoom="2" MouseRightButtonUp="mapControl_MouseRightButtonUp"/>        
+        <WrapPanel Margin="10,10,10,10" Orientation="Horizontal">
+            <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3,3,3,3" KeyUp="searchEntryTextBox_KeyUp"></TextBox>
+            <Button Name="searchButton" Grid.Column="1" Click="searchButton_Click">Search</Button>            
+        </WrapPanel>
+        <Button Name="zoomOutButton" Margin="10,10,10,10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
+            <Image Source="pack://application:,,,/Images/map-map-marker.png" Stretch="None" />
+        </Button>        
+        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
+        <ListView Name="factoriesListView" Grid.Row="2">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="CompanyName" DisplayMemberBinding="{Binding CompanyName}" />
+                    <GridViewColumn Header="Address" DisplayMemberBinding="{Binding Address}" />
+                    <GridViewColumn Header="TransferType" DisplayMemberBinding="{Binding TransferType}" />
+                    <GridViewColumn Header="IsForfait" DisplayMemberBinding="{Binding IsForfait}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Page>
