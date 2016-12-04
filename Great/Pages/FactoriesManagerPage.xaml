@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:Gmap="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
-      mc:Ignorable="d"       
+      mc:Ignorable="d"
 	  Title="FactoriesManagerPage"
       Loaded="Page_Loaded">
     <Grid>
@@ -16,13 +16,13 @@
         <Gmap:GMapControl x:Name="mapControl" Grid.Row="0" Zoom="17" MaxZoom="24" MinZoom="2" MouseRightButtonUp="mapControl_MouseRightButtonUp"/>        
         <WrapPanel Margin="10,10,10,10" Orientation="Horizontal">
             <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3,3,3,3" KeyUp="searchEntryTextBox_KeyUp"></TextBox>
-            <Button Name="searchButton" Grid.Column="1" Click="searchButton_Click">Search</Button>            
+            <Button Name="goButton" Grid.Column="1" Click="goButton_Click">Go</Button>            
         </WrapPanel>
         <Button Name="zoomOutButton" Margin="10,10,10,10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
             <Image Source="pack://application:,,,/Images/map-map-marker.png" Stretch="None" />
         </Button>        
         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
-        <ListView Name="factoriesListView" Grid.Row="2">
+        <ListView Name="factoriesListView" Grid.Row="2" MouseDoubleClick="factoriesListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />

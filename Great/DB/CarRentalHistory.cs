@@ -14,16 +14,16 @@ namespace Great.DB
     
     public partial class CarRentalHistory
     {
-        public int Id { get; set; }
-        public int Car { get; set; }
-        public int StartKm { get; set; }
-        public Nullable<int> EndKm { get; set; }
+        public long Id { get; set; }
+        public long Car { get; set; }
+        public long StartKm { get; set; }
+        public Nullable<long> EndKm { get; set; }
         public string StartLocation { get; set; }
         public string EndLocation { get; set; }
         public System.DateTime StartDate { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
-        public byte StartFuelLevel { get; set; }
-        public Nullable<byte> EndFuelLevel { get; set; }
+        public long StartFuelLevel { get; set; }
+        public Nullable<long> EndFuelLevel { get; set; }
         public string Notes { get; set; }
     
         public virtual Car Car1 { get; set; }

@@ -25,12 +25,12 @@ namespace Great.DB
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Car> Car { get; set; }
-        public virtual DbSet<CarRentalCompany> CarRentalCompany { get; set; }
-        public virtual DbSet<CarRentalHistory> CarRentalHistory { get; set; }
-        public virtual DbSet<ExpenseAccount> ExpenseAccount { get; set; }
-        public virtual DbSet<Factory> Factory { get; set; }
-        public virtual DbSet<FDL> FDL { get; set; }
-        public virtual DbSet<Timesheet> Timesheet { get; set; }
+        public virtual DbSet<Car> Cars { get; set; }
+        public virtual DbSet<CarRentalCompany> CarRentalCompanies { get; set; }
+        public virtual DbSet<CarRentalHistory> CarRentalHistories { get; set; }
+        public virtual DbSet<ExpenseAccount> ExpenseAccounts { get; set; }
+        public virtual DbSet<Factory> Factories { get; set; }
+        public virtual DbSet<FDL> FDLs { get; set; }
+        public virtual DbSet<Timesheet> Timesheets { get; set; }
     }
 }

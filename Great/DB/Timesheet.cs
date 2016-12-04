@@ -14,7 +14,7 @@ namespace Great.DB
     
     public partial class Timesheet
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public System.DateTime Date { get; set; }
         public Nullable<System.DateTime> TravelStartTimeAM { get; set; }
         public Nullable<System.DateTime> TravelEndTimeAM { get; set; }
@@ -24,7 +24,7 @@ namespace Great.DB
         public Nullable<System.DateTime> WorkEndTimeAM { get; set; }
         public Nullable<System.DateTime> WorkStartTimePM { get; set; }
         public Nullable<System.DateTime> WorkEndTimePM { get; set; }
-        public Nullable<int> FDL { get; set; }
+        public Nullable<long> FDL { get; set; }
     
         public virtual FDL FDL1 { get; set; }
     }

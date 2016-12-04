@@ -99,10 +99,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Pages\FactoriesManagerPage.xaml.cs">
-      <DependentUpon>FactoriesManagerPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\BoolToVisibilityConverter.cs" />
     <Compile Include="DB\Car.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -112,6 +108,23 @@
     <Compile Include="DB\CarRentalHistory.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\ExpenseAccount.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Factory.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\FDL.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Timesheet.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Factory.cs" />
+    <Compile Include="Pages\FactoriesManagerPage.xaml.cs">
+      <DependentUpon>FactoriesManagerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\BoolToVisibilityConverter.cs" />
     <Compile Include="DB\DBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -126,18 +139,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DBModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="DB\ExpenseAccount.cs">
-      <DependentUpon>DBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\Factory.cs">
-      <DependentUpon>DBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\FDL.cs">
-      <DependentUpon>DBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\Timesheet.cs">
-      <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\Timesheet.cs" />
     <Compile Include="UserControls\FactoryMarkerShape.xaml.cs">
@@ -212,7 +213,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

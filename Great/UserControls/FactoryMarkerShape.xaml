@@ -3,11 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d"
-             d:DesignHeight="24" d:DesignWidth="18"
+             mc:Ignorable="d"             
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
+	<UserControl.Resources>
+		<Storyboard x:Name="Bounce" x:Key="Bounce">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="rectangle">
+				<EasingDoubleKeyFrame KeyTime="0:0:0.15" Value="-7.719"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</UserControl.Resources>	
     <Grid>
-        <Rectangle Width="18" Height="24" Cursor="Hand">
+        <Rectangle x:Name="rectangle" Width="18" Height="26" Cursor="Hand" RenderTransformOrigin="0.5,0.5">
+        	<Rectangle.RenderTransform>
+        		<TransformGroup>
+        			<ScaleTransform/>
+        			<SkewTransform/>
+        			<RotateTransform/>
+        			<TranslateTransform/>
+        		</TransformGroup>
+        	</Rectangle.RenderTransform>
             <Rectangle.Fill>
                 <ImageBrush ImageSource="pack://application:,,,/Images/map-marker.png" Stretch="None"/>
             </Rectangle.Fill>

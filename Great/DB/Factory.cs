@@ -17,17 +17,19 @@ namespace Great.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Factory()
         {
-            this.FDL = new HashSet<FDL>();
+            this.FDLs = new HashSet<FDL>();
         }
     
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string CompanyName { get; set; }
         public string Address { get; set; }
-        public int TransferType { get; set; }
+        public Nullable<double> Latitude { get; set; }
+        public Nullable<double> Longitude { get; set; }
+        public long TransferType { get; set; }
         public bool IsForfait { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FDL> FDL { get; set; }
+        public virtual ICollection<FDL> FDLs { get; set; }
     }
 }

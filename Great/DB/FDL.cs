@@ -17,14 +17,14 @@ namespace Great.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public FDL()
         {
-            this.ExpenseAccount = new HashSet<ExpenseAccount>();
-            this.Timesheet = new HashSet<Timesheet>();
+            this.ExpenseAccounts = new HashSet<ExpenseAccount>();
+            this.Timesheets = new HashSet<Timesheet>();
         }
     
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string SheetNumber { get; set; }
         public string Order { get; set; }
-        public int Factory { get; set; }
+        public long Factory { get; set; }
         public Nullable<bool> OutwardCar { get; set; }
         public Nullable<bool> ReturnCar { get; set; }
         public Nullable<bool> OutwardTaxi { get; set; }
@@ -32,14 +32,14 @@ namespace Great.DB
         public Nullable<bool> OutwardFlight { get; set; }
         public Nullable<bool> ReturnFlight { get; set; }
         public string PerformanceDescription { get; set; }
-        public Nullable<byte> Result { get; set; }
+        public Nullable<long> Result { get; set; }
         public string ResultNotes { get; set; }
         public string Notes { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ExpenseAccount> ExpenseAccount { get; set; }
+        public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
         public virtual Factory Factory1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Timesheet> Timesheet { get; set; }
+        public virtual ICollection<Timesheet> Timesheets { get; set; }
     }
 }

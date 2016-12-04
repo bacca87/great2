@@ -14,8 +14,8 @@ namespace Great.DB
     
     public partial class ExpenseAccount
     {
-        public int Id { get; set; }
-        public int FDL { get; set; }
+        public long Id { get; set; }
+        public long FDL { get; set; }
     
         public virtual FDL FDL1 { get; set; }
     }

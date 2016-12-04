@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -21,14 +22,23 @@ namespace Great
     public partial class FactoryMarkerShape : UserControl
     {
         #region Properties
-        public int FactoryId { get; set; }
-        public string FactoryName { get; set; }
+        public string Title { get; set; }
         public string Address { get; set; }
+
+        private Storyboard BounceAnimation { get; set; }
         #endregion
 
         public FactoryMarkerShape()
         {
             InitializeComponent();
+
+            BounceAnimation = this.FindResource("Bounce") as Storyboard;
+            Storyboard.SetTarget(BounceAnimation, this.rectangle);
+        }
+
+        public void PlayBounce()
+        {
+            BounceAnimation.Begin();
         }
     }
 }

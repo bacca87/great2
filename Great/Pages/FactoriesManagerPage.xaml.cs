@@ -26,6 +26,8 @@ namespace Great.Pages
     /// </summary>
     public partial class FactoriesManagerPage : Page
     {
+        public const double ZOOM_MARKER = 15;
+
         public FactoriesManagerPage()
         {
             InitializeComponent();
@@ -34,7 +36,35 @@ namespace Great.Pages
             mapControl.MapProvider = GMapProviders.GoogleMap;
             mapControl.ShowCenter = false; //The block of wood display centre cross burns
             mapControl.DragButton = MouseButton.Left; //The key drags left dragging a map
-            mapControl.Position = new PointLatLng(0, 0);            
+            mapControl.Position = new PointLatLng(0, 0);
+        }
+
+        private void SearchLocation()
+        {
+            PointLatLng? point = GetPointFromAddress(searchEntryTextBox.Text);
+
+            if (point.HasValue)
+                ZoomOnPoint(point.Value, ZOOM_MARKER);
+        }
+
+        private void ZoomOnPoint(PointLatLng point, double Zoom)
+        {
+            if (!point.IsEmpty)
+            {
+                mapControl.Position = point;
+                mapControl.Zoom = Zoom;
+            }
+        }
+
+        private PointLatLng? GetPointFromAddress(string address)
+        {
+            PointLatLng? point;
+            GeoCoderStatusCode status;
+
+            point = GMapProviders.GoogleMap.GetPoint(address, out status);
+
+            //TODO: log errors -> switch(status) case: GeoCoderStatusCode.G_GEO_SUCCESS
+            return point;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -46,33 +76,57 @@ namespace Great.Pages
             catch
             {
                 mapControl.Manager.Mode = AccessMode.CacheOnly;
-                MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "GMap.NET Demo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "Factories Map", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             
             using (var db = new DBEntities())
-            {
-                IList<Factory> factories = db.Factory.ToList();
+            {   
+                IList<Factory> factories = db.Factories.ToList();
 
                 foreach (Factory factory in factories)
                 {
-                    GeoCoderStatusCode status;
-                    PointLatLng? point = GMapProviders.GoogleMap.GetPoint(factory.Address, out status);
+                    PointLatLng? point;
+
+                    if (factory.MapPoint.HasValue)
+                        point = factory.MapPoint;
+                    else
+                        point = GetPointFromAddress(factory.Address);
                     
-                    if (status == GeoCoderStatusCode.G_GEO_SUCCESS && point != null)
+                    if (point.HasValue)
                     {
                         GMapMarker marker = new GMapMarker((PointLatLng)point);
-                        marker.Shape = new FactoryMarkerShape() { FactoryId = factory.Id, FactoryName = factory.Name, Address = factory.Address };
+                        
+                        FactoryMarkerShape shape = new FactoryMarkerShape() { Title = factory.Name, Address = factory.Address };
+                        shape.MouseDoubleClick += marker_MouseDoubleClick;
+                        shape.MouseUp += marker_MouseUp;
+                        
+                        marker.Shape = shape;
+                        factory.MapMarker = marker;
                         mapControl.Markers.Add(marker);
                     }
                 }
 
                 mapControl.ZoomAndCenterMarkers(null);
-                factoriesListView.ItemsSource = db.Factory.ToList();
+                factoriesListView.ItemsSource = db.Factories.ToList();
             }
+        }
+
+        private void marker_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //TEST
+            if (e.ChangedButton == MouseButton.Left)
+                ((FactoryMarkerShape)sender).PlayBounce();
+        }
+
+        private void marker_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void mapControl_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
+            // TODO: insert new marker
+
             Point mousePos = e.GetPosition(mapControl);
             PointLatLng mapPosition = mapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
 
@@ -90,7 +144,7 @@ namespace Great.Pages
             }
         }
 
-        private void searchButton_Click(object sender, RoutedEventArgs e)
+        private void goButton_Click(object sender, RoutedEventArgs e)
         {
             SearchLocation();
         }
@@ -101,21 +155,29 @@ namespace Great.Pages
                 SearchLocation();
         }
 
-        private void SearchLocation()
-        {
-            GeoCoderStatusCode status;
-            PointLatLng? point = GMapProviders.GoogleMap.GetPoint(searchEntryTextBox.Text, out status);
-
-            if (status == GeoCoderStatusCode.G_GEO_SUCCESS && point != null)
-            {
-                mapControl.Position = (PointLatLng)point;
-                mapControl.Zoom = 17;
-            }
-        }
-
         private void zoomOutButton_Click(object sender, RoutedEventArgs e)
         {
             mapControl.ZoomAndCenterMarkers(null);
+        }
+
+        private void factoriesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && factoriesListView.SelectedItem != null)
+            {            
+                Factory factory = (Factory)factoriesListView.SelectedItem;
+                PointLatLng? point;
+
+                if (factory.MapPoint.HasValue)
+                    point = factory.MapPoint;
+                else
+                    point = GetPointFromAddress(factory.Address);
+
+                if (point.HasValue)
+                {
+                    ZoomOnPoint(point.Value, ZOOM_MARKER);
+                    ((FactoryMarkerShape)factory.MapMarker.Shape).PlayBounce();
+                }
+            }
         }
     }
 }

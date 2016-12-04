@@ -17,13 +17,13 @@ namespace Great.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CarRentalCompany()
         {
-            this.Car = new HashSet<Car>();
+            this.Cars = new HashSet<Car>();
         }
     
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Car> Car { get; set; }
+        public virtual ICollection<Car> Cars { get; set; }
     }
 }

@@ -72,9 +72,9 @@ namespace Great
                     WorkingDay workingDay = new WorkingDay { 
                                                 WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek), 
                                                 Day = day, 
-                                                Timesheets = db.Timesheet.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", day.ToString("yyyy-MM-dd"))).ToList() 
+                                                Timesheets = db.Timesheets.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", day.ToString("yyyy-MM-dd"))).ToList() 
                                             };
-                    days.Add(workingDay);                    
+                    days.Add(workingDay);
                 }
             }
 
