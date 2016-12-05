@@ -28,6 +28,8 @@ namespace Great.Pages
     {
         public const double ZOOM_MARKER = 15;
 
+        private GMapMarker tempMarker;
+
         public FactoriesManagerPage()
         {
             InitializeComponent();
@@ -44,7 +46,15 @@ namespace Great.Pages
             PointLatLng? point = GetPointFromAddress(searchEntryTextBox.Text);
 
             if (point.HasValue)
+            {
+                if (tempMarker != null)
+                    mapControl.Markers.Remove(tempMarker);
+
+                tempMarker = CreateMarker((PointLatLng)point, "New Factory", searchEntryTextBox.Text.Trim(), FactoryMarkerColor.Green);
+                mapControl.Markers.Add(tempMarker);
+
                 ZoomOnPoint(point.Value, ZOOM_MARKER);
+            }            
         }
 
         private void ZoomOnPoint(PointLatLng point, double Zoom)
@@ -65,6 +75,18 @@ namespace Great.Pages
 
             //TODO: log errors -> switch(status) case: GeoCoderStatusCode.G_GEO_SUCCESS
             return point;
+        }
+
+        private GMapMarker CreateMarker(PointLatLng point, string title, string address, FactoryMarkerColor color)
+        {
+            GMapMarker marker = new GMapMarker((PointLatLng)point);
+
+            FactoryMarkerShape shape = new FactoryMarkerShape() { Title = title, Address = address, Color = color };
+            shape.MouseDoubleClick += marker_MouseDoubleClick;
+            shape.MouseUp += marker_MouseUp;
+            marker.Shape = shape;
+
+            return marker;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -94,13 +116,7 @@ namespace Great.Pages
                     
                     if (point.HasValue)
                     {
-                        GMapMarker marker = new GMapMarker((PointLatLng)point);
-                        
-                        FactoryMarkerShape shape = new FactoryMarkerShape() { Title = factory.Name, Address = factory.Address };
-                        shape.MouseDoubleClick += marker_MouseDoubleClick;
-                        shape.MouseUp += marker_MouseUp;
-                        
-                        marker.Shape = shape;
+                        GMapMarker marker = CreateMarker((PointLatLng)point, factory.Name, factory.Address, FactoryMarkerColor.Red);                        
                         factory.MapMarker = marker;
                         mapControl.Markers.Add(marker);
                     }
@@ -125,22 +141,20 @@ namespace Great.Pages
 
         private void mapControl_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            // TODO: insert new marker
-
             Point mousePos = e.GetPosition(mapControl);
             PointLatLng mapPosition = mapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
+            List<Placemark> placemarks = null;
 
-            List<Placemark> plc = null;
-            var st = GMapProviders.GoogleMap.GetPlacemarks(mapPosition, out plc);
-            if (st == GeoCoderStatusCode.G_GEO_SUCCESS && plc != null)
+            GeoCoderStatusCode status = GMapProviders.GoogleMap.GetPlacemarks(mapPosition, out placemarks);
+
+            if (status == GeoCoderStatusCode.G_GEO_SUCCESS && placemarks != null && placemarks.Count > 0)
             {
-                foreach (var pl in plc)
-                {
-                    if (!string.IsNullOrEmpty(pl.PostalCodeNumber))
-                    {
-                        Debug.WriteLine("Accuracy: " + pl.Accuracy + ", " + pl.Address + ", PostalCodeNumber: " + pl.PostalCodeNumber);
-                    }
-                }
+                if (tempMarker != null)
+                    mapControl.Markers.Remove(tempMarker);
+
+                GMapMarker marker = CreateMarker(mapPosition, "New Factory", placemarks.FirstOrDefault().Address, FactoryMarkerColor.Green);
+                tempMarker = marker;
+                mapControl.Markers.Add(marker);
             }
         }
 
