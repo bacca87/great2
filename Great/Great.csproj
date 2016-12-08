@@ -137,7 +137,6 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Factory.ext.cs" />
-    <Compile Include="Converters\PointLatLngToPointConverter.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
     <Compile Include="Views\FactoryDetailsView.xaml.cs">
       <DependentUpon>FactoryDetailsView.xaml</DependentUpon>
