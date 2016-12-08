@@ -1,0 +1,9 @@
+﻿<Window x:Class="Great.Views.FactoryDetailsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        DataContext="{Binding Factories, Source={StaticResource Locator}}"
+        Title="FactoryDetailsWindow" Height="300" Width="300">
+    <Grid>
+        
+    </Grid>
+</Window>

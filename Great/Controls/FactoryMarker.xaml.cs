@@ -14,16 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Great
+namespace Great.Controls
 {
     /// <summary>
     /// Interaction logic for GMapFactoryMarker.xaml
     /// </summary>
-    public partial class FactoryMarkerShape : UserControl
+    public partial class FactoryMarker : UserControl
     {
         #region Properties
-        public string Title { get; set; }
-        public string Address { get; set; }        
         public FactoryMarkerColor Color
         {
             get
@@ -37,16 +35,15 @@ namespace Great
                 switch (_color)
                 {
                     case FactoryMarkerColor.Red:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/map-marker-red.png"));                        
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/map-marker-red.png"));                        
                         break;
                     case FactoryMarkerColor.Green:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/map-marker-green.png"));
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/map-marker-green.png"));
                         break;
                     case FactoryMarkerColor.Blue:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/map-marker-blue.png"));
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/map-marker-blue.png"));
                         break;
                     default:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/map-marker-red.png"));
                         break;
                 }
             }
@@ -56,12 +53,14 @@ namespace Great
         private FactoryMarkerColor _color = FactoryMarkerColor.Red;
         #endregion
 
-        public FactoryMarkerShape()
+        public FactoryMarker()
         {
             InitializeComponent();
+            
+            Color = FactoryMarkerColor.Red;
 
             BounceAnimation = this.FindResource("Bounce") as Storyboard;
-            Storyboard.SetTarget(BounceAnimation, this.rectangle);
+            Storyboard.SetTarget(BounceAnimation, this.Rectangle);
         }
 
         public void PlayBounce()

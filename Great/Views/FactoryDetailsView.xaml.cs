@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Great.Pages
+namespace Great.Views
 {
     /// <summary>
-    /// Interaction logic for InformationsPage.xaml
+    /// Interaction logic for FactoryDetailsWindow.xaml
     /// </summary>
-    public partial class InformationsPage : Page
+    public partial class FactoryDetailsView : Window
     {
-        public InformationsPage()
+        public FactoryDetailsView()
         {
             InitializeComponent();
         }

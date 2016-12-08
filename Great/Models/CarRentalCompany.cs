@@ -7,27 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Great.DB
+namespace Great.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Car
+    public partial class CarRentalCompany
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Car()
+        public CarRentalCompany()
         {
-            this.CarRentalHistories = new HashSet<CarRentalHistory>();
+            this.Cars = new HashSet<Car>();
         }
     
         public long Id { get; set; }
-        public string LicensePlate { get; set; }
-        public string Brand { get; set; }
-        public string Model { get; set; }
-        public long CarRentalCompany { get; set; }
+        public string Name { get; set; }
     
-        public virtual CarRentalCompany CarRentalCompany1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CarRentalHistory> CarRentalHistories { get; set; }
+        public virtual ICollection<Car> Cars { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Great.DB;
+﻿using Great.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Great
+namespace Great.Models
 {
     public class WorkingDay
     {

@@ -7,23 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Great.DB
+namespace Great.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class CarRentalCompany
+    public partial class ExpenseAccount
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CarRentalCompany()
-        {
-            this.Cars = new HashSet<Car>();
-        }
-    
         public long Id { get; set; }
-        public string Name { get; set; }
+        public long FDL { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Car> Cars { get; set; }
+        public virtual FDL FDL1 { get; set; }
     }
 }

@@ -7,29 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Great.DB
+namespace Great.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Factory
+    public partial class Car
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Factory()
+        public Car()
         {
-            this.FDLs = new HashSet<FDL>();
+            this.CarRentalHistories = new HashSet<CarRentalHistory>();
         }
     
         public long Id { get; set; }
-        public string Name { get; set; }
-        public string CompanyName { get; set; }
-        public string Address { get; set; }
-        public Nullable<double> Latitude { get; set; }
-        public Nullable<double> Longitude { get; set; }
-        public long TransferType { get; set; }
-        public bool IsForfait { get; set; }
+        public string LicensePlate { get; set; }
+        public string Brand { get; set; }
+        public string Model { get; set; }
+        public long CarRentalCompany { get; set; }
     
+        public virtual CarRentalCompany CarRentalCompany1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FDL> FDLs { get; set; }
+        public virtual ICollection<CarRentalHistory> CarRentalHistories { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Great
+namespace Great.Converters
 {
     public class BoolToVisibilityConverter : IValueConverter
     {

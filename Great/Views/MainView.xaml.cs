@@ -1,5 +1,5 @@
 ﻿using Fluent;
-using Great.DB;
+using Great.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -18,12 +18,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Great
+namespace Great.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainView.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow
+    public partial class MainView : RibbonWindow
     {
         #region Properties
         private DateTime _currentDate;
@@ -49,7 +49,7 @@ namespace Great
         }
         #endregion
 
-        public MainWindow()
+        public MainView()
         {
             InitializeComponent();
         }

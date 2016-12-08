@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Great.DB
+namespace Great.Models
 {
     using System;
     using System.Data.Entity;
