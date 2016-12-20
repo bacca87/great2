@@ -4,7 +4,6 @@ using Great.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Windows;
 
 namespace Great.ViewModels
 {
@@ -17,6 +16,26 @@ namespace Great.ViewModels
     public class FactoriesViewModel : ViewModelBase
     {
         #region Properties
+        private IList<TransferType> _transferTypes;
+
+        /// <summary>
+        /// Sets and gets the Factories property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public IList<TransferType> TransferTypes
+        {
+            get
+            {
+                return _transferTypes;
+            }
+
+            set
+            {
+                _transferTypes = value;
+                RaisePropertyChanged("TransferTypes");
+            }
+        }
+
         private IList<Factory> _factories;
 
         /// <summary>
@@ -37,11 +56,44 @@ namespace Great.ViewModels
             }
         }
 
+        /// <summary>
+        /// The <see cref="SelectedFactory" /> property's name.
+        /// </summary>
+
+        private Factory _selectedFactory;
+
+        /// <summary>
+        /// Sets and gets the SelectedFactory property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public Factory SelectedFactory
+        {
+            get
+            {
+                return _selectedFactory;
+            }
+
+            set
+            {
+                if (_selectedFactory == value)
+                {
+                    return;
+                }
+
+                var oldValue = _selectedFactory;
+                _selectedFactory = value;
+                RaisePropertyChanged("SelectedFactory", oldValue, value);
+            }
+        }
+
+
         private DBEntities _db { get; set; }
         #endregion
 
         #region Commands
-        //public RelayCommand Search { get; set; }
+        public RelayCommand CreateFactoryCommand { get; set; }
+        public RelayCommand ClearSelectionCommand { get; set; }
+        public RelayCommand EditFactoryCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -51,9 +103,12 @@ namespace Great.ViewModels
         {
             _db = db;
 
-            //Search = new RelayCommand(SearchLocation);
+            CreateFactoryCommand = new RelayCommand(CreateFactory);
+            ClearSelectionCommand = new RelayCommand(ClearSelection);
+            EditFactoryCommand = new RelayCommand(EditFactory);
 
             RefreshFactories();
+            RefreshTransferTypes();
         }
 
         /// <summary>
@@ -62,6 +117,27 @@ namespace Great.ViewModels
         public void RefreshFactories()
         {
             Factories = _db.Factories.ToList();
+        }
+
+        /// <summary>
+        /// Refresh the transfer types
+        /// </summary>
+        public void RefreshTransferTypes()
+        {
+            TransferTypes = _db.TransferTypes.ToList();
+        }
+
+        private void ClearSelection()
+        {
+            SelectedFactory = null;
+        }
+
+        private void CreateFactory()
+        {
+        }
+
+        private void EditFactory()
+        {
         }
     }
 }

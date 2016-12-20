@@ -8,12 +8,12 @@
       mc:Ignorable="d"
       DataContext="{Binding Factories, Source={StaticResource Locator}}"
 	  Title="FactoriesManagerPage"
-      Loaded="Page_Loaded">    
+      Loaded="Page_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Gmap:GMapControl x:Name="factoriesMapControl" Grid.Row="0" Zoom="5" MaxZoom="24" MinZoom="2" MouseRightButtonUp="FactoriesMapControl_MouseRightButtonUp" MouseDoubleClick="FactoriesMapControl_MouseDoubleClick">
             <Gmap:GMapControl.Resources>
@@ -23,29 +23,91 @@
                 </Style>
             </Gmap:GMapControl.Resources>
         </Gmap:GMapControl>
-        <WrapPanel Margin="10,10,10,10" Orientation="Horizontal">
+        <WrapPanel Grid.Row="0" Margin="10,10,10,10" Orientation="Horizontal">
             <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3,3,3,3" KeyUp="searchEntryTextBox_KeyUp"></TextBox>
-            <Button Grid.Column="1" Click="goButton_Click">Go</Button>            
+            <Button Click="goButton_Click">Go</Button>            
         </WrapPanel>
         <Button Name="zoomOutButton" Margin="10,10,10,10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
             <Image Source="pack://application:,,,/Images/map-map-marker.png" Stretch="None" />
-        </Button>        
+        </Button>
+        
         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
-        <ListView Name="factoriesListView" ItemsSource="{Binding Factories}" Grid.Row="2">
-            <ListView.Resources>
-                <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="factoryListViewItem_MouseDoubleClick"/>
-                </Style>
-            </ListView.Resources>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="CompanyName" DisplayMemberBinding="{Binding CompanyName}" />
-                    <GridViewColumn Header="Address" DisplayMemberBinding="{Binding Address}" />
-                    <GridViewColumn Header="TransferType" DisplayMemberBinding="{Binding TransferType}" />
-                    <GridViewColumn Header="IsForfait" DisplayMemberBinding="{Binding IsForfait}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <ListView Name="factoriesListView" ItemsSource="{Binding Factories}" SelectedItem="{Binding SelectedFactory}" Grid.Column="0">
+                <ListView.Resources>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="factoryListViewItem_MouseDoubleClick"/>
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="CompanyName" DisplayMemberBinding="{Binding CompanyName}" />
+                        <GridViewColumn Header="Address" DisplayMemberBinding="{Binding Address}" />
+                        <GridViewColumn Header="TransferType" DisplayMemberBinding="{Binding TransferType1.Name}" />
+                        <GridViewColumn Header="IsForfait" DisplayMemberBinding="{Binding IsForfait}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <Expander Grid.Column="1" ExpandDirection="Left">
+                <Expander.Header>
+                    <TextBlock Text="Add / Edit" Margin="0,10,0,0">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Expander.Header>
+                <Grid Margin="5,5,5,5" Width="500">
+                    <Grid.Resources>
+                        <Style TargetType="Label">
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                
+                    <Label Grid.Column="0" Grid.Row="0" Content="Name:"/>
+                    <Label Grid.Column="0" Grid.Row="1" Content="Company Name:"/>
+                    <Label Grid.Column="0" Grid.Row="2" Content="Address:"/>
+                    <Label Grid.Column="0" Grid.Row="3" Content="Transfer Type:"/>
+                    <Label Grid.Column="0" Grid.Row="4" Content="Is Forfait:"/>
+
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding SelectedFactory.Name, Mode=OneWay}" />
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedFactory.CompanyName, Mode=OneWay}"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedFactory.Address, Mode=OneWay}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
+
+                    <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactory.TransferType1, Mode=OneWay}" DisplayMemberPath="Name"/>
+
+                    <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal">
+                        <RadioButton Margin="5,5,5,5" Content="No" IsChecked="True"/>
+                        <RadioButton Margin="5,5,5,5" Content="Yes" IsChecked="{Binding SelectedFactory.IsForfait, Mode=OneWay}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <Button Margin="10" Content="Clear" Command="{Binding ClearSelectionCommand}"/>
+                        <Button Margin="10" Content="Edit" Command="{Binding EditFactoryCommand}"/>
+                        <Button Margin="10" Content="Create" Command="{Binding CreateFactoryCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Expander>
+        </Grid>
     </Grid>
 </Page>

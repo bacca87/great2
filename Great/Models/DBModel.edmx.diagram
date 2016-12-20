@@ -17,6 +17,8 @@
         <AssociationConnector Association="DBModel.FK_ExpenseAccount_0_0" />
         <AssociationConnector Association="DBModel.FK_FDL_0_0" />
         <AssociationConnector Association="DBModel.FK_Timesheet_0_0" />
+        <EntityTypeShape EntityType="DBModel.TransferType" Width="1.5" PointX="0.75" PointY="0.5" />
+        <AssociationConnector Association="DBModel.FK_Factory_0_0" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

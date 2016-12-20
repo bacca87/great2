@@ -93,6 +93,13 @@
           <Property Name="WorkEndTimePM" Type="datetime" />
           <Property Name="FDL" Type="integer" />
         </EntityType>
+        <EntityType Name="TransferType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
         <Association Name="FK_Car_0_0">
           <End Role="CarRentalCompany" Type="Self.CarRentalCompany" Multiplicity="1" />
           <End Role="Car" Type="Self.Car" Multiplicity="*" />
@@ -129,6 +136,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Factory_0_0">
+          <End Role="TransferType" Type="Self.TransferType" Multiplicity="1" />
+          <End Role="Factory" Type="Self.Factory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TransferType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Factory">
+              <PropertyRef Name="TransferType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_FDL_0_0">
           <End Role="Factory" Type="Self.Factory" Multiplicity="1" />
           <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
@@ -161,6 +180,7 @@
           <EntitySet Name="Factory" EntityType="Self.Factory" store:Type="Tables" />
           <EntitySet Name="FDL" EntityType="Self.FDL" store:Type="Tables" />
           <EntitySet Name="Timesheet" EntityType="Self.Timesheet" store:Type="Tables" />
+          <EntitySet Name="TransferType" EntityType="Self.TransferType" store:Type="Tables" />
           <AssociationSet Name="FK_Car_0_0" Association="Self.FK_Car_0_0">
             <End Role="CarRentalCompany" EntitySet="CarRentalCompany" />
             <End Role="Car" EntitySet="Car" />
@@ -172,6 +192,10 @@
           <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
             <End Role="FDL" EntitySet="FDL" />
             <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Factory_0_0" Association="Self.FK_Factory_0_0">
+            <End Role="TransferType" EntitySet="TransferType" />
+            <End Role="Factory" EntitySet="Factory" />
           </AssociationSet>
           <AssociationSet Name="FK_FDL_0_0" Association="Self.FK_FDL_0_0">
             <End Role="Factory" EntitySet="Factory" />
@@ -213,6 +237,11 @@
           <AssociationSet Name="FK_Timesheet_0_0" Association="DBModel.FK_Timesheet_0_0">
             <End Role="FDL" EntitySet="FDLs" />
             <End Role="Timesheet" EntitySet="Timesheets" />
+          </AssociationSet>
+          <EntitySet Name="TransferTypes" EntityType="DBModel.TransferType" />
+          <AssociationSet Name="FK_Factory_0_0" Association="DBModel.FK_Factory_0_0">
+            <End Role="TransferType" EntitySet="TransferTypes" />
+            <End Role="Factory" EntitySet="Factories" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Car">
@@ -273,6 +302,7 @@
           <Property Name="TransferType" Type="Int64" Nullable="false" />
           <Property Name="IsForfait" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="Factory" ToRole="FDL" />
+          <NavigationProperty Name="TransferType1" Relationship="DBModel.FK_Factory_0_0" FromRole="Factory" ToRole="TransferType" />
         </EntityType>
         <EntityType Name="FDL">
           <Key>
@@ -373,6 +403,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TransferType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Factories" Relationship="DBModel.FK_Factory_0_0" FromRole="TransferType" ToRole="Factory" />
+        </EntityType>
+        <Association Name="FK_Factory_0_0">
+          <End Type="DBModel.TransferType" Role="TransferType" Multiplicity="1" />
+          <End Type="DBModel.Factory" Role="Factory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TransferType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Factory">
+              <PropertyRef Name="TransferType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -470,6 +520,14 @@
                 <ScalarProperty Name="TravelEndTimeAM" ColumnName="TravelEndTimeAM" />
                 <ScalarProperty Name="TravelStartTimeAM" ColumnName="TravelStartTimeAM" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TransferTypes">
+            <EntityTypeMapping TypeName="DBModel.TransferType">
+              <MappingFragment StoreEntitySet="TransferType">
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

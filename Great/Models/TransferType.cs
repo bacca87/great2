@@ -12,25 +12,18 @@ namespace Great.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Factory
+    public partial class TransferType
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Factory()
+        public TransferType()
         {
-            this.FDLs = new HashSet<FDL>();
+            this.Factories = new HashSet<Factory>();
         }
     
         public long Id { get; set; }
         public string Name { get; set; }
-        public string CompanyName { get; set; }
-        public string Address { get; set; }
-        public Nullable<double> Latitude { get; set; }
-        public Nullable<double> Longitude { get; set; }
-        public long TransferType { get; set; }
-        public bool IsForfait { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FDL> FDLs { get; set; }
-        public virtual TransferType TransferType1 { get; set; }
+        public virtual ICollection<Factory> Factories { get; set; }
     }
 }
