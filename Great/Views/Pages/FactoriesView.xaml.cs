@@ -149,9 +149,12 @@ namespace Great.Views
 
         private void marker_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            //TEST
             if (e.ChangedButton == MouseButton.Left)
-                ((FactoryMarker)sender).PlayBounce();
+            {
+                FactoryMarker marker = sender as FactoryMarker;
+                _viewModel.SelectedFactory = marker.DataContext as Factory;
+                marker.PlayBounce();
+            }
         }
 
         private void marker_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -172,9 +175,12 @@ namespace Great.Views
                 if (tempMarker != null)
                     factoriesMapControl.Markers.Remove(tempMarker);
 
-                GMapMarker marker = CreateMarker(mapPosition, new Factory() { Name = "New Factory", Address = placemarks.FirstOrDefault().Address.Trim() }, FactoryMarkerColor.Green);
+                Factory factory = new Factory() { Name = "New Factory", Address = placemarks.FirstOrDefault().Address.Trim() };
+                GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
                 tempMarker = marker;
                 factoriesMapControl.Markers.Add(marker);
+                
+                _viewModel.SelectedFactory = factory;
             }
         }
 
