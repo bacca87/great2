@@ -97,14 +97,14 @@
                     <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactory.TransferType1, Mode=OneWay}" DisplayMemberPath="Name"/>
 
                     <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal">
-                        <RadioButton Margin="5,5,5,5" Content="No" IsChecked="True"/>
-                        <RadioButton Margin="5,5,5,5" Content="Yes" IsChecked="{Binding SelectedFactory.IsForfait, Mode=OneWay}"/>
+                        <RadioButton Margin="5" Content="No" IsChecked="True"/>
+                        <RadioButton Margin="5" Content="Yes" IsChecked="{Binding SelectedFactory.IsForfait, Mode=OneWay}"/>
                     </StackPanel>
 
                     <StackPanel Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <Button Margin="10" Content="Clear" Command="{Binding ClearSelectionCommand}"/>
                         <Button Margin="10" Content="Edit" Command="{Binding EditFactoryCommand}"/>
-                        <Button Margin="10" Content="Create" Command="{Binding CreateFactoryCommand}"/>
+                        <Button Margin="10" Content="Create" Command="{Binding CreateFactoryCommand}" CommandParameter="{Binding SelectedFactory, Mode=OneWay}"/>
                     </StackPanel>
                 </Grid>
             </Expander>
