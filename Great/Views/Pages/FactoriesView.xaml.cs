@@ -57,7 +57,7 @@ namespace Great.Views
                 if (tempMarker != null)
                     factoriesMapControl.Markers.Remove(tempMarker);
 
-                tempMarker = CreateMarker((PointLatLng)point, new Factory() { Name = "New Factory", Address = searchEntryTextBox.Text.Trim() }, FactoryMarkerColor.Green);
+                tempMarker = CreateMarker(point.Value, new Factory() { Name = "New Factory", Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
                 factoriesMapControl.Markers.Add(tempMarker);
 
                 ZoomOnPoint(point.Value, ZOOM_MARKER);

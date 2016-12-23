@@ -12,16 +12,17 @@ namespace Great.Models
     {
         public Factory Clone()
         {
-            return new Factory() { 
-                Name = this.Name, 
-                CompanyName = this.CompanyName, 
-                Address = this.Address, 
-                TransferType = this.TransferType, 
-                TransferType1 = this.TransferType1,
+            return new Factory() {
+                Id = this.Id,
+                Name = this.Name,
+                CompanyName = this.CompanyName,
+                Address = this.Address,
+                TransferType = this.TransferType,
                 IsForfait = this.IsForfait,
-                Latitude = this.Latitude, 
+                Latitude = this.Latitude,
                 Longitude = this.Longitude,
-                FDLs = this.FDLs                
+
+                TransferType1 = this.TransferType1,
             };
         }
     }
