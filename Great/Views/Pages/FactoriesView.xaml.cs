@@ -44,6 +44,10 @@ namespace Great.Views
             factoriesMapControl.ShowCenter = false; //The block of wood display centre cross burns
             factoriesMapControl.DragButton = MouseButton.Left; //The key drags left dragging a map
             factoriesMapControl.Position = new PointLatLng(0, 0);
+
+            zoomSlider.Maximum = factoriesMapControl.MaxZoom;
+            zoomSlider.Minimum = factoriesMapControl.MinZoom;
+            zoomSlider.Value = factoriesMapControl.Zoom;
             
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
         }
@@ -122,7 +126,7 @@ namespace Great.Views
                 }
             }
         }
-
+        
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -221,6 +225,23 @@ namespace Great.Views
                         marker.PlayBounce();
                 }
             }
+        }
+
+        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            factoriesMapControl.Zoom = e.NewValue;
+        }
+
+        private void factoriesMapControl_OnMapZoomChanged()
+        {
+            zoomSlider.Value = factoriesMapControl.Zoom;
+            zoomLabel.Content = factoriesMapControl.Zoom + "x";
+        }
+
+        private void factoriesMapControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //hack for updating the map zoom when it is changed before map is fully loaded
+            factoriesMapControl_OnMapZoomChanged();
         }
     }
 }

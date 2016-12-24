@@ -28,7 +28,7 @@
                     <Fluent:BackstageTabControl Name="menuBackstageTabControl">
                         <Fluent:BackstageTabItem Header="Informations"/>
                         <Fluent:BackstageTabItem Name="factoriesBackstageTab" Header="Factories">
-                            <Frame Source="/Views/Pages/FactoriesView.xaml"/>                            
+                            <Frame Source="/Views/Pages/FactoriesView.xaml"/>
                         </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem />
                         <Fluent:BackstageTabItem Header="Settings"/>
