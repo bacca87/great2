@@ -76,11 +76,6 @@ namespace Great.ViewModels
 
             set
             {
-                if (_selectedFactory == value)
-                {
-                    return;
-                }
-
                 var oldValue = _selectedFactory;
                 _selectedFactory = value;
 
@@ -105,11 +100,6 @@ namespace Great.ViewModels
 
             set
             {
-                if (_factoryInfo == value)
-                {
-                    return;
-                }
-
                 var oldValue = _factoryInfo;
                 _factoryInfo = value;
                 RaisePropertyChanged(nameof(FactoryInfo), oldValue, value);
@@ -157,7 +147,7 @@ namespace Great.ViewModels
 
         private void ClearSelection()
         {
-            SelectedFactory = null;
+            SelectedFactory = null;            
         }
 
         private void SaveFactory(Factory factory)

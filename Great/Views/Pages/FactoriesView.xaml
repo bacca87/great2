@@ -10,14 +10,15 @@
 	  Title="FactoriesManagerPage"
       Loaded="Page_Loaded"
       MinWidth="800"
-      MinHeight="600">
-    <Grid>
+      MinHeight="600"
+      IsVisibleChanged="Page_IsVisibleChanged">
+    <Grid Name="layoutGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <Gmap:GMapControl x:Name="factoriesMapControl" Grid.Row="0" Zoom="5" MaxZoom="24" MinZoom="2" MouseRightButtonUp="FactoriesMapControl_MouseRightButtonUp" MouseDoubleClick="FactoriesMapControl_MouseDoubleClick" OnMapZoomChanged="factoriesMapControl_OnMapZoomChanged" Loaded="factoriesMapControl_Loaded">
+        <Gmap:GMapControl x:Name="factoriesMapControl" Grid.Row="0" Zoom="5" MaxZoom="20" MinZoom="1" MouseLeftButtonUp="factoriesMapControl_MouseLeftButtonUp" MouseDoubleClick="FactoriesMapControl_MouseDoubleClick" OnMapZoomChanged="factoriesMapControl_OnMapZoomChanged" Loaded="factoriesMapControl_Loaded">
             <Gmap:GMapControl.Resources>
                 <Style TargetType="c:FactoryMarker">
                     <EventSetter Event="MouseUp"  Handler="marker_MouseUp"/>
@@ -26,17 +27,18 @@
             </Gmap:GMapControl.Resources>
         </Gmap:GMapControl>
         <WrapPanel Grid.Row="0" Margin="10" Orientation="Horizontal">
-            <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3,3,3,3" KeyUp="searchEntryTextBox_KeyUp"></TextBox>
-            <Button Click="goButton_Click">Go</Button>            
+            <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3" KeyUp="searchEntryTextBox_KeyUp" />
+            <Button Name="goButton" Click="goButton_Click">Go</Button>            
         </WrapPanel>
         <Button Name="zoomOutButton" Grid.Row="0" Margin="10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
             <Image Source="pack://application:,,,/Images/map-map-marker.png" Stretch="None" />
         </Button>
         <WrapPanel Grid.Row="0" Margin="10" Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <Slider Name="zoomSlider" Orientation="Vertical" Height="100" ToolTip="Zoom level" ValueChanged="zoomSlider_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" />
+            <Slider Name="zoomSlider" Orientation="Vertical" Height="100" ToolTip="Zoom level" ValueChanged="zoomSlider_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" HorizontalAlignment="Right"/>
             <Label Name="zoomLabel" Content="5x" />
         </WrapPanel>
-        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
+        
+        <GridSplitter Name="splitter" Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Cursor="SizeNS"/>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -86,27 +88,42 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                 
                     <Label Grid.Column="0" Grid.Row="0" Content="Name:"/>
                     <Label Grid.Column="0" Grid.Row="1" Content="Company Name:"/>
                     <Label Grid.Column="0" Grid.Row="2" Content="Address:"/>
-                    <Label Grid.Column="0" Grid.Row="3" Content="Transfer Type:"/>
-                    <Label Grid.Column="0" Grid.Row="4" Content="Is Forfait:"/>
+                    <ToggleButton Name="latlngButton" Grid.Column="0" Grid.Row="3" Content="+" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="latlngButton_Click"/>
+                    <Label Grid.Column="0" Grid.Row="4" Content="Transfer Type:"/>
+                    <Label Grid.Column="0" Grid.Row="5" Content="Is Forfait:"/>
 
                     <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding FactoryInfo.Name}" />
                     <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding FactoryInfo.CompanyName}"/>
                     <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding FactoryInfo.Address}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
 
-                    <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding FactoryInfo.TransferType1}" DisplayMemberPath="Name"/>
+                    <WrapPanel Grid.Column="1" Grid.Row="3">
+                        <Label>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding  StringFormat="Lat: {0}   Lng: {1}">
+                                        <Binding Path="FactoryInfo.Latitude"/>
+                                        <Binding Path="FactoryInfo.Longitude"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Label>
+                    </WrapPanel>
+                    
+                    <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding FactoryInfo.TransferType1}" DisplayMemberPath="Name"/>
 
-                    <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal">
+                    <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Horizontal">
                         <RadioButton Margin="5" Content="No" IsChecked="True"/>
                         <RadioButton Margin="5" Content="Yes" IsChecked="{Binding FactoryInfo.IsForfait}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <StackPanel Grid.ColumnSpan="2" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <Button Margin="10" Content="Clear" Command="{Binding ClearSelectionCommand}"/>
                         <Button Margin="10" Content="Save" Command="{Binding SaveFactoryCommand}" CommandParameter="{Binding FactoryInfo}"/>
                     </StackPanel>
