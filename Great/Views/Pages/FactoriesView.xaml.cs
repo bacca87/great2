@@ -22,6 +22,7 @@ namespace Great.Views
         public const double ZOOM_MARKER = 15;
 
         private GMapMarker tempMarker;
+        private GMapMarker tempPosMarker;
 
         private FactoriesViewModel _viewModel { get { return DataContext as FactoriesViewModel; } }
 
@@ -133,7 +134,9 @@ namespace Great.Views
 
         public void RefreshMarkers()
         {
-            factoriesMapControl.Markers.Clear();
+            tempMarker = null;
+            tempPosMarker = null;
+            factoriesMapControl.Markers.Clear();            
 
             foreach (Factory factory in _viewModel.Factories)
             {
@@ -168,6 +171,15 @@ namespace Great.Views
             if(e.PropertyName == "Factories")
             {
                 RefreshMarkers();
+            }
+
+            if (e.PropertyName == "SelectedFactory")
+            {
+                if (tempPosMarker != null)
+                {
+                    factoriesMapControl.Markers.Remove(tempPosMarker);
+                    tempPosMarker = null;
+                }
             }
         }
 
@@ -223,6 +235,13 @@ namespace Great.Views
                 factory.Longitude = mapPosition.Lng;
 
                 _viewModel.FactoryInfo = factory; //raise property changed
+
+                if (tempPosMarker != null)
+                    factoriesMapControl.Markers.Remove(tempPosMarker);
+
+                GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Blue);
+                tempPosMarker = marker;
+                factoriesMapControl.Markers.Add(marker);
 
                 LatLngSelectionMode(false);
             }

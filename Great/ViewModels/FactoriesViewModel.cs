@@ -37,6 +37,10 @@ namespace Great.ViewModels
             }
         }
 
+        /// <summary>
+        /// The <see cref="Factories" /> property's name.
+        /// </summary>
+
         private IList<Factory> _factories;
 
         /// <summary>

@@ -10,8 +10,7 @@
     MinWidth="800"
     MinHeight="600"
     WindowStartupLocation="CenterScreen" 
-    WindowState="Maximized"
-    Loaded="RibbonWindow_Loaded">
+    WindowState="Maximized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -43,15 +42,15 @@
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Select Period" Text="Select the period to display." />
                         </Fluent:DropDownButton.ToolTip>
-                        <Calendar x:Name="selectDateCalendar" Margin="3,0,3,0" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDatesChanged="selectDateCalendar_SelectedDatesChanged"/>
+                        <Calendar x:Name="selectDateCalendar" Margin="3,0,3,0" DisplayMode="Year" DisplayModeChanged="selectDateCalendar_DisplayModeChanged" SelectedDate="{Binding CurrentDate}" />
                     </Fluent:DropDownButton>
                     <Fluent:Gallery MaxItemsInRow="1">
-                        <Fluent:Button Name="nextMonthButton" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/sign-right.png" Click="nextMonthButton_Click">
+                        <Fluent:Button Name="nextMonthButton" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/sign-right.png" Command="{Binding NextMonthCommand}" >
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Next Month" Text="Set the next month as current." />
                             </Fluent:Button.ToolTip>
                         </Fluent:Button>
-                        <Fluent:Button Name="previousMonthButton" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/sign-left.png" Click="previousMonthButton_Click">
+                        <Fluent:Button Name="previousMonthButton" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/sign-left.png" Command="{Binding PreviousMonthCommand}" >
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Previous Month" Text="Set the previous month as current." />
                             </Fluent:Button.ToolTip>
@@ -60,13 +59,16 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <Label Name="currentMonthLabel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Content="November 2016" FontSize="20" FontWeight="Bold">
+        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" FontSize="20" FontWeight="Bold">
             <Label.LayoutTransform>
                 <TransformGroup>
                     <RotateTransform Angle="90" />
                     <ScaleTransform ScaleX="-1" ScaleY="-1"/>
                 </TransformGroup>
             </Label.LayoutTransform>
+            <Label.Content>
+                <TextBlock Text="{Binding CurrentDate, StringFormat='{}{0:MMMM yyyy}'}" />
+            </Label.Content>
         </Label>
         <DataGrid Name="workingDaysDataGrid"
                   Grid.Row="1"
@@ -81,7 +83,8 @@
                   CanUserSortColumns="False" 
                   IsReadOnly="True"
                   RowDetailsVisibilityMode="Collapsed"
-                  SelectionMode="Single">
+                  SelectionMode="Single"
+                  ItemsSource="{Binding WorkingDays}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
