@@ -1,5 +1,5 @@
 ﻿using Fluent;
-using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -30,23 +30,15 @@ namespace Great.Views
             }
         }
 
-        void selectDateCalendar_DisplayModeChanged(object sender, CalendarModeChangedEventArgs e)
-        {
-            // hack for using the calendar component just for selecting month and year
-            if (selectDateCalendar.DisplayMode == CalendarMode.Month)
-            {
-                if (selectDateCalendar.DisplayDate != null)
-                    selectDateCalendar.SelectedDate = new DateTime(selectDateCalendar.DisplayDate.Year, selectDateCalendar.DisplayDate.Month, 1);
-
-                selectDateCalendar.DisplayMode = CalendarMode.Year;
-                selectMonthButton.IsDropDownOpen = false;
-                Mouse.Capture(null);
-            }
-        }
-        
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void yearTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

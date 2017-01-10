@@ -129,8 +129,13 @@ namespace Great.Models
             }
         }
 
+        public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
+        public IList<Timesheet> Timesheets { get; set; }
+
         #region Display Properties
         private static TimeSpan TimeZero = new TimeSpan(0, 0, 0);
+
+        public string WeekNr_Display { get { return Day.DayOfWeek == DayOfWeek.Monday || Day.Day == 1 ? WeekNr.ToString() : ""; } }
         public string Day_Display { get { return Day.ToLongDateString(); } }
         public string TotalTime_Display { get { return TotalTime != TimeZero ? TotalTime.ToString(@"hh\:mm") : ""; } }
         public string WorkingTime_Display { get { return WorkingTime != TimeZero ? WorkingTime.ToString(@"hh\:mm") : ""; } }
@@ -140,8 +145,5 @@ namespace Great.Models
         public string Overtime85_Display { get { return Overtime85 != TimeZero ? Overtime85.ToString(@"hh\:mm") : ""; } }
         public string Overtime100_Display { get { return Overtime100 != TimeZero ? Overtime100.ToString(@"hh\:mm") : ""; } }
         #endregion
-
-        public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
-        public IList<Timesheet> Timesheets { get; set; }
     }
 }

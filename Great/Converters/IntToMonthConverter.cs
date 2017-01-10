@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
 namespace Great.Converters
 {
-    public class BoolToVisibilityConverter : IValueConverter
+    public class IntToMonthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var isChecked = (bool)value;
-            return isChecked ? Visibility.Visible : Visibility.Collapsed;
+            return CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName((int)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return DateTime.ParseExact((string)value, "MMMM", CultureInfo.InvariantCulture).Month;
         }
     }
 }

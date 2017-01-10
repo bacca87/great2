@@ -23,34 +23,76 @@ namespace Great.ViewModels
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        public const int MIN_YEAR = 1900;
+        public const int MAX_YEAR = 2100;
+
         #region Properties
         /// <summary>
-        /// The <see cref="CurrentDate" /> property's name.
+        /// The <see cref="CurrentYear" /> property's name.
         /// </summary>
-        
-        private DateTime _currentDate = DateTime.Now;
+
+        private int _currentYear = DateTime.Now.Year;
 
         /// <summary>
-        /// Sets and gets the CurrentDate property.
+        /// Sets and gets the CurrentYear property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public DateTime CurrentDate
+        public int CurrentYear
         {
             get
             {
-                return _currentDate;
+                return _currentYear;
             }
 
             set
             {
-                if (_currentDate == value)
+                if (_currentYear == value)
+                {
+                    return;
+                }
+                
+                var oldValue = _currentYear;
+
+                if (value < MIN_YEAR)
+                    _currentYear = MIN_YEAR;
+                else if (value > MAX_YEAR)
+                    _currentYear = MAX_YEAR;
+                else
+                    _currentYear = value;
+
+                RaisePropertyChanged(nameof(CurrentYear), oldValue, value);
+
+                UpdateWorkingDays();
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="CurrentMonth" /> property's name.
+        /// </summary>
+
+        private int _currentMonth = DateTime.Now.Month;
+
+        /// <summary>
+        /// Sets and gets the CurrentMonth property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public int CurrentMonth
+        {
+            get
+            {
+                return _currentMonth;
+            }
+
+            set
+            {
+                if (_currentMonth == value)
                 {
                     return;
                 }
 
-                var oldValue = _currentDate;
-                _currentDate = value;
-                RaisePropertyChanged(nameof(CurrentDate), oldValue, value);
+                var oldValue = _currentMonth;
+                _currentMonth = value;
+                RaisePropertyChanged(nameof(CurrentMonth), oldValue, value);
 
                 UpdateWorkingDays();
             }
@@ -84,8 +126,9 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands
-        public RelayCommand NextMonthCommand { get; set; }
-        public RelayCommand PreviousMonthCommand { get; set; }
+        public RelayCommand NextYearCommand { get; set; }
+        public RelayCommand PreviousYearCommand { get; set; }
+        public RelayCommand<int> SetMonthCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -95,8 +138,9 @@ namespace Great.ViewModels
         {
             _db = db;
 
-            NextMonthCommand = new RelayCommand(SetNextMonth);
-            PreviousMonthCommand = new RelayCommand(SetPreviousMonth);
+            NextYearCommand = new RelayCommand(SetNextYear);
+            PreviousYearCommand = new RelayCommand(SetPreviousYear);
+            SetMonthCommand = new RelayCommand<int>(SetMonth);
 
             UpdateWorkingDays();
         }
@@ -107,7 +151,7 @@ namespace Great.ViewModels
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
             
-            foreach (DateTime day in AllDatesInMonth(CurrentDate.Year, CurrentDate.Month))
+            foreach (DateTime day in AllDatesInMonth(CurrentYear, CurrentMonth))
             {   
                 WorkingDay workingDay = new WorkingDay
                 {
@@ -131,14 +175,20 @@ namespace Great.ViewModels
             }
         }
 
-        private void SetNextMonth()
+        private void SetNextYear()
         {
-            CurrentDate = CurrentDate.AddMonths(1);
+            CurrentYear++;
         }
 
-        private void SetPreviousMonth()
+        private void SetPreviousYear()
         {
-            CurrentDate = CurrentDate.AddMonths(-1);
+            CurrentYear--;
+        }
+
+        private void SetMonth(int month)
+        {
+            if (month > 0 && month <= 12)
+                CurrentMonth = month;
         }
     }
 }
