@@ -122,6 +122,31 @@ namespace Great.ViewModels
             }
         }
 
+        /// <summary>
+        /// The <see cref="SelectedWorkingDay" /> property's name.
+        /// </summary>
+
+        private WorkingDay _selectedWorkingDay;
+
+        /// <summary>
+        /// Sets and gets the SelectedWorkingDay property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public WorkingDay SelectedWorkingDay
+        {
+            get
+            {
+                return _selectedWorkingDay;
+            }
+
+            set
+            {
+                var oldValue = _selectedWorkingDay;
+                _selectedWorkingDay = value;
+                RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
+            }
+        }
+
         private DBEntities _db { get; set; }
         #endregion
 

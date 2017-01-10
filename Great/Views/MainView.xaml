@@ -278,7 +278,8 @@
                   IsReadOnly="True"
                   RowDetailsVisibilityMode="Collapsed"
                   SelectionMode="Single"
-                  ItemsSource="{Binding WorkingDays}">
+                  ItemsSource="{Binding WorkingDays}"
+                  SelectedItem="{Binding SelectedWorkingDay}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
@@ -330,44 +331,46 @@
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100_Display}" />
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <DataGrid x:Name="workingDayDetailsDataGrid"
-                                  ItemsSource="{Binding Timesheets}"
-                                  Grid.Row="2"
-                                  HorizontalAlignment="Stretch" 
-                                  Margin="5,5,5,5"
-                                  VerticalAlignment="Stretch" 
-                                  AutoGenerateColumns="False" 
-                                  CanUserReorderColumns="False" 
-                                  CanUserResizeColumns="False" 
-                                  CanUserResizeRows="False" 
-                                  CanUserSortColumns="False" 
-                                  IsReadOnly="True">
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Setters>
-                                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
-                                    </Style.Setters>
-                                </Style>
-                            </DataGrid.Resources>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_Display}" />
-                                <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_Display}" />
-                                <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_Display}" />
-                                <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_Display}" />
-                                <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_Display}" />
-                                <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_Display}" />
-                                <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_Display}" />
-                                <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_Display}" />
-                                <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
+                <DataTemplate>                    
+                    <DataGrid x:Name="workingDayDetailsDataGrid"
+                              ItemsSource="{Binding Timesheets}"
+                              Grid.Row="2"
+                              HorizontalAlignment="Stretch" 
+                              Margin="5"
+                              VerticalAlignment="Stretch" 
+                              AutoGenerateColumns="False" 
+                              CanUserReorderColumns="False" 
+                              CanUserResizeColumns="False" 
+                              CanUserResizeRows="False" 
+                              CanUserSortColumns="False"
+                              HeadersVisibility="Column"
+                              IsReadOnly="True">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                            </Style>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>                            
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_Display}" Width="70" />
+                            <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_Display}" Width="70" />
+                            <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
