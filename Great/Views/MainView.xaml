@@ -16,12 +16,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Fluent:Ribbon Grid.Row="0" Grid.ColumnSpan="2">
+        <Fluent:Ribbon Grid.Row="0">
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage Header="FILE">
@@ -243,30 +243,36 @@
                 </Fluent:RibbonGroupBox>                
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" FontSize="20" FontWeight="Bold">
-            <Label.Resources>
-                <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
-            </Label.Resources>
-            <Label.LayoutTransform>
-                <TransformGroup>
-                    <RotateTransform Angle="90" />
-                    <ScaleTransform ScaleX="-1" ScaleY="-1"/>
-                </TransformGroup>
-            </Label.LayoutTransform>
-            <Label.Content>
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} {1}">
-                            <Binding Path="CurrentMonth" Converter="{StaticResource IntToMonthConverter}" />
-                            <Binding Path="CurrentYear" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Label.Content>
-        </Label>
-        <DataGrid Name="workingDaysDataGrid"
-                  Grid.Row="1"
-                  Grid.Column="2"
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label HorizontalAlignment="Center" Grid.Column="0" VerticalAlignment="Center" FontSize="20" FontWeight="Bold">
+                <Label.Resources>
+                    <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
+                </Label.Resources>
+                <Label.LayoutTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="90" />
+                        <ScaleTransform ScaleX="-1" ScaleY="-1"/>
+                    </TransformGroup>
+                </Label.LayoutTransform>
+                <Label.Content>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1}">
+                                <Binding Path="CurrentMonth" Converter="{StaticResource IntToMonthConverter}" />
+                                <Binding Path="CurrentYear" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Label.Content>
+            </Label>
+            <DataGrid Name="workingDaysDataGrid"
+                  Grid.Column="1"
                   HorizontalAlignment="Stretch" 
                   Margin="0,0,0,0" 
                   VerticalAlignment="Stretch" 
@@ -275,104 +281,124 @@
                   CanUserResizeColumns="False" 
                   CanUserResizeRows="False" 
                   CanUserSortColumns="False" 
-                  IsReadOnly="True"
-                  RowDetailsVisibilityMode="Collapsed"
+                  IsReadOnly="True"                  
                   SelectionMode="Single"
+                  HeadersVisibility="Column"
                   ItemsSource="{Binding WorkingDays}"
                   SelectedItem="{Binding SelectedWorkingDay}">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
-                    <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
-                        <Setter Property="TextBlock.FontSize" Value="15" />
-                        <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
-                    </Style.Setters>
-                </Style>
-                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>                
-            </DataGrid.Resources>            
-            <DataGrid.RowHeaderTemplate>
-                <DataTemplate>
-                    <ToggleButton
-                        Click="ShowHideDetails"
-                        Visibility="{Binding DataContext.HasDetails, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <ToggleButton.Resources>
-                            <Image x:Key="Expand" Source="pack://application:,,,/Great;component/Images/ExpandArrow.png" />
-                            <Image x:Key="Collapse" Source="pack://application:,,,/Great;component/Images/CollapseArrow.png" />
-                        </ToggleButton.Resources>
-                        <ToggleButton.Style>
-                            <Style TargetType="{x:Type ToggleButton}">
-                                <Setter Property="Content" Value="{StaticResource Expand}" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Content" Value="{StaticResource Collapse}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToggleButton.Style>
-                        <ToggleButton.Template>
-                            <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                <Grid>
-                                    <ContentPresenter Content="{TemplateBinding Content}" Width="16" Height="16" />
-                                </Grid>
-                            </ControlTemplate>
-                        </ToggleButton.Template>
-                    </ToggleButton>
-                </DataTemplate>
-            </DataGrid.RowHeaderTemplate>
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" />
-                <DataGridTextColumn Header="Day" Binding="{Binding Day_Display}" />
-                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime_Display}" FontWeight="Bold" />
-                <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime_Display}" />
-                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime_Display}" />
-                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34_Display}" />
-                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50_Display}" />
-                <DataGridTextColumn Header="Overtime 85%" Binding="{Binding Overtime85_Display}" />
-                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100_Display}" />
-            </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>                    
-                    <DataGrid x:Name="workingDayDetailsDataGrid"
-                              ItemsSource="{Binding Timesheets}"
-                              Grid.Row="2"
-                              HorizontalAlignment="Stretch" 
-                              Margin="5"
-                              VerticalAlignment="Stretch" 
-                              AutoGenerateColumns="False" 
-                              CanUserReorderColumns="False" 
-                              CanUserResizeColumns="False" 
-                              CanUserResizeRows="False" 
-                              CanUserSortColumns="False"
-                              HeadersVisibility="Column"
-                              IsReadOnly="True">
-                        <DataGrid.Resources>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="TextBlock.TextAlignment" Value="Right" />
-                            </Style>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="ContentTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>                            
-                        </DataGrid.Resources>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_Display}" Width="70" />
-                            <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_Display}" Width="70" />
-                            <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-        </DataGrid>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                        </Style.Setters>
+                    </Style>
+                </DataGrid.Resources>                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" />
+                    <DataGridTextColumn Header="Day" Binding="{Binding Day_Display}" />
+                    <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime_Display}" FontWeight="Bold" />
+                    <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime_Display}" />
+                    <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime_Display}" />
+                    <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34_Display}" />
+                    <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35_Display}" />
+                    <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50_Display}" />
+                    <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100_Display}" />
+                </DataGrid.Columns>                
+            </DataGrid>
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DataGrid ItemsSource="{Binding SelectedWorkingDay.Timesheets}"
+                        SelectedItem="{Binding SelectedTimesheet}"
+                        Grid.Row="0"
+                        HorizontalAlignment="Stretch"                         
+                        AutoGenerateColumns="False" 
+                        CanUserReorderColumns="False" 
+                        CanUserResizeColumns="False" 
+                        CanUserResizeRows="False" 
+                        CanUserSortColumns="False"
+                        HeadersVisibility="Column"
+                        IsReadOnly="True"
+                        Height="150">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_Display}" Width="70" />
+                        <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Row="1">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="0,0,0,5" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="1" Grid.Column="0" Content="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="1">
+                        <TextBlock TextAlignment="Center">Travel<LineBreak/>Start Time</TextBlock>
+                    </Label>
+                    <Label Grid.Row="0" Grid.Column="2">
+                        <TextBlock TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
+                    </Label>
+                    <Label Grid.Row="0" Grid.Column="3">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
+                    </Label>
+                    <Label Grid.Row="0" Grid.Column="4">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
+                    </Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimeAM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimeAM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimeAM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimeAM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimePM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimePM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimePM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimePM, StringFormat=hh\\:mm}"/>
+                </Grid>
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <Button Margin="10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
+                    <Button Margin="10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding TimesheetInfo}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Fluent:StatusBar Grid.Row="2">            
+        </Fluent:StatusBar>
     </Grid>
 </Fluent:RibbonWindow>

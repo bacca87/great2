@@ -1,10 +1,5 @@
-﻿using Great.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.Models
 {
@@ -91,6 +86,8 @@ namespace Great.Models
             }
         }
 
+        public TimeSpan Overtime35 { get; set; } //TODO
+
         public TimeSpan Overtime50
         {
             get
@@ -112,8 +109,7 @@ namespace Great.Models
                 return overtime50;
             }
         }
-
-        public TimeSpan Overtime85 { get; set; }
+        
         public TimeSpan Overtime100
         {
             get
@@ -141,8 +137,8 @@ namespace Great.Models
         public string WorkingTime_Display { get { return WorkingTime != TimeZero ? WorkingTime.ToString(@"hh\:mm") : ""; } }
         public string TravelTime_Display { get { return TravelTime != TimeZero ? TravelTime.ToString(@"hh\:mm") : ""; } }
         public string Overtime34_Display { get { return Overtime34 != TimeZero ? Overtime34.ToString(@"hh\:mm") : ""; } }
+        public string Overtime35_Display { get { return Overtime35 != TimeZero ? Overtime35.ToString(@"hh\:mm") : ""; } }
         public string Overtime50_Display { get { return Overtime50 != TimeZero ? Overtime50.ToString(@"hh\:mm") : ""; } }
-        public string Overtime85_Display { get { return Overtime85 != TimeZero ? Overtime85.ToString(@"hh\:mm") : ""; } }
         public string Overtime100_Display { get { return Overtime100 != TimeZero ? Overtime100.ToString(@"hh\:mm") : ""; } }
         #endregion
     }

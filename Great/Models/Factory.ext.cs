@@ -21,8 +21,6 @@ namespace Great.Models
                 IsForfait = this.IsForfait,
                 Latitude = this.Latitude,
                 Longitude = this.Longitude,
-
-                TransferType1 = this.TransferType1,
             };
         }
     }

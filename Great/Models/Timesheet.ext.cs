@@ -19,5 +19,23 @@ namespace Great.Models
         public string WorkEndTimePM_Display { get { return WorkEndTimePM != null ? WorkEndTimePM.Value.ToShortTimeString() : ""; } }
         public string FDL_Display { get { return "TODO"; } }
         #endregion
+
+        public Timesheet Clone()
+        {
+            return new Timesheet()
+            {
+                Id = this.Id,
+                Date = this.Date,
+                TravelStartTimeAM = this.TravelStartTimeAM,
+                TravelEndTimeAM = this.TravelEndTimeAM,
+                WorkStartTimeAM = this.WorkStartTimeAM,
+                WorkEndTimeAM = this.WorkEndTimeAM,
+                TravelStartTimePM = this.TravelStartTimePM,
+                TravelEndTimePM = this.TravelEndTimePM,
+                WorkStartTimePM = this.WorkStartTimePM,
+                WorkEndTimePM = this.WorkEndTimePM,
+                FDL = this.FDL
+            };
+        }
     }
 }

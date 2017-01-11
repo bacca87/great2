@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
@@ -143,7 +144,64 @@ namespace Great.ViewModels
             {
                 var oldValue = _selectedWorkingDay;
                 _selectedWorkingDay = value;
+
+                if(_selectedWorkingDay != null)
+                    SelectedTimesheet = null;
+
                 RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="SelectedTimesheet" /> property's name.
+        /// </summary>
+
+        private Timesheet _selectedTimesheet;
+
+        /// <summary>
+        /// Sets and gets the SelectedTimesheet property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Timesheet SelectedTimesheet
+        {
+            get
+            {
+                return _selectedTimesheet;
+            }
+
+            set
+            {
+                var oldValue = _selectedTimesheet;
+                _selectedTimesheet = value;
+
+                TimesheetInfo = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Date = SelectedWorkingDay.Day };
+
+                RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="TimesheetInfo" /> property's name.
+        /// </summary>
+
+        private Timesheet _timesheetInfo;
+
+        /// <summary>
+        /// Sets and gets the TimesheetInfo property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Timesheet TimesheetInfo
+        {
+            get
+            {
+                return _timesheetInfo;
+            }
+
+            set
+            {
+                var oldValue = _timesheetInfo;
+                _timesheetInfo = value;
+                RaisePropertyChanged(nameof(TimesheetInfo), oldValue, value);
             }
         }
 
@@ -154,6 +212,9 @@ namespace Great.ViewModels
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
         public RelayCommand<int> SetMonthCommand { get; set; }
+
+        public RelayCommand ClearTimesheetCommand { get; set; }
+        public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -167,6 +228,9 @@ namespace Great.ViewModels
             PreviousYearCommand = new RelayCommand(SetPreviousYear);
             SetMonthCommand = new RelayCommand<int>(SetMonth);
 
+            ClearTimesheetCommand = new RelayCommand(ClearTimesheet);
+            SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet);
+
             UpdateWorkingDays();
         }
 
@@ -177,7 +241,7 @@ namespace Great.ViewModels
             Calendar cal = dfi.Calendar;
             
             foreach (DateTime day in AllDatesInMonth(CurrentYear, CurrentMonth))
-            {   
+            {
                 WorkingDay workingDay = new WorkingDay
                 {
                     WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
@@ -214,6 +278,22 @@ namespace Great.ViewModels
         {
             if (month > 0 && month <= 12)
                 CurrentMonth = month;
+        }
+
+        public void ClearTimesheet()
+        {
+            SelectedTimesheet = null;
+        }
+
+        public void SaveTimesheet(Timesheet timesheet)
+        {
+            _db.Timesheets.AddOrUpdate(timesheet);
+
+            if (_db.SaveChanges() > 0)
+            {   
+                UpdateWorkingDays();
+                //SelectedTimesheet = timesheet;
+            }
         }
     }
 }
