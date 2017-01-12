@@ -4,12 +4,12 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=|DataDirectory|\DB\main.db3" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\baccarani.m\Documents\Repositories\Great2\Great\DB\main.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Car">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LicensePlate" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="Brand" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="Model" Type="nvarchar" MaxLength="10" Nullable="false" />
@@ -19,21 +19,21 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="CarRentalHistory">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Car" Type="integer" Nullable="false" />
           <Property Name="StartKm" Type="integer" Nullable="false" />
           <Property Name="EndKm" Type="integer" />
           <Property Name="StartLocation" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EndLocation" Type="nvarchar" MaxLength="50" />
-          <Property Name="StartDate" Type="datetime" Nullable="false" />
-          <Property Name="EndDate" Type="datetime" />
+          <Property Name="StartDate" Type="integer" Nullable="false" />
+          <Property Name="EndDate" Type="integer" />
           <Property Name="StartFuelLevel" Type="integer" Nullable="false" />
           <Property Name="EndFuelLevel" Type="integer" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
@@ -42,14 +42,14 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FDL" Type="integer" Nullable="false" />
         </EntityType>
         <EntityType Name="Factory">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="100" />
           <Property Name="Address" Type="nvarchar" MaxLength="255" />
@@ -62,7 +62,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SheetNumber" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
           <Property Name="Order" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
           <Property Name="Factory" Type="integer" Nullable="false" />
@@ -81,23 +81,23 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="datetime" Nullable="false" />
-          <Property Name="TravelStartTimeAM" Type="datetime" />
-          <Property Name="TravelEndTimeAM" Type="datetime" />
-          <Property Name="TravelStartTimePM" Type="datetime" />
-          <Property Name="TravelEndTimePM" Type="datetime" />
-          <Property Name="WorkStartTimeAM" Type="datetime" />
-          <Property Name="WorkEndTimeAM" Type="datetime" />
-          <Property Name="WorkStartTimePM" Type="datetime" />
-          <Property Name="WorkEndTimePM" Type="datetime" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Timestamp" Type="integer" Nullable="false" />
+          <Property Name="TravelStartTimeAM" Type="integer" />
+          <Property Name="TravelEndTimeAM" Type="integer" />
+          <Property Name="TravelStartTimePM" Type="integer" />
+          <Property Name="TravelEndTimePM" Type="integer" />
+          <Property Name="WorkStartTimeAM" Type="integer" />
+          <Property Name="WorkEndTimeAM" Type="integer" />
+          <Property Name="WorkStartTimePM" Type="integer" />
+          <Property Name="WorkEndTimePM" Type="integer" />
           <Property Name="FDL" Type="integer" />
         </EntityType>
         <EntityType Name="TransferType">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <Association Name="FK_Car_0_0">
@@ -218,6 +218,7 @@
           <EntitySet Name="Factories" EntityType="DBModel.Factory" />
           <EntitySet Name="FDLs" EntityType="DBModel.FDL" />
           <EntitySet Name="Timesheets" EntityType="DBModel.Timesheet" />
+          <EntitySet Name="TransferTypes" EntityType="DBModel.TransferType" />
           <AssociationSet Name="FK_Car_0_0" Association="DBModel.FK_Car_0_0">
             <End Role="CarRentalCompany" EntitySet="CarRentalCompanies" />
             <End Role="Car" EntitySet="Cars" />
@@ -230,6 +231,10 @@
             <End Role="FDL" EntitySet="FDLs" />
             <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
           </AssociationSet>
+          <AssociationSet Name="FK_Factory_0_0" Association="DBModel.FK_Factory_0_0">
+            <End Role="TransferType" EntitySet="TransferTypes" />
+            <End Role="Factory" EntitySet="Factories" />
+          </AssociationSet>
           <AssociationSet Name="FK_FDL_0_0" Association="DBModel.FK_FDL_0_0">
             <End Role="Factory" EntitySet="Factories" />
             <End Role="FDL" EntitySet="FDLs" />
@@ -237,11 +242,6 @@
           <AssociationSet Name="FK_Timesheet_0_0" Association="DBModel.FK_Timesheet_0_0">
             <End Role="FDL" EntitySet="FDLs" />
             <End Role="Timesheet" EntitySet="Timesheets" />
-          </AssociationSet>
-          <EntitySet Name="TransferTypes" EntityType="DBModel.TransferType" />
-          <AssociationSet Name="FK_Factory_0_0" Association="DBModel.FK_Factory_0_0">
-            <End Role="TransferType" EntitySet="TransferTypes" />
-            <End Role="Factory" EntitySet="Factories" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Car">
@@ -274,8 +274,8 @@
           <Property Name="EndKm" Type="Int64" />
           <Property Name="StartLocation" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EndLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" />
-          <Property Name="EndDate" Type="DateTime" />
+          <Property Name="StartDate" Type="Int64" Nullable="false" />
+          <Property Name="EndDate" Type="Int64" />
           <Property Name="StartFuelLevel" Type="Int64" Nullable="false" />
           <Property Name="EndFuelLevel" Type="Int64" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -301,8 +301,8 @@
           <Property Name="Longitude" Type="Double" />
           <Property Name="TransferType" Type="Int64" Nullable="false" />
           <Property Name="IsForfait" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="Factory" ToRole="FDL" />
           <NavigationProperty Name="TransferType1" Relationship="DBModel.FK_Factory_0_0" FromRole="Factory" ToRole="TransferType" />
+          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="Factory" ToRole="FDL" />
         </EntityType>
         <EntityType Name="FDL">
           <Key>
@@ -331,17 +331,25 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="DateTime" Nullable="false" />
-          <Property Name="TravelStartTimeAM" Type="DateTime" />
-          <Property Name="TravelEndTimeAM" Type="DateTime" />
-          <Property Name="TravelStartTimePM" Type="DateTime" />
-          <Property Name="TravelEndTimePM" Type="DateTime" />
-          <Property Name="WorkStartTimeAM" Type="DateTime" />
-          <Property Name="WorkEndTimeAM" Type="DateTime" />
-          <Property Name="WorkStartTimePM" Type="DateTime" />
-          <Property Name="WorkEndTimePM" Type="DateTime" />
+          <Property Name="Timestamp" Type="Int64" Nullable="false" />
+          <Property Name="TravelStartTimeAM" Type="Int64" />
+          <Property Name="TravelEndTimeAM" Type="Int64" />
+          <Property Name="TravelStartTimePM" Type="Int64" />
+          <Property Name="TravelEndTimePM" Type="Int64" />
+          <Property Name="WorkStartTimeAM" Type="Int64" />
+          <Property Name="WorkEndTimeAM" Type="Int64" />
+          <Property Name="WorkStartTimePM" Type="Int64" />
+          <Property Name="WorkEndTimePM" Type="Int64" />
           <Property Name="FDL" Type="Int64" />
           <NavigationProperty Name="FDL1" Relationship="DBModel.FK_Timesheet_0_0" FromRole="Timesheet" ToRole="FDL" />
+        </EntityType>
+        <EntityType Name="TransferType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Factories" Relationship="DBModel.FK_Factory_0_0" FromRole="TransferType" ToRole="Factory" />
         </EntityType>
         <Association Name="FK_Car_0_0">
           <End Type="DBModel.CarRentalCompany" Role="CarRentalCompany" Multiplicity="1" />
@@ -379,6 +387,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Factory_0_0">
+          <End Type="DBModel.TransferType" Role="TransferType" Multiplicity="1" />
+          <End Type="DBModel.Factory" Role="Factory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TransferType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Factory">
+              <PropertyRef Name="TransferType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_FDL_0_0">
           <End Type="DBModel.Factory" Role="Factory" Multiplicity="1" />
           <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
@@ -403,27 +423,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="TransferType">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Factories" Relationship="DBModel.FK_Factory_0_0" FromRole="TransferType" ToRole="Factory" />
-        </EntityType>
-        <Association Name="FK_Factory_0_0">
-          <End Type="DBModel.TransferType" Role="TransferType" Multiplicity="1" />
-          <End Type="DBModel.Factory" Role="Factory" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TransferType">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Factory">
-              <PropertyRef Name="TransferType" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -519,7 +519,7 @@
                 <ScalarProperty Name="TravelStartTimePM" ColumnName="TravelStartTimePM" />
                 <ScalarProperty Name="TravelEndTimeAM" ColumnName="TravelEndTimeAM" />
                 <ScalarProperty Name="TravelStartTimeAM" ColumnName="TravelStartTimeAM" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

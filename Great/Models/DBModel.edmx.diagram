@@ -5,20 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="c8aa48876be545bf99036f75d002c8fe" Name="Diagram1">
-        <EntityTypeShape EntityType="DBModel.Car" Width="1.5" PointX="10" PointY="1.5" />
-        <EntityTypeShape EntityType="DBModel.CarRentalCompany" Width="1.5" PointX="7.75" PointY="1.875" />
-        <EntityTypeShape EntityType="DBModel.CarRentalHistory" Width="1.5" PointX="12.25" PointY="1" />
-        <EntityTypeShape EntityType="DBModel.ExpenseAccount" Width="1.5" PointX="5.25" PointY="5.125" />
-        <EntityTypeShape EntityType="DBModel.Factory" Width="1.5" PointX="0.75" PointY="2.625" />
-        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="3" PointY="1.75" />
-        <EntityTypeShape EntityType="DBModel.Timesheet" Width="1.5" PointX="5.25" PointY="1.125" />
+        <EntityTypeShape EntityType="DBModel.Car" Width="1.5" PointX="3" PointY="8.5" />
+        <EntityTypeShape EntityType="DBModel.CarRentalCompany" Width="1.5" PointX="0.75" PointY="8.875" />
+        <EntityTypeShape EntityType="DBModel.CarRentalHistory" Width="1.5" PointX="5.25" PointY="8" />
+        <EntityTypeShape EntityType="DBModel.ExpenseAccount" Width="1.5" PointX="7.5" PointY="5.125" />
+        <EntityTypeShape EntityType="DBModel.Factory" Width="1.5" PointX="3" PointY="2.5" />
+        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="5.25" PointY="1.75" />
+        <EntityTypeShape EntityType="DBModel.Timesheet" Width="1.5" PointX="7.5" PointY="1.125" />
+        <EntityTypeShape EntityType="DBModel.TransferType" Width="1.5" PointX="0.75" PointY="3.125" />
         <AssociationConnector Association="DBModel.FK_Car_0_0" />
         <AssociationConnector Association="DBModel.FK_CarRentalHistory_0_0" />
         <AssociationConnector Association="DBModel.FK_ExpenseAccount_0_0" />
+        <AssociationConnector Association="DBModel.FK_Factory_0_0" />
         <AssociationConnector Association="DBModel.FK_FDL_0_0" />
         <AssociationConnector Association="DBModel.FK_Timesheet_0_0" />
-        <EntityTypeShape EntityType="DBModel.TransferType" Width="1.5" PointX="0.75" PointY="0.5" />
-        <AssociationConnector Association="DBModel.FK_Factory_0_0" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

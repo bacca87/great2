@@ -29,8 +29,8 @@ namespace Great.Models
         public long TransferType { get; set; }
         public bool IsForfait { get; set; }
     
+        public virtual TransferType TransferType1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FDL> FDLs { get; set; }
-        public virtual TransferType TransferType1 { get; set; }
     }
 }

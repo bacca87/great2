@@ -20,8 +20,8 @@ namespace Great.Models
         public Nullable<long> EndKm { get; set; }
         public string StartLocation { get; set; }
         public string EndLocation { get; set; }
-        public System.DateTime StartDate { get; set; }
-        public Nullable<System.DateTime> EndDate { get; set; }
+        public long StartDate { get; set; }
+        public Nullable<long> EndDate { get; set; }
         public long StartFuelLevel { get; set; }
         public Nullable<long> EndFuelLevel { get; set; }
         public string Notes { get; set; }

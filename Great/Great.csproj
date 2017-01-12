@@ -133,16 +133,17 @@
     <Compile Include="Models\Factory.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Factory.ext.cs" />
     <Compile Include="Models\FDL.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Timesheet.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Factory.ext.cs" />
     <Compile Include="Models\TransferType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utils\UnixTimestamp.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
     <Compile Include="Views\Pages\FactoriesView.xaml.cs">
       <DependentUpon>FactoriesView.xaml</DependentUpon>

@@ -15,15 +15,15 @@ namespace Great.Models
     public partial class Timesheet
     {
         public long Id { get; set; }
-        public System.DateTime Date { get; set; }
-        public Nullable<System.DateTime> TravelStartTimeAM { get; set; }
-        public Nullable<System.DateTime> TravelEndTimeAM { get; set; }
-        public Nullable<System.DateTime> TravelStartTimePM { get; set; }
-        public Nullable<System.DateTime> TravelEndTimePM { get; set; }
-        public Nullable<System.DateTime> WorkStartTimeAM { get; set; }
-        public Nullable<System.DateTime> WorkEndTimeAM { get; set; }
-        public Nullable<System.DateTime> WorkStartTimePM { get; set; }
-        public Nullable<System.DateTime> WorkEndTimePM { get; set; }
+        public long Timestamp { get; set; }
+        public Nullable<long> TravelStartTimeAM { get; set; }
+        public Nullable<long> TravelEndTimeAM { get; set; }
+        public Nullable<long> TravelStartTimePM { get; set; }
+        public Nullable<long> TravelEndTimePM { get; set; }
+        public Nullable<long> WorkStartTimeAM { get; set; }
+        public Nullable<long> WorkEndTimeAM { get; set; }
+        public Nullable<long> WorkStartTimePM { get; set; }
+        public Nullable<long> WorkEndTimePM { get; set; }
         public Nullable<long> FDL { get; set; }
     
         public virtual FDL FDL1 { get; set; }

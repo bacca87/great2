@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models;
+using Great.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -174,7 +175,7 @@ namespace Great.ViewModels
                 var oldValue = _selectedTimesheet;
                 _selectedTimesheet = value;
 
-                TimesheetInfo = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Date = SelectedWorkingDay.Day };
+                TimesheetInfo = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp };
 
                 RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
             }
@@ -242,11 +243,14 @@ namespace Great.ViewModels
             
             foreach (DateTime day in AllDatesInMonth(CurrentYear, CurrentMonth))
             {
+                long timestamp = UnixTimestamp.GetTimestamp(day);
+
                 WorkingDay workingDay = new WorkingDay
                 {
                     WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
                     Day = day,
-                    Timesheets = _db.Timesheets.SqlQuery("select * from Timesheet where Date = @date", new SQLiteParameter("date", day.ToString("yyyy-MM-dd"))).ToList()
+                    Timesheets = _db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList(),
+                    //Timesheets = _db.Timesheets.SqlQuery("select * from Timesheet where Timestamp = @date", new SQLiteParameter("date", day)).ToList()
                 };
 
                 days.Add(workingDay);

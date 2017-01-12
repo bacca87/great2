@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Great.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace Great.Models
@@ -7,6 +8,7 @@ namespace Great.Models
     {
         public int WeekNr { get; set; }
         public DateTime Day { get; set; }
+        public long Timestamp { get { return UnixTimestamp.GetTimestamp(Day); } }
 
         public TimeSpan TotalTime
         {
@@ -28,9 +30,9 @@ namespace Great.Models
                 foreach (Timesheet ts in Timesheets)
                 {   
                     if (ts.WorkEndTimeAM != null && ts.WorkStartTimeAM != null)
-                        workingTime += (ts.WorkEndTimeAM.Value - ts.WorkStartTimeAM.Value);
+                        workingTime += (ts.WorkEndTimeAM_t - ts.WorkStartTimeAM_t);
                     if (ts.WorkEndTimePM != null && ts.WorkStartTimePM != null)
-                        workingTime += (ts.WorkEndTimePM.Value - ts.WorkStartTimePM.Value);
+                        workingTime += (ts.WorkEndTimePM_t - ts.WorkStartTimePM_t);
                 }
 
                 return workingTime;
@@ -49,9 +51,9 @@ namespace Great.Models
                 foreach (Timesheet ts in Timesheets)
                 {
                     if (ts.TravelEndTimeAM != null && ts.TravelStartTimeAM != null)
-                        travelTime += (ts.TravelEndTimeAM.Value - ts.TravelStartTimeAM.Value);
+                        travelTime += (ts.TravelEndTimeAM_t - ts.TravelStartTimeAM_t);
                     if (ts.TravelEndTimePM != null && ts.TravelStartTimePM != null)
-                        travelTime += (ts.TravelEndTimePM.Value - ts.TravelStartTimePM.Value);                    
+                        travelTime += (ts.TravelEndTimePM_t - ts.TravelStartTimePM_t);                    
                 }
 
                 return travelTime;
