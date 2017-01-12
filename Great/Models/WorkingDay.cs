@@ -10,138 +10,129 @@ namespace Great.Models
         public DateTime Day { get; set; }
         public long Timestamp { get { return UnixTimestamp.GetTimestamp(Day); } }
 
-        public TimeSpan TotalTime
+        public TimeSpan? TotalTime
         {
             get
             {
-                return WorkingTime + TravelTime;
+                TimeSpan totalTime = WorkingTime ?? new TimeSpan() + TravelTime ?? new TimeSpan();
+                return totalTime.Ticks > 0 ? totalTime : (TimeSpan?)null;
             }
         }
 
-        public TimeSpan WorkingTime 
+        public TimeSpan? WorkingTime 
         {
             get
             {
-                TimeSpan workingTime = new TimeSpan(0, 0, 0);
+                TimeSpan workingTime = new TimeSpan();
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                    return workingTime;
+                    return null;
 
                 foreach (Timesheet ts in Timesheets)
                 {   
-                    if (ts.WorkEndTimeAM != null && ts.WorkStartTimeAM != null)
-                        workingTime += (ts.WorkEndTimeAM_t - ts.WorkStartTimeAM_t);
-                    if (ts.WorkEndTimePM != null && ts.WorkStartTimePM != null)
-                        workingTime += (ts.WorkEndTimePM_t - ts.WorkStartTimePM_t);
+                    if (ts.WorkEndTimeAM_t.HasValue && ts.WorkStartTimeAM_t.HasValue)
+                        workingTime += (ts.WorkEndTimeAM_t.Value - ts.WorkStartTimeAM_t.Value);
+                    if (ts.WorkEndTimePM_t.HasValue && ts.WorkStartTimePM_t.HasValue)
+                        workingTime += (ts.WorkEndTimePM_t.Value - ts.WorkStartTimePM_t.Value);
                 }
 
-                return workingTime;
+                return workingTime.Ticks > 0 ? workingTime : (TimeSpan?)null;
             }
         }
 
-        public TimeSpan TravelTime
+        public TimeSpan? TravelTime
         {
             get
             {
-                TimeSpan travelTime = new TimeSpan(0, 0, 0);
+                TimeSpan travelTime = new TimeSpan();
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                    return travelTime;
+                    return null;
 
                 foreach (Timesheet ts in Timesheets)
                 {
-                    if (ts.TravelEndTimeAM != null && ts.TravelStartTimeAM != null)
-                        travelTime += (ts.TravelEndTimeAM_t - ts.TravelStartTimeAM_t);
-                    if (ts.TravelEndTimePM != null && ts.TravelStartTimePM != null)
-                        travelTime += (ts.TravelEndTimePM_t - ts.TravelStartTimePM_t);                    
+                    if (ts.TravelEndTimeAM_t.HasValue && ts.TravelStartTimeAM_t.HasValue)
+                        travelTime += (ts.TravelEndTimeAM_t.Value - ts.TravelStartTimeAM_t.Value);
+                    if (ts.TravelEndTimePM_t.HasValue && ts.TravelStartTimePM_t.HasValue)
+                        travelTime += (ts.TravelEndTimePM_t.Value - ts.TravelStartTimePM_t.Value);                    
                 }
 
-                return travelTime;
+                return travelTime.Ticks > 0 ? travelTime : (TimeSpan?)null;
             }
         }
 
-        public TimeSpan Overtime34 
+        public TimeSpan? Overtime34 
         {
             get 
             {
-                TimeSpan overtime34 = new TimeSpan(0,0,0);
+                TimeSpan overtime34 = new TimeSpan();
 
                 if (Day.DayOfWeek == DayOfWeek.Saturday)
                 {
-                    if (TotalTime.Hours > 4)
+                    if (TotalTime?.Hours > 4)
                         overtime34 = TimeSpan.Parse("04:00:00");
                     else
-                        overtime34 = TotalTime;
+                        overtime34 = TotalTime ?? new TimeSpan();
                 }
                 else
                 {
-                    if (TotalTime.Hours > 8)
+                    if (TotalTime?.Hours > 8)
                     {
-                        if (TotalTime.Hours >= 10)
+                        if (TotalTime?.Hours >= 10)
                             overtime34 = TimeSpan.Parse("02:00:00");
                         else
-                            overtime34 = TotalTime - TimeSpan.Parse("08:00:00");
+                            overtime34 = TotalTime ?? new TimeSpan() - TimeSpan.Parse("08:00:00");
                     }
                 }
 
-                return overtime34;
+                return overtime34.Ticks > 0 ? overtime34 : (TimeSpan?)null;
             }
         }
 
-        public TimeSpan Overtime35 { get; set; } //TODO
+        public TimeSpan? Overtime35 { get; set; } //TODO
 
-        public TimeSpan Overtime50
+        public TimeSpan? Overtime50
         {
             get
             {
-                TimeSpan overtime50 = new TimeSpan(0, 0, 0);
+                TimeSpan overtime50 = new TimeSpan();
 
-                if (Day.DayOfWeek == DayOfWeek.Saturday && TotalTime.Hours > 4)
+                if (Day.DayOfWeek == DayOfWeek.Saturday && TotalTime?.Hours > 4)
                 {
-                    overtime50 = TotalTime - TimeSpan.Parse("04:00:00");
+                    overtime50 = TotalTime ?? new TimeSpan() - TimeSpan.Parse("04:00:00");
                 }
                 else
                 {
-                    if (TotalTime.Hours > 10)
+                    if (TotalTime?.Hours > 10)
                     {
-                        overtime50 = TotalTime - TimeSpan.Parse("10:00:00");
+                        overtime50 = TotalTime ?? new TimeSpan() - TimeSpan.Parse("10:00:00");
                     }
                 }
 
-                return overtime50;
+                return overtime50.Ticks > 0 ? overtime50 : (TimeSpan?)null;
             }
         }
         
-        public TimeSpan Overtime100
+        public TimeSpan? Overtime100
         {
             get
             {
-                TimeSpan overtime100 = new TimeSpan(0, 0, 0);
+                TimeSpan overtime100 = new TimeSpan();
                 
                 if (Day.DayOfWeek == DayOfWeek.Sunday) //TODO: aggiungere festivi
                 {
-                    overtime100 = TotalTime;
+                    overtime100 = TotalTime ?? new TimeSpan();
                 }
 
-                return overtime100;
+                return overtime100.Ticks > 0 ? overtime100 : (TimeSpan?)null;
             }
         }
 
         public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
         public IList<Timesheet> Timesheets { get; set; }
 
-        #region Display Properties
-        private static TimeSpan TimeZero = new TimeSpan(0, 0, 0);
-
-        public string WeekNr_Display { get { return Day.DayOfWeek == DayOfWeek.Monday || Day.Day == 1 ? WeekNr.ToString() : ""; } }
-        public string Day_Display { get { return Day.ToLongDateString(); } }
-        public string TotalTime_Display { get { return TotalTime != TimeZero ? TotalTime.ToString(@"hh\:mm") : ""; } }
-        public string WorkingTime_Display { get { return WorkingTime != TimeZero ? WorkingTime.ToString(@"hh\:mm") : ""; } }
-        public string TravelTime_Display { get { return TravelTime != TimeZero ? TravelTime.ToString(@"hh\:mm") : ""; } }
-        public string Overtime34_Display { get { return Overtime34 != TimeZero ? Overtime34.ToString(@"hh\:mm") : ""; } }
-        public string Overtime35_Display { get { return Overtime35 != TimeZero ? Overtime35.ToString(@"hh\:mm") : ""; } }
-        public string Overtime50_Display { get { return Overtime50 != TimeZero ? Overtime50.ToString(@"hh\:mm") : ""; } }
-        public string Overtime100_Display { get { return Overtime100 != TimeZero ? Overtime100.ToString(@"hh\:mm") : ""; } }
+        #region Display Properties        
+        public string WeekNr_Display { get { return Day.DayOfWeek == DayOfWeek.Monday || Day.Day == 1 ? WeekNr.ToString() : ""; } }        
         #endregion
     }
 }

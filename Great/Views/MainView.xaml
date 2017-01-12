@@ -297,14 +297,14 @@
                 </DataGrid.Resources>                
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" />
-                    <DataGridTextColumn Header="Day" Binding="{Binding Day_Display}" />
-                    <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime_Display}" FontWeight="Bold" />
-                    <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime_Display}" />
-                    <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime_Display}" />
-                    <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34_Display}" />
-                    <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35_Display}" />
-                    <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50_Display}" />
-                    <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100_Display}" />
+                    <DataGridTextColumn Header="Day" Binding="{Binding Day, StringFormat='dddd dd MMMM'}" />
+                    <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=hh\\:mm}" FontWeight="Bold" />
+                    <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=hh\\:mm}" />
                 </DataGrid.Columns>                
             </DataGrid>
             <Grid Grid.Column="3">
@@ -340,14 +340,14 @@
                         </Style>
                     </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_Display}" Width="70" />
-                        <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_Display}" Width="70" />
+                        <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                         <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
                     </DataGrid.Columns>
                 </DataGrid>
@@ -383,14 +383,14 @@
                     <Label Grid.Row="0" Grid.Column="4">
                         <TextBlock TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
                     </Label>
-                    <TextBox Grid.Row="1" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimeAM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="1" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimeAM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="1" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimeAM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="1" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimeAM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimePM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="2" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimePM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="2" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimePM, StringFormat=hh\\:mm}"/>
-                    <TextBox Grid.Row="2" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimePM, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimeAM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimeAM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimeAM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="1" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimeAM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimePM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimePM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimePM_t, StringFormat=hh\\:mm}"/>
+                    <TextBox Grid.Row="2" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm}"/>
                 </Grid>
                 <StackPanel Grid.Row="2" Orientation="Horizontal">
                     <Button Margin="10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
