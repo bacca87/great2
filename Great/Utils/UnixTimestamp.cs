@@ -2,7 +2,7 @@
 
 namespace Great.Utils
 {
-    public class UnixTimestamp
+    public static class UnixTimestamp
     {
         public static long GetTimestamp(DateTime dateTime)
         {
@@ -13,7 +13,7 @@ namespace Great.Utils
         {
             // Unix timestamp is seconds past epoch
             DateTime date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            date = date.AddSeconds(unixTimestamp).ToLocalTime();
+            date = date.AddSeconds(unixTimestamp);
             return date;
         }
 

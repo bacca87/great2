@@ -250,7 +250,6 @@ namespace Great.ViewModels
                     WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
                     Day = day,
                     Timesheets = _db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList(),
-                    //Timesheets = _db.Timesheets.SqlQuery("select * from Timesheet where Timestamp = @date", new SQLiteParameter("date", day)).ToList()
                 };
 
                 days.Add(workingDay);

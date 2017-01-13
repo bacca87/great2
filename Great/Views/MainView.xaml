@@ -298,9 +298,9 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" />
                     <DataGridTextColumn Header="Day" Binding="{Binding Day, StringFormat='dddd dd MMMM'}" />
-                    <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=hh\\:mm}" FontWeight="Bold" />
-                    <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime, StringFormat=hh\\:mm}" />
-                    <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Total Time" Binding="{Binding TimePeriods.TotalDuration, StringFormat=hh\\:mm}" FontWeight="Bold" />
+                    <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingPeriods.TotalDuration, StringFormat=hh\\:mm}" />
+                    <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelPeriods.TotalDuration, StringFormat=hh\\:mm}" />
                     <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=hh\\:mm}" />
                     <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=hh\\:mm}" />
                     <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=hh\\:mm}" />
@@ -344,10 +344,10 @@
                         <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
                         <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
                         <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                         <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                         <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
+                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                         <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
                     </DataGrid.Columns>
                 </DataGrid>
