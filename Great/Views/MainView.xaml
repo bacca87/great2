@@ -36,6 +36,9 @@
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
+            <!--Contextual Tab Groups-->
+            <Fluent:Ribbon.ContextualGroups>                
+            </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="HOME">
                 <Fluent:RibbonGroupBox Header="Year">
@@ -241,11 +244,11 @@
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>
+            </Fluent:RibbonTabItem>            
         </Fluent:Ribbon>
         <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" BorderThickness="0">            
             <TabControl.Resources>
-                <Style  TargetType="{x:Type TabControl}">
+                <Style TargetType="{x:Type TabControl}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabControl}">
