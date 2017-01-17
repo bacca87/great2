@@ -22,6 +22,9 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Fluent:Ribbon Grid.Row="0">
+            <Fluent:Ribbon.Resources>
+                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            </Fluent:Ribbon.Resources>
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage Header="FILE">
@@ -40,7 +43,8 @@
             <Fluent:Ribbon.ContextualGroups>                
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
-            <Fluent:RibbonTabItem Header="HOME">
+            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=timesheetTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                  IsSelected="{Binding ElementName=timesheetTab, Path=IsSelected, Mode=OneWay}">
                 <Fluent:RibbonGroupBox Header="Year">
                     <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
                         <Fluent:TextBox.ToolTip>
@@ -244,7 +248,15 @@
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>            
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="TEST">
+            </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" BorderThickness="0">            
             <TabControl.Resources>
@@ -284,7 +296,7 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="Timesheet">
+            <TabItem Name="timesheetTab" Header="Timesheet">
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -441,8 +453,8 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Car Rental" />
-            <TabItem Header="Expense Account" />
+            <TabItem Name="carrentalTab" Header="Car Rental" />
+            <TabItem Name="expenseAccountTab" Header="Expense Account" />
         </TabControl>
         <Fluent:StatusBar Grid.Row="2">
         </Fluent:StatusBar>
