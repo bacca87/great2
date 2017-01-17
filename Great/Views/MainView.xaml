@@ -240,11 +240,48 @@
                             <Fluent:ScreenTip Title="December" Text="Set December as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                </Fluent:RibbonGroupBox>                
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-        </Fluent:Ribbon>        
-        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0">
-            <TabItem Header="Timesheet " >
+        </Fluent:Ribbon>
+        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" BorderThickness="0">            
+            <TabControl.Resources>
+                <Style  TargetType="{x:Type TabControl}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabControl}">
+                                <DockPanel KeyboardNavigation.TabNavigation="Local" LastChildFill="True">
+                                    <TabPanel IsItemsHost="True"
+                                              Background="LightGray"
+                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}"/>
+                                    <ContentPresenter ContentSource="SelectedContent" />
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border Name="Border">
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,5"                                        
+                                        TextElement.FontSize="20"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#0072c6" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="Timesheet">
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
