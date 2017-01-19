@@ -5,14 +5,13 @@ using Great.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
 
 namespace Great.ViewModels
 {
     /// <summary>
-    /// This class contains properties that the main View can data bind to.
+    /// This class contains properties that the Timesheets View can data bind to.
     /// <para>
     /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
     /// </para>
@@ -23,12 +22,52 @@ namespace Great.ViewModels
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class TimesheetsViewModel : ViewModelBase
     {
         public const int MIN_YEAR = 1900;
         public const int MAX_YEAR = 2100;
 
+        public const int PERFORMANCE_DESCRIPTION_MAX_LENGTH = 575;
+        public const int FINAL_TEST_RESULT_MAX_LENGTH = 495;
+        public const int OTHER_NOTES_MAX_LENGTH = 595;
+
         #region Properties
+        /// <summary>
+        /// Gets the PerfDescMaxLength property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public int PerfDescMaxLength
+        {
+            get
+            {
+                return PERFORMANCE_DESCRIPTION_MAX_LENGTH;
+            }
+        }
+
+        /// <summary>
+        /// Gets the FinalTestResultMaxLength property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public int FinalTestResultMaxLength
+        {
+            get
+            {
+                return FINAL_TEST_RESULT_MAX_LENGTH;
+            }
+        }
+
+        /// <summary>
+        /// Gets the OtherNotesMaxLength property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public int OtherNotesMaxLength
+        {
+            get
+            {
+                return OTHER_NOTES_MAX_LENGTH;
+            }
+        }
+
         /// <summary>
         /// The <see cref="CurrentYear" /> property's name.
         /// </summary>
@@ -221,7 +260,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel(DBEntities db)
+        public TimesheetsViewModel(DBEntities db)
         {
             _db = db;
 

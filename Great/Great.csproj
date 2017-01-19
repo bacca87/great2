@@ -149,6 +149,12 @@
     </Compile>
     <Compile Include="Utils\UnixTimestamp.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
+    <Compile Include="Views\Pages\CarRental.xaml.cs">
+      <DependentUpon>CarRental.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ExpenseAccount.xaml.cs">
+      <DependentUpon>ExpenseAccount.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\FactoriesView.xaml.cs">
       <DependentUpon>FactoriesView.xaml</DependentUpon>
     </Compile>
@@ -177,9 +183,20 @@
     </Compile>
     <Compile Include="Utils\WaitCursor.cs" />
     <Compile Include="ViewModels\FactoriesViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Models\WorkingDay.cs" />
+    <Compile Include="Views\Pages\Timesheets.xaml.cs">
+      <DependentUpon>Timesheets.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\Pages\CarRental.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\ExpenseAccount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Pages\FactoriesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -204,6 +221,10 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Pages\Timesheets.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

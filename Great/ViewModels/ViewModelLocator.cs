@@ -45,16 +45,16 @@ namespace Great.ViewModels
 
             SimpleIoc.Default.Register<DBEntities>();
 
-            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<TimesheetsViewModel>();
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
         }
 
-        public MainViewModel Main
+        public TimesheetsViewModel Timesheets
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
+                return ServiceLocator.Current.GetInstance<TimesheetsViewModel>();
             }
         }
 
