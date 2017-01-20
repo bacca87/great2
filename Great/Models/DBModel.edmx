@@ -72,10 +72,17 @@
           <Property Name="ReturnTaxi" Type="bit" />
           <Property Name="OutwardFlight" Type="bit" />
           <Property Name="ReturnFlight" Type="bit" />
-          <Property Name="PerformanceDescription" Type="nvarchar" MaxLength="460" />
-          <Property Name="Result" Type="integer" />
-          <Property Name="ResultNotes" Type="nvarchar" MaxLength="496" />
-          <Property Name="Notes" Type="nvarchar" MaxLength="596" />
+          <Property Name="PerformanceDescription" Type="nvarchar" MaxLength="575" />
+          <Property Name="Result" Type="integer" Nullable="false" />
+          <Property Name="ResultNotes" Type="nvarchar" MaxLength="495" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="595" />
+        </EntityType>
+        <EntityType Name="FDLResult">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="Timesheet">
           <Key>
@@ -149,6 +156,18 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FDL_0_0">
+          <End Role="FDLResult" Type="Self.FDLResult" Multiplicity="1" />
+          <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDLResult">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FDL">
+              <PropertyRef Name="Result" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FDL_1_0">
           <End Role="Factory" Type="Self.Factory" Multiplicity="1" />
           <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -179,6 +198,7 @@
           <EntitySet Name="ExpenseAccount" EntityType="Self.ExpenseAccount" store:Type="Tables" />
           <EntitySet Name="Factory" EntityType="Self.Factory" store:Type="Tables" />
           <EntitySet Name="FDL" EntityType="Self.FDL" store:Type="Tables" />
+          <EntitySet Name="FDLResult" EntityType="Self.FDLResult" store:Type="Tables" />
           <EntitySet Name="Timesheet" EntityType="Self.Timesheet" store:Type="Tables" />
           <EntitySet Name="TransferType" EntityType="Self.TransferType" store:Type="Tables" />
           <AssociationSet Name="FK_Car_0_0" Association="Self.FK_Car_0_0">
@@ -198,6 +218,10 @@
             <End Role="Factory" EntitySet="Factory" />
           </AssociationSet>
           <AssociationSet Name="FK_FDL_0_0" Association="Self.FK_FDL_0_0">
+            <End Role="FDLResult" EntitySet="FDLResult" />
+            <End Role="FDL" EntitySet="FDL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_1_0" Association="Self.FK_FDL_1_0">
             <End Role="Factory" EntitySet="Factory" />
             <End Role="FDL" EntitySet="FDL" />
           </AssociationSet>
@@ -217,6 +241,7 @@
           <EntitySet Name="ExpenseAccounts" EntityType="DBModel.ExpenseAccount" />
           <EntitySet Name="Factories" EntityType="DBModel.Factory" />
           <EntitySet Name="FDLs" EntityType="DBModel.FDL" />
+          <EntitySet Name="FDLResults" EntityType="DBModel.FDLResult" />
           <EntitySet Name="Timesheets" EntityType="DBModel.Timesheet" />
           <EntitySet Name="TransferTypes" EntityType="DBModel.TransferType" />
           <AssociationSet Name="FK_Car_0_0" Association="DBModel.FK_Car_0_0">
@@ -235,8 +260,12 @@
             <End Role="TransferType" EntitySet="TransferTypes" />
             <End Role="Factory" EntitySet="Factories" />
           </AssociationSet>
-          <AssociationSet Name="FK_FDL_0_0" Association="DBModel.FK_FDL_0_0">
+          <AssociationSet Name="FK_FDL_1_0" Association="DBModel.FK_FDL_1_0">
             <End Role="Factory" EntitySet="Factories" />
+            <End Role="FDL" EntitySet="FDLs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_0_0" Association="DBModel.FK_FDL_0_0">
+            <End Role="FDLResult" EntitySet="FDLResults" />
             <End Role="FDL" EntitySet="FDLs" />
           </AssociationSet>
           <AssociationSet Name="FK_Timesheet_0_0" Association="DBModel.FK_Timesheet_0_0">
@@ -302,7 +331,7 @@
           <Property Name="TransferType" Type="Int64" Nullable="false" />
           <Property Name="IsForfait" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="TransferType1" Relationship="DBModel.FK_Factory_0_0" FromRole="Factory" ToRole="TransferType" />
-          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="Factory" ToRole="FDL" />
+          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_1_0" FromRole="Factory" ToRole="FDL" />
         </EntityType>
         <EntityType Name="FDL">
           <Key>
@@ -318,13 +347,22 @@
           <Property Name="ReturnTaxi" Type="Boolean" />
           <Property Name="OutwardFlight" Type="Boolean" />
           <Property Name="ReturnFlight" Type="Boolean" />
-          <Property Name="PerformanceDescription" Type="String" MaxLength="460" FixedLength="false" Unicode="true" />
-          <Property Name="Result" Type="Int64" />
-          <Property Name="ResultNotes" Type="String" MaxLength="496" FixedLength="false" Unicode="true" />
-          <Property Name="Notes" Type="String" MaxLength="596" FixedLength="false" Unicode="true" />
+          <Property Name="PerformanceDescription" Type="String" MaxLength="575" FixedLength="false" Unicode="true" />
+          <Property Name="Result" Type="Int64" Nullable="false" />
+          <Property Name="ResultNotes" Type="String" MaxLength="495" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="595" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDL" ToRole="ExpenseAccount" />
-          <NavigationProperty Name="Factory1" Relationship="DBModel.FK_FDL_0_0" FromRole="FDL" ToRole="Factory" />
+          <NavigationProperty Name="Factory1" Relationship="DBModel.FK_FDL_1_0" FromRole="FDL" ToRole="Factory" />
+          <NavigationProperty Name="FDLResult" Relationship="DBModel.FK_FDL_0_0" FromRole="FDL" ToRole="FDLResult" />
           <NavigationProperty Name="Timesheets" Relationship="DBModel.FK_Timesheet_0_0" FromRole="FDL" ToRole="Timesheet" />
+        </EntityType>
+        <EntityType Name="FDLResult">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="FDLResult" ToRole="FDL" />
         </EntityType>
         <EntityType Name="Timesheet">
           <Key>
@@ -399,7 +437,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FDL_0_0">
+        <Association Name="FK_FDL_1_0">
           <End Type="DBModel.Factory" Role="Factory" Multiplicity="1" />
           <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -408,6 +446,18 @@
             </Principal>
             <Dependent Role="FDL">
               <PropertyRef Name="Factory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FDL_0_0">
+          <End Type="DBModel.FDLResult" Role="FDLResult" Multiplicity="1" />
+          <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDLResult">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FDL">
+              <PropertyRef Name="Result" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -503,6 +553,14 @@
                 <ScalarProperty Name="Factory" ColumnName="Factory" />
                 <ScalarProperty Name="Order" ColumnName="Order" />
                 <ScalarProperty Name="SheetNumber" ColumnName="SheetNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FDLResults">
+            <EntityTypeMapping TypeName="DBModel.FDLResult">
+              <MappingFragment StoreEntitySet="FDLResult">
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

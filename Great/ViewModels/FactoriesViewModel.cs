@@ -16,30 +16,25 @@ namespace Great.ViewModels
     public class FactoriesViewModel : ViewModelBase
     {
         #region Properties
+        /// <summary>
+        /// The <see cref="TransferTypes" /> property's name.
+        /// </summary>
         private IList<TransferType> _transferTypes;
 
         /// <summary>
-        /// Sets and gets the Factories property.
-        /// Changes to that property's value raise the PropertyChanged event.         
+        /// Gets the TransferTypes property.  
         /// </summary>
         public IList<TransferType> TransferTypes
         {
             get
             {
-                return _transferTypes;
-            }
-
-            set
-            {
-                _transferTypes = value;
-                RaisePropertyChanged(nameof(TransferTypes));
+                return _db.TransferTypes.ToList();
             }
         }
 
         /// <summary>
         /// The <see cref="Factories" /> property's name.
         /// </summary>
-
         private IList<Factory> _factories;
 
         /// <summary>
@@ -63,7 +58,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="SelectedFactory" /> property's name.
         /// </summary>
-
         private Factory _selectedFactory;
 
         /// <summary>
@@ -88,6 +82,9 @@ namespace Great.ViewModels
             }
         }
 
+        /// <summary>
+        /// The <see cref="FactoryInfo" /> property's name.
+        /// </summary>
         private Factory _factoryInfo = new Factory();
 
         /// <summary>
@@ -129,7 +126,6 @@ namespace Great.ViewModels
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
             RefreshFactories();
-            RefreshTransferTypes();
         }
 
         /// <summary>
@@ -139,15 +135,7 @@ namespace Great.ViewModels
         {
             Factories = _db.Factories.ToList();
         }
-
-        /// <summary>
-        /// Refresh the transfer types
-        /// </summary>
-        public void RefreshTransferTypes()
-        {
-            TransferTypes = _db.TransferTypes.ToList();
-        }
-
+        
         private void ClearSelection()
         {
             SelectedFactory = null;            

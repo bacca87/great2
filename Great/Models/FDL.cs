@@ -32,13 +32,14 @@ namespace Great.Models
         public Nullable<bool> OutwardFlight { get; set; }
         public Nullable<bool> ReturnFlight { get; set; }
         public string PerformanceDescription { get; set; }
-        public Nullable<long> Result { get; set; }
+        public long Result { get; set; }
         public string ResultNotes { get; set; }
         public string Notes { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
         public virtual Factory Factory1 { get; set; }
+        public virtual FDLResult FDLResult { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Timesheet> Timesheets { get; set; }
     }

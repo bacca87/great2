@@ -34,7 +34,6 @@ namespace Great.ViewModels
         #region Properties
         /// <summary>
         /// Gets the PerfDescMaxLength property.
-        /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
         public int PerfDescMaxLength
         {
@@ -46,7 +45,6 @@ namespace Great.ViewModels
 
         /// <summary>
         /// Gets the FinalTestResultMaxLength property.
-        /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
         public int FinalTestResultMaxLength
         {
@@ -58,7 +56,6 @@ namespace Great.ViewModels
 
         /// <summary>
         /// Gets the OtherNotesMaxLength property.
-        /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
         public int OtherNotesMaxLength
         {
@@ -71,7 +68,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="CurrentYear" /> property's name.
         /// </summary>
-
         private int _currentYear = DateTime.Now.Year;
 
         /// <summary>
@@ -110,7 +106,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="CurrentMonth" /> property's name.
         /// </summary>
-
         private int _currentMonth = DateTime.Now.Month;
 
         /// <summary>
@@ -142,7 +137,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="WorkingDays" /> property's name.
         /// </summary>
-
         private IList<WorkingDay> _workingDays;
 
         /// <summary>
@@ -166,7 +160,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="SelectedWorkingDay" /> property's name.
         /// </summary>
-
         private WorkingDay _selectedWorkingDay;
 
         /// <summary>
@@ -195,7 +188,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="SelectedTimesheet" /> property's name.
         /// </summary>
-
         private Timesheet _selectedTimesheet;
 
         /// <summary>
@@ -223,7 +215,6 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="TimesheetInfo" /> property's name.
         /// </summary>
-
         private Timesheet _timesheetInfo;
 
         /// <summary>
@@ -242,6 +233,23 @@ namespace Great.ViewModels
                 var oldValue = _timesheetInfo;
                 _timesheetInfo = value;
                 RaisePropertyChanged(nameof(TimesheetInfo), oldValue, value);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="Results" /> property's name.
+        /// </summary>
+        private IList<FDLResult> _results;
+
+        /// <summary>
+        /// Sets and gets the Factories property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public IList<FDLResult> Results
+        {
+            get
+            {
+                return _db.FDLResults.ToList();
             }
         }
 
@@ -270,7 +278,7 @@ namespace Great.ViewModels
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet);
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet);
-
+            
             UpdateWorkingDays();
         }
 

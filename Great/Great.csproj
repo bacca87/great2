@@ -141,6 +141,9 @@
     <Compile Include="Models\FDL.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FDLResult.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Timesheet.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
