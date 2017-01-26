@@ -8,12 +8,12 @@
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet">
-    <Grid>
+    <Grid Margin="0,0,10,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label HorizontalAlignment="Center" Grid.Column="0" VerticalAlignment="Center" FontSize="20" FontWeight="Bold">
             <Label.Resources>
@@ -37,20 +37,20 @@
             </Label.Content>
         </Label>
         <DataGrid Name="workingDaysDataGrid"
-                              Grid.Column="1"
-                              HorizontalAlignment="Stretch" 
-                              Margin="0,0,0,0" 
-                              VerticalAlignment="Stretch" 
-                              AutoGenerateColumns="False" 
-                              CanUserReorderColumns="False" 
-                              CanUserResizeColumns="False" 
-                              CanUserResizeRows="False" 
-                              CanUserSortColumns="False" 
-                              IsReadOnly="True"                  
-                              SelectionMode="Single"
-                              HeadersVisibility="Column"
-                              ItemsSource="{Binding WorkingDays}"
-                              SelectedItem="{Binding SelectedWorkingDay}">
+                  Grid.Column="1"
+                  Margin="0,0,0,0" 
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
+                  AutoGenerateColumns="False" 
+                  CanUserReorderColumns="False" 
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False" 
+                  CanUserSortColumns="False" 
+                  IsReadOnly="True"                  
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"
+                  ItemsSource="{Binding WorkingDays}"
+                  SelectedItem="{Binding SelectedWorkingDay}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
@@ -81,18 +81,19 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <DataGrid ItemsSource="{Binding SelectedWorkingDay.Timesheets}"
-                                SelectedItem="{Binding SelectedTimesheet}"
-                                Grid.Row="0"
-                                HorizontalAlignment="Stretch"                         
-                                AutoGenerateColumns="False" 
-                                CanUserReorderColumns="False" 
-                                CanUserResizeColumns="False" 
-                                CanUserResizeRows="False" 
-                                CanUserSortColumns="False"
-                                HeadersVisibility="Column"
-                                IsReadOnly="True"
-                                Height="150">
+            <DataGrid ItemsSource="{Binding SelectedWorkingDay.Timesheets}"                      
+                      SelectedItem="{Binding SelectedTimesheet}"
+                      Grid.Row="0"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"                         
+                      AutoGenerateColumns="False" 
+                      CanUserReorderColumns="False" 
+                      CanUserResizeColumns="False" 
+                      CanUserResizeRows="False" 
+                      CanUserSortColumns="False"
+                      HeadersVisibility="Column"
+                      IsReadOnly="True"                      
+                      Height="150">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
@@ -119,13 +120,13 @@
                     <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
                 </DataGrid.Columns>
             </DataGrid>
-            <GroupBox Grid.Row="1" Header="Info">
+            <GroupBox Grid.Row="1" Header="Statistics" HorizontalAlignment="Left">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -134,19 +135,33 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>                    
                     <Label Grid.Column="0" Grid.Row="0" Content="Working Timee:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="1" Grid.Row="0" Content="{Binding SelectedTimesheet.WorkingPeriods.TotalDuration, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="1" Grid.Row="0"> 
+                        <TextBlock Text="{Binding SelectedTimesheet.WorkingPeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
+                    </Label>
                     <Label Grid.Column="0" Grid.Row="1" Content="Travel Time:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="1" Grid.Row="1" Content="{Binding SelectedTimesheet.TravelPeriods.TotalDuration, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="1" Grid.Row="1">
+                        <TextBlock Text="{Binding SelectedTimesheet.TravelPeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                    </Label>
                     <Label Grid.Column="0" Grid.Row="2" Content="Total Time:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="1" Grid.Row="2" Content="{Binding SelectedTimesheet.TimePeriods.TotalDuration, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="1" Grid.Row="2">
+                        <TextBlock Text="{Binding SelectedTimesheet.TimePeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                    </Label>
                     <Label Grid.Column="2" Grid.Row="0" Content="Overtime 34%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="0" Content="{Binding SelectedTimesheet.Overtime34, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="3" Grid.Row="0">
+                        <TextBlock Text="{Binding SelectedTimesheet.Overtime34, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                    </Label>
                     <Label Grid.Column="2" Grid.Row="1" Content="Overtime 35%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="1" Content="{Binding SelectedTimesheet.Overtime35, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="3" Grid.Row="1">
+                        <TextBlock Text="{Binding SelectedTimesheet.Overtime35, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                    </Label>
                     <Label Grid.Column="2" Grid.Row="2" Content="Overtime 50%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="2" Content="{Binding SelectedTimesheet.Overtime50, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="3" Grid.Row="2">
+                        <TextBlock Text="{Binding SelectedTimesheet.Overtime50, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                    </Label>
                     <Label Grid.Column="2" Grid.Row="3" Content="Overtime 100%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="3" Content="{Binding SelectedTimesheet.Overtime100, StringFormat=hh\\:mm, Mode=OneWay}"/>
+                    <Label Grid.Column="3" Grid.Row="3">
+                        <TextBlock Text="{Binding SelectedTimesheet.Overtime100, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                    </Label>
                 </Grid>
             </GroupBox>
             <Grid Grid.Row="2">

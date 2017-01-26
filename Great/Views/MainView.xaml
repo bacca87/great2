@@ -9,6 +9,7 @@
     Height="768"
     MinWidth="800"
     MinHeight="600"
+    Background="#dedede"
     WindowStartupLocation="CenterScreen" 
     WindowState="Maximized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -20,9 +21,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Fluent:Ribbon Grid.Row="0">
+        <Fluent:Ribbon Grid.Row="0">            
             <Fluent:Ribbon.Resources>
-                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>                
             </Fluent:Ribbon.Resources>
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
@@ -42,7 +43,7 @@
             <Fluent:Ribbon.ContextualGroups>                
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
-            <Fluent:RibbonTabItem Header="HOME" 
+            <Fluent:RibbonTabItem Header="HOME"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
                                   IsSelected="{Binding ElementName=timesheetTab, Path=IsSelected, Mode=OneWay}">
@@ -259,7 +260,7 @@
             <Fluent:RibbonTabItem Header="TEST">
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" BorderThickness="0">            
+        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0">            
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabControl}">
                     <Setter Property="Template">
@@ -267,7 +268,7 @@
                             <ControlTemplate TargetType="{x:Type TabControl}">
                                 <DockPanel KeyboardNavigation.TabNavigation="Local" LastChildFill="True">
                                     <TabPanel IsItemsHost="True"
-                                              Background="LightGray"
+                                              Background="#c9c9c9"
                                               DockPanel.Dock="{TemplateBinding TabStripPlacement}"/>
                                     <ContentPresenter ContentSource="SelectedContent" />
                                 </DockPanel>

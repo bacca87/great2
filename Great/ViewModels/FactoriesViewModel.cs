@@ -17,11 +17,6 @@ namespace Great.ViewModels
     {
         #region Properties
         /// <summary>
-        /// The <see cref="TransferTypes" /> property's name.
-        /// </summary>
-        private IList<TransferType> _transferTypes;
-
-        /// <summary>
         /// Gets the TransferTypes property.  
         /// </summary>
         public IList<TransferType> TransferTypes

@@ -235,12 +235,7 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(TimesheetInfo), oldValue, value);
             }
         }
-
-        /// <summary>
-        /// The <see cref="Results" /> property's name.
-        /// </summary>
-        private IList<FDLResult> _results;
-
+                
         /// <summary>
         /// Sets and gets the Factories property.
         /// Changes to that property's value raise the PropertyChanged event.         
