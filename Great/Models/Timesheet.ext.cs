@@ -119,10 +119,6 @@ namespace Great.Models
         }
         #endregion
         
-        #region Display Properties        
-        public string FDL_Display { get { return "TODO"; } }
-        #endregion
-
         public Timesheet Clone()
         {
             return new Timesheet()

@@ -130,7 +130,7 @@
                     <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                    <DataGridTextColumn Header="FDL" Binding="{Binding FDL_Display}" Width="70" />
+                    <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.Number}" Width="100" />
                 </DataGrid.Columns>
             </DataGrid>
             <GroupBox Grid.Row="1" Header="Statistics" HorizontalAlignment="Left">
@@ -163,6 +163,10 @@
                 <Grid.Resources>
                     <Style TargetType="{x:Type TextBox}">
                         <Setter Property="Margin" Value="0,0,0,5" />
+                        <Setter Property="MaxLength" Value="5" />
+                        <Setter Property="Width" Value="50" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="TextAlignment" Value="Center" />
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
@@ -191,17 +195,26 @@
                 <Label Grid.Row="0" Grid.Column="4">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
                 </Label>
-                <TextBox Grid.Row="1" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimeAM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="1" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimeAM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="1" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimeAM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="1" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimeAM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="2" Grid.Column="1" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelStartTimePM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="2" Grid.Column="2" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkStartTimePM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="2" Grid.Column="3" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.WorkEndTimePM_t, StringFormat=hh\\:mm}"/>
-                <TextBox Grid.Row="2" Grid.Column="4" MaxLength="5" Width="50" FontSize="14" TextAlignment="Center" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimeAM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimeAM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimeAM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimeAM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimePM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimePM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimePM_t, StringFormat=hh\\:mm}"/>
+                <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm}"/>
             </Grid>
-            <Grid Grid.Row="2">
-                
+            <Grid Grid.Row="3">
+                <GroupBox Header="FDL" HorizontalAlignment="Left">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" DisplayMemberPath="Number" SelectedValuePath="Id"/>
+                    </Grid>
+                </GroupBox>
             </Grid>
             <!--<Grid Grid.Row="3">
                 <Grid.Resources>

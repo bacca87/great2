@@ -235,19 +235,19 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(TimesheetInfo), oldValue, value);
             }
         }
-                
+
         /// <summary>
-        /// Sets and gets the Factories property.
+        /// Sets and gets the FDLs property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public IList<FDLResult> Results
+        public IList<FDL> FDLs
         {
             get
             {
-                return _db.FDLResults.ToList();
+                return _db.FDLs.ToList();
             }
         }
-
+        
         private DBEntities _db { get; set; }
         #endregion
 

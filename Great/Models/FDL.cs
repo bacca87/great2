@@ -22,7 +22,7 @@ namespace Great.Models
         }
     
         public long Id { get; set; }
-        public string SheetNumber { get; set; }
+        public string Number { get; set; }
         public string Order { get; set; }
         public long Factory { get; set; }
         public Nullable<bool> OutwardCar { get; set; }
