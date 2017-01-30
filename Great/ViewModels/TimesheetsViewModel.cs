@@ -290,7 +290,7 @@ namespace Great.ViewModels
                 WorkingDay workingDay = new WorkingDay
                 {
                     WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
-                    Day = day,
+                    Date = day,
                     Timesheets = _db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList(),
                 };
 

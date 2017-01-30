@@ -8,9 +8,10 @@ namespace Great.Models
     public class WorkingDay
     {
         public int WeekNr { get; set; }
-        public DateTime Day { get; set; }
-        public long Timestamp { get { return UnixTimestamp.GetTimestamp(Day); } }
-
+        public DateTime Date { get; set; }
+        public bool IsHoliday { get; } //TODO
+        public long Timestamp { get { return UnixTimestamp.GetTimestamp(Date); } }
+        
         public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
         public IList<Timesheet> Timesheets { get; set; }
 
@@ -66,19 +67,31 @@ namespace Great.Models
             }
         }
         #endregion
-
+        
         #region Overtimes
-        public TimeSpan? Overtime34 
+        public TimeSpan? Overtime34
         {
-            get 
+            get
             {
                 TimeSpan overtime34 = new TimeSpan();
 
-                if (Timesheets == null || Timesheets.Count == 0)
-                    return null;
-
-                foreach (Timesheet ts in Timesheets)
-                    overtime34 += ts.Overtime34 ?? new TimeSpan();
+                if (Date.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    if (TimePeriods?.TotalDuration.Hours > 4)
+                        overtime34 = TimeSpan.FromHours(4);
+                    else
+                        overtime34 = TimePeriods != null ? TimePeriods.TotalDuration : new TimeSpan();
+                }
+                else
+                {
+                    if (TimePeriods?.TotalDuration.Hours > 8)
+                    {
+                        if (TimePeriods?.TotalDuration.Hours >= 10)
+                            overtime34 = TimeSpan.FromHours(2);
+                        else
+                            overtime34 = TimePeriods.TotalDuration - TimeSpan.FromHours(8);
+                    }
+                }
 
                 return overtime34.Ticks > 0 ? overtime34 : (TimeSpan?)null;
             }
@@ -89,12 +102,18 @@ namespace Great.Models
             get
             {
                 TimeSpan overtime35 = new TimeSpan();
+                TimePeriodSubtractor<TimeRange> subtractor = new TimePeriodSubtractor<TimeRange>();
 
-                if (Timesheets == null || Timesheets.Count == 0)
-                    return null;
+                TimePeriodCollection overtime35period = new TimePeriodCollection() {
+                    new TimeRange(Date, Date + new TimeSpan(6, 0, 0)),
+                    new TimeRange(Date + new TimeSpan(22, 0, 0), Date + new TimeSpan(23, 59, 59))
+                };
 
-                foreach (Timesheet ts in Timesheets)
-                    overtime35 += ts.Overtime35 ?? new TimeSpan();
+                if (TimePeriods != null)
+                {
+                    ITimePeriodCollection difference = subtractor.SubtractPeriods(overtime35period, TimePeriods);
+                    overtime35 = subtractor.SubtractPeriods(overtime35period, difference).TotalDuration;
+                }
 
                 return overtime35.Ticks > 0 ? overtime35 : (TimeSpan?)null;
             }
@@ -106,27 +125,32 @@ namespace Great.Models
             {
                 TimeSpan overtime50 = new TimeSpan();
 
-                if (Timesheets == null || Timesheets.Count == 0)
-                    return null;
-
-                foreach (Timesheet ts in Timesheets)
-                    overtime50 += ts.Overtime50 ?? new TimeSpan();
+                if (Date.DayOfWeek == DayOfWeek.Saturday && TimePeriods?.TotalDuration.Hours > 4)
+                {
+                    overtime50 = TimePeriods.TotalDuration - TimeSpan.FromHours(4);
+                }
+                else
+                {
+                    if (TimePeriods?.TotalDuration.Hours > 10)
+                    {
+                        overtime50 = TimePeriods.TotalDuration - TimeSpan.FromHours(10);
+                    }
+                }
 
                 return overtime50.Ticks > 0 ? overtime50 : (TimeSpan?)null;
             }
         }
-        
+
         public TimeSpan? Overtime100
         {
             get
             {
                 TimeSpan overtime100 = new TimeSpan();
 
-                if (Timesheets == null || Timesheets.Count == 0)
-                    return null;
-
-                foreach (Timesheet ts in Timesheets)
-                    overtime100 += ts.Overtime100 ?? new TimeSpan();
+                if (Date.DayOfWeek == DayOfWeek.Sunday) //TODO: aggiungere festivi
+                {
+                    overtime100 = TimePeriods != null ? TimePeriods.TotalDuration : new TimeSpan();
+                }
 
                 return overtime100.Ticks > 0 ? overtime100 : (TimeSpan?)null;
             }
@@ -134,7 +158,7 @@ namespace Great.Models
         #endregion
 
         #region Display Properties        
-        public string WeekNr_Display { get { return Day.DayOfWeek == DayOfWeek.Monday || Day.Day == 1 ? WeekNr.ToString() : ""; } }        
+        public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday || Date.Day == 1 ? WeekNr.ToString() : ""; } }        
         #endregion
     }
 }

@@ -59,10 +59,23 @@
                         <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                     </Style.Setters>
                 </Style>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
+                            <Setter Property="Background" Value="LightBlue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
+                            <Setter Property="Background" Value="Tomato" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsHoliday}" Value="True">
+                            <Setter Property="Background" Value="Orange" />
+                        </DataTrigger>                        
+                    </Style.Triggers>
+                </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" />
-                <DataGridTextColumn Header="Day" Binding="{Binding Day, StringFormat='dddd dd MMMM'}" />
+                <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" FontWeight="Bold" />
+                <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" />
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TimePeriods.TotalDuration, StringFormat=hh\\:mm}" FontWeight="Bold" />
                 <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingPeriods.TotalDuration, StringFormat=hh\\:mm}" />
                 <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelPeriods.TotalDuration, StringFormat=hh\\:mm}" />
@@ -125,8 +138,6 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -145,23 +156,7 @@
                     <Label Grid.Column="0" Grid.Row="2" Content="Total Time:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="2">
                         <TextBlock Text="{Binding SelectedTimesheet.TimePeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
-                    </Label>
-                    <Label Grid.Column="2" Grid.Row="0" Content="Overtime 34%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="0">
-                        <TextBlock Text="{Binding SelectedTimesheet.Overtime34, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
-                    </Label>
-                    <Label Grid.Column="2" Grid.Row="1" Content="Overtime 35%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="1">
-                        <TextBlock Text="{Binding SelectedTimesheet.Overtime35, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
-                    </Label>
-                    <Label Grid.Column="2" Grid.Row="2" Content="Overtime 50%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="2">
-                        <TextBlock Text="{Binding SelectedTimesheet.Overtime50, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
-                    </Label>
-                    <Label Grid.Column="2" Grid.Row="3" Content="Overtime 100%:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="3" Grid.Row="3">
-                        <TextBlock Text="{Binding SelectedTimesheet.Overtime100, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
-                    </Label>
+                    </Label>                    
                 </Grid>
             </GroupBox>
             <Grid Grid.Row="2">
