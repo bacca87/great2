@@ -10,37 +10,22 @@
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet">
-    <Grid Margin="0,0,10,0">
+    <Page.Resources>
+        <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
+        <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Date.Month" Converter="{StaticResource IntToMonthConverter}"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </Page.Resources>
+    <Grid Margin="10,0,10,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Label HorizontalAlignment="Center" Grid.Column="0" VerticalAlignment="Center" FontSize="20" FontWeight="Bold">
-            <Label.Resources>
-                <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
-            </Label.Resources>
-            <Label.LayoutTransform>
-                <TransformGroup>
-                    <RotateTransform Angle="90" />
-                    <ScaleTransform ScaleX="-1" ScaleY="-1"/>
-                </TransformGroup>
-            </Label.LayoutTransform>
-            <Label.Content>
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} {1}">
-                            <Binding Path="CurrentMonth" Converter="{StaticResource IntToMonthConverter}" />
-                            <Binding Path="CurrentYear" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Label.Content>
-        </Label>
+        </Grid.ColumnDefinitions>        
         <DataGrid Name="workingDaysDataGrid"
-                  Grid.Column="1"
-                  Margin="0,0,0,0" 
+                  Grid.Column="0"
                   HorizontalAlignment="Stretch" 
                   VerticalAlignment="Stretch" 
                   AutoGenerateColumns="False" 
@@ -51,9 +36,12 @@
                   IsReadOnly="True"                  
                   SelectionMode="Single"
                   HeadersVisibility="Column"
-                  ItemsSource="{Binding WorkingDays}"
-                  SelectedItem="{Binding SelectedWorkingDay}">
-            <DataGrid.Resources>
+                  ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
+                  SelectedItem="{Binding SelectedWorkingDay}"
+                  VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
+                  VirtualizingPanel.ScrollUnit ="Item" 
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <DataGrid.Resources>                
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
@@ -74,7 +62,41 @@
                         </DataTrigger>                        
                     </Style.Triggers>
                 </Style>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
             </DataGrid.Resources>
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Path=Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <StackPanel>
+                                            <TextBlock Margin="10" FontSize="20" FontWeight="Bold">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} {1}">
+                                                        <Binding Path="Name" />
+                                                        <Binding Path="DataContext.CurrentYear" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Page}" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <ItemsPresenter />
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" FontWeight="Bold" />
                 <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" />
@@ -87,7 +109,7 @@
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=hh\\:mm}" />
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Column="3">
+        <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

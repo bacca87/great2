@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Great.Models;
+using Great.Utils;
+using Great.ViewModels;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Great.Views.Pages
 {
@@ -20,9 +10,30 @@ namespace Great.Views.Pages
     /// </summary>
     public partial class Timesheet : Page
     {
+        TimesheetsViewModel _viewModel;
+        ScrollViewer scrollViewer;
+
         public Timesheet()
         {
             InitializeComponent();
+            
+            _viewModel = DataContext as TimesheetsViewModel;
+            _viewModel.OnSelectFirstDayInMonth += scrollToSelectedDay;
+        }
+
+        private void scrollToSelectedDay(WorkingDay day)
+        {
+            if (scrollViewer == null) // run once
+                scrollViewer = WPFTools.GetVisualChild<ScrollViewer>(workingDaysDataGrid);
+
+            // hack for scrolling to the selected item 
+            scrollViewer.ScrollToBottom();
+            workingDaysDataGrid.UpdateLayout();
+            workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
+
+            // scroll 1 unit up for showing current group header
+            workingDaysDataGrid.UpdateLayout();
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 1);
         }
     }
 }

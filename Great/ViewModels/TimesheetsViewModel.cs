@@ -128,12 +128,11 @@ namespace Great.ViewModels
 
                 var oldValue = _currentMonth;
                 _currentMonth = value;
-                RaisePropertyChanged(nameof(CurrentMonth), oldValue, value);
 
-                UpdateWorkingDays();
+                RaisePropertyChanged(nameof(CurrentMonth), oldValue, value);
             }
         }
-
+        
         /// <summary>
         /// The <see cref="WorkingDays" /> property's name.
         /// </summary>
@@ -178,8 +177,11 @@ namespace Great.ViewModels
                 var oldValue = _selectedWorkingDay;
                 _selectedWorkingDay = value;
 
-                if(_selectedWorkingDay != null)
+                if (_selectedWorkingDay != null)
+                {
+                    CurrentMonth = _selectedWorkingDay.Date.Month;
                     SelectedTimesheet = null;
+                }
 
                 RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
             }
@@ -249,12 +251,14 @@ namespace Great.ViewModels
         }
         
         private DBEntities _db { get; set; }
+
+        public Action<WorkingDay> OnSelectFirstDayInMonth;
         #endregion
 
         #region Commands
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
-        public RelayCommand<int> SetMonthCommand { get; set; }
+        public RelayCommand<int> SelectFirstDayInMonthCommand { get; set; }
 
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
@@ -269,32 +273,36 @@ namespace Great.ViewModels
 
             NextYearCommand = new RelayCommand(SetNextYear);
             PreviousYearCommand = new RelayCommand(SetPreviousYear);
-            SetMonthCommand = new RelayCommand<int>(SetMonth);
+            SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet);
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet);
             
             UpdateWorkingDays();
+            SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
         }
-
+        
         private void UpdateWorkingDays()
         {
             IList<WorkingDay> days = new List<WorkingDay>();
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
-            
-            foreach (DateTime day in AllDatesInMonth(CurrentYear, CurrentMonth))
+
+            for (int month = 1; month <= 12; month++)
             {
-                long timestamp = UnixTimestamp.GetTimestamp(day);
-
-                WorkingDay workingDay = new WorkingDay
+                foreach (DateTime day in AllDatesInMonth(CurrentYear, month))
                 {
-                    WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
-                    Date = day,
-                    Timesheets = _db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList(),
-                };
+                    long timestamp = UnixTimestamp.GetTimestamp(day);
 
-                days.Add(workingDay);
+                    WorkingDay workingDay = new WorkingDay
+                    {
+                        WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
+                        Date = day,
+                        Timesheets = _db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList(),
+                    };
+
+                    days.Add(workingDay);
+                }
             }
 
             WorkingDays = days;
@@ -308,7 +316,7 @@ namespace Great.ViewModels
                 yield return new DateTime(year, month, day);
             }
         }
-
+        
         private void SetNextYear()
         {
             CurrentYear++;
@@ -319,10 +327,13 @@ namespace Great.ViewModels
             CurrentYear--;
         }
 
-        private void SetMonth(int month)
+        private void SelectFirstDayInMonth(int month)
         {
             if (month > 0 && month <= 12)
-                CurrentMonth = month;
+            {
+                SelectedWorkingDay = WorkingDays.Where(day => day.Date.Month == month && day.Date.Day == 1).FirstOrDefault();
+                OnSelectFirstDayInMonth(SelectedWorkingDay);
+            }
         }
 
         public void ClearTimesheet()

@@ -23,7 +23,8 @@
         </Grid.ColumnDefinitions>
         <Fluent:Ribbon Grid.Row="0">            
             <Fluent:Ribbon.Resources>
-                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>                
+                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+                <conv:CompareIntConverter x:Key="CompareIntConverter"/>
             </Fluent:Ribbon.Resources>
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
@@ -81,170 +82,62 @@
                         <sys:Int32 x:Key="Nov">11</sys:Int32>
                         <sys:Int32 x:Key="Dec">12</sys:Int32>
                     </Fluent:RibbonGroupBox.Resources>
-                    <Fluent:ToggleButton Header="Jan" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Jan}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="1">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Jan" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jan}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jan}}" SizeDefinition="Large" GroupName="gMonth">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="January" Text="Set January as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Feb" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Feb}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="2">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Feb" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Feb}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Feb}}" SizeDefinition="Large" GroupName="gMonth">                        
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="February" Text="Set February as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Mar" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Mar}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="3">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Mar" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Mar}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Mar}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="March" Text="Set March as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Apr" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Apr}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="4">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Apr" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Apr}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Apr}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="April" Text="Set April as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="May" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource May}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="5">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="May" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource May}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource May}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="May" Text="Set May as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jun" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Jun}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="6">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Jun" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jun}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jun}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="June" Text="Set June as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jul" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="7">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="July" Text="Set July as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Aug" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="8">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="August" Text="Set August as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Sep" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Sep}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="9">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Sep" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Sep}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Sep}}" SizeDefinition="Large" GroupName="gMonth">                    
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="September" Text="Set September as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Oct" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Oct}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="10">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Oct" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Oct}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Oct}}" SizeDefinition="Large" GroupName="gMonth">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="October" Text="Set October as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Nov" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Nov}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="11">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Nov" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Nov}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Nov}}" SizeDefinition="Large" GroupName="gMonth">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="November" Text="Set November as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Dec" Command="{Binding SetMonthCommand}" CommandParameter="{Binding Source={StaticResource Dec}}" SizeDefinition="Large" GroupName="gMonth">
-                        <Fluent:ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentMonth}" Value="12">
-                                        <Setter Property="IsChecked" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:ToggleButton.Style>
+                    <Fluent:ToggleButton Header="Dec" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Dec}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Dec}}" SizeDefinition="Large" GroupName="gMonth">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="December" Text="Set December as the current month." />
                         </Fluent:ToggleButton.ToolTip>

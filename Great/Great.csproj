@@ -146,6 +146,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\IntToMonthConverter.cs" />
+    <Compile Include="Converters\CompareIntConverter.cs" />
     <Compile Include="Models\Car.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -175,6 +176,7 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Utils\UnixTimestamp.cs" />
+    <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
     <Compile Include="Views\Pages\CarRental.xaml.cs">
       <DependentUpon>CarRental.xaml</DependentUpon>

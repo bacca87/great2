@@ -158,7 +158,7 @@ namespace Great.Models
         #endregion
 
         #region Display Properties        
-        public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday || Date.Day == 1 ? WeekNr.ToString() : ""; } }        
+        public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday? WeekNr.ToString() : ""; } }        
         #endregion
     }
 }
