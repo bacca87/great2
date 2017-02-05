@@ -259,6 +259,7 @@ namespace Great.ViewModels
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
         public RelayCommand<int> SelectFirstDayInMonthCommand { get; set; }
+        public RelayCommand SelectTodayCommand { get; set; }
 
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
@@ -274,12 +275,13 @@ namespace Great.ViewModels
             NextYearCommand = new RelayCommand(SetNextYear);
             PreviousYearCommand = new RelayCommand(SetPreviousYear);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
+            SelectTodayCommand = new RelayCommand(SelectToday);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet);
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet);
             
             UpdateWorkingDays();
-            SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
+            SelectToday();
         }
         
         private void UpdateWorkingDays()
@@ -327,13 +329,18 @@ namespace Great.ViewModels
             CurrentYear--;
         }
 
-        private void SelectFirstDayInMonth(int month)
+        public void SelectFirstDayInMonth(int month)
         {
             if (month > 0 && month <= 12)
             {
-                SelectedWorkingDay = WorkingDays.Where(day => day.Date.Month == month && day.Date.Day == 1).FirstOrDefault();
-                OnSelectFirstDayInMonth(SelectedWorkingDay);
+                SelectedWorkingDay = WorkingDays.Where(day => day.Date.Month == month && day.Date.Day == 1).FirstOrDefault();                
+                OnSelectFirstDayInMonth?.Invoke(SelectedWorkingDay);
             }
+        }
+
+        public void SelectToday()
+        {
+            SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
         }
 
         public void ClearTimesheet()

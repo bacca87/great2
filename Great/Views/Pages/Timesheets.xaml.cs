@@ -1,6 +1,7 @@
 ﻿using Great.Models;
 using Great.Utils;
 using Great.ViewModels;
+using System;
 using System.Windows.Controls;
 
 namespace Great.Views.Pages
@@ -34,6 +35,13 @@ namespace Great.Views.Pages
             // scroll 1 unit up for showing current group header
             workingDaysDataGrid.UpdateLayout();
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 1);
+        }
+
+        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // hack for preselecting the workingDaysDataGrid at startup
+            _viewModel.SelectFirstDayInMonth(DateTime.Now.Month);
+            _viewModel.SelectToday();
         }
     }
 }

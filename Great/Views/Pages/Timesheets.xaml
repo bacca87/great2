@@ -9,7 +9,8 @@
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
-      Title="Timesheet">
+      Title="Timesheet"
+      Loaded="Page_Loaded">
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
