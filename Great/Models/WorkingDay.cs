@@ -158,7 +158,22 @@ namespace Great.Models
         #endregion
 
         #region Display Properties        
-        public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday? WeekNr.ToString() : ""; } }        
+        public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday? WeekNr.ToString() : ""; } }
+        public string Factories_Display
+        {
+            get
+            {
+                string factories = string.Empty;
+
+                foreach (Timesheet timesheet in Timesheets)
+                    factories += timesheet?.FDL1?.Factory1.Name + "; ";
+
+                if(factories.Length > 1)
+                    factories = factories.Remove(factories.Length - 2);
+
+                return factories;
+            }
+        }
         #endregion
     }
 }

@@ -48,6 +48,8 @@
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         <Setter Property="TextBlock.FontSize" Value="15" />
                         <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
                 </Style>
                 <Style TargetType="DataGridRow">
@@ -108,6 +110,7 @@
                 <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=hh\\:mm}" />
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=hh\\:mm}" />
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=hh\\:mm}" />
+                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="2">
@@ -156,6 +159,7 @@
                     <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.Number}" Width="100" />
+                    <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="100" />
                 </DataGrid.Columns>
             </DataGrid>
             <GroupBox Grid.Row="1" Header="Statistics" HorizontalAlignment="Left">
@@ -195,6 +199,7 @@
                         <Setter Property="Mask" Value="00:00" />
                         <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
                         <Setter Property="AutoSelectBehavior" Value="OnFocus" />
+                        <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
@@ -233,14 +238,14 @@
                 <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm}"/>
             </Grid>
             <Grid Grid.Row="3">
-                <GroupBox Header="FDL" HorizontalAlignment="Left">
+                <GroupBox Header="FDL" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" DisplayMemberPath="Number" SelectedValuePath="Id"/>
+                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding TimesheetInfo.FDL1}" SelectedValue="{Binding TimesheetInfo.FDL}" DisplayMemberPath="Number" SelectedValuePath="Id"/>
                     </Grid>
                 </GroupBox>
             </Grid>

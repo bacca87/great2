@@ -115,8 +115,8 @@
                             </TextBlock>
                         </Label>
                     </WrapPanel>
-                    
-                    <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding FactoryInfo.TransferType1}" DisplayMemberPath="Name"/>
+
+                    <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding FactoryInfo.TransferType1}" SelectedValue="{Binding FactoryInfo.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
 
                     <CheckBox Grid.Column="1" Grid.Row="5" Margin="7" IsChecked="{Binding FactoryInfo.IsForfait}"/>                    
 

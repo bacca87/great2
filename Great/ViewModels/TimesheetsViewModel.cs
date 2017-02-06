@@ -66,6 +66,38 @@ namespace Great.ViewModels
         }
 
         /// <summary>
+        /// The <see cref="IsInputEnabled" /> property's name.
+        /// </summary>
+        private bool _isInputEnabled = false;
+
+        /// <summary>
+        /// Sets and gets the IsInputEnabled property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public bool IsInputEnabled
+        {
+            get
+            {
+                return _isInputEnabled;
+            }
+
+            set
+            {
+                if (_isInputEnabled == value)
+                {
+                    return;
+                }
+
+                var oldValue = _isInputEnabled;
+                _isInputEnabled = value;
+
+                RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
+                SaveTimesheetCommand.RaiseCanExecuteChanged();
+                ClearTimesheetCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        /// <summary>
         /// The <see cref="CurrentYear" /> property's name.
         /// </summary>
         private int _currentYear = DateTime.Now.Year;
@@ -181,7 +213,10 @@ namespace Great.ViewModels
                 {
                     CurrentMonth = _selectedWorkingDay.Date.Month;
                     SelectedTimesheet = null;
+                    IsInputEnabled = true;
                 }
+                else
+                    IsInputEnabled = false;
 
                 RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
             }
@@ -235,6 +270,7 @@ namespace Great.ViewModels
                 var oldValue = _timesheetInfo;
                 _timesheetInfo = value;
                 RaisePropertyChanged(nameof(TimesheetInfo), oldValue, value);
+                SaveTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -277,9 +313,10 @@ namespace Great.ViewModels
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
             SelectTodayCommand = new RelayCommand(SelectToday);
 
-            ClearTimesheetCommand = new RelayCommand(ClearTimesheet);
+            ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
+            //SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet);
-            
+
             UpdateWorkingDays();
             SelectToday();
         }
@@ -347,7 +384,7 @@ namespace Great.ViewModels
         {
             SelectedTimesheet = null;
         }
-
+        
         public void SaveTimesheet(Timesheet timesheet)
         {
             _db.Timesheets.AddOrUpdate(timesheet);
