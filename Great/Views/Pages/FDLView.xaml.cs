@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Great.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for ExpenseAccount.xaml
+    /// Interaction logic for FDLView.xaml
     /// </summary>
-    public partial class ExpenseAccount : Page
+    public partial class FDLView : Page
     {
-        public ExpenseAccount()
+        public FDLView()
         {
             InitializeComponent();
         }

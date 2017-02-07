@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.CommandWpf;
 using Great.Models;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -19,36 +20,19 @@ namespace Great.ViewModels
         /// <summary>
         /// Gets the TransferTypes property.  
         /// </summary>
-        public IList<TransferType> TransferTypes
+        public ObservableCollection<TransferType> TransferTypes
         {
             get
             {
-                return _db.TransferTypes.ToList();
+                return new ObservableCollection<TransferType>(_db.TransferTypes);
             }
         }
-
-        /// <summary>
-        /// The <see cref="Factories" /> property's name.
-        /// </summary>
-        private IList<Factory> _factories;
-
+                
         /// <summary>
         /// Sets and gets the Factories property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public IList<Factory> Factories
-        {
-            get
-            {
-                return _factories;
-            }
-
-            set
-            {   
-                _factories = value;
-                RaisePropertyChanged(nameof(Factories));
-            }
-        }
+        public ObservableCollection<Factory> Factories { get; set; }
 
         /// <summary>
         /// The <see cref="SelectedFactory" /> property's name.
@@ -128,7 +112,7 @@ namespace Great.ViewModels
         /// </summary>
         public void RefreshFactories()
         {
-            Factories = _db.Factories.ToList();
+            Factories = new ObservableCollection<Factory>(_db.Factories);
         }
         
         private void ClearSelection()
@@ -142,7 +126,7 @@ namespace Great.ViewModels
 
             if (_db.SaveChanges() > 0)
             {
-                RefreshFactories();
+                Factories.Add(factory);
                 SelectedFactory = factory;
             }
         }

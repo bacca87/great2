@@ -1,7 +1,7 @@
 ﻿using Great.Utils;
 using Itenso.TimePeriod;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Great.Models
 {
@@ -13,7 +13,7 @@ namespace Great.Models
         public long Timestamp { get { return UnixTimestamp.GetTimestamp(Date); } }
         
         public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
-        public IList<Timesheet> Timesheets { get; set; }
+        public ObservableCollection<Timesheet> Timesheets { get; set; }
 
         #region Time Periods
         public TimePeriodCollection TimePeriods
@@ -166,9 +166,12 @@ namespace Great.Models
                 string factories = string.Empty;
 
                 foreach (Timesheet timesheet in Timesheets)
-                    factories += timesheet?.FDL1?.Factory1.Name + "; ";
+                {
+                    if(timesheet.FDL.HasValue)
+                        factories += timesheet?.FDL1?.Factory1.Name + "; ";
+                }
 
-                if(factories.Length > 1)
+                if (factories.Length > 1)
                     factories = factories.Remove(factories.Length - 2);
 
                 return factories;

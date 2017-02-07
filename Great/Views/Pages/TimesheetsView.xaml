@@ -1,4 +1,4 @@
-﻿<Page x:Class="Great.Views.Pages.Timesheet"
+﻿<Page x:Class="Great.Views.Pages.TimesheetView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -148,6 +148,8 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />

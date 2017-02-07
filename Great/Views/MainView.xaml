@@ -46,8 +46,8 @@
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="HOME"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
-                                  Visibility="{Binding ElementName=timesheetTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
-                                  IsSelected="{Binding ElementName=timesheetTab, Path=IsSelected, Mode=OneWay}">
+                                  Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                  IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
                 <Fluent:RibbonGroupBox Header="Year">
                     <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
                         <Fluent:TextBox.ToolTip>
@@ -144,6 +144,9 @@
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
+            </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
@@ -191,14 +194,17 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Name="timesheetTab" Header="Timesheet">
-                <Frame Source="/Views/Pages/Timesheets.xaml"/>
+            <TabItem Name="timesheetsTab" Header="Timesheets">
+                <Frame Source="/Views/Pages/TimesheetsView.xaml"/>
+            </TabItem>
+            <TabItem Name="fdlTab" Header="FDL">
+                <Frame Source="/Views/Pages/FDLView.xaml"/>
             </TabItem>
             <TabItem Name="carrentalTab" Header="Car Rental">
-                <Frame Source="/Views/Pages/CarRental.xaml"/>
+                <Frame Source="/Views/Pages/CarRentalView.xaml"/>
             </TabItem>
             <TabItem Name="expenseAccountTab" Header="Expense Account">
-                <Frame Source="/Views/Pages/ExpenseAccount.xaml"/>
+                <Frame Source="/Views/Pages/ExpenseAccountView.xaml"/>
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2">

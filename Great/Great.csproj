@@ -178,14 +178,17 @@
     <Compile Include="Utils\UnixTimestamp.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
-    <Compile Include="Views\Pages\CarRental.xaml.cs">
-      <DependentUpon>CarRental.xaml</DependentUpon>
+    <Compile Include="Views\Pages\CarRentalView.xaml.cs">
+      <DependentUpon>CarRentalView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Pages\ExpenseAccount.xaml.cs">
-      <DependentUpon>ExpenseAccount.xaml</DependentUpon>
+    <Compile Include="Views\Pages\ExpenseAccountView.xaml.cs">
+      <DependentUpon>ExpenseAccountView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\FactoriesView.xaml.cs">
       <DependentUpon>FactoriesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\FDLView.xaml.cs">
+      <DependentUpon>FDLView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\InformationsView.xaml.cs">
       <DependentUpon>InformationsView.xaml</DependentUpon>
@@ -215,18 +218,22 @@
     <Compile Include="ViewModels\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Models\WorkingDay.cs" />
-    <Compile Include="Views\Pages\Timesheets.xaml.cs">
-      <DependentUpon>Timesheets.xaml</DependentUpon>
+    <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
+      <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\Pages\CarRental.xaml">
+    <Page Include="Views\Pages\CarRentalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Pages\ExpenseAccount.xaml">
+    <Page Include="Views\Pages\ExpenseAccountView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\FactoriesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\FDLView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -250,7 +257,7 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\Pages\Timesheets.xaml">
+    <Page Include="Views\Pages\TimesheetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

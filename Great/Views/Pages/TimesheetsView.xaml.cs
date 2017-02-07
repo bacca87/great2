@@ -9,12 +9,12 @@ namespace Great.Views.Pages
     /// <summary>
     /// Interaction logic for Timesheet.xaml
     /// </summary>
-    public partial class Timesheet : Page
+    public partial class TimesheetView : Page
     {
         TimesheetsViewModel _viewModel;
         ScrollViewer scrollViewer;
 
-        public Timesheet()
+        public TimesheetView()
         {
             InitializeComponent();
             

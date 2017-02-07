@@ -4,6 +4,7 @@ using Great.Models;
 using Great.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
 using System.Globalization;
 using System.Linq;
@@ -164,29 +165,12 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(CurrentMonth), oldValue, value);
             }
         }
-        
-        /// <summary>
-        /// The <see cref="WorkingDays" /> property's name.
-        /// </summary>
-        private IList<WorkingDay> _workingDays;
-
+                
         /// <summary>
         /// Sets and gets the WorkingDays property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public IList<WorkingDay> WorkingDays
-        {
-            get
-            {
-                return _workingDays;
-            }
-
-            set
-            {
-                _workingDays = value;
-                RaisePropertyChanged(nameof(WorkingDays));
-            }
-        }
+        public ObservableCollection<WorkingDay> WorkingDays { get; internal set; }
 
         /// <summary>
         /// The <see cref="SelectedWorkingDay" /> property's name.
@@ -278,11 +262,11 @@ namespace Great.ViewModels
         /// Sets and gets the FDLs property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public IList<FDL> FDLs
+        public ObservableCollection<FDL> FDLs
         {
             get
             {
-                return _db.FDLs.ToList();
+                return new ObservableCollection<FDL>(_db.FDLs);
             }
         }
         
@@ -314,8 +298,7 @@ namespace Great.ViewModels
             SelectTodayCommand = new RelayCommand(SelectToday);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
-            //SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
-            SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet);
+            SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
 
             UpdateWorkingDays();
             SelectToday();
@@ -323,7 +306,7 @@ namespace Great.ViewModels
         
         private void UpdateWorkingDays()
         {
-            IList<WorkingDay> days = new List<WorkingDay>();
+            ObservableCollection<WorkingDay> days = new ObservableCollection<WorkingDay>();
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
 
@@ -337,7 +320,7 @@ namespace Great.ViewModels
                     {
                         WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
                         Date = day,
-                        Timesheets = _db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList(),
+                        Timesheets = new ObservableCollection<Timesheet>(_db.Timesheets.Where(ts => ts.Timestamp == timestamp))
                     };
 
                     days.Add(workingDay);
@@ -390,9 +373,9 @@ namespace Great.ViewModels
             _db.Timesheets.AddOrUpdate(timesheet);
 
             if (_db.SaveChanges() > 0)
-            {   
-                UpdateWorkingDays();
-                //SelectedTimesheet = timesheet;
+            {
+                SelectedWorkingDay.Timesheets.Add(timesheet);
+                SelectedTimesheet = timesheet;
             }
         }
     }
