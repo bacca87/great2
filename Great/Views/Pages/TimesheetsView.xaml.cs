@@ -3,6 +3,7 @@ using Great.Utils;
 using Great.ViewModels;
 using System;
 using System.Windows.Controls;
+using Xceed.Wpf.Toolkit;
 
 namespace Great.Views.Pages
 {
@@ -42,6 +43,26 @@ namespace Great.Views.Pages
             // hack for preselecting the workingDaysDataGrid at startup
             _viewModel.SelectFirstDayInMonth(DateTime.Now.Month);
             _viewModel.SelectToday();
+        }
+        
+        private void MaskedTextBox_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            //MaskedTextBox textbox = (e.Source as MaskedTextBox);
+
+            //if (textbox.Text.Length < 5)
+            //    return;
+
+            //string[] digits = textbox.Text.Split(':');
+
+            //if (digits.Length > 2)
+            //    return;
+
+            //string hours = digits[0].Replace("_", string.Empty);
+            //string minutes = digits[1].Replace("_", string.Empty);
+
+
+
+
         }
     }
 }

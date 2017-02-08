@@ -268,13 +268,19 @@ namespace Great.ViewModels
         {
             get
             {
-                return new ObservableCollection<FDL>(_db.FDLs);
+                if (SelectedWorkingDay != null)
+                    return new ObservableCollection<FDL>(_db.FDLs.Where(fdl => fdl.WeekNr == SelectedWorkingDay.WeekNr));
+                else
+                    return null;
             }
         }
-        
-        private DBEntities _db { get; set; }
 
+        /// <summary>
+        /// Sets and gets the OnSelectFirstDayInMonth Action.        
+        /// </summary>
         public Action<WorkingDay> OnSelectFirstDayInMonth;
+
+        private DBEntities _db { get; set; }
         #endregion
 
         #region Commands

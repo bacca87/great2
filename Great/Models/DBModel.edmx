@@ -64,8 +64,9 @@
           </Key>
           <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Number" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="Order" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="WeekNr" Type="integer" Nullable="false" />
           <Property Name="Factory" Type="integer" Nullable="false" />
+          <Property Name="Order" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="OutwardCar" Type="bit" />
           <Property Name="ReturnCar" Type="bit" />
           <Property Name="OutwardTaxi" Type="bit" />
@@ -339,8 +340,9 @@
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Number" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="WeekNr" Type="Int64" Nullable="false" />
           <Property Name="Factory" Type="Int64" Nullable="false" />
+          <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="OutwardCar" Type="Boolean" />
           <Property Name="ReturnCar" Type="Boolean" />
           <Property Name="OutwardTaxi" Type="Boolean" />
@@ -550,8 +552,9 @@
                 <ScalarProperty Name="OutwardTaxi" ColumnName="OutwardTaxi" />
                 <ScalarProperty Name="ReturnCar" ColumnName="ReturnCar" />
                 <ScalarProperty Name="OutwardCar" ColumnName="OutwardCar" />
-                <ScalarProperty Name="Factory" ColumnName="Factory" />
                 <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="Factory" ColumnName="Factory" />
+                <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
                 <ScalarProperty Name="Number" ColumnName="Number" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

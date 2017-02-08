@@ -10,7 +10,7 @@
         <EntityTypeShape EntityType="DBModel.CarRentalHistory" Width="1.5" PointX="10.25" PointY="8" />
         <EntityTypeShape EntityType="DBModel.ExpenseAccount" Width="1.5" PointX="7.5" PointY="1.125" />
         <EntityTypeShape EntityType="DBModel.Factory" Width="1.5" PointX="3" PointY="2.5" />
-        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="5.25" PointY="1.75" />
+        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="5.25" PointY="1.625" />
         <EntityTypeShape EntityType="DBModel.FDLResult" Width="1.5" PointX="3" PointY="8.125" />
         <EntityTypeShape EntityType="DBModel.Timesheet" Width="1.5" PointX="7.5" PointY="3.5" />
         <EntityTypeShape EntityType="DBModel.TransferType" Width="1.5" PointX="0.75" PointY="3.125" />

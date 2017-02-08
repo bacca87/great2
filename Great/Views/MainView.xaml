@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"    
     xmlns:conv="clr-namespace:Great.Converters"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"    
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Great 2.0" 
     Width="1024" 
     Height="768"

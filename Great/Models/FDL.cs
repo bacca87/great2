@@ -23,8 +23,9 @@ namespace Great.Models
     
         public long Id { get; set; }
         public string Number { get; set; }
-        public string Order { get; set; }
+        public long WeekNr { get; set; }
         public long Factory { get; set; }
+        public string Order { get; set; }
         public Nullable<bool> OutwardCar { get; set; }
         public Nullable<bool> ReturnCar { get; set; }
         public Nullable<bool> OutwardTaxi { get; set; }
