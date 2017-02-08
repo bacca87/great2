@@ -138,6 +138,8 @@
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="ContentTemplate">
@@ -307,6 +309,7 @@
                 </StackPanel>
             </Grid>-->
             <StackPanel Grid.Row="5" Orientation="Horizontal">
+                <Button Margin="10" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                 <Button Margin="10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
                 <Button Margin="10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding TimesheetInfo}" />
             </StackPanel>

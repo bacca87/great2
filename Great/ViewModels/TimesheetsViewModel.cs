@@ -95,6 +95,7 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
                 SaveTimesheetCommand.RaiseCanExecuteChanged();
                 ClearTimesheetCommand.RaiseCanExecuteChanged();
+                DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -230,6 +231,7 @@ namespace Great.ViewModels
                 TimesheetInfo = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp };
 
                 RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
+                DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -283,6 +285,7 @@ namespace Great.ViewModels
 
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
+        public RelayCommand<Timesheet> DeleteTimesheetCommand { get; set; }        
         #endregion
 
         /// <summary>
@@ -299,6 +302,7 @@ namespace Great.ViewModels
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
+            DeleteTimesheetCommand = new RelayCommand<Timesheet>(DeleteTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
 
             UpdateWorkingDays();
             SelectToday();
@@ -367,15 +371,33 @@ namespace Great.ViewModels
         {
             SelectedTimesheet = null;
         }
-        
+
+        public void DeleteTimesheet(Timesheet timesheet)
+        {
+            _db.Timesheets.Remove(timesheet);
+
+            if (_db.SaveChanges() > 0)
+            {
+                SelectedWorkingDay.Timesheets.Remove(timesheet);
+                SelectedTimesheet = null;
+            }
+        }
+
         public void SaveTimesheet(Timesheet timesheet)
         {
             _db.Timesheets.AddOrUpdate(timesheet);
 
             if (_db.SaveChanges() > 0)
             {
-                SelectedWorkingDay.Timesheets.Add(timesheet);
-                SelectedTimesheet = timesheet;
+                // check if already exist in the collection
+                Timesheet item = SelectedWorkingDay.Timesheets.Where(t => t.Id == timesheet.Id).FirstOrDefault();
+
+                if (item != null) 
+                    SelectedWorkingDay.Timesheets[SelectedWorkingDay.Timesheets.IndexOf(item)] = timesheet;
+                else
+                    SelectedWorkingDay.Timesheets.Add(timesheet);
+
+                SelectedTimesheet = null;
             }
         }
     }

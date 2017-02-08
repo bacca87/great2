@@ -90,6 +90,7 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands
+        public RelayCommand<Factory> DeleteFactoryCommand { get; set; }
         public RelayCommand<Factory> SaveFactoryCommand { get; set; }
         public RelayCommand ClearSelectionCommand { get; set; }
         #endregion
@@ -101,6 +102,7 @@ namespace Great.ViewModels
         {
             _db = db;
 
+            DeleteFactoryCommand = new RelayCommand<Factory>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<Factory>(SaveFactory);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
@@ -118,6 +120,17 @@ namespace Great.ViewModels
         private void ClearSelection()
         {
             SelectedFactory = null;            
+        }
+
+        private void DeleteFactory(Factory factory)
+        {
+            _db.Factories.Remove(factory);
+
+            if (_db.SaveChanges() > 0)
+            {
+                Factories.Remove(factory);
+                SelectedFactory = null;
+            }
         }
 
         private void SaveFactory(Factory factory)
