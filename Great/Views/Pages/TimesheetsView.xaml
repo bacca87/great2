@@ -202,10 +202,12 @@
                         <Setter Property="FontSize" Value="14" />
                         <Setter Property="TextAlignment" Value="Center" />
                         <Setter Property="Mask" Value="00:00" />
+                        <Setter Property="PromptChar" Value=" "/>
                         <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
                         <Setter Property="AutoSelectBehavior" Value="OnFocus" />
                         <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
                         <EventSetter Event="PreviewLostKeyboardFocus" Handler="MaskedTextBox_PreviewLostKeyboardFocus"/>
+                        <EventSetter Event="PreviewTextInput" Handler="MaskedTextBox_PreviewTextInput"/>
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>

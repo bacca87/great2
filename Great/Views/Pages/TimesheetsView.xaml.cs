@@ -3,6 +3,7 @@ using Great.Utils;
 using Great.ViewModels;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 
 namespace Great.Views.Pages
@@ -44,25 +45,86 @@ namespace Great.Views.Pages
             _viewModel.SelectFirstDayInMonth(DateTime.Now.Month);
             _viewModel.SelectToday();
         }
-        
+
+        #region Time MaskedTextBox Autocomplete Methods 
         private void MaskedTextBox_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
-            //MaskedTextBox textbox = (e.Source as MaskedTextBox);
+            int? hours;
+            int? minutes;
 
-            //if (textbox.Text.Length < 5)
-            //    return;
+            MaskedTextBox textbox = (sender as MaskedTextBox);
 
-            //string[] digits = textbox.Text.Split(':');
+            if (!ParseTimeSpanMask(textbox.Text, textbox.PromptChar, out hours, out minutes))
+                return;
+            
+            if (hours.HasValue && hours.Value < 10)
+                textbox.Text = hours.Value.ToString().PadLeft(2, '0') + textbox.Text.Substring(2);
 
-            //if (digits.Length > 2)
-            //    return;
+            if (minutes.HasValue && minutes.Value < 10)
+                textbox.Text = textbox.Text.Substring(0, 3) + minutes.Value.ToString().PadLeft(2, '0');
 
-            //string hours = digits[0].Replace("_", string.Empty);
-            //string minutes = digits[1].Replace("_", string.Empty);
-
-
-
-
+            if(hours.HasValue || minutes.HasValue)
+                textbox.Text = textbox.Text.Replace(textbox.PromptChar, '0');
         }
+
+        private void MaskedTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            int? hours;
+            int? minutes;
+
+            MaskedTextBox textbox = (sender as MaskedTextBox);
+
+            if (e.Text == ":" || e.Text == "." )
+            {
+                if (!ParseTimeSpanMask(textbox.Text, textbox.PromptChar, out hours, out minutes))
+                    return;
+
+                if (hours.HasValue && hours.Value < 10)
+                    textbox.Text = hours.Value.ToString().PadLeft(2, '0') + textbox.Text.Substring(2);
+
+                return;
+            }
+
+            if (!ParseTimeSpanMask(textbox.Text.Remove(textbox.CaretIndex, 1).Insert(textbox.CaretIndex, e.Text), textbox.PromptChar, out hours, out minutes))
+                return;
+
+            if (hours.HasValue && (hours.Value < 0 || hours.Value > 23))
+                e.Handled = true;
+
+            if (minutes.HasValue && (minutes.Value < 0 || minutes.Value > 59))
+                e.Handled = true;
+        }
+
+        private bool ParseTimeSpanMask(string mask, char promptChar, out int? hours, out int? minutes)
+        {
+            hours = null;
+            minutes = null;
+            
+            try
+            {
+                if (mask.Length < 5)
+                    return false;
+
+                string[] digits = mask.Split(':');
+
+                if (digits.Length != 2)
+                    return false;
+                
+                string hoursString = digits[0].Replace(promptChar.ToString(), string.Empty);
+                string minutesString = digits[1].Replace(promptChar.ToString(), string.Empty);
+
+                if (hoursString != string.Empty)
+                    hours = Convert.ToInt32(hoursString);
+
+                if (minutesString != string.Empty)
+                    minutes = Convert.ToInt32(minutesString);
+
+                return true;
+            }
+            catch { }
+
+            return false;
+        }
+        #endregion
     }
 }
