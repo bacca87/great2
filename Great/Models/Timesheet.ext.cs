@@ -16,49 +16,49 @@ namespace Great.Models
         public TimeSpan? TravelStartTimeAM_t
         {
             get { return TravelStartTimeAM.HasValue ? TimeSpan.FromSeconds(TravelStartTimeAM.Value) : (TimeSpan?)null; }
-            set { TravelStartTimeAM = (long)value?.TotalSeconds; }
+            set { TravelStartTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? TravelEndTimeAM_t
         {
             get { return TravelEndTimeAM.HasValue ? TimeSpan.FromSeconds(TravelEndTimeAM.Value) : (TimeSpan?)null; }
-            set { TravelEndTimeAM = (long)value?.TotalSeconds; }
+            set { TravelEndTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? TravelStartTimePM_t
         {
             get { return TravelStartTimePM.HasValue ? TimeSpan.FromSeconds(TravelStartTimePM.Value) : (TimeSpan?)null; }
-            set { TravelStartTimePM = (long)value?.TotalSeconds; }
+            set { TravelStartTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? TravelEndTimePM_t
         {
             get { return TravelEndTimePM.HasValue ? TimeSpan.FromSeconds(TravelEndTimePM.Value) : (TimeSpan?)null; }
-            set { TravelEndTimePM = (long)value?.TotalSeconds; }
+            set { TravelEndTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? WorkStartTimeAM_t
         {
             get { return WorkStartTimeAM.HasValue ? TimeSpan.FromSeconds(WorkStartTimeAM.Value) : (TimeSpan?)null; }
-            set { WorkStartTimeAM = (long)value?.TotalSeconds; }
+            set { WorkStartTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? WorkEndTimeAM_t
         {
             get { return WorkEndTimeAM.HasValue ? TimeSpan.FromSeconds(WorkEndTimeAM.Value) : (TimeSpan?)null; }
-            set { WorkEndTimeAM = (long)value?.TotalSeconds; }
+            set { WorkEndTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? WorkStartTimePM_t
         {
             get { return WorkStartTimePM.HasValue ? TimeSpan.FromSeconds(WorkStartTimePM.Value) : (TimeSpan?)null; }
-            set { WorkStartTimePM = (long)value?.TotalSeconds; }
+            set { WorkStartTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
         public TimeSpan? WorkEndTimePM_t
         {
             get { return WorkEndTimePM.HasValue ? TimeSpan.FromSeconds(WorkEndTimePM.Value) : (TimeSpan?)null; }
-            set { WorkEndTimePM = (long)value?.TotalSeconds; }
+            set { WorkEndTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
         #endregion
 

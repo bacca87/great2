@@ -194,7 +194,6 @@
             </GroupBox>
             <Grid Grid.Row="2">
                 <Grid.Resources>
-                    <!--{StaticResource MinHour}-->
                     <Style TargetType="{x:Type xctk:MaskedTextBox}">
                         <Setter Property="Margin" Value="0,0,0,5" />
                         <Setter Property="MaxLength" Value="5" />
@@ -207,8 +206,9 @@
                         <Setter Property="AutoSelectBehavior" Value="OnFocus" />
                         <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
                         <EventSetter Event="PreviewLostKeyboardFocus" Handler="MaskedTextBox_PreviewLostKeyboardFocus"/>
-                        <EventSetter Event="PreviewTextInput" Handler="MaskedTextBox_PreviewTextInput"/>
+                        <EventSetter Event="PreviewTextInput" Handler="MaskedTextBox_PreviewTextInput"/>                        
                     </Style>
+                    <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -236,14 +236,14 @@
                 <Label Grid.Row="0" Grid.Column="4">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
                 </Label>
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimeAM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimeAM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimeAM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimeAM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimePM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimePM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimePM_t, StringFormat=hh\\:mm}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
             </Grid>
             <Grid Grid.Row="3">
                 <GroupBox Header="FDL" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}">

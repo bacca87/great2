@@ -145,6 +145,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Converters\IntToMonthConverter.cs" />
     <Compile Include="Converters\CompareIntConverter.cs" />
     <Compile Include="Models\Car.cs">
