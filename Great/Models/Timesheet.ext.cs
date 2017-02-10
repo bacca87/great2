@@ -84,11 +84,21 @@ namespace Great.Models
             get
             {
                 TimePeriodCollection workingPeriods = new TimePeriodCollection();
-                
+                DateTime start;
+                DateTime end;
+
                 if (WorkEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue)
-                    workingPeriods.Add(new TimeRange(Date + WorkStartTimeAM_t.Value, Date + WorkEndTimeAM_t.Value));
+                {
+                    start = Date + WorkStartTimeAM_t.Value;
+                    end = WorkStartTimeAM_t.Value < WorkEndTimeAM_t.Value ? Date + WorkEndTimeAM_t.Value : Date.AddDays(1) + WorkEndTimeAM_t.Value;
+                    workingPeriods.Add(new TimeRange(start, end));
+                }
                 if (WorkEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue)
-                    workingPeriods.Add(new TimeRange(Date + WorkStartTimePM_t.Value, Date + WorkEndTimePM_t.Value));
+                {
+                    start = Date + WorkStartTimePM_t.Value;
+                    end = WorkStartTimePM_t.Value < WorkEndTimePM_t.Value ? Date + WorkEndTimePM_t.Value : Date.AddDays(1) + WorkEndTimePM_t.Value;
+                    workingPeriods.Add(new TimeRange(start, end));
+                }
                 
                 return workingPeriods.Count > 0 ? workingPeriods : null;
             }
@@ -99,20 +109,46 @@ namespace Great.Models
             get
             {
                 TimePeriodCollection travelPeriods = new TimePeriodCollection();
+                DateTime start;
+                DateTime end;
 
                 if (TravelStartTimeAM_t.HasValue && TravelEndTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue)
-                    travelPeriods.Add(new TimeRange(Date + TravelStartTimeAM_t.Value, Date + TravelEndTimeAM_t.Value));
-                if (TravelStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue)
-                    travelPeriods.Add(new TimeRange(Date + TravelStartTimeAM_t.Value, Date + WorkStartTimeAM_t.Value));
-                if (!TravelStartTimeAM_t.HasValue && TravelEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue)
-                    travelPeriods.Add(new TimeRange(Date + WorkEndTimeAM_t.Value, Date + TravelEndTimeAM_t.Value));
+                {
+                    start = Date + TravelStartTimeAM_t.Value;
+                    end = TravelStartTimeAM_t.Value < TravelEndTimeAM_t.Value ? Date + TravelEndTimeAM_t.Value : Date.AddDays(1) + TravelEndTimeAM_t.Value;
+                    travelPeriods.Add(new TimeRange(start, end));
+                }
 
+                if (TravelStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue)
+                {
+                    start = Date + TravelStartTimeAM_t.Value;
+                    end = TravelStartTimeAM_t.Value < WorkStartTimeAM_t.Value ? Date + WorkStartTimeAM_t.Value : Date.AddDays(1) + WorkStartTimeAM_t.Value;
+                    travelPeriods.Add(new TimeRange(start, end));
+                }
+                if (!TravelStartTimeAM_t.HasValue && TravelEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue)
+                {
+                    start = Date + WorkEndTimeAM_t.Value;
+                    end = WorkEndTimeAM_t.Value < TravelEndTimeAM_t.Value ? Date + TravelEndTimeAM_t.Value : Date.AddDays(1) + TravelEndTimeAM_t.Value;
+                    travelPeriods.Add(new TimeRange(start, end));
+                }
                 if (TravelStartTimePM_t.HasValue && TravelEndTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue)
-                    travelPeriods.Add(new TimeRange(Date + TravelStartTimePM_t.Value, Date + TravelEndTimePM_t.Value));
+                {
+                    start = Date + TravelStartTimePM_t.Value;
+                    end = TravelStartTimePM_t.Value < TravelEndTimePM_t.Value ? Date + TravelEndTimePM_t.Value : Date.AddDays(1) + TravelEndTimePM_t.Value;
+                    travelPeriods.Add(new TimeRange(start, end));
+                }
                 if (TravelStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue)
-                    travelPeriods.Add(new TimeRange(Date + TravelStartTimePM_t.Value, Date + WorkStartTimePM_t.Value));
+                {
+                    start = Date + TravelStartTimePM_t.Value;
+                    end = TravelStartTimePM_t.Value < WorkStartTimePM_t.Value ? Date + WorkStartTimePM_t.Value : Date.AddDays(1) + WorkStartTimePM_t.Value;
+                    travelPeriods.Add(new TimeRange(start, end));
+                }
                 if (!TravelStartTimePM_t.HasValue && TravelEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue)
-                    travelPeriods.Add(new TimeRange(Date + WorkEndTimePM_t.Value, Date + TravelEndTimePM_t.Value));
+                {
+                    start = Date + WorkEndTimePM_t.Value;
+                    end = WorkEndTimePM_t.Value < TravelEndTimePM_t.Value ? Date + TravelEndTimePM_t.Value : Date.AddDays(1) + TravelEndTimePM_t.Value;
+                    travelPeriods.Add(new TimeRange(start, end));
+                }
                 
                 return travelPeriods.Count > 0 ? travelPeriods : null;
             }

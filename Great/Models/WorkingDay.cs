@@ -106,7 +106,7 @@ namespace Great.Models
 
                 TimePeriodCollection overtime35period = new TimePeriodCollection() {
                     new TimeRange(Date, Date + new TimeSpan(6, 0, 0)),
-                    new TimeRange(Date + new TimeSpan(22, 0, 0), Date + new TimeSpan(23, 59, 59))
+                    new TimeRange(Date + new TimeSpan(22, 0, 0), Date.AddDays(1) + new TimeSpan(6, 0, 0))
                 };
 
                 if (TimePeriods != null)
