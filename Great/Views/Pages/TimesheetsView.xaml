@@ -103,9 +103,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" FontWeight="Bold" />
                 <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" />
-                <DataGridTextColumn Header="Total Time" Binding="{Binding TimePeriods.TotalDuration, StringFormat=hh\\:mm}" FontWeight="Bold" />
-                <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingPeriods.TotalDuration, StringFormat=hh\\:mm}" />
-                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelPeriods.TotalDuration, StringFormat=hh\\:mm}" />
+                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime}" FontWeight="Bold" />
+                <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime}" />
+                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime}" />
                 <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=hh\\:mm}" />
                 <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=hh\\:mm}" />
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=hh\\:mm}" />
@@ -180,15 +180,15 @@
                     </Grid.RowDefinitions>                    
                     <Label Grid.Column="0" Grid.Row="0" Content="Working Timee:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="0"> 
-                        <TextBlock Text="{Binding SelectedTimesheet.WorkingPeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
+                        <TextBlock Text="{Binding SelectedTimesheet.WorkingTime, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
                     </Label>
                     <Label Grid.Column="0" Grid.Row="1" Content="Travel Time:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="1">
-                        <TextBlock Text="{Binding SelectedTimesheet.TravelPeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                        <TextBlock Text="{Binding SelectedTimesheet.TravelTime, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
                     </Label>
                     <Label Grid.Column="0" Grid.Row="2" Content="Total Time:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="2">
-                        <TextBlock Text="{Binding SelectedTimesheet.TimePeriods.TotalDuration, StringFormat=hh\\:mm, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                        <TextBlock Text="{Binding SelectedTimesheet.TotalTime, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
                     </Label>                    
                 </Grid>
             </GroupBox>
@@ -204,7 +204,7 @@
                         <Setter Property="PromptChar" Value=" "/>
                         <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
                         <Setter Property="AutoSelectBehavior" Value="OnFocus" />
-                        <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+                        <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>                        
                         <EventSetter Event="PreviewLostKeyboardFocus" Handler="MaskedTextBox_PreviewLostKeyboardFocus"/>
                         <EventSetter Event="PreviewTextInput" Handler="MaskedTextBox_PreviewTextInput"/>                        
                     </Style>

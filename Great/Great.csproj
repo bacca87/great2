@@ -176,6 +176,7 @@
     <Compile Include="Models\TransferType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utils\TimeSpanExtensions.cs" />
     <Compile Include="Utils\UnixTimestamp.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />

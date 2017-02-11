@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 
 namespace Great.ViewModels
 {
@@ -391,6 +392,12 @@ namespace Great.ViewModels
 
         public void SaveTimesheet(Timesheet timesheet)
         {
+            if (!timesheet.IsValid || timesheet.HasOverlaps(SelectedWorkingDay.Timesheets))
+            {
+                MessageBox.Show("NO!!!");
+                return;
+            }
+
             _db.Timesheets.AddOrUpdate(timesheet);
 
             if (_db.SaveChanges() > 0)

@@ -1,6 +1,7 @@
 ﻿using Great.Utils;
 using Itenso.TimePeriod;
 using System;
+using System.Collections.Generic;
 
 namespace Great.Models
 {
@@ -62,6 +63,45 @@ namespace Great.Models
         }
         #endregion
 
+        #region Totals
+        public float? TotalTime
+        {
+            get
+            {
+                return GetRoundedTotalDuration(TimePeriods);
+            }
+        }
+
+        public float? WorkingTime
+        {
+            get
+            {
+                return GetRoundedTotalDuration(WorkingPeriods);
+            }
+        }
+
+        public float? TravelTime
+        {
+            get
+            {
+                return GetRoundedTotalDuration(TravelPeriods);
+            }
+        }
+
+        RoundByQuarterHourDurationProvider roundByQuarterHour = new RoundByQuarterHourDurationProvider();
+
+        private float? GetRoundedTotalDuration(TimePeriodCollection periods)
+        {
+            if (periods == null || periods.Count == 0)
+                return null;
+
+            TimeSpan totalDuration = periods.GetTotalDuration(roundByQuarterHour);
+            float total = totalDuration.Hours + (totalDuration.Minutes / 100);
+
+            return total > 0 ? total : 24;
+        }
+        #endregion
+
         #region Time Periods
         public TimePeriodCollection TimePeriods
         {
@@ -93,13 +133,14 @@ namespace Great.Models
                     end = WorkStartTimeAM_t.Value < WorkEndTimeAM_t.Value ? Date + WorkEndTimeAM_t.Value : Date.AddDays(1) + WorkEndTimeAM_t.Value;
                     workingPeriods.Add(new TimeRange(start, end));
                 }
+
                 if (WorkEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue)
                 {
                     start = Date + WorkStartTimePM_t.Value;
                     end = WorkStartTimePM_t.Value < WorkEndTimePM_t.Value ? Date + WorkEndTimePM_t.Value : Date.AddDays(1) + WorkEndTimePM_t.Value;
                     workingPeriods.Add(new TimeRange(start, end));
                 }
-                
+                                
                 return workingPeriods.Count > 0 ? workingPeriods : null;
             }
         }
@@ -154,7 +195,51 @@ namespace Great.Models
             }
         }
         #endregion
-        
+
+        #region Validation
+        public bool IsValid
+        {
+            get
+            {
+                if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
+                    return false;
+
+                if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
+                    return false;
+
+                if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
+                    (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
+                    return false;
+
+                if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
+                    (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
+                    return false;
+
+                if (TimePeriods != null && TimePeriods.HasOverlaps())
+                    return false;
+
+                return true;
+            }
+        }
+
+        public bool HasOverlaps(IEnumerable<Timesheet> timesheets)
+        {
+            if (TimePeriods == null)
+                return false;
+
+            foreach (Timesheet timesheet in timesheets)
+            {
+                if (timesheet.TimePeriods == null)
+                    continue;
+
+                if (TimePeriods.HasOverlapPeriods(timesheet.TimePeriods))
+                    return true;
+            }
+
+            return false;
+        }
+        #endregion
+
         public Timesheet Clone()
         {
             return new Timesheet()
@@ -171,6 +256,16 @@ namespace Great.Models
                 WorkEndTimePM = this.WorkEndTimePM,
                 FDL = this.FDL
             };
+        }
+    }
+
+    public class RoundByQuarterHourDurationProvider : IDurationProvider
+    {   
+        public virtual TimeSpan GetDuration(DateTime start, DateTime end)
+        {
+            start = start.Date + TimeSpanExtensions.Round(start.TimeOfDay, RoundingDirection.Down, 15);
+            end = end.Date + TimeSpanExtensions.Round(end.TimeOfDay, RoundingDirection.Down, 15);
+            return end.Subtract(start);
         }
     }
 }

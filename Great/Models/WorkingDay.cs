@@ -15,6 +15,59 @@ namespace Great.Models
         public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
         public ObservableCollection<Timesheet> Timesheets { get; set; }
 
+        #region Totals
+        public float? TotalTime
+        {
+            get
+            {
+                float? total = 0;
+
+                if (Timesheets == null || Timesheets.Count == 0)
+                    return null;
+
+                foreach (Timesheet ts in Timesheets)
+                    if (ts.TotalTime.HasValue)
+                        total += ts.TotalTime.Value;
+
+                return total > 0 ? total : null;
+            }
+        }
+
+        public float? WorkingTime
+        {
+            get
+            {
+                float? total = 0;
+
+                if (Timesheets == null || Timesheets.Count == 0)
+                    return null;
+
+                foreach (Timesheet ts in Timesheets)
+                    if (ts.WorkingTime.HasValue)
+                        total += ts.WorkingTime.Value;
+
+                return total > 0 ? total : null;
+            }
+        }
+
+        public float? TravelTime
+        {
+            get
+            {
+                float? total = 0;
+
+                if (Timesheets == null || Timesheets.Count == 0)
+                    return null;
+
+                foreach (Timesheet ts in Timesheets)
+                    if (ts.TravelTime.HasValue)
+                        total += ts.TravelTime.Value;
+
+                return total > 0 ? total : null;
+            }
+        }
+        #endregion
+
         #region Time Periods
         public TimePeriodCollection TimePeriods
         {
