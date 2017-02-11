@@ -1,19 +1,50 @@
 ﻿using Great.Utils;
 using Itenso.TimePeriod;
 using System;
-using System.Collections.ObjectModel;
+using System.Globalization;
+using System.ComponentModel;
 
 namespace Great.Models
 {
-    public class WorkingDay
+    public class WorkingDay : INotifyPropertyChanged
     {
-        public int WeekNr { get; set; }
-        public DateTime Date { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         public bool IsHoliday { get; } //TODO
         public long Timestamp { get { return UnixTimestamp.GetTimestamp(Date); } }
-        
         public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
-        public ObservableCollection<Timesheet> Timesheets { get; set; }
+        
+        private DateTime _date;
+        public DateTime Date
+        {
+            get { return _date; }
+            set
+            {
+                if (value != null)
+                    _weekNr = DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(value, DateTimeFormatInfo.CurrentInfo.CalendarWeekRule, DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek);
+
+                _date = value;
+            }
+        }
+
+        private int _weekNr;
+        public int WeekNr { get { return _weekNr; } }
+
+        private BindingList<Timesheet> _timesheets;
+        public BindingList<Timesheet> Timesheets
+        {
+            get
+            {
+                return _timesheets;
+            }
+            set
+            {
+                if (value != null)
+                    value.ListChanged += (object sender, ListChangedEventArgs e) => { NotifyTimesheetsPropertiesChanged(); };
+
+                _timesheets = value;
+            }
+        }
 
         #region Totals
         public float? TotalTime
@@ -65,7 +96,7 @@ namespace Great.Models
 
                 return total > 0 ? total : null;
             }
-        }
+        }        
         #endregion
 
         #region Time Periods
@@ -122,39 +153,39 @@ namespace Great.Models
         #endregion
         
         #region Overtimes
-        public TimeSpan? Overtime34
+        public float? Overtime34
         {
             get
             {
-                TimeSpan overtime34 = new TimeSpan();
+                float? overtime34 = null;
 
                 if (Date.DayOfWeek == DayOfWeek.Saturday)
                 {
-                    if (TimePeriods?.TotalDuration.Hours > 4)
-                        overtime34 = TimeSpan.FromHours(4);
+                    if (TotalTime.HasValue && TotalTime.Value > 4)
+                        overtime34 = 4;
                     else
-                        overtime34 = TimePeriods != null ? TimePeriods.TotalDuration : new TimeSpan();
+                        overtime34 = TotalTime;
                 }
                 else
                 {
-                    if (TimePeriods?.TotalDuration.Hours > 8)
+                    if (TotalTime.HasValue && TotalTime.Value > 8)
                     {
-                        if (TimePeriods?.TotalDuration.Hours >= 10)
-                            overtime34 = TimeSpan.FromHours(2);
+                        if (TotalTime.Value >= 10)
+                            overtime34 = 2;
                         else
-                            overtime34 = TimePeriods.TotalDuration - TimeSpan.FromHours(8);
+                            overtime34 = TotalTime.Value - 8;
                     }
                 }
 
-                return overtime34.Ticks > 0 ? overtime34 : (TimeSpan?)null;
+                return overtime34;
             }
         }
 
-        public TimeSpan? Overtime35
+        public float? Overtime35
         {
             get
             {
-                TimeSpan overtime35 = new TimeSpan();
+                float? overtime35 = null;                               
                 TimePeriodSubtractor<TimeRange> subtractor = new TimePeriodSubtractor<TimeRange>();
 
                 TimePeriodCollection overtime35period = new TimePeriodCollection() {
@@ -165,47 +196,45 @@ namespace Great.Models
                 if (TimePeriods != null)
                 {
                     ITimePeriodCollection difference = subtractor.SubtractPeriods(overtime35period, TimePeriods);
-                    overtime35 = subtractor.SubtractPeriods(overtime35period, difference).TotalDuration;
+                    overtime35 = TimePeriodTools.GetRoundedTotalDuration(subtractor.SubtractPeriods(overtime35period, difference));
                 }
 
-                return overtime35.Ticks > 0 ? overtime35 : (TimeSpan?)null;
+                return overtime35;
             }
         }
 
-        public TimeSpan? Overtime50
+        public float? Overtime50
         {
             get
             {
-                TimeSpan overtime50 = new TimeSpan();
+                float? overtime50 = null;                
 
-                if (Date.DayOfWeek == DayOfWeek.Saturday && TimePeriods?.TotalDuration.Hours > 4)
+                if (Date.DayOfWeek == DayOfWeek.Saturday && TotalTime.HasValue && TotalTime.Value > 4)
                 {
-                    overtime50 = TimePeriods.TotalDuration - TimeSpan.FromHours(4);
+                    overtime50 = TotalTime - 4;
                 }
                 else
                 {
-                    if (TimePeriods?.TotalDuration.Hours > 10)
+                    if (TotalTime.HasValue && TotalTime.Value > 10)
                     {
-                        overtime50 = TimePeriods.TotalDuration - TimeSpan.FromHours(10);
+                        overtime50 = TotalTime.Value - 10;
                     }
                 }
 
-                return overtime50.Ticks > 0 ? overtime50 : (TimeSpan?)null;
+                return overtime50;
             }
         }
 
-        public TimeSpan? Overtime100
+        public float? Overtime100
         {
             get
             {
-                TimeSpan overtime100 = new TimeSpan();
+                float? overtime100 = null;
 
                 if (Date.DayOfWeek == DayOfWeek.Sunday) //TODO: aggiungere festivi
-                {
-                    overtime100 = TimePeriods != null ? TimePeriods.TotalDuration : new TimeSpan();
-                }
-
-                return overtime100.Ticks > 0 ? overtime100 : (TimeSpan?)null;
+                    overtime100 = TotalTime;
+                
+                return overtime100;
             }
         }
         #endregion
@@ -231,5 +260,24 @@ namespace Great.Models
             }
         }
         #endregion
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void NotifyTimesheetsPropertiesChanged()
+        {
+            OnPropertyChanged(nameof(TotalTime));
+            OnPropertyChanged(nameof(WorkingTime));
+            OnPropertyChanged(nameof(TravelTime));
+
+            OnPropertyChanged(nameof(Overtime34));
+            OnPropertyChanged(nameof(Overtime35));
+            OnPropertyChanged(nameof(Overtime50));
+            OnPropertyChanged(nameof(Overtime100));
+
+            OnPropertyChanged(nameof(Factories_Display));
+        }
     }
 }

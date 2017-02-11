@@ -41,7 +41,7 @@
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item" 
-                  VirtualizingPanel.VirtualizationMode="Recycling">
+                  VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>                
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
@@ -103,13 +103,13 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" FontWeight="Bold" />
                 <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" />
-                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime}" FontWeight="Bold" />
-                <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime}" />
-                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime}" />
-                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=hh\\:mm}" />
-                <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=hh\\:mm}" />
-                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=hh\\:mm}" />
-                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=hh\\:mm}" />
+                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" />
+                <DataGridTextColumn Header="Working Time" Binding="{Binding WorkingTime, StringFormat=N2}" />
+                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" />
+                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=N2}" />
+                <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" />
+                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" />
+                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" />
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" />
             </DataGrid.Columns>
         </DataGrid>
@@ -179,16 +179,16 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>                    
                     <Label Grid.Column="0" Grid.Row="0" Content="Working Timee:" HorizontalAlignment="Right"/>
-                    <Label Grid.Column="1" Grid.Row="0"> 
-                        <TextBlock Text="{Binding SelectedTimesheet.WorkingTime, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
+                    <Label Grid.Column="1" Grid.Row="0">
+                        <TextBlock Text="{Binding SelectedTimesheet.WorkingTime, StringFormat=N2, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
                     </Label>
                     <Label Grid.Column="0" Grid.Row="1" Content="Travel Time:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="1">
-                        <TextBlock Text="{Binding SelectedTimesheet.TravelTime, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                        <TextBlock Text="{Binding SelectedTimesheet.TravelTime, StringFormat=N2, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
                     </Label>
                     <Label Grid.Column="0" Grid.Row="2" Content="Total Time:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="2">
-                        <TextBlock Text="{Binding SelectedTimesheet.TotalTime, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
+                        <TextBlock Text="{Binding SelectedTimesheet.TotalTime, StringFormat=N2, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}"/>
                     </Label>                    
                 </Grid>
             </GroupBox>

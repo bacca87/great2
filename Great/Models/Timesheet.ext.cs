@@ -68,7 +68,7 @@ namespace Great.Models
         {
             get
             {
-                return GetRoundedTotalDuration(TimePeriods);
+                return TimePeriodTools.GetRoundedTotalDuration(TimePeriods);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Great.Models
         {
             get
             {
-                return GetRoundedTotalDuration(WorkingPeriods);
+                return TimePeriodTools.GetRoundedTotalDuration(WorkingPeriods);
             }
         }
 
@@ -84,22 +84,11 @@ namespace Great.Models
         {
             get
             {
-                return GetRoundedTotalDuration(TravelPeriods);
+                return TimePeriodTools.GetRoundedTotalDuration(TravelPeriods);
             }
         }
 
-        RoundByQuarterHourDurationProvider roundByQuarterHour = new RoundByQuarterHourDurationProvider();
-
-        private float? GetRoundedTotalDuration(TimePeriodCollection periods)
-        {
-            if (periods == null || periods.Count == 0)
-                return null;
-
-            TimeSpan totalDuration = periods.GetTotalDuration(roundByQuarterHour);
-            float total = totalDuration.Hours + (totalDuration.Minutes / 100);
-
-            return total > 0 ? total : 24;
-        }
+        
         #endregion
 
         #region Time Periods
@@ -256,16 +245,6 @@ namespace Great.Models
                 WorkEndTimePM = this.WorkEndTimePM,
                 FDL = this.FDL
             };
-        }
-    }
-
-    public class RoundByQuarterHourDurationProvider : IDurationProvider
-    {   
-        public virtual TimeSpan GetDuration(DateTime start, DateTime end)
-        {
-            start = start.Date + TimeSpanExtensions.Round(start.TimeOfDay, RoundingDirection.Down, 15);
-            end = end.Date + TimeSpanExtensions.Round(end.TimeOfDay, RoundingDirection.Down, 15);
-            return end.Subtract(start);
         }
     }
 }

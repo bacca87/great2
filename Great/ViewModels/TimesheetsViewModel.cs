@@ -4,9 +4,8 @@ using Great.Models;
 using Great.Utils;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 
@@ -167,12 +166,12 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(CurrentMonth), oldValue, value);
             }
         }
-                
+
         /// <summary>
         /// Sets and gets the WorkingDays property.
         /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public ObservableCollection<WorkingDay> WorkingDays { get; internal set; }
+        /// </summary>        
+        public BindingList<WorkingDay> WorkingDays { get; internal set; }
 
         /// <summary>
         /// The <see cref="SelectedWorkingDay" /> property's name.
@@ -265,12 +264,12 @@ namespace Great.ViewModels
         /// Sets and gets the FDLs property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public ObservableCollection<FDL> FDLs
+        public BindingList<FDL> FDLs
         {
             get
             {
                 if (SelectedWorkingDay != null)
-                    return new ObservableCollection<FDL>(_db.FDLs.Where(fdl => fdl.WeekNr == SelectedWorkingDay.WeekNr));
+                    return new BindingList<FDL>(_db.FDLs.Where(fdl => fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList());
                 else
                     return null;
             }
@@ -317,9 +316,7 @@ namespace Great.ViewModels
         
         private void UpdateWorkingDays()
         {
-            ObservableCollection<WorkingDay> days = new ObservableCollection<WorkingDay>();
-            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
-            Calendar cal = dfi.Calendar;
+            BindingList<WorkingDay> days = new BindingList<WorkingDay>();
 
             for (int month = 1; month <= 12; month++)
             {
@@ -328,10 +325,9 @@ namespace Great.ViewModels
                     long timestamp = UnixTimestamp.GetTimestamp(day);
 
                     WorkingDay workingDay = new WorkingDay
-                    {
-                        WeekNr = cal.GetWeekOfYear(day, dfi.CalendarWeekRule, dfi.FirstDayOfWeek),
+                    {   
                         Date = day,
-                        Timesheets = new ObservableCollection<Timesheet>(_db.Timesheets.Where(ts => ts.Timestamp == timestamp))
+                        Timesheets = new BindingList<Timesheet>(_db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList())
                     };
 
                     days.Add(workingDay);
@@ -392,9 +388,14 @@ namespace Great.ViewModels
 
         public void SaveTimesheet(Timesheet timesheet)
         {
-            if (!timesheet.IsValid || timesheet.HasOverlaps(SelectedWorkingDay.Timesheets))
+            if (!timesheet.IsValid)
             {
-                MessageBox.Show("NO!!!");
+                MessageBox.Show("Each period of time requires a beginning and an end, and these periods can't overlaps between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            else if(timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
+            {
+                MessageBox.Show("The inserted time periods are overlapping with existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -403,10 +404,10 @@ namespace Great.ViewModels
             if (_db.SaveChanges() > 0)
             {
                 // check if already exist in the collection
-                Timesheet item = SelectedWorkingDay.Timesheets.Where(t => t.Id == timesheet.Id).FirstOrDefault();
+                Timesheet itemTimesheet = SelectedWorkingDay.Timesheets.Where(t => t.Id == timesheet.Id).FirstOrDefault();
 
-                if (item != null) 
-                    SelectedWorkingDay.Timesheets[SelectedWorkingDay.Timesheets.IndexOf(item)] = timesheet;
+                if (itemTimesheet != null) 
+                    SelectedWorkingDay.Timesheets[SelectedWorkingDay.Timesheets.IndexOf(itemTimesheet)] = timesheet;
                 else
                     SelectedWorkingDay.Timesheets.Add(timesheet);
 

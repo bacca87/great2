@@ -139,7 +139,14 @@ namespace Great.ViewModels
 
             if (_db.SaveChanges() > 0)
             {
-                Factories.Add(factory);
+                // check if already exist in the collection
+                Factory itemFactory = Factories.Where(f => f.Id == factory.Id).FirstOrDefault();
+
+                if (itemFactory != null)
+                    Factories[Factories.IndexOf(itemFactory)] = factory;
+                else
+                    Factories.Add(factory);
+
                 SelectedFactory = factory;
             }
         }
