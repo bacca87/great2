@@ -171,18 +171,18 @@ namespace Great.ViewModels
         /// Sets and gets the WorkingDays property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public BindingList<WorkingDay> WorkingDays { get; internal set; }
+        public BindingList<Day> WorkingDays { get; internal set; }
 
         /// <summary>
         /// The <see cref="SelectedWorkingDay" /> property's name.
         /// </summary>
-        private WorkingDay _selectedWorkingDay;
+        private Day _selectedWorkingDay;
 
         /// <summary>
         /// Sets and gets the SelectedWorkingDay property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public WorkingDay SelectedWorkingDay
+        public Day SelectedWorkingDay
         {
             get
             {
@@ -279,7 +279,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Sets and gets the OnSelectFirstDayInMonth Action.        
         /// </summary>
-        public Action<WorkingDay> OnSelectFirstDayInMonth;
+        public Action<Day> OnSelectFirstDayInMonth;
 
         private DBEntities _db { get; set; }
         #endregion
@@ -317,7 +317,7 @@ namespace Great.ViewModels
         
         private void UpdateWorkingDays()
         {
-            BindingList<WorkingDay> days = new BindingList<WorkingDay>();
+            BindingList<Day> days = new BindingList<Day>();
 
             for (int month = 1; month <= 12; month++)
             {
@@ -325,13 +325,12 @@ namespace Great.ViewModels
                 {
                     long timestamp = UnixTimestamp.GetTimestamp(day);
 
-                    WorkingDay workingDay = new WorkingDay
-                    {   
-                        Date = day,
-                        Timesheets = new BindingList<Timesheet>(_db.Timesheets.Where(ts => ts.Timestamp == timestamp).ToList())
-                    };
+                    Day currentDay = _db.Days.Where(d => d.Timestamp == timestamp).FirstOrDefault();
 
-                    days.Add(workingDay);
+                    if (currentDay != null)
+                        days.Add(currentDay);
+                    else
+                        days.Add(new Day { Date = day });
                 }
             }
 
@@ -400,17 +399,13 @@ namespace Great.ViewModels
                 return;
             }
 
+            _db.Days.AddOrUpdate(SelectedWorkingDay);
             _db.Timesheets.AddOrUpdate(timesheet);
 
             if (_db.SaveChanges() > 0)
             {
-                // check if already exist in the collection
-                Timesheet itemTimesheet = SelectedWorkingDay.Timesheets.Where(t => t.Id == timesheet.Id).FirstOrDefault();
-
-                if (itemTimesheet != null) 
-                    SelectedWorkingDay.Timesheets[SelectedWorkingDay.Timesheets.IndexOf(itemTimesheet)] = timesheet;
-                else
-                    SelectedWorkingDay.Timesheets.Add(timesheet);
+                if (_db.Days.Count(d => d.Timestamp == SelectedWorkingDay.Timestamp) > 0)
+                    WorkingDays[WorkingDays.IndexOf(SelectedWorkingDay)] = _db.Days.Where(d => d.Timestamp == SelectedWorkingDay.Timestamp).First();                    
 
                 SelectedTimesheet = null;
             }

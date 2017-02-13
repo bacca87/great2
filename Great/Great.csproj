@@ -160,6 +160,7 @@
     <Compile Include="Models\Day.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Day.ext.cs" />
     <Compile Include="Models\DayType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>

@@ -24,7 +24,7 @@ namespace Great.Views.Pages
             _viewModel.OnSelectFirstDayInMonth += scrollToSelectedDay;
         }
 
-        private void scrollToSelectedDay(WorkingDay day)
+        private void scrollToSelectedDay(Day day)
         {
             if (scrollViewer == null) // run once
                 scrollViewer = WPFTools.GetVisualChild<ScrollViewer>(workingDaysDataGrid);
