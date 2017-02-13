@@ -38,6 +38,20 @@
           <Property Name="EndFuelLevel" Type="integer" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Day">
+          <Key>
+            <PropertyRef Name="Timestamp" />
+          </Key>
+          <Property Name="Timestamp" Type="integer" Nullable="false" />
+          <Property Name="Type" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DayType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
         <EntityType Name="ExpenseAccount">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,6 +146,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Day_0_0">
+          <End Role="DayType" Type="Self.DayType" Multiplicity="1" />
+          <End Role="Day" Type="Self.Day" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DayType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Day">
+              <PropertyRef Name="Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ExpenseAccount_0_0">
           <End Role="FDL" Type="Self.FDL" Multiplicity="1" />
           <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
@@ -192,10 +218,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Timesheet_1_0">
+          <End Role="Day" Type="Self.Day" Multiplicity="1" />
+          <End Role="Timesheet" Type="Self.Timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Day">
+              <PropertyRef Name="Timestamp" />
+            </Principal>
+            <Dependent Role="Timesheet">
+              <PropertyRef Name="Timestamp" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="DBModelStoreContainer">
           <EntitySet Name="Car" EntityType="Self.Car" store:Type="Tables" />
           <EntitySet Name="CarRentalCompany" EntityType="Self.CarRentalCompany" store:Type="Tables" />
           <EntitySet Name="CarRentalHistory" EntityType="Self.CarRentalHistory" store:Type="Tables" />
+          <EntitySet Name="Day" EntityType="Self.Day" store:Type="Tables" />
+          <EntitySet Name="DayType" EntityType="Self.DayType" store:Type="Tables" />
           <EntitySet Name="ExpenseAccount" EntityType="Self.ExpenseAccount" store:Type="Tables" />
           <EntitySet Name="Factory" EntityType="Self.Factory" store:Type="Tables" />
           <EntitySet Name="FDL" EntityType="Self.FDL" store:Type="Tables" />
@@ -209,6 +249,10 @@
           <AssociationSet Name="FK_CarRentalHistory_0_0" Association="Self.FK_CarRentalHistory_0_0">
             <End Role="Car" EntitySet="Car" />
             <End Role="CarRentalHistory" EntitySet="CarRentalHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Day_0_0" Association="Self.FK_Day_0_0">
+            <End Role="DayType" EntitySet="DayType" />
+            <End Role="Day" EntitySet="Day" />
           </AssociationSet>
           <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
             <End Role="FDL" EntitySet="FDL" />
@@ -230,6 +274,10 @@
             <End Role="FDL" EntitySet="FDL" />
             <End Role="Timesheet" EntitySet="Timesheet" />
           </AssociationSet>
+          <AssociationSet Name="FK_Timesheet_1_0" Association="Self.FK_Timesheet_1_0">
+            <End Role="Day" EntitySet="Day" />
+            <End Role="Timesheet" EntitySet="Timesheet" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -239,6 +287,8 @@
           <EntitySet Name="Cars" EntityType="DBModel.Car" />
           <EntitySet Name="CarRentalCompanies" EntityType="DBModel.CarRentalCompany" />
           <EntitySet Name="CarRentalHistories" EntityType="DBModel.CarRentalHistory" />
+          <EntitySet Name="Days" EntityType="DBModel.Day" />
+          <EntitySet Name="DayTypes" EntityType="DBModel.DayType" />
           <EntitySet Name="ExpenseAccounts" EntityType="DBModel.ExpenseAccount" />
           <EntitySet Name="Factories" EntityType="DBModel.Factory" />
           <EntitySet Name="FDLs" EntityType="DBModel.FDL" />
@@ -252,6 +302,14 @@
           <AssociationSet Name="FK_CarRentalHistory_0_0" Association="DBModel.FK_CarRentalHistory_0_0">
             <End Role="Car" EntitySet="Cars" />
             <End Role="CarRentalHistory" EntitySet="CarRentalHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Day_0_0" Association="DBModel.FK_Day_0_0">
+            <End Role="DayType" EntitySet="DayTypes" />
+            <End Role="Day" EntitySet="Days" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timesheet_1_0" Association="DBModel.FK_Timesheet_1_0">
+            <End Role="Day" EntitySet="Days" />
+            <End Role="Timesheet" EntitySet="Timesheets" />
           </AssociationSet>
           <AssociationSet Name="FK_ExpenseAccount_0_0" Association="DBModel.FK_ExpenseAccount_0_0">
             <End Role="FDL" EntitySet="FDLs" />
@@ -310,6 +368,23 @@
           <Property Name="EndFuelLevel" Type="Int64" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Car1" Relationship="DBModel.FK_CarRentalHistory_0_0" FromRole="CarRentalHistory" ToRole="Car" />
+        </EntityType>
+        <EntityType Name="Day">
+          <Key>
+            <PropertyRef Name="Timestamp" />
+          </Key>
+          <Property Name="Timestamp" Type="Int64" Nullable="false" />
+          <Property Name="Type" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="DayType" Relationship="DBModel.FK_Day_0_0" FromRole="Day" ToRole="DayType" />
+          <NavigationProperty Name="Timesheets" Relationship="DBModel.FK_Timesheet_1_0" FromRole="Day" ToRole="Timesheet" />
+        </EntityType>
+        <EntityType Name="DayType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Days" Relationship="DBModel.FK_Day_0_0" FromRole="DayType" ToRole="Day" />
         </EntityType>
         <EntityType Name="ExpenseAccount">
           <Key>
@@ -381,6 +456,7 @@
           <Property Name="WorkStartTimePM" Type="Int64" />
           <Property Name="WorkEndTimePM" Type="Int64" />
           <Property Name="FDL" Type="Int64" />
+          <NavigationProperty Name="Day" Relationship="DBModel.FK_Timesheet_1_0" FromRole="Timesheet" ToRole="Day" />
           <NavigationProperty Name="FDL1" Relationship="DBModel.FK_Timesheet_0_0" FromRole="Timesheet" ToRole="FDL" />
         </EntityType>
         <EntityType Name="TransferType">
@@ -412,6 +488,30 @@
             </Principal>
             <Dependent Role="CarRentalHistory">
               <PropertyRef Name="Car" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Day_0_0">
+          <End Type="DBModel.DayType" Role="DayType" Multiplicity="1" />
+          <End Type="DBModel.Day" Role="Day" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DayType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Day">
+              <PropertyRef Name="Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Timesheet_1_0">
+          <End Type="DBModel.Day" Role="Day" Multiplicity="1" />
+          <End Type="DBModel.Timesheet" Role="Timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Day">
+              <PropertyRef Name="Timestamp" />
+            </Principal>
+            <Dependent Role="Timesheet">
+              <PropertyRef Name="Timestamp" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -513,6 +613,22 @@
                 <ScalarProperty Name="EndKm" ColumnName="EndKm" />
                 <ScalarProperty Name="StartKm" ColumnName="StartKm" />
                 <ScalarProperty Name="Car" ColumnName="Car" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Days">
+            <EntityTypeMapping TypeName="DBModel.Day">
+              <MappingFragment StoreEntitySet="Day">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DayTypes">
+            <EntityTypeMapping TypeName="DBModel.DayType">
+              <MappingFragment StoreEntitySet="DayType">
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -72,11 +72,11 @@ namespace Great.Models
             }
         }
 
-        public float? WorkingTime
+        public float? WorkTime
         {
             get
             {
-                return TimePeriodTools.GetRoundedTotalDuration(WorkingPeriods);
+                return TimePeriodTools.GetRoundedTotalDuration(WorkPeriods);
             }
         }
 
@@ -98,8 +98,8 @@ namespace Great.Models
             {
                 TimePeriodCollection timePeriods = new TimePeriodCollection();
 
-                if (WorkingPeriods != null)
-                    timePeriods.AddAll(WorkingPeriods);
+                if (WorkPeriods != null)
+                    timePeriods.AddAll(WorkPeriods);
 
                 if (TravelPeriods != null)
                     timePeriods.AddAll(TravelPeriods);
@@ -108,11 +108,11 @@ namespace Great.Models
             }
         }
 
-        public TimePeriodCollection WorkingPeriods
+        public TimePeriodCollection WorkPeriods
         {
             get
             {
-                TimePeriodCollection workingPeriods = new TimePeriodCollection();
+                TimePeriodCollection workPeriods = new TimePeriodCollection();
                 DateTime start;
                 DateTime end;
 
@@ -120,17 +120,17 @@ namespace Great.Models
                 {
                     start = Date + WorkStartTimeAM_t.Value;
                     end = WorkStartTimeAM_t.Value < WorkEndTimeAM_t.Value ? Date + WorkEndTimeAM_t.Value : Date.AddDays(1) + WorkEndTimeAM_t.Value;
-                    workingPeriods.Add(new TimeRange(start, end));
+                    workPeriods.Add(new TimeRange(start, end));
                 }
 
                 if (WorkEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue)
                 {
                     start = Date + WorkStartTimePM_t.Value;
                     end = WorkStartTimePM_t.Value < WorkEndTimePM_t.Value ? Date + WorkEndTimePM_t.Value : Date.AddDays(1) + WorkEndTimePM_t.Value;
-                    workingPeriods.Add(new TimeRange(start, end));
+                    workPeriods.Add(new TimeRange(start, end));
                 }
                                 
-                return workingPeriods.Count > 0 ? workingPeriods : null;
+                return workPeriods.Count > 0 ? workPeriods : null;
             }
         }
 
@@ -228,13 +228,13 @@ namespace Great.Models
             return false;
         }
         #endregion
-
+        
         public Timesheet Clone()
         {
             return new Timesheet()
             {
                 Id = this.Id,
-                Timestamp = this.Timestamp,
+                Timestamp = this.Timestamp,                
                 TravelStartTimeAM = this.TravelStartTimeAM,
                 TravelEndTimeAM = this.TravelEndTimeAM,
                 WorkStartTimeAM = this.WorkStartTimeAM,

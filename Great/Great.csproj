@@ -157,6 +157,12 @@
     <Compile Include="Models\CarRentalHistory.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Day.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DayType.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ExpenseAccount.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>

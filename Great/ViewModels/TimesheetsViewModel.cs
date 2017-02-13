@@ -204,6 +204,7 @@ namespace Great.ViewModels
                     IsInputEnabled = false;
 
                 RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
+                RaisePropertyChanged(nameof(FDLs));
             }
         }
 
@@ -264,17 +265,17 @@ namespace Great.ViewModels
         /// Sets and gets the FDLs property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public BindingList<FDL> FDLs
+        public IList<FDL> FDLs
         {
             get
             {
                 if (SelectedWorkingDay != null)
-                    return new BindingList<FDL>(_db.FDLs.Where(fdl => fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList());
+                    return _db.FDLs.Where(fdl => fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList();
                 else
                     return null;
             }
         }
-
+        
         /// <summary>
         /// Sets and gets the OnSelectFirstDayInMonth Action.        
         /// </summary>

@@ -28,6 +28,8 @@ namespace Great.Models
         public virtual DbSet<Car> Cars { get; set; }
         public virtual DbSet<CarRentalCompany> CarRentalCompanies { get; set; }
         public virtual DbSet<CarRentalHistory> CarRentalHistories { get; set; }
+        public virtual DbSet<Day> Days { get; set; }
+        public virtual DbSet<DayType> DayTypes { get; set; }
         public virtual DbSet<ExpenseAccount> ExpenseAccounts { get; set; }
         public virtual DbSet<Factory> Factories { get; set; }
         public virtual DbSet<FDL> FDLs { get; set; }

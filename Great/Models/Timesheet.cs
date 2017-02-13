@@ -26,6 +26,7 @@ namespace Great.Models
         public Nullable<long> WorkEndTimePM { get; set; }
         public Nullable<long> FDL { get; set; }
     
+        public virtual Day Day { get; set; }
         public virtual FDL FDL1 { get; set; }
     }
 }

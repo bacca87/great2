@@ -10,9 +10,8 @@ namespace Great.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
-        public bool IsHoliday { get; } //TODO
+        public bool IsHoliday { get; }        
         public long Timestamp { get { return UnixTimestamp.GetTimestamp(Date); } }
-        public bool HasDetails { get { return Timesheets != null ? Timesheets.Count > 0 : false; } }
         
         private DateTime _date;
         public DateTime Date
@@ -64,7 +63,7 @@ namespace Great.Models
             }
         }
 
-        public float? WorkingTime
+        public float? WorkTime
         {
             get
             {
@@ -74,8 +73,8 @@ namespace Great.Models
                     return null;
 
                 foreach (Timesheet ts in Timesheets)
-                    if (ts.WorkingTime.HasValue)
-                        total += ts.WorkingTime.Value;
+                    if (ts.WorkTime.HasValue)
+                        total += ts.WorkTime.Value;
 
                 return total > 0 ? total : null;
             }
@@ -117,7 +116,7 @@ namespace Great.Models
             }
         }
         
-        public TimePeriodCollection WorkingPeriods
+        public TimePeriodCollection WorkPeriods
         {
             get
             {
@@ -127,8 +126,8 @@ namespace Great.Models
                     return null;
 
                 foreach (Timesheet ts in Timesheets)
-                    if(ts.WorkingPeriods != null)
-                        workingPeriods.AddAll(ts.WorkingPeriods);
+                    if(ts.WorkPeriods != null)
+                        workingPeriods.AddAll(ts.WorkPeriods);
 
                 return workingPeriods.Count > 0 ? workingPeriods : null;
             }
@@ -269,7 +268,7 @@ namespace Great.Models
         private void NotifyTimesheetsPropertiesChanged()
         {
             OnPropertyChanged(nameof(TotalTime));
-            OnPropertyChanged(nameof(WorkingTime));
+            OnPropertyChanged(nameof(WorkTime));
             OnPropertyChanged(nameof(TravelTime));
 
             OnPropertyChanged(nameof(Overtime34));
