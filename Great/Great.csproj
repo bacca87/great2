@@ -227,7 +227,6 @@
     <Compile Include="ViewModels\FactoriesViewModel.cs" />
     <Compile Include="ViewModels\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
-    <Compile Include="Models\WorkingDay.cs" />
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>

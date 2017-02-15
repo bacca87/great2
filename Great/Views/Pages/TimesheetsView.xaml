@@ -123,7 +123,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <DataGrid ItemsSource="{Binding SelectedWorkingDay.Timesheets}"                      
+            <DataGrid ItemsSource="{Binding Timesheets}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
                       Grid.Row="0"
                       VerticalAlignment="Stretch"
@@ -181,7 +181,7 @@
                     </Grid.RowDefinitions>                    
                     <Label Grid.Column="0" Grid.Row="0" Content="Working Timee:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="0">
-                        <TextBlock Text="{Binding SelectedTimesheet.WorkingTime, StringFormat=N2, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
+                        <TextBlock Text="{Binding SelectedTimesheet.WorkTime, StringFormat=N2, FallbackValue=n/a, TargetNullValue=n/a, Mode=OneWay}" />
                     </Label>
                     <Label Grid.Column="0" Grid.Row="1" Content="Travel Time:" HorizontalAlignment="Right"/>
                     <Label Grid.Column="1" Grid.Row="1">

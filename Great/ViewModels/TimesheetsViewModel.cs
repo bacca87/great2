@@ -168,10 +168,48 @@ namespace Great.ViewModels
         }
 
         /// <summary>
+        /// The <see cref="WorkingDays" /> property's name.
+        /// </summary>
+        private IList<Day> _workingDays;
+
+        /// <summary>
         /// Sets and gets the WorkingDays property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public BindingList<Day> WorkingDays { get; internal set; }
+        public IList<Day> WorkingDays
+        {
+            get
+            {
+                return _workingDays;
+            }
+            internal set
+            {
+                _workingDays = value;
+                RaisePropertyChanged(nameof(WorkingDays));
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="Timesheets" /> property's name.
+        /// </summary>
+        private IList<Timesheet> _timesheets;
+
+        /// <summary>
+        /// Sets and gets the Timesheets property.
+        /// Changes to that property's value raise the PropertyChanged event.
+        /// </summary>
+        public IList<Timesheet> Timesheets
+        {
+            get
+            {
+                return _timesheets;
+            }
+            internal set
+            {
+                _timesheets = value;
+                RaisePropertyChanged(nameof(Timesheets));
+            }
+        }
 
         /// <summary>
         /// The <see cref="SelectedWorkingDay" /> property's name.
@@ -197,6 +235,8 @@ namespace Great.ViewModels
                 if (_selectedWorkingDay != null)
                 {
                     CurrentMonth = _selectedWorkingDay.Date.Month;
+                    
+                    Timesheets = new BindingList<Timesheet>(_db.Timesheets.Where(t => t.Timestamp == _selectedWorkingDay.Timestamp).ToList());
                     SelectedTimesheet = null;
                     IsInputEnabled = true;
                 }
@@ -381,7 +421,8 @@ namespace Great.ViewModels
 
             if (_db.SaveChanges() > 0)
             {
-                SelectedWorkingDay.Timesheets.Remove(timesheet);
+                SelectedWorkingDay.NotifyTimesheetsPropertiesChanged();
+                Timesheets = new List<Timesheet>(SelectedWorkingDay.Timesheets.ToList());
                 SelectedTimesheet = null;
             }
         }
@@ -404,9 +445,8 @@ namespace Great.ViewModels
 
             if (_db.SaveChanges() > 0)
             {
-                if (_db.Days.Count(d => d.Timestamp == SelectedWorkingDay.Timestamp) > 0)
-                    WorkingDays[WorkingDays.IndexOf(SelectedWorkingDay)] = _db.Days.Where(d => d.Timestamp == SelectedWorkingDay.Timestamp).First();                    
-
+                SelectedWorkingDay.NotifyTimesheetsPropertiesChanged();
+                Timesheets = new List<Timesheet>(SelectedWorkingDay.Timesheets.ToList());
                 SelectedTimesheet = null;
             }
         }

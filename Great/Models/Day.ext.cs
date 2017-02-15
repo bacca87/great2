@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace Great.Models
 {
-    public partial class Day
+    public partial class Day : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -233,5 +233,24 @@ namespace Great.Models
             }
         }
         #endregion        
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void NotifyTimesheetsPropertiesChanged()
+        {
+            OnPropertyChanged(nameof(TotalTime));
+            OnPropertyChanged(nameof(WorkTime));
+            OnPropertyChanged(nameof(TravelTime));
+
+            OnPropertyChanged(nameof(Overtime34));
+            OnPropertyChanged(nameof(Overtime35));
+            OnPropertyChanged(nameof(Overtime50));
+            OnPropertyChanged(nameof(Overtime100));
+
+            OnPropertyChanged(nameof(Factories_Display));
+        }
     }
 }
