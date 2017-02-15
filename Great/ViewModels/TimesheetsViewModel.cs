@@ -330,6 +330,10 @@ namespace Great.ViewModels
         public RelayCommand<int> SelectFirstDayInMonthCommand { get; set; }
         public RelayCommand SelectTodayCommand { get; set; }
 
+        public RelayCommand<Day> SetVacationDayCommand { get; set; }
+        public RelayCommand<Day> SetSickLeaveCommand { get; set; }
+        public RelayCommand<Day> SetWorkDayCommand { get; set; }
+
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> DeleteTimesheetCommand { get; set; }        
@@ -346,6 +350,10 @@ namespace Great.ViewModels
             PreviousYearCommand = new RelayCommand(SetPreviousYear);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
             SelectTodayCommand = new RelayCommand(SelectToday);
+
+            SetVacationDayCommand = new RelayCommand<Day>(SetVacationDay);
+            SetSickLeaveCommand = new RelayCommand<Day>(SetSickLeave);
+            SetWorkDayCommand = new RelayCommand<Day>(SetWorkDay);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
@@ -415,8 +423,47 @@ namespace Great.ViewModels
             SelectedTimesheet = null;
         }
 
+        public void SetVacationDay(Day day)
+        {
+            if (day == null)
+                return;
+
+            day.Type = (long)EDayType.VacationDay;
+            _db.Days.AddOrUpdate(day);
+
+            if(_db.SaveChanges() > 0)
+                day.NotifyTimesheetsPropertiesChanged();
+        }
+
+        public void SetSickLeave(Day day)
+        {
+            if (day == null)
+                return;
+
+            day.Type = (long)EDayType.SickLeave;
+            _db.Days.AddOrUpdate(day);
+
+            if (_db.SaveChanges() > 0)
+                day.NotifyTimesheetsPropertiesChanged();
+        }
+
+        public void SetWorkDay(Day day)
+        {
+            if (day == null)
+                return;
+
+            day.Type = (long)EDayType.WorkDay;
+            _db.Days.AddOrUpdate(day);
+
+            if (_db.SaveChanges() > 0)
+                day.NotifyTimesheetsPropertiesChanged();
+        }
+        
         public void DeleteTimesheet(Timesheet timesheet)
         {
+            if (timesheet == null)
+                return;
+
             _db.Timesheets.Remove(timesheet);
 
             if (_db.SaveChanges() > 0)
@@ -429,6 +476,9 @@ namespace Great.ViewModels
 
         public void SaveTimesheet(Timesheet timesheet)
         {
+            if (timesheet == null)
+                return;
+
             if (!timesheet.IsValid)
             {
                 MessageBox.Show("Each period of time requires a beginning and an end, and these periods can't overlaps between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);

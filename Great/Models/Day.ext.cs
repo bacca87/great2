@@ -18,7 +18,11 @@ namespace Great.Models
         
         public int WeekNr { get { return DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(Date, DateTimeFormatInfo.CurrentInfo.CalendarWeekRule, DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek); } }
         public bool IsHoliday { get; }
-        
+
+        public bool IsWorkDay { get { return Type == (long)EDayType.WorkDay; } }
+        public bool IsVacationDay { get { return Type == (long)EDayType.VacationDay; } }
+        public bool IsSickLeave { get { return Type == (long)EDayType.SickLeave; } }
+
         #region Totals
         public float? TotalTime
         {
@@ -68,6 +72,17 @@ namespace Great.Models
                         total += ts.TravelTime.Value;
 
                 return total > 0 ? total : null;
+            }
+        }
+
+        public float? HoursOfLeave
+        {
+            get
+            {   
+                if (TotalTime == null || TotalTime >= 8)
+                    return null;
+
+                return 8 - TotalTime;
             }
         }
         #endregion
@@ -241,9 +256,16 @@ namespace Great.Models
 
         public void NotifyTimesheetsPropertiesChanged()
         {
+            OnPropertyChanged(nameof(Type));
+            
+            OnPropertyChanged(nameof(IsWorkDay));
+            OnPropertyChanged(nameof(IsVacationDay));
+            OnPropertyChanged(nameof(IsSickLeave));
+
             OnPropertyChanged(nameof(TotalTime));
             OnPropertyChanged(nameof(WorkTime));
             OnPropertyChanged(nameof(TravelTime));
+            OnPropertyChanged(nameof(HoursOfLeave));
 
             OnPropertyChanged(nameof(Overtime34));
             OnPropertyChanged(nameof(Overtime35));
@@ -252,5 +274,12 @@ namespace Great.Models
 
             OnPropertyChanged(nameof(Factories_Display));
         }
+    }
+
+    public enum EDayType
+    {
+        WorkDay = 0,
+        VacationDay = 1,
+        SickLeave = 2
     }
 }

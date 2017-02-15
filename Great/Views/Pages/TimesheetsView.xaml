@@ -24,7 +24,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>        
+        </Grid.ColumnDefinitions>
         <DataGrid Name="workingDaysDataGrid"
                   Grid.Column="0"
                   HorizontalAlignment="Stretch" 
@@ -42,7 +42,7 @@
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item" 
                   VirtualizingPanel.VirtualizationMode="Standard">
-            <DataGrid.Resources>                
+            <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Style.Setters>
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
@@ -61,8 +61,14 @@
                             <Setter Property="Background" Value="Tomato" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsHoliday}" Value="True">
+                            <Setter Property="Background" Value="Tomato" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="1">
                             <Setter Property="Background" Value="Orange" />
-                        </DataTrigger>                        
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="2">
+                            <Setter Property="Background" Value="Pink" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
@@ -100,13 +106,21 @@
                     </GroupStyle.ContainerStyle>
                 </GroupStyle>
             </DataGrid.GroupStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                    <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                    <Separator/>
+                    <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" FontWeight="Bold" />
                 <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" />
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" />
                 <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" />
                 <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" />
-                <DataGridTextColumn Header="Hours of Leave" Binding="{Binding TravelTime, StringFormat=N2}" />
+                <DataGridTextColumn Header="Hours of Leave" Binding="{Binding HoursOfLeave, StringFormat=N2}" />
                 <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=N2}" />
                 <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" />
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" />
