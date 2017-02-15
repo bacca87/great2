@@ -324,7 +324,7 @@ namespace Great.ViewModels
         private DBEntities _db { get; set; }
         #endregion
 
-        #region Commands
+        #region Commands Definitions
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
         public RelayCommand<int> SelectFirstDayInMonthCommand { get; set; }
@@ -425,38 +425,41 @@ namespace Great.ViewModels
 
         public void SetVacationDay(Day day)
         {
-            if (day == null)
-                return;
-
-            day.Type = (long)EDayType.VacationDay;
-            _db.Days.AddOrUpdate(day);
-
-            if(_db.SaveChanges() > 0)
-                day.NotifyTimesheetsPropertiesChanged();
+            SetDayType(day, EDayType.VacationDay);
         }
 
         public void SetSickLeave(Day day)
         {
-            if (day == null)
-                return;
-
-            day.Type = (long)EDayType.SickLeave;
-            _db.Days.AddOrUpdate(day);
-
-            if (_db.SaveChanges() > 0)
-                day.NotifyTimesheetsPropertiesChanged();
+            SetDayType(day, EDayType.SickLeave);
         }
 
         public void SetWorkDay(Day day)
         {
-            if (day == null)
-                return;
+            SetDayType(day, EDayType.WorkDay);
+        }
 
-            day.Type = (long)EDayType.WorkDay;
-            _db.Days.AddOrUpdate(day);
+        private void SetDayType(Day day, EDayType type)
+        {
+            bool cancel = false;
 
-            if (_db.SaveChanges() > 0)
-                day.NotifyTimesheetsPropertiesChanged();
+            if (day == null || day.Type == (long)type)
+                cancel = true;
+
+            if (!cancel && type != EDayType.WorkDay && day.Timesheets.Count() > 0)
+            {
+                if (MessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                    _db.Timesheets.RemoveRange(day.Timesheets);
+                else
+                    cancel = true;
+            }
+
+            if(!cancel)
+            {
+                day.Type = (long)type;
+                _db.Days.AddOrUpdate(day);
+            }
+            
+            day.NotifyTimesheetsPropertiesChanged();
         }
         
         public void DeleteTimesheet(Timesheet timesheet)
