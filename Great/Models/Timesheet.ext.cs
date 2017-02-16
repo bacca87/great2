@@ -234,7 +234,7 @@ namespace Great.Models
             return new Timesheet()
             {
                 Id = this.Id,
-                Timestamp = this.Timestamp,                
+                Timestamp = this.Timestamp,
                 TravelStartTimeAM = this.TravelStartTimeAM,
                 TravelEndTimeAM = this.TravelEndTimeAM,
                 WorkStartTimeAM = this.WorkStartTimeAM,

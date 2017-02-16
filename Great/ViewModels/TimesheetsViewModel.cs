@@ -170,13 +170,13 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="WorkingDays" /> property's name.
         /// </summary>
-        private IList<Day> _workingDays;
+        private BindingList<Day> _workingDays;
 
         /// <summary>
         /// Sets and gets the WorkingDays property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public IList<Day> WorkingDays
+        public BindingList<Day> WorkingDays
         {
             get
             {
@@ -334,6 +334,11 @@ namespace Great.ViewModels
         public RelayCommand<Day> SetSickLeaveCommand { get; set; }
         public RelayCommand<Day> SetWorkDayCommand { get; set; }
 
+        public RelayCommand<Day> ResetDayCommand { get; set; }
+        public RelayCommand<Day> CopyDayCommand { get; set; }
+        public RelayCommand<Day> CutDayCommand { get; set; }
+        public RelayCommand<Day> PasteDayCommand { get; set; }
+
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
         public RelayCommand<Timesheet> DeleteTimesheetCommand { get; set; }        
@@ -354,6 +359,11 @@ namespace Great.ViewModels
             SetVacationDayCommand = new RelayCommand<Day>(SetVacationDay);
             SetSickLeaveCommand = new RelayCommand<Day>(SetSickLeave);
             SetWorkDayCommand = new RelayCommand<Day>(SetWorkDay);
+
+            ResetDayCommand = new RelayCommand<Day>(ResetDay);
+            CopyDayCommand = new RelayCommand<Day>(CopyDay);
+            CutDayCommand = new RelayCommand<Day>(CutDay);
+            PasteDayCommand = new RelayCommand<Day>(PasteDay);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
@@ -457,11 +467,88 @@ namespace Great.ViewModels
             {
                 day.Type = (long)type;
                 _db.Days.AddOrUpdate(day);
+                _db.SaveChanges();
             }
-            
+
             day.NotifyTimesheetsPropertiesChanged();
         }
-        
+
+        public void ResetDay(Day day)
+        {
+            if (!_db.Days.Any(d => d.Timestamp == day.Timestamp))
+                return;
+
+            _db.Days.Remove(day);
+
+            if (_db.SaveChanges() > 0)
+            {
+                Day empty = new Day() { Timestamp = day.Timestamp };
+                int index = WorkingDays.IndexOf(day);
+
+                WorkingDays.RemoveAt(index);
+                WorkingDays.Insert(index, empty);
+                SelectedWorkingDay = empty;
+            }
+        }
+
+        public void CopyDay(Day day)
+        {
+            if (day == null)
+                return;
+
+            Clipboard.Clear();
+            Clipboard.SetData("Timestamp", day.Timestamp);
+        }
+
+        public void CutDay(Day day)
+        {
+            if (day == null)
+                return;
+
+            int index = WorkingDays.IndexOf(day);
+
+            WorkingDays[index] = new Day() { Timestamp = day.Timestamp };
+
+            Clipboard.Clear();
+            Clipboard.SetData("Timestamp", day.Timestamp);
+        }
+
+        public void PasteDay(Day destinationDay)
+        {
+            if (destinationDay == null || !Clipboard.ContainsData("Timestamp"))
+                return;
+
+            long? timestamp = Clipboard.GetData("Timestamp") as long?;
+
+            if (!timestamp.HasValue)
+                return;
+
+            Day sourceDay = WorkingDays.Where(d => d.Timestamp == timestamp.Value).FirstOrDefault();
+
+            IList<Timesheet> destinationTimesheets = new List<Timesheet>();
+
+            foreach (Timesheet timesheet in sourceDay.Timesheets)
+            {
+                Timesheet tmp = timesheet.Clone();
+                tmp.Timestamp = destinationDay.Timestamp;
+                destinationTimesheets.Add(tmp);
+            }
+
+            if (destinationDay.Timesheets != null && destinationDay.Timesheets.Count > 0)
+                _db.Timesheets.RemoveRange(destinationDay.Timesheets);
+
+            _db.Timesheets.AddRange(destinationTimesheets);
+
+            destinationDay.Type = sourceDay.Type;
+            _db.Days.AddOrUpdate(destinationDay);
+
+            if(_db.SaveChanges() > 0)
+            {
+                sourceDay.NotifyTimesheetsPropertiesChanged();
+                destinationDay.NotifyTimesheetsPropertiesChanged();
+            }
+        }
+
         public void DeleteTimesheet(Timesheet timesheet)
         {
             if (timesheet == null)

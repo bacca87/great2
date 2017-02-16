@@ -504,7 +504,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Timesheet_1_0">
-          <End Type="DBModel.Day" Role="Day" Multiplicity="1" />
+          <End Type="DBModel.Day" Role="Day" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="DBModel.Timesheet" Role="Timesheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Day">
