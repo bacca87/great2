@@ -204,7 +204,7 @@ namespace Great.Models
                     (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
                     return false;
 
-                if (TimePeriods != null && TimePeriods.HasOverlaps())
+                if (TimePeriods == null || (TimePeriods != null && TimePeriods.HasOverlaps()))
                     return false;
 
                 return true;

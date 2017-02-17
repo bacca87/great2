@@ -236,7 +236,7 @@ namespace Great.ViewModels
                 {
                     CurrentMonth = _selectedWorkingDay.Date.Month;
                     
-                    Timesheets = new BindingList<Timesheet>(_db.Timesheets.Where(t => t.Timestamp == _selectedWorkingDay.Timestamp).ToList());
+                    Timesheets = _db.Timesheets.Where(t => t.Timestamp == _selectedWorkingDay.Timestamp).ToList();
                     SelectedTimesheet = null;
                     IsInputEnabled = true;
                 }
@@ -458,7 +458,10 @@ namespace Great.ViewModels
             if (!cancel && type != EDayType.WorkDay && day.Timesheets.Count() > 0)
             {
                 if (MessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                { 
                     _db.Timesheets.RemoveRange(day.Timesheets);
+                    Timesheets = null;
+                }
                 else
                     cancel = true;
             }
@@ -482,12 +485,9 @@ namespace Great.ViewModels
 
             if (_db.SaveChanges() > 0)
             {
-                Day empty = new Day() { Timestamp = day.Timestamp };
-                int index = WorkingDays.IndexOf(day);
-
-                WorkingDays.RemoveAt(index);
-                WorkingDays.Insert(index, empty);
-                SelectedWorkingDay = empty;
+                day.Type = (long)EDayType.WorkDay;
+                day.NotifyTimesheetsPropertiesChanged();
+                Timesheets = null;
             }
         }
 
@@ -496,38 +496,37 @@ namespace Great.ViewModels
             if (day == null)
                 return;
 
-            Clipboard.Clear();
-            Clipboard.SetData("Timestamp", day.Timestamp);
+            ClipboardX.Clear();
+            ClipboardX.AddItem("Day", day);
+            ClipboardX.AddItem("Timesheets", day.Timesheets.ToList());
         }
 
         public void CutDay(Day day)
         {
             if (day == null)
                 return;
-
-            int index = WorkingDays.IndexOf(day);
-
-            WorkingDays[index] = new Day() { Timestamp = day.Timestamp };
-
-            Clipboard.Clear();
-            Clipboard.SetData("Timestamp", day.Timestamp);
+            
+            ClipboardX.Clear();
+            ClipboardX.AddItem("Day", day.Clone());
+            ClipboardX.AddItem("Timesheets", day.Timesheets.ToList());
+            
+            ResetDay(day);
         }
 
         public void PasteDay(Day destinationDay)
         {
-            if (destinationDay == null || !Clipboard.ContainsData("Timestamp"))
+            if (destinationDay == null || !ClipboardX.Contains("Day") || !ClipboardX.Contains("Timesheets"))
                 return;
+            
+            Day sourceDay = ClipboardX.GetItem<Day>("Day");
+            IList<Timesheet> sourceTimesheets = ClipboardX.GetItem<IList<Timesheet>>("Timesheets");
 
-            long? timestamp = Clipboard.GetData("Timestamp") as long?;
-
-            if (!timestamp.HasValue)
+            if (sourceDay == null || sourceTimesheets == null)
                 return;
-
-            Day sourceDay = WorkingDays.Where(d => d.Timestamp == timestamp.Value).FirstOrDefault();
 
             IList<Timesheet> destinationTimesheets = new List<Timesheet>();
 
-            foreach (Timesheet timesheet in sourceDay.Timesheets)
+            foreach (Timesheet timesheet in sourceTimesheets)
             {
                 Timesheet tmp = timesheet.Clone();
                 tmp.Timestamp = destinationDay.Timestamp;
@@ -559,7 +558,7 @@ namespace Great.ViewModels
             if (_db.SaveChanges() > 0)
             {
                 SelectedWorkingDay.NotifyTimesheetsPropertiesChanged();
-                Timesheets = new List<Timesheet>(SelectedWorkingDay.Timesheets.ToList());
+                Timesheets = SelectedWorkingDay.Timesheets.ToList();
                 SelectedTimesheet = null;
             }
         }
@@ -586,7 +585,7 @@ namespace Great.ViewModels
             if (_db.SaveChanges() > 0)
             {
                 SelectedWorkingDay.NotifyTimesheetsPropertiesChanged();
-                Timesheets = new List<Timesheet>(SelectedWorkingDay.Timesheets.ToList());
+                Timesheets = SelectedWorkingDay.Timesheets.ToList();
                 SelectedTimesheet = null;
             }
         }

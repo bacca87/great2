@@ -9,13 +9,13 @@ namespace Great.Models
     public partial class Day : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         public DateTime Date
         {
             get { return UnixTimestamp.GetDateTime(Timestamp); }
             set { Timestamp = UnixTimestamp.GetTimestamp(value); }
         }
-        
+
         public int WeekNr { get { return DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(Date, DateTimeFormatInfo.CurrentInfo.CalendarWeekRule, DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek); } }
         public bool IsHoliday { get; }
 
@@ -78,7 +78,7 @@ namespace Great.Models
         public float? HoursOfLeave
         {
             get
-            {   
+            {
                 if (TotalTime == null || TotalTime >= 8)
                     return null;
 
@@ -257,7 +257,7 @@ namespace Great.Models
         public void NotifyTimesheetsPropertiesChanged()
         {
             OnPropertyChanged(nameof(Type));
-            
+
             OnPropertyChanged(nameof(IsWorkDay));
             OnPropertyChanged(nameof(IsVacationDay));
             OnPropertyChanged(nameof(IsSickLeave));
@@ -273,6 +273,15 @@ namespace Great.Models
             OnPropertyChanged(nameof(Overtime100));
 
             OnPropertyChanged(nameof(Factories_Display));
+        }
+
+        public Day Clone()
+        {
+            return new Day()
+            {
+                Timestamp = this.Timestamp,
+                Type = this.Type
+            };
         }
     }
 
