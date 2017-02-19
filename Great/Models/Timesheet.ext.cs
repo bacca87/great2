@@ -87,8 +87,6 @@ namespace Great.Models
                 return TimePeriodTools.GetRoundedTotalDuration(TravelPeriods);
             }
         }
-
-        
         #endregion
 
         #region Time Periods
@@ -204,13 +202,20 @@ namespace Great.Models
                     (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
                     return false;
 
-                if (TimePeriods == null || (TimePeriods != null && TimePeriods.HasOverlaps()))
+                if (TimePeriods == null)
+                    return false;
+
+                // The FDL system doesn't permit periods ending after the 04:00 AM of the next day.
+                if (TimePeriods.End.Day > Date.Day && TimePeriods.End.TimeOfDay > TimeSpan.FromHours(4)) 
+                    return false;
+
+                if (TimePeriods.HasOverlaps())
                     return false;
 
                 return true;
             }
         }
-
+        
         public bool HasOverlaps(IEnumerable<Timesheet> timesheets)
         {
             if (TimePeriods == null)

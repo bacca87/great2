@@ -238,7 +238,10 @@ namespace Great.ViewModels
                     
                     Timesheets = _db.Timesheets.Where(t => t.Timestamp == _selectedWorkingDay.Timestamp).ToList();
                     SelectedTimesheet = null;
-                    IsInputEnabled = true;
+                    if (_selectedWorkingDay.Type != (long)EDayType.SickLeave && _selectedWorkingDay.Type != (long)EDayType.VacationDay)
+                        IsInputEnabled = true;
+                    else
+                        IsInputEnabled = false;
                 }
                 else
                     IsInputEnabled = false;
@@ -473,6 +476,11 @@ namespace Great.ViewModels
                 _db.SaveChanges();
             }
 
+            if (day.Type != (long)EDayType.SickLeave && day.Type != (long)EDayType.VacationDay)
+                IsInputEnabled = true;
+            else
+                IsInputEnabled = false;
+
             day.NotifyTimesheetsPropertiesChanged();
         }
 
@@ -570,12 +578,12 @@ namespace Great.ViewModels
 
             if (!timesheet.IsValid)
             {
-                MessageBox.Show("Each period of time requires a beginning and an end, and these periods can't overlaps between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!\nFurthermore the FDL system doesn't permit periods ending after the 04:00 AM of the next day.", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             else if(timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
             {
-                MessageBox.Show("The inserted time periods are overlapping with existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
