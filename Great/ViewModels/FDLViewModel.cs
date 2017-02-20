@@ -9,16 +9,16 @@ namespace Great.ViewModels
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class EmailViewModel : ViewModelBase
+    public class FDLViewModel : ViewModelBase
     {
-        private ExchangeProvider _exProvider;
+        private FDLManager _fdlManager;
 
         /// <summary>
         /// Initializes a new instance of the EmailViewModel class.
         /// </summary>
-        public EmailViewModel(ExchangeProvider provider)
+        public FDLViewModel(FDLManager manager)
         {
-            _exProvider = provider;
+            _fdlManager = manager;
         }
     }
 }

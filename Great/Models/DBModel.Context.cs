@@ -34,6 +34,7 @@ namespace Great.Models
         public virtual DbSet<Factory> Factories { get; set; }
         public virtual DbSet<FDL> FDLs { get; set; }
         public virtual DbSet<FDLResult> FDLResults { get; set; }
+        public virtual DbSet<FDLStatu> FDLStatus { get; set; }
         public virtual DbSet<Timesheet> Timesheets { get; set; }
         public virtual DbSet<TransferType> TransferTypes { get; set; }
     }

@@ -97,9 +97,9 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the FactoriesViewModel class.
         /// </summary>
-        public FactoriesViewModel(DBEntities db)
+        public FactoriesViewModel()
         {
-            _db = db;
+            _db = new DBEntities();
 
             DeleteFactoryCommand = new RelayCommand<Factory>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<Factory>(SaveFactory);

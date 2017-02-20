@@ -350,9 +350,9 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public TimesheetsViewModel(DBEntities db)
+        public TimesheetsViewModel()
         {
-            _db = db;
+            _db = new DBEntities();
 
             NextYearCommand = new RelayCommand(SetNextYear);
             PreviousYearCommand = new RelayCommand(SetPreviousYear);

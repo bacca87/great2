@@ -42,15 +42,13 @@ namespace Great.ViewModels
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
-
-            SimpleIoc.Default.Register<DBEntities>();
-
-            SimpleIoc.Default.Register<ExchangeProvider>();
+            
+            SimpleIoc.Default.Register<FDLManager>();
 
             SimpleIoc.Default.Register<TimesheetsViewModel>();
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
-            SimpleIoc.Default.Register<EmailViewModel>();
+            SimpleIoc.Default.Register<FDLViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -77,11 +75,11 @@ namespace Great.ViewModels
             }
         }
 
-        public EmailViewModel Email
+        public FDLViewModel FDL
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<EmailViewModel>();
+                return ServiceLocator.Current.GetInstance<FDLViewModel>();
             }
         }
 
