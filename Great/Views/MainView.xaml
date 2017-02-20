@@ -208,6 +208,9 @@
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2">
+            <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left" DataContext="{Binding Email, Source={StaticResource Locator}}">
+                <TextBlock Text="Exchange: " />
+            </Fluent:StatusBarItem>
         </Fluent:StatusBar>
     </Grid>
 </Fluent:RibbonWindow>

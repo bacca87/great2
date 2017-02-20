@@ -78,6 +78,14 @@
       <HintPath>..\packages\TimePeriodLibrary.NET.2.0.0\lib\net35\Desktop.Release\Itenso.TimePeriod.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.WebServices.Auth, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
@@ -164,6 +172,7 @@
     <Compile Include="Models\DayType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ExchangeProvider.cs" />
     <Compile Include="Models\ExpenseAccount.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -188,6 +197,7 @@
     <Compile Include="Utils\TimeSpanExtensions.cs" />
     <Compile Include="Utils\UnixTimestamp.cs" />
     <Compile Include="Utils\WPFTools.cs" />
+    <Compile Include="ViewModels\EmailViewModel.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
     <Compile Include="Views\Pages\CarRentalView.xaml.cs">
       <DependentUpon>CarRentalView.xaml</DependentUpon>

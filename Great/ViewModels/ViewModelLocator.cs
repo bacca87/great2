@@ -45,9 +45,12 @@ namespace Great.ViewModels
 
             SimpleIoc.Default.Register<DBEntities>();
 
+            SimpleIoc.Default.Register<ExchangeProvider>();
+
             SimpleIoc.Default.Register<TimesheetsViewModel>();
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
+            SimpleIoc.Default.Register<EmailViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -73,7 +76,15 @@ namespace Great.ViewModels
                 return ServiceLocator.Current.GetInstance<InformationsViewModel>();
             }
         }
-        
+
+        public EmailViewModel Email
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<EmailViewModel>();
+            }
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
