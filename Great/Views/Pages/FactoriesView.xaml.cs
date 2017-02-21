@@ -19,8 +19,6 @@ namespace Great.Views
     /// </summary>
     public partial class FactoriesView : Page
     {
-        public const double ZOOM_MARKER = 15;
-
         private GMapMarker tempMarker;
         private GMapMarker tempPosMarker;
 
@@ -34,7 +32,7 @@ namespace Great.Views
         {
             InitializeComponent();
 
-            factoriesMapControl.CacheLocation = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + "\\Cache";
+            factoriesMapControl.CacheLocation = ApplicationSettings.Directories.Cache;
             factoriesMapControl.MapProvider = GMapProviders.GoogleMap;
             factoriesMapControl.ShowCenter = false; //The block of wood display centre cross burns
             factoriesMapControl.DragButton = MouseButton.Right; //The key drags left dragging a map
@@ -83,10 +81,10 @@ namespace Great.Views
                 if (tempMarker != null)
                     factoriesMapControl.Markers.Remove(tempMarker);
 
-                tempMarker = CreateMarker(point.Value, new Factory() { Name = "New Factory", Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
+                tempMarker = CreateMarker(point.Value, new Factory() { Name = ApplicationSettings.GoogleMap.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
                 factoriesMapControl.Markers.Add(tempMarker);
 
-                ZoomOnPoint(point.Value, ZOOM_MARKER);
+                ZoomOnPoint(point.Value, ApplicationSettings.GoogleMap.ZoomMarker);
             }
         }
 
@@ -155,7 +153,7 @@ namespace Great.Views
         {
             try
             {
-                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry("google.com");
+                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry(ApplicationSettings.GoogleMap.GoogleUrl);
             }
             catch
             {
@@ -214,7 +212,7 @@ namespace Great.Views
                     if (tempMarker != null)
                         factoriesMapControl.Markers.Remove(tempMarker);
 
-                    Factory factory = new Factory() { Name = "New Factory", Address = placemarks.FirstOrDefault().Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
+                    Factory factory = new Factory() { Name = ApplicationSettings.GoogleMap.NewFactoryName, Address = placemarks.FirstOrDefault().Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
                     GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
                     tempMarker = marker;
                     factoriesMapControl.Markers.Add(marker);
@@ -273,7 +271,7 @@ namespace Great.Views
 
                 if (point.HasValue)
                 {
-                    ZoomOnPoint(point.Value, ZOOM_MARKER);
+                    ZoomOnPoint(point.Value, ApplicationSettings.GoogleMap.ZoomMarker);
                     FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((Factory)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
                     
                     if(marker != null)

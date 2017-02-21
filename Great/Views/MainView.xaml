@@ -35,7 +35,9 @@
                             <Frame Source="/Views/Pages/FactoriesView.xaml"/>
                         </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem />
-                        <Fluent:BackstageTabItem Header="Settings"/>
+                        <Fluent:BackstageTabItem Header="Settings">
+                            <Frame Source="/Views/Pages/SettingsView.xaml"/>
+                        </Fluent:BackstageTabItem>
                         <Fluent:Button Name="exitButton" Header="Exit" Click="exitButton_Click"/>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>

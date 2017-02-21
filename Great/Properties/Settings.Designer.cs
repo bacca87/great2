@@ -22,5 +22,29 @@ namespace Great.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string EmailAddress {
+            get {
+                return ((string)(this["EmailAddress"]));
+            }
+            set {
+                this["EmailAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string EmailPassword {
+            get {
+                return ((string)(this["EmailPassword"]));
+            }
+            set {
+                this["EmailPassword"] = value;
+            }
+        }
     }
 }

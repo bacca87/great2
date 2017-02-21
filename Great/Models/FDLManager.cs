@@ -45,10 +45,10 @@ namespace Great.Models
         {
             ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
             FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
+            
+            Directory.CreateDirectory(ApplicationSettings.Directories.FDL);
 
-            Directory.CreateDirectory("FDL");
-
-            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:fdl@elettric80.it", folderView, itemView))
+            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.FDL.FDLEmailAddress, folderView, itemView))
             {
                 if (!(item is EmailMessage))
                     continue;
@@ -63,13 +63,13 @@ namespace Great.Models
                 {
                     foreach(Attachment attachment in message.Attachments)
                     {
-                        if (!(attachment is FileAttachment) || attachment.ContentType != "application/pdf")
+                        if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
                             continue;
                         
                         FileAttachment fileAttachment = message.Attachments[0] as FileAttachment;
 
-                        if (!File.Exists("FDL\\" + fileAttachment.Name))
-                            fileAttachment.Load("FDL\\" + fileAttachment.Name);
+                        if (!File.Exists(ApplicationSettings.Directories.FDL + "\\" + fileAttachment.Name))
+                            fileAttachment.Load(ApplicationSettings.Directories.FDL + "\\" + fileAttachment.Name);
                     }
                 }
             }
@@ -143,13 +143,13 @@ namespace Great.Models
             notificationsService = new ExchangeService();
             notificationsService.TraceEnabled = true;
             notificationsService.TraceFlags = TraceFlags.None;
-            notificationsService.Credentials = new WebCredentials("baccarani.m@elettric80.it", "");
-
+            
             do
             {
                 try
                 {
-                    notificationsService.AutodiscoverUrl("baccarani.m@elettric80.it", RedirectionUrlValidationCallback);
+                    notificationsService.Credentials = new WebCredentials(ApplicationSettings.User.EmailAddress, ApplicationSettings.User.EmailPassword);
+                    notificationsService.AutodiscoverUrl(ApplicationSettings.User.EmailAddress, RedirectionUrlValidationCallback);
 
                     streamingSubscription = notificationsService.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
 
@@ -162,10 +162,7 @@ namespace Great.Models
 
                     IsValid = true;
                 }
-                catch (Exception ex)
-                {
-                    Debugger.Break();
-                }
+                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
             } while (!IsValid);
         }
 
@@ -176,19 +173,16 @@ namespace Great.Models
             ExchangeService service = new ExchangeService();
             service.TraceEnabled = true;
             service.TraceFlags = TraceFlags.None;
-            service.Credentials = new WebCredentials("baccarani.m@elettric80.it", "");
-
+            
             do
             {
                 try
                 {
-                    service.AutodiscoverUrl("baccarani.m@elettric80.it", RedirectionUrlValidationCallback);
+                    service.Credentials = new WebCredentials(ApplicationSettings.User.EmailAddress, ApplicationSettings.User.EmailPassword);
+                    service.AutodiscoverUrl(ApplicationSettings.User.EmailAddress, RedirectionUrlValidationCallback);
                     IsValid = true;
                 }
-                catch (Exception ex)
-                {
-                    Debugger.Break();
-                }
+                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
             } while (!IsValid);
 
             SyncAllFDL(service);

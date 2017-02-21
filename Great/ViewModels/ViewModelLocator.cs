@@ -49,6 +49,7 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
             SimpleIoc.Default.Register<FDLViewModel>();
+            SimpleIoc.Default.Register<SettingsViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -80,6 +81,14 @@ namespace Great.ViewModels
             get
             {
                 return ServiceLocator.Current.GetInstance<FDLViewModel>();
+            }
+        }
+
+        public SettingsViewModel Settings
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<SettingsViewModel>();
             }
         }
 

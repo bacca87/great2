@@ -25,46 +25,8 @@ namespace Great.ViewModels
     /// </summary>
     public class TimesheetsViewModel : ViewModelBase
     {
-        public const int MIN_YEAR = 1900;
-        public const int MAX_YEAR = 2100;
-
-        public const int PERFORMANCE_DESCRIPTION_MAX_LENGTH = 575;
-        public const int FINAL_TEST_RESULT_MAX_LENGTH = 495;
-        public const int OTHER_NOTES_MAX_LENGTH = 595;
-
         #region Properties
-        /// <summary>
-        /// Gets the PerfDescMaxLength property.
-        /// </summary>
-        public int PerfDescMaxLength
-        {
-            get
-            {
-                return PERFORMANCE_DESCRIPTION_MAX_LENGTH;
-            }
-        }
-
-        /// <summary>
-        /// Gets the FinalTestResultMaxLength property.
-        /// </summary>
-        public int FinalTestResultMaxLength
-        {
-            get
-            {
-                return FINAL_TEST_RESULT_MAX_LENGTH;
-            }
-        }
-
-        /// <summary>
-        /// Gets the OtherNotesMaxLength property.
-        /// </summary>
-        public int OtherNotesMaxLength
-        {
-            get
-            {
-                return OTHER_NOTES_MAX_LENGTH;
-            }
-        }
+        
 
         /// <summary>
         /// The <see cref="IsInputEnabled" /> property's name.
@@ -124,10 +86,10 @@ namespace Great.ViewModels
                 
                 var oldValue = _currentYear;
 
-                if (value < MIN_YEAR)
-                    _currentYear = MIN_YEAR;
-                else if (value > MAX_YEAR)
-                    _currentYear = MAX_YEAR;
+                if (value < ApplicationSettings.Timesheets.MinYear)
+                    _currentYear = ApplicationSettings.Timesheets.MinYear;
+                else if (value > ApplicationSettings.Timesheets.MaxYear)
+                    _currentYear = ApplicationSettings.Timesheets.MaxYear;
                 else
                     _currentYear = value;
 

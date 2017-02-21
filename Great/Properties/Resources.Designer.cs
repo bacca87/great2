@@ -59,5 +59,15 @@ namespace Great.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] EmptyDatabaseFile {
+            get {
+                object obj = ResourceManager.GetObject("EmptyDatabaseFile", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

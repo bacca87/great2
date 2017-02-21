@@ -96,6 +96,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -179,6 +180,12 @@
     <Compile Include="Models\TransferType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Utils\ClipboardX.cs" />
     <Compile Include="Utils\TimePeriodTools.cs" />
     <Compile Include="Utils\TimeSpanExtensions.cs" />
@@ -186,6 +193,7 @@
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\Pages\CarRentalView.xaml.cs">
       <DependentUpon>CarRentalView.xaml</DependentUpon>
     </Compile>
@@ -225,6 +233,9 @@
     <Compile Include="ViewModels\FactoriesViewModel.cs" />
     <Compile Include="ViewModels\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\Pages\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
@@ -264,6 +275,10 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Pages\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Pages\TimesheetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -272,11 +287,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -304,9 +314,7 @@
       <DependentUpon>DBModel.edmx</DependentUpon>
       <LastGenOutput>DBModel.cs</LastGenOutput>
     </None>
-    <None Include="DB\main.db3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="DB\archive.db3" />
     <None Include="Nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
