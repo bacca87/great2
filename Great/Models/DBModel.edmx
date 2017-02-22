@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\baccarani.m\Documents\Repositories\Great2\Great\DB\main.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\baccarani.m\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Car">
           <Key>
             <PropertyRef Name="Id" />
@@ -76,8 +76,8 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Number" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Id" Type="integer" Nullable="false" />
+          <Property Name="Year" Type="integer" Nullable="false" />
           <Property Name="WeekNr" Type="integer" Nullable="false" />
           <Property Name="Factory" Type="integer" Nullable="false" />
           <Property Name="Order" Type="nvarchar" MaxLength="20" Nullable="false" />
@@ -92,7 +92,7 @@
           <Property Name="ResultNotes" Type="nvarchar" MaxLength="495" />
           <Property Name="Notes" Type="nvarchar" MaxLength="595" />
           <Property Name="Status" Type="integer" Nullable="false" />
-          <Property Name="LastError" Type="nvarchar" MaxLength="256" />
+          <Property Name="LastError" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="FDLResult">
           <Key>
@@ -444,8 +444,8 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Number" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Year" Type="Int64" Nullable="false" />
           <Property Name="WeekNr" Type="Int64" Nullable="false" />
           <Property Name="Factory" Type="Int64" Nullable="false" />
           <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -460,7 +460,7 @@
           <Property Name="ResultNotes" Type="String" MaxLength="495" FixedLength="false" Unicode="true" />
           <Property Name="Notes" Type="String" MaxLength="595" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int64" Nullable="false" />
-          <Property Name="LastError" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDL" ToRole="ExpenseAccount" />
           <NavigationProperty Name="Factory1" Relationship="DBModel.FK_FDL_2_0" FromRole="FDL" ToRole="Factory" />
           <NavigationProperty Name="FDLStatu" Relationship="DBModel.FK_FDL_0_0" FromRole="FDL" ToRole="FDLStatu" />
@@ -729,7 +729,7 @@
                 <ScalarProperty Name="Order" ColumnName="Order" />
                 <ScalarProperty Name="Factory" ColumnName="Factory" />
                 <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
-                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

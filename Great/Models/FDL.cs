@@ -22,7 +22,7 @@ namespace Great.Models
         }
     
         public long Id { get; set; }
-        public string Number { get; set; }
+        public long Year { get; set; }
         public long WeekNr { get; set; }
         public long Factory { get; set; }
         public string Order { get; set; }

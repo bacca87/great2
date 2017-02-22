@@ -183,7 +183,7 @@
                     <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                    <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.Number}" Width="100" />
+                    <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.Id}" Width="100" />
                     <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="100" />
                 </DataGrid.Columns>
             </DataGrid>
@@ -274,7 +274,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding TimesheetInfo.FDL1}" SelectedValue="{Binding TimesheetInfo.FDL}" DisplayMemberPath="Number" SelectedValuePath="Id"/>
+                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding TimesheetInfo.FDL1}" SelectedValue="{Binding TimesheetInfo.FDL}" DisplayMemberPath="Id" SelectedValuePath="Id"/>
                     </Grid>
                 </GroupBox>
             </Grid>

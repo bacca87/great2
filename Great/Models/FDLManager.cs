@@ -2,8 +2,9 @@
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Great.Models
@@ -21,19 +22,15 @@ namespace Great.Models
 
         private DBEntities _db;
 
+        public EExchangeStatus ExchangeStatus { get; internal set; }
+        
         public FDLManager()
         {
             _db = new DBEntities();
-
+            
             StartBackgroundOperations();
-            UserSettings.SettingsChanged += ooooo;
         }
-
-        private void ooooo(string oooo)
-        {
-            string prop = oooo;
-        }
-
+        
         private void StartBackgroundOperations()
         {
             subscribeThread = new Thread(SubscribeNotifications);
@@ -41,44 +38,111 @@ namespace Great.Models
             subscribeThread.IsBackground = true;
             subscribeThread.Start();
 
-            syncThread = new Thread(SyncFDLOnExchange);
-            syncThread.Name = "Sync FDL Thread";
+            syncThread = new Thread(ExchangeSync);
+            syncThread.Name = "Exchange Sync";
             syncThread.IsBackground = true;
             syncThread.Start();
         }
 
-        private void SyncAllFDL(ExchangeService service)
+        private void SyncAll(ExchangeService service)
         {
+            DBEntities db = new DBEntities();
             ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
             FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
             
             Directory.CreateDirectory(ApplicationSettings.Directories.FDL);
 
-            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.FDL.FDLEmailAddress, folderView, itemView))
+            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.FDL.EmailAddress, folderView, itemView))
             {
                 if (!(item is EmailMessage))
                     continue;
 
                 EmailMessage message = EmailMessage.Bind(service, item.Id);
+                
+                if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
+                {
+                    long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Accepted);
+                    FDL acceptedFDL = db.FDLs.SingleOrDefault(fdl => fdl.Id == fdlNumber);
 
-                //check accepted and rejected FDL
-                if (message.Subject.Contains("RECIVED"))
-                    Debugger.Break();
+                    if(acceptedFDL != null)
+                        acceptedFDL.Status = (long)EFDLStatus.Accepted;
+                }
+                else if(message.Subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
+                {
+                    long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Rejected);
+                    FDL acceptedFDL = db.FDLs.SingleOrDefault(fdl => fdl.Id == fdlNumber);
 
-                if (message.HasAttachments)
+                    if (acceptedFDL != null)
+                        acceptedFDL.Status = (long)EFDLStatus.Rejected;
+                }
+                else if(message.Subject.Contains(ApplicationSettings.FDL.EA_Rejected))
+                {
+
+                }
+                else if (message.Subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
+                {
+
+                }
+                else if (message.HasAttachments)
                 {
                     foreach(Attachment attachment in message.Attachments)
                     {
                         if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
                             continue;
                         
-                        FileAttachment fileAttachment = message.Attachments[0] as FileAttachment;
+                        FileAttachment fileAttachment = attachment as FileAttachment;
 
                         if (!File.Exists(ApplicationSettings.Directories.FDL + "\\" + fileAttachment.Name))
                             fileAttachment.Load(ApplicationSettings.Directories.FDL + "\\" + fileAttachment.Name);
                     }
                 }
             }
+
+            db.SaveChanges();
+        }
+        
+        private long ExtractFDLFromSubject(string subject, EMessageType type)
+        {
+            long FDL = 0;
+            string[] words;
+
+            try
+            {
+                switch(type)
+                {
+                    case EMessageType.FDL_Accepted:
+                    case EMessageType.FDL_Rejected:
+                        // INVALID FDL (XXXXX)
+                        // FDL RECEIVED (XXXXX)
+                        Match match = Regex.Match(subject, @"\(([^)]*)\)");
+                        if (match.Success || match.Groups.Count > 0)
+                            FDL = long.Parse(match.Groups[1].Value);
+                        break;
+                    case EMessageType.EA_Rejected:
+                        // FDL XXXXX NOTA SPESE RIFIUTATA
+                        //  0    1    2     3       4
+                        words = subject.Split(' ');
+                        if(words.Length > 1)
+                            FDL = long.Parse(words[1]);
+                        break;
+                    case EMessageType.EA_RejectedResubmission:
+                        // Reinvio nota spese YYYY/XXXXX respinto
+                        //    0      1    2       3         4
+                        words = subject.Split(' ');
+                        if (words.Length > 3)
+                        {
+                            words = words[3].Split('/');
+                            if(words.Length > 1)
+                                FDL = long.Parse(words[1]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch { }
+
+            return FDL;
         }
         
         private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
@@ -144,7 +208,7 @@ namespace Great.Models
         #region Threads
         private void SubscribeNotifications()
         {
-            bool IsValid = false;
+            bool IsSubscribed = false;
 
             notificationsService = new ExchangeService();
             notificationsService.TraceEnabled = true;
@@ -166,15 +230,15 @@ namespace Great.Models
                     connection.OnDisconnect += Connection_OnDisconnect;
                     connection.Open();
 
-                    IsValid = true;
+                    IsSubscribed = true;
                 }
                 catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (!IsValid);
+            } while (!IsSubscribed);
         }
 
-        private void SyncFDLOnExchange()
+        private void ExchangeSync()
         {
-            bool IsValid = false;
+            bool IsSynced = false;
 
             ExchangeService service = new ExchangeService();
             service.TraceEnabled = true;
@@ -186,12 +250,13 @@ namespace Great.Models
                 {
                     service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
                     service.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
-                    IsValid = true;
+
+                    SyncAll(service);
+
+                    IsSynced = true;
                 }
                 catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (!IsValid);
-
-            SyncAllFDL(service);
+            } while (!IsSynced);
         }
         #endregion
 
@@ -214,7 +279,7 @@ namespace Great.Models
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
         {
-
+            connection.Open();
         }
 
         private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
@@ -222,6 +287,21 @@ namespace Great.Models
 
         }
         #endregion
+    }
+
+    public enum EMessageType
+    {
+        FDL_Accepted,
+        FDL_Rejected,
+        EA_Rejected,
+        EA_RejectedResubmission
+    }
+
+    public enum EExchangeStatus
+    {
+        Disconnected,
+        Syncing,
+        Connected
     }
 
     public enum EFDLStatus
