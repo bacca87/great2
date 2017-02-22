@@ -20,16 +20,16 @@ namespace Great.ViewModels
         {
             get
             {
-                return ApplicationSettings.User.EmailAddress;
+                return UserSettings.Email.EmailAddress;
             }
 
             set
             {
-                if (ApplicationSettings.User.EmailAddress == value)
+                if (UserSettings.Email.EmailAddress == value)
                     return;
                 
-                var oldValue = ApplicationSettings.User.EmailAddress;
-                ApplicationSettings.User.EmailAddress = value;
+                var oldValue = UserSettings.Email.EmailAddress;
+                UserSettings.Email.EmailAddress = value;
 
                 RaisePropertyChanged(nameof(EmailAddress), oldValue, value);
             }
@@ -43,18 +43,13 @@ namespace Great.ViewModels
         {
             get
             {
-                return ApplicationSettings.User.EmailPassword;
+                return "Snoop my ass faggot!!!";
             }
 
             set
             {
-                if (ApplicationSettings.User.EmailPassword == value)
-                    return;
-
-                var oldValue = ApplicationSettings.User.EmailPassword;
-                ApplicationSettings.User.EmailPassword = value;
-
-                RaisePropertyChanged(nameof(EmailPassword), oldValue, value);
+                UserSettings.Email.EmailPassword = value;
+                RaisePropertyChanged(nameof(EmailPassword));
             }
         }
         #endregion

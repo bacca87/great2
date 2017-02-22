@@ -3,12 +3,6 @@ using Great.Models;
 
 namespace Great.ViewModels
 {
-    /// <summary>
-    /// This class contains properties that a View can data bind to.
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     public class FDLViewModel : ViewModelBase
     {
         private FDLManager _fdlManager;

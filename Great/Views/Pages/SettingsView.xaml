@@ -7,9 +7,7 @@
       xmlns:dp="clr-namespace:Great.Utils"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
-      d:DesignHeight="300" d:DesignWidth="300"
       Title="SettingsView">
-
     <Grid>
         <GroupBox Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid>

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Great.Utils;
+using System;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.SQLite;
 
 namespace Great.Models
 {
+    #region Application Settings
     public static class ApplicationSettings
     {
         #region Database
@@ -126,9 +129,28 @@ namespace Great.Models
             public const int MaxYear = 2100;
         }
         #endregion
+    }
+    #endregion
 
-        #region User
-        public static class User
+    #region User Settings
+    public static class UserSettings
+    {
+        #region Events
+        public static Action<string> SettingsChanged;
+        #endregion
+
+        #region Constructor
+        static UserSettings()
+        {
+            Properties.Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                SettingsChanged?.Invoke(e.PropertyName);
+            };
+        }
+        #endregion
+
+        #region Email
+        public static class Email
         {
             public static string EmailAddress
             {
@@ -141,14 +163,19 @@ namespace Great.Models
             }
             public static string EmailPassword
             {
-                get { return Properties.Settings.Default.EmailPassword; }
+                get
+                {
+                    string password = Properties.Settings.Default.EmailPassword;
+                    return password.Length > 0 ? SecureCrypt.Decrypt(password) : string.Empty;
+                }
                 set
                 {
-                    Properties.Settings.Default.EmailPassword = value;
+                    Properties.Settings.Default.EmailPassword = SecureCrypt.Encrypt(value);
                     Properties.Settings.Default.Save();
                 }
             }
         }
         #endregion
     }
+    #endregion
 }

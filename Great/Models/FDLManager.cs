@@ -26,6 +26,12 @@ namespace Great.Models
             _db = new DBEntities();
 
             StartBackgroundOperations();
+            UserSettings.SettingsChanged += ooooo;
+        }
+
+        private void ooooo(string oooo)
+        {
+            string prop = oooo;
         }
 
         private void StartBackgroundOperations()
@@ -148,8 +154,8 @@ namespace Great.Models
             {
                 try
                 {
-                    notificationsService.Credentials = new WebCredentials(ApplicationSettings.User.EmailAddress, ApplicationSettings.User.EmailPassword);
-                    notificationsService.AutodiscoverUrl(ApplicationSettings.User.EmailAddress, RedirectionUrlValidationCallback);
+                    notificationsService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
+                    notificationsService.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
 
                     streamingSubscription = notificationsService.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
 
@@ -178,8 +184,8 @@ namespace Great.Models
             {
                 try
                 {
-                    service.Credentials = new WebCredentials(ApplicationSettings.User.EmailAddress, ApplicationSettings.User.EmailPassword);
-                    service.AutodiscoverUrl(ApplicationSettings.User.EmailAddress, RedirectionUrlValidationCallback);
+                    service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
+                    service.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
                     IsValid = true;
                 }
                 catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }

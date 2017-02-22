@@ -10,24 +10,10 @@ using System.Linq;
 using System.Windows;
 
 namespace Great.ViewModels
-{
-    /// <summary>
-    /// This class contains properties that the Timesheets View can data bind to.
-    /// <para>
-    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
-    /// </para>
-    /// <para>
-    /// You can also use Blend to data bind with the tool's support.
-    /// </para>
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
+{   
     public class TimesheetsViewModel : ViewModelBase
     {
         #region Properties
-        
-
         /// <summary>
         /// The <see cref="IsInputEnabled" /> property's name.
         /// </summary>

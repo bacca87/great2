@@ -185,9 +185,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Models\Settings.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utils\ClipboardX.cs" />
     <Compile Include="Utils\PasswordHelper.cs" />
+    <Compile Include="Utils\SecureCrypt.cs" />
     <Compile Include="Utils\TimePeriodTools.cs" />
     <Compile Include="Utils\TimeSpanExtensions.cs" />
     <Compile Include="Utils\UnixTimestamp.cs" />
