@@ -187,6 +187,7 @@
     </Compile>
     <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Utils\ClipboardX.cs" />
+    <Compile Include="Utils\PasswordHelper.cs" />
     <Compile Include="Utils\TimePeriodTools.cs" />
     <Compile Include="Utils\TimeSpanExtensions.cs" />
     <Compile Include="Utils\UnixTimestamp.cs" />

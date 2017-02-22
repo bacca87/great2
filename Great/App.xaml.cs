@@ -39,8 +39,8 @@ namespace Great
 
             Directory.CreateDirectory(dbDirectory);
             
-            if(!File.Exists(dbFileName))
-                File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
+            if(!File.Exists(dbDirectory + "\\" + dbFileName))
+                File.WriteAllBytes(dbDirectory + "\\" + dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
         }
     }
 }

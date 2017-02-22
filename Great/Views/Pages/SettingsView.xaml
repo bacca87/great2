@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:dp="clr-namespace:Great.Utils"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
       d:DesignHeight="300" d:DesignWidth="300"
@@ -23,7 +24,7 @@
                 <Label Grid.Row="0" Grid.Column="0" Content="Email Address:" HorizontalAlignment="Right"/>
                 <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
                 <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EmailPassword}"/>
+                <PasswordBox Grid.Row="1" Grid.Column="1" dp:PasswordHelper.BindPassword="true" dp:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
             </Grid>
         </GroupBox>
     </Grid>
