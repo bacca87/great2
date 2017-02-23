@@ -58,6 +58,8 @@
           </Key>
           <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FDL" Type="integer" Nullable="false" />
+          <Property Name="Status" Type="integer" Nullable="false" />
+          <Property Name="LastError" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="Factory">
           <Key>
@@ -79,6 +81,7 @@
           <Property Name="Id" Type="integer" Nullable="false" />
           <Property Name="Year" Type="integer" Nullable="false" />
           <Property Name="WeekNr" Type="integer" Nullable="false" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="260" Nullable="false" />
           <Property Name="Factory" Type="integer" Nullable="false" />
           <Property Name="Order" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="OutwardCar" Type="bit" />
@@ -423,6 +426,8 @@
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FDL" Type="Int64" Nullable="false" />
+          <Property Name="Status" Type="Int64" Nullable="false" />
+          <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="FDL1" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDL" />
         </EntityType>
         <EntityType Name="Factory">
@@ -447,6 +452,7 @@
           <Property Name="Id" Type="Int64" Nullable="false" />
           <Property Name="Year" Type="Int64" Nullable="false" />
           <Property Name="WeekNr" Type="Int64" Nullable="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
           <Property Name="Factory" Type="Int64" Nullable="false" />
           <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="OutwardCar" Type="Boolean" />
@@ -692,6 +698,8 @@
           <EntitySetMapping Name="ExpenseAccounts">
             <EntityTypeMapping TypeName="DBModel.ExpenseAccount">
               <MappingFragment StoreEntitySet="ExpenseAccount">
+                <ScalarProperty Name="LastError" ColumnName="LastError" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FDL" ColumnName="FDL" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -728,6 +736,7 @@
                 <ScalarProperty Name="OutwardCar" ColumnName="OutwardCar" />
                 <ScalarProperty Name="Order" ColumnName="Order" />
                 <ScalarProperty Name="Factory" ColumnName="Factory" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
                 <ScalarProperty Name="Year" ColumnName="Year" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

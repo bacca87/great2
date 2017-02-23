@@ -29,9 +29,10 @@ namespace Great.Models
             {
                 get
                 {
+                    string DataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
                     EntityConnectionStringBuilder efBuilder = new EntityConnectionStringBuilder(ConnectionString);
-                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(efBuilder.ProviderConnectionString);
-                    return sqliteBuilder.DataSource.Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory").ToString());
+                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(efBuilder.ProviderConnectionString);                                        
+                    return sqliteBuilder.DataSource.Replace("|DataDirectory|", DataDirectory.Remove(DataDirectory.Length - 1)); // remove last \ to the DataDirectory path
                 }
             }
         }
@@ -45,11 +46,12 @@ namespace Great.Models
                 get
                 {
                     string dataDirectoryPath = ConfigurationManager.AppSettings["DataDirectoryPath"];
-
+                    
                     if (dataDirectoryPath == null || dataDirectoryPath == string.Empty)
                         throw new ConfigurationErrorsException("Missing or invalid DataDirectoryPath configuration!");
 
-                    return Environment.ExpandEnvironmentVariables(dataDirectoryPath);
+                    dataDirectoryPath = Environment.ExpandEnvironmentVariables(dataDirectoryPath);
+                    return dataDirectoryPath + (!dataDirectoryPath.EndsWith("\\") ? "\\" : "");
                 }
             }
             public static string FDL
@@ -61,7 +63,7 @@ namespace Great.Models
                     if (fdlDirName == null || fdlDirName == string.Empty)
                         throw new ConfigurationErrorsException("Missing or invalid FDLDirectory configuration!");
 
-                    return Data + "\\" + fdlDirName;
+                    return Data + fdlDirName + (!fdlDirName.EndsWith("\\") ? "\\" : "");
                 }
             }
             public static string ExpenseAccount
@@ -73,7 +75,7 @@ namespace Great.Models
                     if (expenseAccountDirName == null || expenseAccountDirName == string.Empty)
                         throw new ConfigurationErrorsException("Missing or invalid ExpenseAccountDirectory configuration!");
 
-                    return Data + "\\" + expenseAccountDirName;
+                    return Data + expenseAccountDirName + (!expenseAccountDirName.EndsWith("\\") ? "\\" : "");
                 }
             }
 
@@ -85,8 +87,9 @@ namespace Great.Models
 
                     if (cacheDirectoryPath == null || cacheDirectoryPath == string.Empty)
                         throw new ConfigurationErrorsException("Missing or invalid CacheDirectoryPath configuration!");
-                    
-                    return Environment.ExpandEnvironmentVariables(cacheDirectoryPath);
+
+                    cacheDirectoryPath = Environment.ExpandEnvironmentVariables(cacheDirectoryPath);
+                    return cacheDirectoryPath + (!cacheDirectoryPath.EndsWith("\\") ? "\\" : "");
                 }
             }
         }

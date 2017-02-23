@@ -35,12 +35,12 @@ namespace Great
             Database.SetInitializer<DBEntities>(null);
             
             string dbDirectory = Path.GetDirectoryName(ApplicationSettings.Database.DBFileName);
-            string dbFileName = Path.GetFileName(ApplicationSettings.Database.DBFileName);
+            string dbFileName = dbDirectory + "\\" + Path.GetFileName(ApplicationSettings.Database.DBFileName);
 
             Directory.CreateDirectory(dbDirectory);
             
-            if(!File.Exists(dbDirectory + "\\" + dbFileName))
-                File.WriteAllBytes(dbDirectory + "\\" + dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
+            if(!File.Exists(dbFileName))
+                File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
         }
     }
 }

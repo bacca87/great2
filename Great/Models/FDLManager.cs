@@ -1,7 +1,11 @@
-﻿using Microsoft.Exchange.WebServices.Data;
+﻿using iText.Forms;
+using iText.Forms.Fields;
+using iText.Kernel.Pdf;
+using Microsoft.Exchange.WebServices.Data;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -27,8 +31,25 @@ namespace Great.Models
         public FDLManager()
         {
             _db = new DBEntities();
-            
+
+            //TestPDF();
+
             StartBackgroundOperations();
+        }
+
+        private void TestPDF()
+        {
+            string file = ApplicationSettings.Directories.FDL + "01086 BACCARANI MARCO 00000471 08 02 2016.PDF";
+            string tempFile = Path.GetTempPath() + "01086 BACCARANI MARCO 00000471 08 02 2016.PDF";
+
+            PdfDocument pdfDoc = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));            
+
+            PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+            IDictionary<String, PdfFormField> fields = form.GetFormFields();
+            PdfFormField toSet;
+            fields.TryGetValue("name", out toSet);
+            toSet.SetValue("James Bond");            
+            pdfDoc.Close();
         }
         
         private void StartBackgroundOperations()
@@ -49,7 +70,9 @@ namespace Great.Models
             DBEntities db = new DBEntities();
             ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
             FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
-            
+
+            itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
+
             Directory.CreateDirectory(ApplicationSettings.Directories.FDL);
 
             foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.FDL.EmailAddress, folderView, itemView))
@@ -58,47 +81,110 @@ namespace Great.Models
                     continue;
 
                 EmailMessage message = EmailMessage.Bind(service, item.Id);
-                
-                if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
-                {
-                    long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Accepted);
-                    FDL acceptedFDL = db.FDLs.SingleOrDefault(fdl => fdl.Id == fdlNumber);
-
-                    if(acceptedFDL != null)
-                        acceptedFDL.Status = (long)EFDLStatus.Accepted;
-                }
-                else if(message.Subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
-                {
-                    long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Rejected);
-                    FDL acceptedFDL = db.FDLs.SingleOrDefault(fdl => fdl.Id == fdlNumber);
-
-                    if (acceptedFDL != null)
-                        acceptedFDL.Status = (long)EFDLStatus.Rejected;
-                }
-                else if(message.Subject.Contains(ApplicationSettings.FDL.EA_Rejected))
-                {
-
-                }
-                else if (message.Subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
-                {
-
-                }
-                else if (message.HasAttachments)
-                {
-                    foreach(Attachment attachment in message.Attachments)
-                    {
-                        if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
-                            continue;
-                        
-                        FileAttachment fileAttachment = attachment as FileAttachment;
-
-                        if (!File.Exists(ApplicationSettings.Directories.FDL + "\\" + fileAttachment.Name))
-                            fileAttachment.Load(ApplicationSettings.Directories.FDL + "\\" + fileAttachment.Name);
-                    }
-                }
+                ProcessMessage(message, db);
             }
 
             db.SaveChanges();
+        }
+
+        private void ProcessMessage(EmailMessage message, DBEntities db)
+        {
+            if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
+            {
+                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Accepted);
+                FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+
+                if (fdl != null)
+                    fdl.Status = (long)EFDLStatus.Accepted;
+            }
+            else if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
+            {
+                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Rejected);
+                FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+
+                if (fdl != null)
+                {
+                    fdl.Status = (long)EFDLStatus.Rejected;
+                    fdl.LastError = message.TextBody?.Text;
+                }
+            }
+            else if (message.Subject.Contains(ApplicationSettings.FDL.EA_Rejected))
+            {
+                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.EA_Rejected);
+                ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+
+                if (expenseAccount != null)
+                {
+                    expenseAccount.Status = (long)EFDLStatus.Rejected;
+                    expenseAccount.LastError = message.TextBody?.Text;
+                }
+            }
+            else if (message.Subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
+            {
+                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.EA_RejectedResubmission);
+                ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+
+                if (expenseAccount != null)
+                {
+                    expenseAccount.Status = (long)EFDLStatus.Rejected;
+                    expenseAccount.LastError = message.TextBody?.Text;
+                }
+            }
+            // if the email subject is a valid FDL file name, this means that we have recived a new FDL and Expense Account.
+            else if (GetAttachmentType(message.Subject) == EAttachmentType.FDL && message.HasAttachments)
+            {
+                foreach (Attachment attachment in message.Attachments)
+                {
+                    if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                        continue;
+
+                    FileAttachment fileAttachment = attachment as FileAttachment;
+
+                    switch (GetAttachmentType(Path.GetFileNameWithoutExtension(attachment.Name)))
+                    {
+                        //TODO: inserire su db i nuovi FDL e Note spese
+                        case EAttachmentType.FDL:
+                            if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
+                                fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
+                            break;
+                        case EAttachmentType.ExpenseAccount:
+                            if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
+                                fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        private EAttachmentType GetAttachmentType(string filename)
+        {
+            try
+            {
+                string[] words = filename.Split(' ');
+
+                if (words.Length > 5)
+                {
+                    string FDL = words[0];
+                    string CID = words[words.Length - 4];
+                    string WeekNr = words[words.Length - 3];
+                    string Month = words[words.Length - 2];
+                    string Year = words[words.Length - 1];
+
+                    if (words.LastOrDefault().Contains("R"))
+                        return EAttachmentType.ExpenseAccount;
+                    else if (FDL.All(char.IsDigit) &&
+                             CID.All(char.IsDigit) &&
+                             WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
+                             Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
+                             Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
+                        return EAttachmentType.FDL;
+                }
+            }
+            catch { }
+            
+            return EAttachmentType.Unknown;
         }
         
         private long ExtractFDLFromSubject(string subject, EMessageType type)
@@ -263,32 +349,47 @@ namespace Great.Models
         #region Subscription Events Handling
         private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
         {
+            DBEntities db = new DBEntities();
+
             foreach (NotificationEvent e in args.Events)
             {
+                var itemEvent = (ItemEvent)e;
+                EmailMessage message = EmailMessage.Bind(notificationsService, itemEvent.ItemId);
+
                 switch (e.EventType)
                 {
                     case EventType.NewMail:
-
+                        ProcessMessage(message, db);
                         break;
 
                     default:
                         break;
                 }
             }
+
+            db.SaveChanges();
         }
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
         {
             connection.Open();
+            Debugger.Break();
         }
 
         private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
         {
-
+            Debugger.Break();
         }
         #endregion
     }
 
+    public enum EAttachmentType
+    {
+        Unknown,
+        FDL,
+        ExpenseAccount
+    }
+    
     public enum EMessageType
     {
         FDL_Accepted,
