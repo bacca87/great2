@@ -94,6 +94,7 @@
           <Property Name="Result" Type="integer" Nullable="false" />
           <Property Name="ResultNotes" Type="nvarchar" MaxLength="495" />
           <Property Name="Notes" Type="nvarchar" MaxLength="595" />
+          <Property Name="PerformanceDescriptionDetails" Type="nvarchar" MaxLength="5000" />
           <Property Name="Status" Type="integer" Nullable="false" />
           <Property Name="LastError" Type="nvarchar" MaxLength="250" />
         </EntityType>
@@ -465,6 +466,7 @@
           <Property Name="Result" Type="Int64" Nullable="false" />
           <Property Name="ResultNotes" Type="String" MaxLength="495" FixedLength="false" Unicode="true" />
           <Property Name="Notes" Type="String" MaxLength="595" FixedLength="false" Unicode="true" />
+          <Property Name="PerformanceDescriptionDetails" Type="String" MaxLength="5000" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int64" Nullable="false" />
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDL" ToRole="ExpenseAccount" />
@@ -724,6 +726,7 @@
               <MappingFragment StoreEntitySet="FDL">
                 <ScalarProperty Name="LastError" ColumnName="LastError" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PerformanceDescriptionDetails" ColumnName="PerformanceDescriptionDetails" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="ResultNotes" ColumnName="ResultNotes" />
                 <ScalarProperty Name="Result" ColumnName="Result" />

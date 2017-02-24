@@ -1,4 +1,5 @@
-﻿using iText.Forms;
+﻿using Great.Utils;
+using iText.Forms;
 using iText.Forms.Fields;
 using iText.Kernel.Pdf;
 using Microsoft.Exchange.WebServices.Data;
@@ -31,25 +32,218 @@ namespace Great.Models
         public FDLManager()
         {
             _db = new DBEntities();
-
-            //TestPDF();
-
+            
             StartBackgroundOperations();
         }
 
-        private void TestPDF()
+        private void CompileFDL(FDL fdl)
         {
-            string file = ApplicationSettings.Directories.FDL + "01086 BACCARANI MARCO 00000471 08 02 2016.PDF";
-            string tempFile = Path.GetTempPath() + "01086 BACCARANI MARCO 00000471 08 02 2016.PDF";
+            string file = ApplicationSettings.Directories.FDL + fdl.FileName;
+            string tempFile = Path.GetTempPath() + fdl.FileName;
 
-            PdfDocument pdfDoc = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));            
+            try
+            {
+                PdfDocument pdfDoc = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                IDictionary<string, PdfFormField> fields = form.GetFormFields();
+                
+                Timesheet timesheet = null;
 
-            PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-            IDictionary<String, PdfFormField> fields = form.GetFormFields();
-            PdfFormField toSet;
-            fields.TryGetValue("name", out toSet);
-            toSet.SetValue("James Bond");            
-            pdfDoc.Close();
+                //fields[ApplicationSettings.FDL.FieldNames.FDLNumber]
+                //fields[ApplicationSettings.FDL.FieldNames.Customer]
+                //fields[ApplicationSettings.FDL.FieldNames.Address]
+                //fields[ApplicationSettings.FDL.FieldNames.Technician]
+                //fields[ApplicationSettings.FDL.FieldNames.CID]
+                //fields[ApplicationSettings.FDL.FieldNames.RequestedBy]
+                //fields[ApplicationSettings.FDL.FieldNames.Order]
+                //fields[ApplicationSettings.FDL.FieldNames.OrderType]
+                
+                string monday = fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString();
+                if (monday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(monday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                string tuesday = fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString();
+                if (tuesday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(tuesday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+
+                string wednesday = fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString();
+                if (wednesday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(wednesday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+
+                string thursday = fields[ApplicationSettings.FDL.FieldNames.Thu_Date].GetValueAsString();
+                if (thursday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(thursday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+
+                string friday = fields[ApplicationSettings.FDL.FieldNames.Fri_Date].GetValueAsString();
+                if (friday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(friday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+
+                string saturday = fields[ApplicationSettings.FDL.FieldNames.Sat_Date].GetValueAsString();
+                if (saturday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(saturday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+
+                string sunday = fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString();
+                if (sunday != string.Empty)
+                {
+                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(sunday));
+
+                    if (timesheet != null)
+                    {
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_TravelStartTimeAM].SetValue(timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_WorkStartTimeAM].SetValue(timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_WorkEndTimeAM].SetValue(timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_TravelEndTimeAM].SetValue(timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_TravelStartTimePM].SetValue(timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_WorkStartTimePM].SetValue(timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_WorkEndTimePM].SetValue(timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                        fields[ApplicationSettings.FDL.FieldNames.Sun_TravelEndTimePM].SetValue(timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                    }
+                }
+
+                //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
+                //fields[ApplicationSettings.FDL.FieldNames.Cars1]
+                //fields[ApplicationSettings.FDL.FieldNames.Cars2]
+
+                if (fdl.OutwardCar.HasValue && fdl.OutwardCar.Value)
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue("1");
+                else
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue("0");
+
+                if(fdl.OutwardTaxi.HasValue && fdl.OutwardTaxi.Value)
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue("1");
+                else
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue("0");
+
+                if(fdl.OutwardFlight.HasValue && fdl.OutwardFlight.Value)
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardFlight].SetValue("1");
+                else
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardFlight].SetValue("0");
+
+                if(fdl.ReturnCar.HasValue && fdl.ReturnCar.Value)
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue("1");
+                else
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue("0");
+
+                if (fdl.ReturnTaxi.HasValue && fdl.ReturnTaxi.Value)
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue("1");
+                else
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue("0");
+
+                if (fdl.ReturnFlight.HasValue && fdl.ReturnFlight.Value)
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnFlight].SetValue("1");
+                else
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnFlight].SetValue("0");
+                
+                fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].SetValue(fdl.PerformanceDescription);
+                fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].SetValue(fdl.PerformanceDescriptionDetails);
+                fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(fdl.Result.ToString());
+                fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].SetValue(fdl.ResultNotes);
+                fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].SetValue(fdl.Notes);
+                
+                pdfDoc.Close();
+            }
+            catch (Exception ex)
+            {
+                Debugger.Break();
+            }
+        }
+
+        public void SendFDL(FDL fdl)
+        {
+            CompileFDL(fdl);
+
+            EmailMessage message = new EmailMessage(notificationsService);
+            message.Subject = $"FDL {fdl.Year + "/" + fdl.Id.ToString().PadLeft(5, '0')} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            message.ToRecipients.Add(ApplicationSettings.FDL.EmailAddress);
+            message.Attachments.AddFileAttachment(Path.GetTempPath() + fdl.FileName);
+            message.SendAndSaveCopy();
+
+            // Delete the temporary FDL file
+            File.Delete(Path.GetTempPath() + fdl.FileName);
         }
         
         private void StartBackgroundOperations()
@@ -89,73 +283,82 @@ namespace Great.Models
 
         private void ProcessMessage(EmailMessage message, DBEntities db)
         {
-            if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
+            EMessageType type = GetMessageType(message.Subject);
+            long fdlNumber = ExtractFDLFromSubject(message.Subject, type);
+            
+            switch (type)
             {
-                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Accepted);
-                FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
-
-                if (fdl != null)
-                    fdl.Status = (long)EFDLStatus.Accepted;
-            }
-            else if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
-            {
-                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.FDL_Rejected);
-                FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
-
-                if (fdl != null)
-                {
-                    fdl.Status = (long)EFDLStatus.Rejected;
-                    fdl.LastError = message.TextBody?.Text;
-                }
-            }
-            else if (message.Subject.Contains(ApplicationSettings.FDL.EA_Rejected))
-            {
-                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.EA_Rejected);
-                ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
-
-                if (expenseAccount != null)
-                {
-                    expenseAccount.Status = (long)EFDLStatus.Rejected;
-                    expenseAccount.LastError = message.TextBody?.Text;
-                }
-            }
-            else if (message.Subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
-            {
-                long fdlNumber = ExtractFDLFromSubject(message.Subject, EMessageType.EA_RejectedResubmission);
-                ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
-
-                if (expenseAccount != null)
-                {
-                    expenseAccount.Status = (long)EFDLStatus.Rejected;
-                    expenseAccount.LastError = message.TextBody?.Text;
-                }
-            }
-            // if the email subject is a valid FDL file name, this means that we have recived a new FDL and Expense Account.
-            else if (GetAttachmentType(message.Subject) == EAttachmentType.FDL && message.HasAttachments)
-            {
-                foreach (Attachment attachment in message.Attachments)
-                {
-                    if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
-                        continue;
-
-                    FileAttachment fileAttachment = attachment as FileAttachment;
-
-                    switch (GetAttachmentType(Path.GetFileNameWithoutExtension(attachment.Name)))
+                case EMessageType.FDL_Accepted:
+                    FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+                    if (accepted != null)
+                        accepted.Status = (long)EFDLStatus.Accepted;
+                    break;
+                case EMessageType.FDL_Rejected:
+                    FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+                    if (rejected != null)
                     {
-                        //TODO: inserire su db i nuovi FDL e Note spese
-                        case EAttachmentType.FDL:
-                            if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
-                                fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
-                            break;
-                        case EAttachmentType.ExpenseAccount:
-                            if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
-                                fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
-                            break;
-                        default:
-                            break;
+                        rejected.Status = (long)EFDLStatus.Rejected;
+                        rejected.LastError = message.TextBody?.Text;
                     }
-                }
-            }
+                    break;
+                case EMessageType.EA_Rejected:
+                case EMessageType.EA_RejectedResubmission:
+                    //TODO: differenziare la nota spese R da R1
+                    ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+                    if (expenseAccount != null)
+                    {
+                        expenseAccount.Status = (long)EFDLStatus.Rejected;
+                        expenseAccount.LastError = message.TextBody?.Text;
+                    }
+                    break;
+                case EMessageType.FDL_EA_New:
+                    if(message.HasAttachments)
+                    {
+                        foreach (Attachment attachment in message.Attachments)
+                        {
+                            if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                                continue;
+
+                            FileAttachment fileAttachment = attachment as FileAttachment;
+
+                            switch (GetAttachmentType(Path.GetFileNameWithoutExtension(attachment.Name)))
+                            {
+                                //TODO: inserire su db i nuovi FDL e Note spese
+                                case EAttachmentType.FDL:
+                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
+                                        fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
+                                    break;
+                                case EAttachmentType.ExpenseAccount1:
+                                case EAttachmentType.ExpenseAccount2:
+                                    if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
+                                        fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }            
+        }
+
+        private EMessageType GetMessageType(string subject)
+        {
+            if (subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
+                return EMessageType.FDL_Accepted;
+            else if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
+                return EMessageType.FDL_Rejected;
+            else if (subject.Contains(ApplicationSettings.FDL.EA_Rejected))
+                return EMessageType.EA_Rejected;
+            else if (subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
+                return EMessageType.EA_RejectedResubmission;
+            else if (GetAttachmentType(subject) == EAttachmentType.FDL)
+                return EMessageType.FDL_EA_New;
+            else
+                return EMessageType.Unknown;
         }
 
         private EAttachmentType GetAttachmentType(string filename)
@@ -172,8 +375,10 @@ namespace Great.Models
                     string Month = words[words.Length - 2];
                     string Year = words[words.Length - 1];
 
-                    if (words.LastOrDefault().Contains("R"))
-                        return EAttachmentType.ExpenseAccount;
+                    if (words.LastOrDefault().Contains("R1"))
+                        return EAttachmentType.ExpenseAccount2;
+                    else if (words.LastOrDefault().Contains("R"))
+                        return EAttachmentType.ExpenseAccount1;
                     else if (FDL.All(char.IsDigit) &&
                              CID.All(char.IsDigit) &&
                              WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
@@ -387,15 +592,18 @@ namespace Great.Models
     {
         Unknown,
         FDL,
-        ExpenseAccount
+        ExpenseAccount1,
+        ExpenseAccount2
     }
-    
+
     public enum EMessageType
     {
+        Unknown,
         FDL_Accepted,
         FDL_Rejected,
         EA_Rejected,
-        EA_RejectedResubmission
+        EA_RejectedResubmission,
+        FDL_EA_New
     }
 
     public enum EExchangeStatus

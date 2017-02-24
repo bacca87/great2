@@ -4,12 +4,74 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Great.Views.Pages"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       d:DesignHeight="300" d:DesignWidth="300"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView">
-
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <DataGrid>
+            <DataGrid Grid.Column="0"
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
+                  AutoGenerateColumns="False" 
+                  CanUserReorderColumns="False" 
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False" 
+                  CanUserSortColumns="False" 
+                  IsReadOnly="True"                  
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"
+                  ItemsSource="{Binding FDLs}"
+                  SelectedItem="{Binding SelectedFDL}"
+                  VirtualizingPanel.ScrollUnit ="Item" 
+                  VirtualizingPanel.VirtualizationMode="Standard">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <!--<Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
+                                <Setter Property="Background" Value="LightBlue" />
+                            </DataTrigger>                            
+                        </Style.Triggers>
+                    </Style>-->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                </DataGrid.Resources>                
+                <!--<DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />                        
+                        <Separator/>
+                        <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>-->
+                <!--<DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding ResetDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                    <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                    <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                    <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                </DataGrid.InputBindings>-->
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                    <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_Display}"/>
+                    <DataGridTextColumn Header="Factory" Binding="{Binding Factory1.Name}"/>
+                    <DataGridTextColumn Header="Order" Binding="{Binding Order}"/>
+                    <DataGridTextColumn Header="Result" Binding="{Binding Result}"/>
+                    <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}"/>
+                    <DataGridTextColumn Header="File Name" Binding="{Binding FileName}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DataGrid>
     </Grid>
 </Page>

@@ -12,7 +12,7 @@
         <EntityTypeShape EntityType="DBModel.DayType" Width="1.5" PointX="6" PointY="9.875" />
         <EntityTypeShape EntityType="DBModel.ExpenseAccount" Width="1.5" PointX="7.5" PointY="3.75" />
         <EntityTypeShape EntityType="DBModel.Factory" Width="1.5" PointX="3" PointY="3.25" />
-        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="5.25" PointY="2" />
+        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="5.25" PointY="1.875" />
         <EntityTypeShape EntityType="DBModel.FDLResult" Width="1.5" PointX="3" PointY="7.125" />
         <EntityTypeShape EntityType="DBModel.FDLStatu" Width="1.5" PointX="3" PointY="0.75" />
         <EntityTypeShape EntityType="DBModel.Timesheet" Width="1.5" PointX="10.5" PointY="3" />

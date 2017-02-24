@@ -37,6 +37,7 @@ namespace Great.Models
         public long Result { get; set; }
         public string ResultNotes { get; set; }
         public string Notes { get; set; }
+        public string PerformanceDescriptionDetails { get; set; }
         public long Status { get; set; }
         public string LastError { get; set; }
     

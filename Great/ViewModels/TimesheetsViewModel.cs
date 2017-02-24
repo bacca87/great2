@@ -268,7 +268,7 @@ namespace Great.ViewModels
         }
         
         /// <summary>
-        /// Sets and gets the OnSelectFirstDayInMonth Action.        
+        /// Sets and gets the OnSelectFirstDayInMonth Action.
         /// </summary>
         public Action<Day> OnSelectFirstDayInMonth;
 
