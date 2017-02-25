@@ -277,62 +277,7 @@
                         <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding TimesheetInfo.FDL1}" SelectedValue="{Binding TimesheetInfo.FDL}" DisplayMemberPath="Id" SelectedValuePath="Id"/>
                     </Grid>
                 </GroupBox>
-            </Grid>
-            <!--<Grid Grid.Row="3">
-                <Grid.Resources>
-                    <Style TargetType="CheckBox">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="HorizontalAlignment" Value="Center" />
-                    </Style>
-                </Grid.Resources>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="1" Content="Car" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Label Grid.Row="0" Grid.Column="2" Content="Taxi" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Label Grid.Row="0" Grid.Column="3" Content="Aircraft" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Going" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Label Grid.Row="2" Grid.Column="0" Content="Return" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <CheckBox Grid.Row="1" Grid.Column="1" />
-                <CheckBox Grid.Row="1" Grid.Column="2"/>
-                <CheckBox Grid.Row="1" Grid.Column="3"/>
-                <CheckBox Grid.Row="2" Grid.Column="1"/>
-                <CheckBox Grid.Row="2" Grid.Column="2"/>
-                <CheckBox Grid.Row="2" Grid.Column="3"/>
-            </Grid>
-            <Grid Grid.Row="4">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                    <Label Content="Performance description:"/>
-                    <TextBox TextWrapping="Wrap" Height="70" MaxLength="{Binding PerfDescMaxLength, Mode=OneTime}" VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Margin="0,0,0,10">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                        <Label Content="Assistant final test result:"/>
-                        <ComboBox ItemsSource="{Binding Results}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="100"/>
-                    </StackPanel>
-                    <TextBox TextWrapping="Wrap" Height="70" MaxLength="{Binding FinalTestResultMaxLength, Mode=OneTime}" VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-                <StackPanel Grid.Row="3" Margin="0,0,0,10">
-                    <Label Content="Software versions and other notes:"/>
-                    <TextBox TextWrapping="Wrap" Height="70" MaxLength="{Binding OtherNotesMaxLength, Mode=OneTime}" VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-            </Grid>-->
+            </Grid>            
             <StackPanel Grid.Row="5" Orientation="Horizontal">
                 <Button Margin="10" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                 <Button Margin="10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />

@@ -202,11 +202,11 @@
             <TabItem Name="fdlTab" Header="FDL">
                 <Frame Source="/Views/Pages/FDLView.xaml"/>
             </TabItem>
-            <TabItem Name="carrentalTab" Header="Car Rental">
-                <Frame Source="/Views/Pages/CarRentalView.xaml"/>
-            </TabItem>
             <TabItem Name="expenseAccountTab" Header="Expense Account">
                 <Frame Source="/Views/Pages/ExpenseAccountView.xaml"/>
+            </TabItem>
+            <TabItem Name="carrentalTab" Header="Car Rental">
+                <Frame Source="/Views/Pages/CarRentalView.xaml"/>
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2">
