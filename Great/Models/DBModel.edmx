@@ -82,14 +82,14 @@
           <Property Name="Year" Type="integer" Nullable="false" />
           <Property Name="WeekNr" Type="integer" Nullable="false" />
           <Property Name="FileName" Type="nvarchar" MaxLength="260" Nullable="false" />
-          <Property Name="Factory" Type="integer" Nullable="false" />
+          <Property Name="Factory" Type="integer" />
           <Property Name="Order" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="OutwardCar" Type="bit" />
-          <Property Name="ReturnCar" Type="bit" />
-          <Property Name="OutwardTaxi" Type="bit" />
-          <Property Name="ReturnTaxi" Type="bit" />
-          <Property Name="OutwardFlight" Type="bit" />
-          <Property Name="ReturnFlight" Type="bit" />
+          <Property Name="OutwardCar" Type="bit" Nullable="false" />
+          <Property Name="ReturnCar" Type="bit" Nullable="false" />
+          <Property Name="OutwardTaxi" Type="bit" Nullable="false" />
+          <Property Name="ReturnTaxi" Type="bit" Nullable="false" />
+          <Property Name="OutwardAircraft" Type="bit" Nullable="false" />
+          <Property Name="ReturnAircraft" Type="bit" Nullable="false" />
           <Property Name="PerformanceDescription" Type="nvarchar" MaxLength="575" />
           <Property Name="Result" Type="integer" Nullable="false" />
           <Property Name="ResultNotes" Type="nvarchar" MaxLength="495" />
@@ -220,7 +220,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FDL_2_0">
-          <End Role="Factory" Type="Self.Factory" Multiplicity="1" />
+          <End Role="Factory" Type="Self.Factory" Multiplicity="0..1" />
           <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Factory">
@@ -454,14 +454,14 @@
           <Property Name="Year" Type="Int64" Nullable="false" />
           <Property Name="WeekNr" Type="Int64" Nullable="false" />
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
-          <Property Name="Factory" Type="Int64" Nullable="false" />
+          <Property Name="Factory" Type="Int64" />
           <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="OutwardCar" Type="Boolean" />
-          <Property Name="ReturnCar" Type="Boolean" />
-          <Property Name="OutwardTaxi" Type="Boolean" />
-          <Property Name="ReturnTaxi" Type="Boolean" />
-          <Property Name="OutwardFlight" Type="Boolean" />
-          <Property Name="ReturnFlight" Type="Boolean" />
+          <Property Name="OutwardCar" Type="Boolean" Nullable="false" />
+          <Property Name="ReturnCar" Type="Boolean" Nullable="false" />
+          <Property Name="OutwardTaxi" Type="Boolean" Nullable="false" />
+          <Property Name="ReturnTaxi" Type="Boolean" Nullable="false" />
+          <Property Name="OutwardAircraft" Type="Boolean" Nullable="false" />
+          <Property Name="ReturnAircraft" Type="Boolean" Nullable="false" />
           <Property Name="PerformanceDescription" Type="String" MaxLength="575" FixedLength="false" Unicode="true" />
           <Property Name="Result" Type="Int64" Nullable="false" />
           <Property Name="ResultNotes" Type="String" MaxLength="495" FixedLength="false" Unicode="true" />
@@ -592,7 +592,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FDL_2_0">
-          <End Type="DBModel.Factory" Role="Factory" Multiplicity="1" />
+          <End Type="DBModel.Factory" Role="Factory" Multiplicity="0..1" />
           <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Factory">
@@ -731,8 +731,8 @@
                 <ScalarProperty Name="ResultNotes" ColumnName="ResultNotes" />
                 <ScalarProperty Name="Result" ColumnName="Result" />
                 <ScalarProperty Name="PerformanceDescription" ColumnName="PerformanceDescription" />
-                <ScalarProperty Name="ReturnFlight" ColumnName="ReturnFlight" />
-                <ScalarProperty Name="OutwardFlight" ColumnName="OutwardFlight" />
+                <ScalarProperty Name="ReturnAircraft" ColumnName="ReturnAircraft" />
+                <ScalarProperty Name="OutwardAircraft" ColumnName="OutwardAircraft" />
                 <ScalarProperty Name="ReturnTaxi" ColumnName="ReturnTaxi" />
                 <ScalarProperty Name="OutwardTaxi" ColumnName="OutwardTaxi" />
                 <ScalarProperty Name="ReturnCar" ColumnName="ReturnCar" />

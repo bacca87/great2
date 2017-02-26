@@ -198,10 +198,10 @@ namespace Great.Models
 
                 public const string OutwardCar = "data[0].#subform[0].Tabella1[0].Riga7[3].Caselladicontrollo1[0]";
                 public const string OutwardTaxi = "data[0].#subform[0].Tabella1[0].Riga7[3].Caselladicontrollo3[0]";
-                public const string OutwardFlight = "data[0].#subform[0].Tabella1[0].Riga7[3].Caselladicontrollo5[0]";
+                public const string OutwardAircraft = "data[0].#subform[0].Tabella1[0].Riga7[3].Caselladicontrollo5[0]";
                 public const string ReturnCar = "data[0].#subform[0].Tabella1[0].Riga7[4].Caselladicontrollo2[0]";
                 public const string ReturnTaxi = "data[0].#subform[0].Tabella1[0].Riga7[4].Caselladicontrollo4[0]";
-                public const string ReturnFlight = "data[0].#subform[0].Tabella1[0].Riga7[4].Caselladicontrollo6[0]";
+                public const string ReturnAircraft = "data[0].#subform[0].Tabella1[0].Riga7[4].Caselladicontrollo6[0]";
 
                 public const string PerformanceDescription = "data[0].#subform[0].Tabella4[1].Riga1[0].Cella1[0]";
                 public const string PerformanceDescriptionDetails = "data[0].#subform[12].Tabella4[3].#subformSet[0].Riga1[1].Cella1[0]";

@@ -187,36 +187,13 @@ namespace Great.Models
                 //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
                 //fields[ApplicationSettings.FDL.FieldNames.Cars2]
-
-                if (fdl.OutwardCar.HasValue && fdl.OutwardCar.Value)
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue("1");
-                else
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue("0");
-
-                if(fdl.OutwardTaxi.HasValue && fdl.OutwardTaxi.Value)
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue("1");
-                else
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue("0");
-
-                if(fdl.OutwardFlight.HasValue && fdl.OutwardFlight.Value)
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardFlight].SetValue("1");
-                else
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardFlight].SetValue("0");
-
-                if(fdl.ReturnCar.HasValue && fdl.ReturnCar.Value)
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue("1");
-                else
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue("0");
-
-                if (fdl.ReturnTaxi.HasValue && fdl.ReturnTaxi.Value)
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue("1");
-                else
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue("0");
-
-                if (fdl.ReturnFlight.HasValue && fdl.ReturnFlight.Value)
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnFlight].SetValue("1");
-                else
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnFlight].SetValue("0");
+                
+                fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue(fdl.OutwardCar ? "1" : "0");
+                fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue(fdl.OutwardTaxi ? "1" : "0");
+                fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].SetValue(fdl.OutwardAircraft ? "1" : "0");
+                fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue(fdl.ReturnCar ? "1" : "0");
+                fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue(fdl.ReturnTaxi ? "1" : "0");
+                fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].SetValue(fdl.ReturnAircraft ? "1" : "0");
                 
                 fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].SetValue(fdl.PerformanceDescription);
                 fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].SetValue(fdl.PerformanceDescriptionDetails);

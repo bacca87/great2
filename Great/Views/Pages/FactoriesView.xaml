@@ -99,31 +99,31 @@
                     <Label Grid.Column="0" Grid.Row="4" Content="Transfer Type:"/>
                     <Label Grid.Column="0" Grid.Row="5" Content="Is Forfait:"/>
 
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding FactoryInfo.Name}" />
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding FactoryInfo.CompanyName}"/>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding FactoryInfo.Address}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding SelectedFactoryClone.Name}" />
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedFactoryClone.CompanyName}"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedFactoryClone.Address}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
 
                     <WrapPanel Grid.Column="1" Grid.Row="3">
                         <Label>
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding  StringFormat="Lat: {0}   Lng: {1}">
-                                        <Binding Path="FactoryInfo.Latitude"/>
-                                        <Binding Path="FactoryInfo.Longitude"/>
+                                        <Binding Path="SelectedFactoryClone.Latitude"/>
+                                        <Binding Path="SelectedFactoryClone.Longitude"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                         </Label>
                     </WrapPanel>
 
-                    <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding FactoryInfo.TransferType1}" SelectedValue="{Binding FactoryInfo.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                    <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactoryClone.TransferType1}" SelectedValue="{Binding SelectedFactoryClone.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
 
-                    <CheckBox Grid.Column="1" Grid.Row="5" Margin="7" IsChecked="{Binding FactoryInfo.IsForfait}"/>                    
+                    <CheckBox Grid.Column="1" Grid.Row="5" Margin="7" IsChecked="{Binding SelectedFactoryClone.IsForfait}"/>                    
 
                     <StackPanel Grid.ColumnSpan="2" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <Button Margin="10" Content="Delete" Command="{Binding DeleteFactoryCommand}" CommandParameter="{Binding SelectedFactory}"/>
                         <Button Margin="10" Content="Clear" Command="{Binding ClearSelectionCommand}"/>
-                        <Button Margin="10" Content="Save" Command="{Binding SaveFactoryCommand}" CommandParameter="{Binding FactoryInfo}"/>
+                        <Button Margin="10" Content="Save" Command="{Binding SaveFactoryCommand}" CommandParameter="{Binding SelectedFactoryClone}"/>
                     </StackPanel>
                 </Grid>
             </Expander>

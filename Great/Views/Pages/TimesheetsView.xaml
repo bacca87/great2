@@ -257,14 +257,14 @@
                 <Label Grid.Row="0" Grid.Column="4">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
                 </Label>
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding TimesheetInfo.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding TimesheetInfo.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding TimesheetInfo.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
-                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding TimesheetInfo.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
+                <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" />
             </Grid>
             <Grid Grid.Row="3">
                 <GroupBox Header="FDL" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}">
@@ -274,14 +274,14 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding TimesheetInfo.FDL1}" SelectedValue="{Binding TimesheetInfo.FDL}" DisplayMemberPath="Id" SelectedValuePath="Id"/>
+                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding SelectedTimesheetClone.FDL1}" SelectedValue="{Binding SelectedTimesheetClone.FDL}" DisplayMemberPath="Id" SelectedValuePath="Id"/>
                     </Grid>
                 </GroupBox>
             </Grid>            
             <StackPanel Grid.Row="5" Orientation="Horizontal">
                 <Button Margin="10" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                 <Button Margin="10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
-                <Button Margin="10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding TimesheetInfo}" />
+                <Button Margin="10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheetClone}" />
             </StackPanel>
         </Grid>
     </Grid>

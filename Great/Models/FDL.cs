@@ -25,14 +25,14 @@ namespace Great.Models
         public long Year { get; set; }
         public long WeekNr { get; set; }
         public string FileName { get; set; }
-        public long Factory { get; set; }
+        public Nullable<long> Factory { get; set; }
         public string Order { get; set; }
-        public Nullable<bool> OutwardCar { get; set; }
-        public Nullable<bool> ReturnCar { get; set; }
-        public Nullable<bool> OutwardTaxi { get; set; }
-        public Nullable<bool> ReturnTaxi { get; set; }
-        public Nullable<bool> OutwardFlight { get; set; }
-        public Nullable<bool> ReturnFlight { get; set; }
+        public bool OutwardCar { get; set; }
+        public bool ReturnCar { get; set; }
+        public bool OutwardTaxi { get; set; }
+        public bool ReturnTaxi { get; set; }
+        public bool OutwardAircraft { get; set; }
+        public bool ReturnAircraft { get; set; }
         public string PerformanceDescription { get; set; }
         public long Result { get; set; }
         public string ResultNotes { get; set; }

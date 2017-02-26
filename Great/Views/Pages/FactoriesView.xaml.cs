@@ -229,11 +229,11 @@ namespace Great.Views
                 Point mousePos = e.GetPosition(factoriesMapControl);
                 PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
 
-                Factory factory = _viewModel.FactoryInfo;
+                Factory factory = _viewModel.SelectedFactoryClone;
                 factory.Latitude = mapPosition.Lat;
                 factory.Longitude = mapPosition.Lng;
 
-                _viewModel.FactoryInfo = factory; //raise property changed
+                _viewModel.SelectedFactoryClone = factory; //raise property changed
 
                 if (tempPosMarker != null)
                     factoriesMapControl.Markers.Remove(tempPosMarker);

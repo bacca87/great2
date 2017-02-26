@@ -220,7 +220,7 @@ namespace Great.ViewModels
                 var oldValue = _selectedTimesheet;
                 _selectedTimesheet = value;
 
-                TimesheetInfo = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp };
+                SelectedTimesheetClone = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp };
 
                 RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
@@ -228,15 +228,15 @@ namespace Great.ViewModels
         }
 
         /// <summary>
-        /// The <see cref="TimesheetInfo" /> property's name.
+        /// The <see cref="SelectedTimesheetClone" /> property's name.
         /// </summary>
         private Timesheet _timesheetInfo;
 
         /// <summary>
-        /// Sets and gets the TimesheetInfo property.
+        /// Sets and gets the SelectedTimesheetClone property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public Timesheet TimesheetInfo
+        public Timesheet SelectedTimesheetClone
         {
             get
             {
@@ -247,7 +247,7 @@ namespace Great.ViewModels
             {
                 var oldValue = _timesheetInfo;
                 _timesheetInfo = value;
-                RaisePropertyChanged(nameof(TimesheetInfo), oldValue, value);
+                RaisePropertyChanged(nameof(SelectedTimesheetClone), oldValue, value);
                 SaveTimesheetCommand.RaiseCanExecuteChanged();
             }
         }

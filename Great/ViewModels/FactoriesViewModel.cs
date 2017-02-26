@@ -48,22 +48,22 @@ namespace Great.ViewModels
                 var oldValue = _selectedFactory;
                 _selectedFactory = value;
 
-                FactoryInfo = _selectedFactory != null ? _selectedFactory.Clone() : new Factory();
+                SelectedFactoryClone = _selectedFactory != null ? _selectedFactory.Clone() : new Factory();
                 
                 RaisePropertyChanged(nameof(SelectedFactory), oldValue, value);
             }
         }
 
         /// <summary>
-        /// The <see cref="FactoryInfo" /> property's name.
+        /// The <see cref="SelectedFactoryClone" /> property's name.
         /// </summary>
         private Factory _factoryInfo = new Factory();
 
         /// <summary>
-        /// Sets and gets the FactoryInfo property.
+        /// Sets and gets the SelectedFactoryClone property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public Factory FactoryInfo
+        public Factory SelectedFactoryClone
         {
             get
             {
@@ -74,7 +74,7 @@ namespace Great.ViewModels
             {
                 var oldValue = _factoryInfo;
                 _factoryInfo = value;
-                RaisePropertyChanged(nameof(FactoryInfo), oldValue, value);
+                RaisePropertyChanged(nameof(SelectedFactoryClone), oldValue, value);
             }
         }
 
