@@ -10,11 +10,9 @@ namespace Great.Models
     public partial class FDL : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-        #region Display Properties
-        public string FDL_Display { get { return Year + "/" + Id.ToString().PadLeft(5, '0'); } }
-        #endregion
-
+        
+        public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
+                
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -47,7 +45,6 @@ namespace Great.Models
             return new FDL()
             {
                 Id = Id,
-                Year = Year,
                 WeekNr = WeekNr,
                 FileName = FileName,
                 Factory = Factory,

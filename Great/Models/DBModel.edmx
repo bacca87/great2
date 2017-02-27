@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\baccarani.m\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\SNaKE\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Car">
           <Key>
             <PropertyRef Name="Id" />
@@ -57,7 +57,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FDL" Type="integer" Nullable="false" />
+          <Property Name="FDL" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="Status" Type="integer" Nullable="false" />
           <Property Name="LastError" Type="nvarchar" MaxLength="250" />
         </EntityType>
@@ -78,8 +78,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" />
-          <Property Name="Year" Type="integer" Nullable="false" />
+          <Property Name="Id" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="WeekNr" Type="integer" Nullable="false" />
           <Property Name="FileName" Type="nvarchar" MaxLength="260" Nullable="false" />
           <Property Name="Factory" Type="integer" />
@@ -126,7 +125,7 @@
           <Property Name="WorkEndTimeAM" Type="integer" />
           <Property Name="WorkStartTimePM" Type="integer" />
           <Property Name="WorkEndTimePM" Type="integer" />
-          <Property Name="FDL" Type="integer" />
+          <Property Name="FDL" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="TransferType">
           <Key>
@@ -426,7 +425,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FDL" Type="Int64" Nullable="false" />
+          <Property Name="FDL" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int64" Nullable="false" />
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="FDL1" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDL" />
@@ -450,8 +449,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="Year" Type="Int64" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="WeekNr" Type="Int64" Nullable="false" />
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
           <Property Name="Factory" Type="Int64" />
@@ -505,7 +503,7 @@
           <Property Name="WorkEndTimeAM" Type="Int64" />
           <Property Name="WorkStartTimePM" Type="Int64" />
           <Property Name="WorkEndTimePM" Type="Int64" />
-          <Property Name="FDL" Type="Int64" />
+          <Property Name="FDL" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Day" Relationship="DBModel.FK_Timesheet_1_0" FromRole="Timesheet" ToRole="Day" />
           <NavigationProperty Name="FDL1" Relationship="DBModel.FK_Timesheet_0_0" FromRole="Timesheet" ToRole="FDL" />
         </EntityType>
@@ -741,7 +739,6 @@
                 <ScalarProperty Name="Factory" ColumnName="Factory" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
-                <ScalarProperty Name="Year" ColumnName="Year" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

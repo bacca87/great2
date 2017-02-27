@@ -15,7 +15,7 @@ namespace Great.Models
     public partial class ExpenseAccount
     {
         public long Id { get; set; }
-        public long FDL { get; set; }
+        public string FDL { get; set; }
         public long Status { get; set; }
         public string LastError { get; set; }
     

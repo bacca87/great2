@@ -24,13 +24,13 @@ namespace Great.Controls
                 switch (_color)
                 {
                     case FactoryMarkerColor.Red:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/map-marker-red.png"));                        
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/24/map-marker-red.png"));                        
                         break;
                     case FactoryMarkerColor.Green:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/map-marker-green.png"));
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/24/map-marker-green.png"));
                         break;
                     case FactoryMarkerColor.Blue:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/map-marker-blue.png"));
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great;component/Images/24/map-marker-blue.png"));
                         break;
                     default:
                         break;

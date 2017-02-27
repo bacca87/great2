@@ -31,7 +31,7 @@
             <Button Name="goButton" Click="goButton_Click">Go</Button>            
         </WrapPanel>
         <Button Name="zoomOutButton" Grid.Row="0" Margin="10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
-            <Image Source="pack://application:,,,/Images/map-map-marker.png" Stretch="None" />
+            <Image Source="pack://application:,,,/Images/24/map-map-marker.png" Stretch="None" />
         </Button>
         <WrapPanel Grid.Row="0" Margin="10" Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right">
             <Slider Name="zoomSlider" Orientation="Vertical" Height="100" ToolTip="Zoom level" ValueChanged="zoomSlider_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" HorizontalAlignment="Right"/>

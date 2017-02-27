@@ -21,8 +21,7 @@ namespace Great.Models
             this.Timesheets = new HashSet<Timesheet>();
         }
     
-        public long Id { get; set; }
-        public long Year { get; set; }
+        public string Id { get; set; }
         public long WeekNr { get; set; }
         public string FileName { get; set; }
         public Nullable<long> Factory { get; set; }

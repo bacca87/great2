@@ -237,7 +237,7 @@ namespace Great.Models
 
                 foreach (Timesheet timesheet in Timesheets)
                 {
-                    if (timesheet.FDL.HasValue)
+                    if (timesheet.FDL != string.Empty)
                         factories += timesheet?.FDL1?.Factory1?.Name + "; ";
                 }
 

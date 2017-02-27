@@ -28,7 +28,7 @@
             <Rectangle.ToolTip>
                 <StackPanel Background="Honeydew" Height="Auto" Width="200">
                     <StackPanel Background="LightBlue" Height="30" Width="200" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                        <Image VerticalAlignment="Top"  Width="30" Height="30" Source="pack://application:,,,/Images/map-map-marker.png" Name="image1" />
+                        <Image VerticalAlignment="Top"  Width="30" Height="30" Source="pack://application:,,,/Images/24/map-map-marker.png" Name="image1" />
                         <TextBlock FontFamily="Aharoni" FontSize="24" FontWeight="Bold" Foreground="Black" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" HorizontalAlignment="Right" Width="143">
                             <Run FontFamily="Andalus" FontSize="18" FontWeight="Normal" Text="{Binding Name}"/>
                         </TextBlock>

@@ -261,7 +261,7 @@ namespace Great.ViewModels
             get
             {
                 if (SelectedWorkingDay != null)
-                    return _db.FDLs.Where(fdl => fdl.Year == CurrentYear && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList();
+                    return _db.FDLs.Where(fdl => fdl.Id.Substring(0,4) == CurrentYear.ToString() && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList();
                 else
                     return null;
             }

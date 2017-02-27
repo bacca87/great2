@@ -35,17 +35,15 @@ namespace Great.Models
         private FDL GetFDLFromFile(string filePath)
         {
             FDL fdl = new FDL();
-            
+            PdfDocument pdfDoc = null;
+
             try
             {
-                PdfDocument pdfDoc = new PdfDocument(new PdfReader(filePath));
+                pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                string[] fdlValues = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString().Split('/');
-
-                fdl.Id = Convert.ToInt64(fdlValues[1]);
-                fdl.Year = Convert.ToInt64(fdlValues[0]);
+                
+                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                
                 fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
                 fdl.FileName = Path.GetFileName(filePath);
                 
@@ -78,6 +76,10 @@ namespace Great.Models
             {
                 fdl = null;
             }
+            finally
+            {
+                pdfDoc?.Close();
+            }
 
             return fdl;
         }
@@ -86,10 +88,11 @@ namespace Great.Models
         {
             string file = ApplicationSettings.Directories.FDL + fdl.FileName;
             string tempFile = Path.GetTempPath() + fdl.FileName;
+            PdfDocument pdfDoc = null;
 
             try
             {
-                PdfDocument pdfDoc = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                pdfDoc = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
                 
@@ -237,12 +240,14 @@ namespace Great.Models
                 fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(fdl.Result.ToString());
                 fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].SetValue(fdl.ResultNotes);
                 fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].SetValue(fdl.Notes);
-                
-                pdfDoc.Close();
             }
             catch (Exception ex)
             {
                 Debugger.Break();
+            }
+            finally
+            {
+                pdfDoc?.Close();
             }
         }
 
@@ -298,31 +303,31 @@ namespace Great.Models
         private void ProcessMessage(EmailMessage message, DBEntities db)
         {
             EMessageType type = GetMessageType(message.Subject);
-            long fdlNumber = ExtractFDLFromSubject(message.Subject, type);
+            string fdlNumber = ExtractFDLFromSubject(message.Subject, type);
             
             switch (type)
             {
                 case EMessageType.FDL_Accepted:
-                    FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+                    FDL accepted = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
                     if (accepted != null)
                         accepted.Status = (long)EFDLStatus.Accepted;
                     break;
                 case EMessageType.FDL_Rejected:
-                    FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+                    FDL rejected = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
                     if (rejected != null)
                     {
                         rejected.Status = (long)EFDLStatus.Rejected;
-                        rejected.LastError = message.TextBody?.Text;
+                        rejected.LastError = message.Body?.Text;
                     }
                     break;
                 case EMessageType.EA_Rejected:
                 case EMessageType.EA_RejectedResubmission:
                     //TODO: differenziare la nota spese R da R1
-                    ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+                    ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL.Substring(5) == fdlNumber);
                     if (expenseAccount != null)
                     {
                         expenseAccount.Status = (long)EFDLStatus.Rejected;
-                        expenseAccount.LastError = message.TextBody?.Text;
+                        expenseAccount.LastError = message.Body?.Text;
                     }
                     break;
                 case EMessageType.FDL_EA_New:
@@ -413,9 +418,9 @@ namespace Great.Models
             return EAttachmentType.Unknown;
         }
         
-        private long ExtractFDLFromSubject(string subject, EMessageType type)
+        private string ExtractFDLFromSubject(string subject, EMessageType type)
         {
-            long FDL = 0;
+            string FDL = string.Empty;
             string[] words;
 
             try
@@ -428,14 +433,14 @@ namespace Great.Models
                         // FDL RECEIVED (XXXXX)
                         Match match = Regex.Match(subject, @"\(([^)]*)\)");
                         if (match.Success || match.Groups.Count > 0)
-                            FDL = long.Parse(match.Groups[1].Value);
+                            FDL = match.Groups[1].Value;
                         break;
                     case EMessageType.EA_Rejected:
                         // FDL XXXXX NOTA SPESE RIFIUTATA
                         //  0    1    2     3       4
                         words = subject.Split(' ');
                         if(words.Length > 1)
-                            FDL = long.Parse(words[1]);
+                            FDL = words[1];
                         break;
                     case EMessageType.EA_RejectedResubmission:
                         // Reinvio nota spese YYYY/XXXXX respinto
@@ -445,7 +450,7 @@ namespace Great.Models
                         {
                             words = words[3].Split('/');
                             if(words.Length > 1)
-                                FDL = long.Parse(words[1]);
+                                FDL = words[1];
                         }
                         break;
                     default:
@@ -637,7 +642,8 @@ namespace Great.Models
     public enum EFDLStatus
     {
         New = 0,
-        Accepted = 1,
-        Rejected = 2
+        Waiting = 1,
+        Accepted = 2,
+        Rejected = 3
     }
 }

@@ -206,7 +206,7 @@ namespace Great.ViewModels
             _db = new DBEntities();
             _fdlManager = manager;
 
-            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Year).ThenByDescending(f => f.Id).ToList());
+            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
             Factories = new ObservableCollection<Factory>(_db.Factories);
 

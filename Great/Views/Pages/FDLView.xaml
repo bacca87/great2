@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:m="clr-namespace:Great.Models" 
       xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:conv="clr-namespace:Great.Converters"
       mc:Ignorable="d"      
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView">
@@ -47,6 +48,7 @@
                 </Style>-->
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
             </DataGrid.Resources>
             <!--<DataGrid.ContextMenu>
                 <ContextMenu>
@@ -62,8 +64,14 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
-                <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_Display}"/>
+                <DataGridTemplateColumn Header="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>                
+                <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold"/>
                 <DataGridTextColumn Header="Factory" Binding="{Binding Factory1.Name}"/>
                 <DataGridTextColumn Header="Order" Binding="{Binding Order}"/>
                 <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}"/>
