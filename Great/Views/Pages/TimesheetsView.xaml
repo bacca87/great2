@@ -274,7 +274,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding SelectedTimesheetClone.FDL1}" SelectedValue="{Binding SelectedTimesheetClone.FDL}" DisplayMemberPath="Id" SelectedValuePath="Id"/>
+                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding SelectedTimesheetClone.FDL1}" SelectedValue="{Binding SelectedTimesheetClone.FDL}" DisplayMemberPath="FDL_Display" SelectedValuePath="Id"/>
                     </Grid>
                 </GroupBox>
             </Grid>            

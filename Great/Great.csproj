@@ -217,6 +217,7 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils\ClipboardX.cs" />
+    <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Utils\PasswordHelper.cs" />
     <Compile Include="Utils\SecureCrypt.cs" />
     <Compile Include="Utils\TimePeriodTools.cs" />

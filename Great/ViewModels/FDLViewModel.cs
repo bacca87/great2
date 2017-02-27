@@ -68,7 +68,7 @@ namespace Great.ViewModels
             {
                 return _FDLs;
             }
-            internal set
+            set
             {
                 _FDLs = value;
                 RaisePropertyChanged(nameof(FDLs));
@@ -206,7 +206,7 @@ namespace Great.ViewModels
             _db = new DBEntities();
             _fdlManager = manager;
 
-            FDLs = new BindingList<FDL>(_db.FDLs.ToList());
+            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Year).ThenByDescending(f => f.Id).ToList());
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
             Factories = new ObservableCollection<Factory>(_db.Factories);
 
@@ -216,7 +216,19 @@ namespace Great.ViewModels
 
         public void ClearFDL()
         {
-
+            SelectedFDLClone.Factory = -1;
+            SelectedFDLClone.OutwardCar = false;
+            SelectedFDLClone.OutwardTaxi = false;
+            SelectedFDLClone.OutwardAircraft = false;
+            SelectedFDLClone.ReturnCar = false;
+            SelectedFDLClone.ReturnTaxi = false;
+            SelectedFDLClone.ReturnAircraft = false;
+            SelectedFDLClone.PerformanceDescription = string.Empty;
+            SelectedFDLClone.Result = 0;
+            SelectedFDLClone.ResultNotes = string.Empty;
+            SelectedFDLClone.Notes = string.Empty;
+            SelectedFDLClone.PerformanceDescriptionDetails = string.Empty;
+            SelectedFDLClone = SelectedFDLClone; // Raise PropertyChanged
         }
 
         public void SaveFDL(FDL fdl)
@@ -228,7 +240,9 @@ namespace Great.ViewModels
                 MessageBox.Show("Please select a factory before continue. Operation cancelled.", "Invalid FDL", MessageBoxButton.OK, MessageBoxImage.Warning);
             
             _db.FDLs.AddOrUpdate(fdl);
-            _db.SaveChanges();
+
+            if (_db.SaveChanges() > 0)
+                SelectedFDL.NotifyFDLPropertiesChanged();
         }
     }
 }

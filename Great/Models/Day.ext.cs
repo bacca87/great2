@@ -16,7 +16,7 @@ namespace Great.Models
             set { Timestamp = UnixTimestamp.GetTimestamp(value); }
         }
 
-        public int WeekNr { get { return DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(Date, DateTimeFormatInfo.CurrentInfo.CalendarWeekRule, DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek); } }
+        public int WeekNr { get { return DateTimeHelper.WeekNr(Date); } }
         public bool IsHoliday { get; }
 
         public bool IsWorkDay { get { return Type == (long)EDayType.WorkDay; } }
@@ -238,7 +238,7 @@ namespace Great.Models
                 foreach (Timesheet timesheet in Timesheets)
                 {
                     if (timesheet.FDL.HasValue)
-                        factories += timesheet?.FDL1?.Factory1.Name + "; ";
+                        factories += timesheet?.FDL1?.Factory1?.Name + "; ";
                 }
 
                 if (factories.Length > 1)

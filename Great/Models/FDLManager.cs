@@ -24,16 +24,62 @@ namespace Great.Models
 
         private Thread subscribeThread;
         private Thread syncThread;
-
-        private DBEntities _db;
-
+        
         public EExchangeStatus ExchangeStatus { get; internal set; }
         
         public FDLManager()
         {
-            _db = new DBEntities();
-            
             StartBackgroundOperations();
+        }
+
+        private FDL GetFDLFromFile(string filePath)
+        {
+            FDL fdl = new FDL();
+            
+            try
+            {
+                PdfDocument pdfDoc = new PdfDocument(new PdfReader(filePath));
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                IDictionary<string, PdfFormField> fields = form.GetFormFields();
+
+                string[] fdlValues = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString().Split('/');
+
+                fdl.Id = Convert.ToInt64(fdlValues[1]);
+                fdl.Year = Convert.ToInt64(fdlValues[0]);
+                fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
+                fdl.FileName = Path.GetFileName(filePath);
+                
+                string mon = fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString();
+                string tue = fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString();
+                string wed = fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString();
+                string thu = fields[ApplicationSettings.FDL.FieldNames.Thu_Date].GetValueAsString();
+                string fri = fields[ApplicationSettings.FDL.FieldNames.Fri_Date].GetValueAsString();
+                string sat = fields[ApplicationSettings.FDL.FieldNames.Sat_Date].GetValueAsString();
+                string sun = fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString();
+
+                if (mon != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(mon));
+                else if (tue != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(tue));
+                else if (wed != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(wed));
+                else if (thu != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(thu));
+                else if (fri != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(fri));
+                else if (sat != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(sat));
+                else if (sun != string.Empty)
+                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(sun));
+                else
+                    throw new InvalidOperationException("Impossible to retrieve the week number.");
+            }
+            catch
+            {
+                fdl = null;
+            }
+
+            return fdl;
         }
 
         private void CompileFDL(FDL fdl)
@@ -48,15 +94,6 @@ namespace Great.Models
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
                 
                 Timesheet timesheet = null;
-
-                //fields[ApplicationSettings.FDL.FieldNames.FDLNumber]
-                //fields[ApplicationSettings.FDL.FieldNames.Customer]
-                //fields[ApplicationSettings.FDL.FieldNames.Address]
-                //fields[ApplicationSettings.FDL.FieldNames.Technician]
-                //fields[ApplicationSettings.FDL.FieldNames.CID]
-                //fields[ApplicationSettings.FDL.FieldNames.RequestedBy]
-                //fields[ApplicationSettings.FDL.FieldNames.Order]
-                //fields[ApplicationSettings.FDL.FieldNames.OrderType]
                 
                 string monday = fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString();
                 if (monday != string.Empty)
@@ -304,6 +341,11 @@ namespace Great.Models
                                 case EAttachmentType.FDL:
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
+
+                                    FDL fdl = GetFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name);
+
+                                    if (fdl != null && !db.FDLs.Any(f => f.Id == fdl.Id))
+                                        db.FDLs.Add(fdl);
                                     break;
                                 case EAttachmentType.ExpenseAccount1:
                                 case EAttachmentType.ExpenseAccount2:
@@ -352,16 +394,18 @@ namespace Great.Models
                     string Month = words[words.Length - 2];
                     string Year = words[words.Length - 1];
 
-                    if (words.LastOrDefault().Contains("R1"))
-                        return EAttachmentType.ExpenseAccount2;
-                    else if (words.LastOrDefault().Contains("R"))
-                        return EAttachmentType.ExpenseAccount1;
-                    else if (FDL.All(char.IsDigit) &&
-                             CID.All(char.IsDigit) &&
-                             WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
-                             Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
-                             Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
-                        return EAttachmentType.FDL;
+                    if (FDL.All(char.IsDigit))
+                    {
+                        if (words.LastOrDefault().Contains("R1"))
+                            return EAttachmentType.ExpenseAccount2;
+                        else if (words.LastOrDefault().Contains("R"))
+                            return EAttachmentType.ExpenseAccount1;
+                        else if (CID.All(char.IsDigit) &&
+                                 WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
+                                 Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
+                                 Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
+                            return EAttachmentType.FDL;
+                    }
                 }
             }
             catch { }
