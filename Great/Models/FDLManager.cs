@@ -1,4 +1,5 @@
 ﻿using Great.Utils;
+using Great.Utils.Extensions;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Kernel.Pdf;
@@ -46,7 +47,8 @@ namespace Great.Models
                 fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                
                 fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
                 fdl.FileName = Path.GetFileName(filePath);
-                
+                fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
+
                 string mon = fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString();
                 string tue = fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString();
                 string wed = fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString();
@@ -56,19 +58,19 @@ namespace Great.Models
                 string sun = fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString();
 
                 if (mon != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(mon));
+                    fdl.WeekNr = DateTime.Parse(mon).WeekNr();
                 else if (tue != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(tue));
+                    fdl.WeekNr = DateTime.Parse(tue).WeekNr();
                 else if (wed != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(wed));
+                    fdl.WeekNr = DateTime.Parse(wed).WeekNr();
                 else if (thu != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(thu));
+                    fdl.WeekNr = DateTime.Parse(thu).WeekNr();
                 else if (fri != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(fri));
+                    fdl.WeekNr = DateTime.Parse(fri).WeekNr();
                 else if (sat != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(sat));
+                    fdl.WeekNr = DateTime.Parse(sat).WeekNr();
                 else if (sun != string.Empty)
-                    fdl.WeekNr = DateTimeHelper.WeekNr(DateTime.Parse(sun));
+                    fdl.WeekNr = DateTime.Parse(sun).WeekNr();
                 else
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
             }
@@ -256,7 +258,7 @@ namespace Great.Models
             CompileFDL(fdl);
 
             EmailMessage message = new EmailMessage(notificationsService);
-            message.Subject = $"FDL {fdl.Year + "/" + fdl.Id.ToString().PadLeft(5, '0')} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
             message.ToRecipients.Add(ApplicationSettings.FDL.EmailAddress);
             message.Attachments.AddFileAttachment(Path.GetTempPath() + fdl.FileName);
             message.SendAndSaveCopy();

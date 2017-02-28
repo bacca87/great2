@@ -23,7 +23,7 @@ namespace Great.Models
     
         public string Id { get; set; }
         public long WeekNr { get; set; }
-        public string FileName { get; set; }
+        public bool IsExtra { get; set; }
         public Nullable<long> Factory { get; set; }
         public string Order { get; set; }
         public bool OutwardCar { get; set; }
@@ -39,6 +39,7 @@ namespace Great.Models
         public string PerformanceDescriptionDetails { get; set; }
         public long Status { get; set; }
         public string LastError { get; set; }
+        public string FileName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }

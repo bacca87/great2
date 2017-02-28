@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\SNaKE\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\baccarani.m\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Car">
           <Key>
             <PropertyRef Name="Id" />
@@ -80,7 +80,7 @@
           </Key>
           <Property Name="Id" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="WeekNr" Type="integer" Nullable="false" />
-          <Property Name="FileName" Type="nvarchar" MaxLength="260" Nullable="false" />
+          <Property Name="IsExtra" Type="bit" Nullable="false" />
           <Property Name="Factory" Type="integer" />
           <Property Name="Order" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="OutwardCar" Type="bit" Nullable="false" />
@@ -96,6 +96,7 @@
           <Property Name="PerformanceDescriptionDetails" Type="nvarchar" MaxLength="5000" />
           <Property Name="Status" Type="integer" Nullable="false" />
           <Property Name="LastError" Type="nvarchar" MaxLength="250" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="260" Nullable="false" />
         </EntityType>
         <EntityType Name="FDLResult">
           <Key>
@@ -451,7 +452,7 @@
           </Key>
           <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="WeekNr" Type="Int64" Nullable="false" />
-          <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
+          <Property Name="IsExtra" Type="Boolean" Nullable="false" />
           <Property Name="Factory" Type="Int64" />
           <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="OutwardCar" Type="Boolean" Nullable="false" />
@@ -467,6 +468,7 @@
           <Property Name="PerformanceDescriptionDetails" Type="String" MaxLength="5000" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int64" Nullable="false" />
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDL" ToRole="ExpenseAccount" />
           <NavigationProperty Name="Factory1" Relationship="DBModel.FK_FDL_2_0" FromRole="FDL" ToRole="Factory" />
           <NavigationProperty Name="FDLStatu" Relationship="DBModel.FK_FDL_0_0" FromRole="FDL" ToRole="FDLStatu" />
@@ -722,6 +724,7 @@
           <EntitySetMapping Name="FDLs">
             <EntityTypeMapping TypeName="DBModel.FDL">
               <MappingFragment StoreEntitySet="FDL">
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="LastError" ColumnName="LastError" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="PerformanceDescriptionDetails" ColumnName="PerformanceDescriptionDetails" />
@@ -737,7 +740,7 @@
                 <ScalarProperty Name="OutwardCar" ColumnName="OutwardCar" />
                 <ScalarProperty Name="Order" ColumnName="Order" />
                 <ScalarProperty Name="Factory" ColumnName="Factory" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="IsExtra" ColumnName="IsExtra" />
                 <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

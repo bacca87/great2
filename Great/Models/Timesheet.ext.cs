@@ -1,4 +1,4 @@
-﻿using Great.Utils;
+﻿using Great.Utils.Extensions;
 using Itenso.TimePeriod;
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace Great.Models
         #region Converted Properties
         public DateTime Date
         {
-            get { return UnixTimestamp.GetDateTime(Timestamp); }
-            set { Timestamp = UnixTimestamp.GetTimestamp(value); }
+            get { return DateTime.Now.FromUnixTimestamp(Timestamp); }
+            set { Timestamp = value.ToUnixTimestamp(); }
         }
 
         public TimeSpan? TravelStartTimeAM_t
@@ -68,7 +68,7 @@ namespace Great.Models
         {
             get
             {
-                return TimePeriodTools.GetRoundedTotalDuration(TimePeriods);
+                return TimePeriods.GetRoundedTotalDuration();
             }
         }
 
@@ -76,7 +76,7 @@ namespace Great.Models
         {
             get
             {
-                return TimePeriodTools.GetRoundedTotalDuration(WorkPeriods);
+                return WorkPeriods.GetRoundedTotalDuration();
             }
         }
 
@@ -84,7 +84,7 @@ namespace Great.Models
         {
             get
             {
-                return TimePeriodTools.GetRoundedTotalDuration(TravelPeriods);
+                return TravelPeriods.GetRoundedTotalDuration();
             }
         }
         #endregion
@@ -238,17 +238,17 @@ namespace Great.Models
         {
             return new Timesheet()
             {
-                Id = this.Id,
-                Timestamp = this.Timestamp,
-                TravelStartTimeAM = this.TravelStartTimeAM,
-                TravelEndTimeAM = this.TravelEndTimeAM,
-                WorkStartTimeAM = this.WorkStartTimeAM,
-                WorkEndTimeAM = this.WorkEndTimeAM,
-                TravelStartTimePM = this.TravelStartTimePM,
-                TravelEndTimePM = this.TravelEndTimePM,
-                WorkStartTimePM = this.WorkStartTimePM,
-                WorkEndTimePM = this.WorkEndTimePM,
-                FDL = this.FDL
+                Id = Id,
+                Timestamp = Timestamp,
+                TravelStartTimeAM = TravelStartTimeAM,
+                TravelEndTimeAM = TravelEndTimeAM,
+                WorkStartTimeAM = WorkStartTimeAM,
+                WorkEndTimeAM = WorkEndTimeAM,
+                TravelStartTimePM = TravelStartTimePM,
+                TravelEndTimePM = TravelEndTimePM,
+                WorkStartTimePM = WorkStartTimePM,
+                WorkEndTimePM = WorkEndTimePM,
+                FDL = FDL
             };
         }
     }

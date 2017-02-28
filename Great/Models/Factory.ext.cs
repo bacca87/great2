@@ -13,14 +13,14 @@ namespace Great.Models
         public Factory Clone()
         {
             return new Factory() {
-                Id = this.Id,
-                Name = this.Name,
-                CompanyName = this.CompanyName,
-                Address = this.Address,
-                TransferType = this.TransferType,
-                IsForfait = this.IsForfait,
-                Latitude = this.Latitude,
-                Longitude = this.Longitude,
+                Id = Id,
+                Name = Name,
+                CompanyName = CompanyName,
+                Address = Address,
+                TransferType = TransferType,
+                IsForfait = IsForfait,
+                Latitude = Latitude,
+                Longitude = Longitude,
             };
         }
     }

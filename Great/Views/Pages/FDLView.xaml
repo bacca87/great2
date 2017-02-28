@@ -5,18 +5,20 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:m="clr-namespace:Great.Models" 
       xmlns:local="clr-namespace:Great.Views.Pages"
-      xmlns:conv="clr-namespace:Great.Converters"
+      xmlns:conv="clr-namespace:Great.Utils.Converters"
       mc:Ignorable="d"      
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
-      Title="FDLView">
+      Title="FDLView" 
+      IsVisibleChanged="Page_IsVisibleChanged">
     <Grid Margin="10,0,10,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <DataGrid Grid.Column="0"
+        <DataGrid Name="fdlDataGridView"
+                Grid.Column="0"
                 HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
                 AutoGenerateColumns="False" 
                 CanUserReorderColumns="False" 
                 CanUserResizeColumns="False" 
@@ -72,6 +74,14 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>                
                 <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold"/>
+                <DataGridCheckBoxColumn Header="Extra" Binding="{Binding IsExtra}">
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style>                            
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center" />
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridCheckBoxColumn.ElementStyle>
+                </DataGridCheckBoxColumn>
                 <DataGridTextColumn Header="Factory" Binding="{Binding Factory1.Name}"/>
                 <DataGridTextColumn Header="Order" Binding="{Binding Order}"/>
                 <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}"/>
@@ -84,16 +94,38 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <TextBlock Grid.Row="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}FDL {0}">
+                        <Binding Path="SelectedFDLClone.FDL_Display" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <Grid Grid.Row="1" Margin="0,0,0,5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="Factory"/>
-                <ComboBox Grid.Column="1" SelectedItem="{Binding SelectedFDLClone.Factory1}" SelectedValue="{Binding SelectedFDLClone.Factory}" IsEnabled="{Binding IsInputEnabled}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="150">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,0,5,5" Text="Factory:" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1" Grid.Row="0" Margin="0,0,5,5" Width="150" VerticalAlignment="Center"
+                          SelectedItem="{Binding SelectedFDLClone.Factory1}" 
+                          SelectedValue="{Binding SelectedFDLClone.Factory}" 
+                          IsEnabled="{Binding IsInputEnabled}" 
+                          DisplayMemberPath="Name" 
+                          SelectedValuePath="Id" 
+                          SelectedIndex="0"
+                          SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBox.Resources>
                         <CollectionViewSource x:Key="Items" Source="{Binding Factories}" />
                     </ComboBox.Resources>
@@ -104,8 +136,12 @@
                         </CompositeCollection>
                     </ComboBox.ItemsSource>
                 </ComboBox>
+                <TextBlock Grid.Column="2" Grid.Row="0" Margin="0,0,5,5" Text="Company:" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="0" Margin="0,0,0,5" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding SelectedFDLClone.Factory1.CompanyName}"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" Text="Address:" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding SelectedFDLClone.Factory1.Address}"/>
             </Grid>
-            <DataGrid Grid.Row="1"
+            <DataGrid Grid.Row="2"
                       ItemsSource="{Binding Timesheets}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
                       VerticalAlignment="Stretch"
@@ -148,7 +184,7 @@
                     <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.Resources>
                     <Style TargetType="CheckBox">
                         <Setter Property="VerticalAlignment" Value="Center" />
@@ -179,7 +215,7 @@
                 <CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding SelectedFDLClone.ReturnTaxi}"/>
                 <CheckBox Grid.Row="2" Grid.Column="3" IsChecked="{Binding SelectedFDLClone.ReturnAircraft}"/>
             </Grid>
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -213,7 +249,7 @@
                     <TextBox Grid.Row="1" TextWrapping="Wrap" MinHeight="70" AcceptsReturn="True" Text="{Binding SelectedFDLClone.PerformanceDescriptionDetails}" MaxLength="{Binding PerfDescDetMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </Grid>
-            <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <StackPanel Grid.Row="5" Orientation="Horizontal">
                 <Button Margin="10" Content="Clear" Command="{Binding ClearFDLCommand}" />
                 <Button Margin="10" Content="Save" Command="{Binding SaveFDLCommand}" CommandParameter="{Binding SelectedFDLClone}" />
             </StackPanel>

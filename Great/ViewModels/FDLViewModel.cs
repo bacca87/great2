@@ -211,7 +211,7 @@ namespace Great.ViewModels
             Factories = new ObservableCollection<Factory>(_db.Factories);
 
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
-            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled && fdl != null; });
+            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled && fdl != null; });            
         }
 
         public void ClearFDL()

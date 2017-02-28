@@ -1,13 +1,14 @@
-﻿using Itenso.TimePeriod;
+﻿using Great.Utils.Extensions;
+using Itenso.TimePeriod;
 using System;
 
-namespace Great.Utils
+namespace Great.Utils.Extensions
 {
-    public static class TimePeriodTools
+    public static class TimePeriodCollectionExtensions
     {
         static RoundByQuarterHourDurationProvider roundByQuarterHour = new RoundByQuarterHourDurationProvider();
 
-        public static float? GetRoundedTotalDuration(ITimePeriodCollection periods)
+        public static float? GetRoundedTotalDuration(this ITimePeriodCollection periods)
         {
             if (periods == null || periods.Count == 0)
                 return null;
@@ -23,8 +24,8 @@ namespace Great.Utils
     {
         public TimeSpan GetDuration(DateTime start, DateTime end)
         {
-            start = start.Date + TimeSpanExtensions.Round(start.TimeOfDay, RoundingDirection.Up, 15);
-            end = end.Date + TimeSpanExtensions.Round(end.TimeOfDay, RoundingDirection.Down, 15);
+            start = start.Date + start.TimeOfDay.Round(RoundingDirection.Up, 15);
+            end = end.Date + end.TimeOfDay.Round(RoundingDirection.Down, 15);
             return end.Subtract(start);
         }
     }

@@ -1,8 +1,7 @@
-﻿using Great.Utils;
+﻿using Great.Utils.Extensions;
 using Itenso.TimePeriod;
 using System;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace Great.Models
 {
@@ -12,11 +11,11 @@ namespace Great.Models
 
         public DateTime Date
         {
-            get { return UnixTimestamp.GetDateTime(Timestamp); }
-            set { Timestamp = UnixTimestamp.GetTimestamp(value); }
+            get { return DateTime.Now.FromUnixTimestamp(Timestamp); }
+            set { Timestamp = value.ToUnixTimestamp(); }
         }
 
-        public int WeekNr { get { return DateTimeHelper.WeekNr(Date); } }
+        public int WeekNr { get { return Date.WeekNr(); } }
         public bool IsHoliday { get; }
 
         public bool IsWorkDay { get { return Type == (long)EDayType.WorkDay; } }
@@ -184,7 +183,7 @@ namespace Great.Models
                 if (TimePeriods != null)
                 {
                     ITimePeriodCollection difference = subtractor.SubtractPeriods(overtime35period, TimePeriods);
-                    overtime35 = TimePeriodTools.GetRoundedTotalDuration(subtractor.SubtractPeriods(overtime35period, difference));
+                    overtime35 = subtractor.SubtractPeriods(overtime35period, difference).GetRoundedTotalDuration();
                 }
 
                 return overtime35;

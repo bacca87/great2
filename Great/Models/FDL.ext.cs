@@ -12,7 +12,11 @@ namespace Great.Models
         public event PropertyChangedEventHandler PropertyChanged;
         
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
-                
+
+        #region Display Properties
+        public string FDL_Display { get { return Id + (IsExtra ? " (EXTRA)" : ""); } }
+        #endregion
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -45,6 +49,7 @@ namespace Great.Models
             return new FDL()
             {
                 Id = Id,
+                IsExtra = IsExtra,
                 WeekNr = WeekNr,
                 FileName = FileName,
                 Factory = Factory,

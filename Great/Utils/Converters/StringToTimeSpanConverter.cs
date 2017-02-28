@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Great.Converters
+namespace Great.Utils.Converters
 {
     public class StringToTimeSpanConverter : IValueConverter
     {

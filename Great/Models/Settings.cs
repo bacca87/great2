@@ -1,4 +1,5 @@
 ﻿using Great.Utils;
+using Great.Utils.Extensions;
 using System;
 using System.ComponentModel;
 using System.Configuration;
@@ -109,6 +110,8 @@ namespace Great.Models
 
             public const string FDL_Accepted = "FDL RECEIVED";
             public const string FDL_Rejected = "INVALID FDL";
+            public const string FDL_Extra = "EXTRA";
+
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
             public const string EA_RejectedResubmission = "Reinvio nota spese";
             
@@ -273,11 +276,11 @@ namespace Great.Models
                 get
                 {
                     string password = Properties.Settings.Default.EmailPassword;
-                    return password.Length > 0 ? SecureCrypt.Decrypt(password) : string.Empty;
+                    return password.Length > 0 ? password.Decrypt() : string.Empty;
                 }
                 set
                 {
-                    Properties.Settings.Default.EmailPassword = SecureCrypt.Encrypt(value);
+                    Properties.Settings.Default.EmailPassword = value.Encrypt();
                     Properties.Settings.Default.Save();
                 }
             }

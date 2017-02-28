@@ -2,9 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Great.Utils
+namespace Great.Utils.Extensions
 {
-    public static class SecureCrypt
+    public static class StringExtensions
     {
         /// <summary>
         /// Encrypts a given password and returns the encrypted data
@@ -20,7 +20,7 @@ namespace Great.Utils
         /// <see cref="SecureString"/> should be used.</remarks>
         /// <exception cref="ArgumentNullException">If <paramref name="plainText"/>
         /// is a null reference.</exception>
-        public static string Encrypt(string plainText)
+        public static string Encrypt(this string plainText)
         {
             if (plainText == null) throw new ArgumentNullException("plainText");
 
@@ -44,7 +44,7 @@ namespace Great.Utils
         /// is essential, <see cref="SecureString"/> should be used.</remarks>
         /// <exception cref="ArgumentNullException">If <paramref name="cipher"/>
         /// is a null reference.</exception>
-        public static string Decrypt(string cipher)
+        public static string Decrypt(this string cipher)
         {
             if (cipher == null) throw new ArgumentNullException("cipher");
 

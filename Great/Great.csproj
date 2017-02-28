@@ -166,10 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\FDLStatusToImageConverter.cs" />
-    <Compile Include="Converters\StringToTimeSpanConverter.cs" />
-    <Compile Include="Converters\IntToMonthConverter.cs" />
-    <Compile Include="Converters\CompareIntConverter.cs" />
+    <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
+    <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
+    <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
+    <Compile Include="Utils\Converters\CompareIntConverter.cs" />
     <Compile Include="Models\Car.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -218,12 +218,11 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils\ClipboardX.cs" />
-    <Compile Include="Utils\DateTimeHelper.cs" />
-    <Compile Include="Utils\PasswordHelper.cs" />
-    <Compile Include="Utils\SecureCrypt.cs" />
-    <Compile Include="Utils\TimePeriodTools.cs" />
-    <Compile Include="Utils\TimeSpanExtensions.cs" />
-    <Compile Include="Utils\UnixTimestamp.cs" />
+    <Compile Include="Utils\Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Utils\AttachedProperties\PasswordHelper.cs" />
+    <Compile Include="Utils\Extensions\StringExtensions.cs" />
+    <Compile Include="Utils\Extensions\TimePeriodCollectionExtensions.cs" />
+    <Compile Include="Utils\Extensions\TimeSpanExtensions.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
@@ -243,7 +242,7 @@
     <Compile Include="Views\Pages\InformationsView.xaml.cs">
       <DependentUpon>InformationsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Utils\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Models\DBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

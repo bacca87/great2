@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Great.Views.Pages"
-      xmlns:conv="clr-namespace:Great.Converters"
+      xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
@@ -183,7 +183,7 @@
                     <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                    <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.Id}" Width="100" />
+                    <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.FDL_Display}" Width="100" />
                     <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="100" />
                 </DataGrid.Columns>
             </DataGrid>
@@ -274,7 +274,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" Margin="5" Width="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding SelectedTimesheetClone.FDL1}" SelectedValue="{Binding SelectedTimesheetClone.FDL}" DisplayMemberPath="FDL_Display" SelectedValuePath="Id"/>
+                        <ComboBox Grid.Column="1" Margin="5" MinWidth="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding SelectedTimesheetClone.FDL1}" SelectedValue="{Binding SelectedTimesheetClone.FDL}" DisplayMemberPath="FDL_Display" SelectedValuePath="Id"/>
                     </Grid>
                 </GroupBox>
             </Grid>            

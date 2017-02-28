@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Great.Utils;
+using Great.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -261,7 +262,10 @@ namespace Great.ViewModels
             get
             {
                 if (SelectedWorkingDay != null)
-                    return _db.FDLs.Where(fdl => fdl.Id.Substring(0,4) == CurrentYear.ToString() && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList();
+                {
+                    string year = CurrentYear.ToString(); // hack for query
+                    return _db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList();
+                }   
                 else
                     return null;
             }
@@ -332,8 +336,7 @@ namespace Great.ViewModels
             {
                 foreach (DateTime day in AllDatesInMonth(CurrentYear, month))
                 {
-                    long timestamp = UnixTimestamp.GetTimestamp(day);
-
+                    long timestamp = day.ToUnixTimestamp();
                     Day currentDay = _db.Days.Where(d => d.Timestamp == timestamp).FirstOrDefault();
 
                     if (currentDay != null)

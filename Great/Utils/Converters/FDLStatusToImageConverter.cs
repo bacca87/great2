@@ -3,11 +3,10 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Great.Converters
+namespace Great.Utils.Converters
 {
     public class FDLStatusToImageConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             ImageSource result = null;
