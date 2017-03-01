@@ -33,7 +33,7 @@ namespace Great.Models
             StartBackgroundOperations();
         }
 
-        private FDL GetFDLFromFile(string filePath)
+        private FDL CreateNewFDLFromFile(string filePath, DBEntities db)
         {
             FDL fdl = new FDL();
             PdfDocument pdfDoc = null;
@@ -49,30 +49,55 @@ namespace Great.Models
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
 
-                string mon = fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString();
-                string tue = fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString();
-                string wed = fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString();
-                string thu = fields[ApplicationSettings.FDL.FieldNames.Thu_Date].GetValueAsString();
-                string fri = fields[ApplicationSettings.FDL.FieldNames.Fri_Date].GetValueAsString();
-                string sat = fields[ApplicationSettings.FDL.FieldNames.Sat_Date].GetValueAsString();
-                string sun = fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString();
+                string[] days = new string[]
+                {
+                    fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString(),
+                    fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString(),
+                    fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString(),
+                    fields[ApplicationSettings.FDL.FieldNames.Thu_Date].GetValueAsString(),
+                    fields[ApplicationSettings.FDL.FieldNames.Fri_Date].GetValueAsString(),
+                    fields[ApplicationSettings.FDL.FieldNames.Sat_Date].GetValueAsString(),
+                    fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString()
+                };
 
-                if (mon != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(mon).WeekNr();
-                else if (tue != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(tue).WeekNr();
-                else if (wed != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(wed).WeekNr();
-                else if (thu != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(thu).WeekNr();
-                else if (fri != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(fri).WeekNr();
-                else if (sat != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(sat).WeekNr();
-                else if (sun != string.Empty)
-                    fdl.WeekNr = DateTime.Parse(sun).WeekNr();
-                else
+                foreach(string day in days)
+                {
+                    if (day != string.Empty)
+                    {
+                        fdl.WeekNr = DateTime.Parse(day).WeekNr();
+                        break;
+                    }
+                }
+
+                if (fdl.WeekNr == 0)
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
+                
+                if (!db.FDLs.Any(f => f.Id == fdl.Id))
+                {
+                    db.FDLs.Add(fdl);
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        // Automatic factories creation
+                        string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
+                        string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
+
+                        if (address != string.Empty && customer != string.Empty)
+                        {
+                            Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+
+                            if (factory == null)
+                            {
+                                factory = new Factory() { Name = customer, CompanyName = customer, Address = address };
+                                db.Factories.Add(factory);
+                                db.SaveChanges();
+                            }
+
+                            fdl.Factory = factory.Id;
+                            db.SaveChanges();
+                        }
+                    }
+                }
             }
             catch
             {
@@ -298,8 +323,6 @@ namespace Great.Models
                 EmailMessage message = EmailMessage.Bind(service, item.Id);
                 ProcessMessage(message, db);
             }
-
-            db.SaveChanges();
         }
 
         private void ProcessMessage(EmailMessage message, DBEntities db)
@@ -349,10 +372,7 @@ namespace Great.Models
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
 
-                                    FDL fdl = GetFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name);
-
-                                    if (fdl != null && !db.FDLs.Any(f => f.Id == fdl.Id))
-                                        db.FDLs.Add(fdl);
+                                    CreateNewFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, db);
                                     break;
                                 case EAttachmentType.ExpenseAccount1:
                                 case EAttachmentType.ExpenseAccount2:
@@ -368,7 +388,9 @@ namespace Great.Models
 
                 default:
                     break;
-            }            
+            }
+
+            db.SaveChanges();
         }
 
         private EMessageType GetMessageType(string subject)
@@ -599,8 +621,6 @@ namespace Great.Models
                         break;
                 }
             }
-
-            db.SaveChanges();
         }
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)

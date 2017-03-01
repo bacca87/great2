@@ -40,6 +40,7 @@ namespace Great.Models
         public long Status { get; set; }
         public string LastError { get; set; }
         public string FileName { get; set; }
+        public bool NotifyAsNew { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }

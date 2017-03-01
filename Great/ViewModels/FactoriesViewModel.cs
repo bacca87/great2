@@ -138,7 +138,10 @@ namespace Great.ViewModels
                 if (itemFactory != null)
                     Factories[Factories.IndexOf(itemFactory)] = factory;
                 else
+                {
+                    factory.NotifyAsNew = false;
                     Factories.Add(factory);
+                }
 
                 SelectedFactory = factory;
             }
