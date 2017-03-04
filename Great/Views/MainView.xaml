@@ -4,6 +4,7 @@
     xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"    
     xmlns:conv="clr-namespace:Great.Utils.Converters"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
     Title="Great 2.0" 
     Width="1024" 
     Height="768"
@@ -31,9 +32,6 @@
                 <Fluent:Backstage Header="FILE">
                     <Fluent:BackstageTabControl Name="menuBackstageTabControl">
                         <Fluent:BackstageTabItem Header="Informations"/>
-                        <Fluent:BackstageTabItem Name="factoriesBackstageTab" Header="Factories">
-                            <Frame Source="/Views/Pages/FactoriesView.xaml"/>
-                        </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem />
                         <Fluent:BackstageTabItem Header="Settings">
                             <Frame Source="/Views/Pages/SettingsView.xaml"/>
@@ -158,7 +156,7 @@
             <Fluent:RibbonTabItem Header="TEST">
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0">            
+        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabControl}">
                     <Setter Property="Template">
@@ -179,16 +177,39 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
                                 <Border Name="Border">
-                                    <ContentPresenter x:Name="ContentSite"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        ContentSource="Header"
-                                        Margin="10,5"                                        
-                                        TextElement.FontSize="20"/>
+                                    <Grid>
+                                        <ContentPresenter x:Name="ContentSite"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Center"
+                                                          ContentSource="Header"
+                                                          Margin="10,5"                                        
+                                                          TextElement.FontSize="20"/>
+                                        <Border Name="NotificationCount"
+                                                Margin="0,5"
+                                                Width="15"
+                                                Height="15"
+                                                CornerRadius="10"
+                                                Background="Red"
+                                                BorderBrush="Black"
+                                                BorderThickness="0"
+                                                VerticalAlignment="Top"
+                                                HorizontalAlignment="Right">
+                                            <TextBlock HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center" 
+                                                       FontSize="10" 
+                                                       Foreground="White" 
+                                                       FontWeight="Bold" 
+                                                       Text="{Binding (ap:NotificationHelper.NotificationCount), Mode=TwoWay, RelativeSource={RelativeSource Self}}">
+                                            </TextBlock>
+                                        </Border>
+                                    </Grid>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#0072c6" />
+                                    </Trigger>
+                                    <Trigger Property="ap:NotificationHelper.NotificationCount" Value="0">
+                                        <Setter TargetName="NotificationCount" Property="Visibility" Value="Hidden" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -196,17 +217,20 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Name="timesheetsTab" Header="Timesheets">
+            <TabItem Name="timesheetsTab" Header="Timesheets" ap:NotificationHelper.NotificationCount="0">
                 <Frame Source="/Views/Pages/TimesheetsView.xaml"/>
             </TabItem>
-            <TabItem Name="fdlTab" Header="FDL">
+            <TabItem Name="fdlTab" Header="FDL" ap:NotificationHelper.NotificationCount="{Binding NewFDLCount}">
                 <Frame Source="/Views/Pages/FDLView.xaml"/>
             </TabItem>
-            <TabItem Name="expenseAccountTab" Header="Expense Account">
+            <TabItem Name="expenseAccountTab" Header="Expense Account" ap:NotificationHelper.NotificationCount="{Binding NewExpenseAccountsCount}">
                 <Frame Source="/Views/Pages/ExpenseAccountView.xaml"/>
             </TabItem>
-            <TabItem Name="carrentalTab" Header="Car Rental">
+            <TabItem Name="carrentalTab" Header="Car Rental" ap:NotificationHelper.NotificationCount="0">
                 <Frame Source="/Views/Pages/CarRentalView.xaml"/>
+            </TabItem>
+            <TabItem Name="factoriesTab" Header="Factories" ap:NotificationHelper.NotificationCount="{Binding NewFactoriesCount}">
+                <Frame Source="/Views/Pages/FactoriesView.xaml"/>
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2">

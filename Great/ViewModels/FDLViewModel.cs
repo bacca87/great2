@@ -1,12 +1,16 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
+using Great.Utils.Messages;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
@@ -71,7 +75,7 @@ namespace Great.ViewModels
             set
             {
                 _FDLs = value;
-                RaisePropertyChanged(nameof(FDLs));
+                RaisePropertyChanged(nameof(FDLs), true);
             }
         }
 
@@ -206,12 +210,45 @@ namespace Great.ViewModels
             _db = new DBEntities();
             _fdlManager = manager;
 
-            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());
+            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());            
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
             Factories = new ObservableCollection<Factory>(_db.Factories);
 
+            FDLs.ListChanged += FDLs_ListChanged;
+
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
-            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled && fdl != null; });            
+            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled && fdl != null; });
+
+            MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
+            MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
+        }
+
+        private void FDLs_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(FDLs), null, FDLs, true);
+        }
+
+        public void NewFDL(NewItemMessage<FDL> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, 
+                new Action(() => 
+                {
+                    if (item.Content != null)
+                        FDLs.Add(item.Content);
+                })
+            );
+        }
+
+        public void FDLChanged(ItemChangedMessage<FDL> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, 
+                new Action(() => 
+                {
+                    //TODO
+                })
+            );
         }
 
         public void ClearFDL()

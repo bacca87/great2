@@ -44,9 +44,9 @@ namespace Great.Views
             zoomSlider.Value = factoriesMapControl.Zoom;
             
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
-            _viewModel.Factories.CollectionChanged += Factories_CollectionChanged;
+            _viewModel.Factories.ListChanged += Factories_ListChanged;
         }
-
+        
         private void LatLngSelectionMode(bool enable)
         {
             IsLatLngSelectionMode = enable;
@@ -176,9 +176,9 @@ namespace Great.Views
                 }
             }
         }
-
-        private void Factories_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {   
+        
+        private void Factories_ListChanged(object sender, ListChangedEventArgs e)
+        {
             RefreshMarkers();
         }
 

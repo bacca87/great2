@@ -50,6 +50,7 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<InformationsViewModel>();
             SimpleIoc.Default.Register<FDLViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
+            SimpleIoc.Default.Register<NotificationsViewModel>();            
         }
 
         public TimesheetsViewModel Timesheets
@@ -89,6 +90,14 @@ namespace Great.ViewModels
             get
             {
                 return ServiceLocator.Current.GetInstance<SettingsViewModel>();
+            }
+        }
+
+        public NotificationsViewModel Notifications
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<NotificationsViewModel>();
             }
         }
 

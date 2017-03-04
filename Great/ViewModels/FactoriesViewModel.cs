@@ -1,9 +1,15 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
+using Great.Utils.Messages;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
@@ -20,12 +26,28 @@ namespace Great.ViewModels
                 return new ObservableCollection<TransferType>(_db.TransferTypes);
             }
         }
-                
+
+        /// <summary>
+        /// The <see cref="Factories" /> property's name.
+        /// </summary>
+        private BindingList<Factory> _factories;
+
         /// <summary>
         /// Sets and gets the Factories property.
         /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public ObservableCollection<Factory> Factories { get; set; }
+        /// </summary>        
+        public BindingList<Factory> Factories
+        {
+            get
+            {
+                return _factories;
+            }
+            set
+            {
+                _factories = value;
+                RaisePropertyChanged(nameof(Factories), true);
+            }
+        }
 
         /// <summary>
         /// The <see cref="SelectedFactory" /> property's name.
@@ -95,21 +117,46 @@ namespace Great.ViewModels
         {
             _db = new DBEntities();
 
+            Factories = new BindingList<Factory>(_db.Factories.ToList());
+
+            Factories.ListChanged += Factories_ListChanged;
+
             DeleteFactoryCommand = new RelayCommand<Factory>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<Factory>(SaveFactory);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
-            RefreshFactories();
+            MessengerInstance.Register<NewItemMessage<Factory>>(this, NewFactory);
+            MessengerInstance.Register<ItemChangedMessage<Factory>>(this, FactoryChanged);
         }
 
-        /// <summary>
-        /// Refresh the factories list
-        /// </summary>
-        public void RefreshFactories()
+        private void Factories_ListChanged(object sender, ListChangedEventArgs e)
         {
-            Factories = new ObservableCollection<Factory>(_db.Factories);
+            RaisePropertyChanged(nameof(Factories), null, Factories, true);
         }
-        
+
+        public void NewFactory(NewItemMessage<Factory> item)
+        {
+            // Using the dispatcher for preventing thread conflicts
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                        Factories.Add(item.Content);
+                })
+            );
+        }
+
+        public void FactoryChanged(ItemChangedMessage<Factory> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    //TODO
+                })
+            );
+        }
+
         private void ClearSelection()
         {
             SelectedFactory = null;            
@@ -127,8 +174,9 @@ namespace Great.ViewModels
         }
 
         private void SaveFactory(Factory factory)
-        {   
-            _db.Factories.AddOrUpdate(factory);
+        {
+            factory.NotifyAsNew = false;
+            _db.Factories.AddOrUpdate(factory);            
 
             if (_db.SaveChanges() > 0)
             {

@@ -166,6 +166,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
@@ -223,9 +224,12 @@
     <Compile Include="Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Utils\Extensions\TimePeriodCollectionExtensions.cs" />
     <Compile Include="Utils\Extensions\TimeSpanExtensions.cs" />
+    <Compile Include="Utils\Messages\ItemChangedMessage.cs" />
+    <Compile Include="Utils\Messages\NewItemMessage.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />
+    <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\Pages\CarRentalView.xaml.cs">
       <DependentUpon>CarRentalView.xaml</DependentUpon>
@@ -400,6 +404,7 @@
     <Resource Include="Images\16\sign-check.png" />
     <Resource Include="Images\16\sign-delete.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

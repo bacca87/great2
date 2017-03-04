@@ -1,5 +1,7 @@
-﻿using Great.Utils;
+﻿using GalaSoft.MvvmLight.Messaging;
+using Great.Utils;
 using Great.Utils.Extensions;
+using Great.Utils.Messages;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Kernel.Pdf;
@@ -73,30 +75,37 @@ namespace Great.Models
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
                 
                 if (!db.FDLs.Any(f => f.Id == fdl.Id))
-                {
-                    db.FDLs.Add(fdl);
+                {   
+                    // Automatic factories creation
+                    string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
+                    string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
 
-                    if (db.SaveChanges() > 0)
+                    if (address != string.Empty && customer != string.Empty)
                     {
-                        // Automatic factories creation
-                        string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
-                        string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
+                        Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
-                        if (address != string.Empty && customer != string.Empty)
+                        if (factory == null)
                         {
-                            Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+                            factory = new Factory() {
+                                Name = customer,
+                                CompanyName = customer,
+                                Address = address,
+                                NotifyAsNew = true
+                            };
 
-                            if (factory == null)
-                            {
-                                factory = new Factory() { Name = customer, CompanyName = customer, Address = address };
-                                db.Factories.Add(factory);
-                                db.SaveChanges();
-                            }
-
-                            fdl.Factory = factory.Id;
-                            db.SaveChanges();
+                            db.Factories.Add(factory);
+                            Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
                         }
+
+                        fdl.Factory = factory.Id;
                     }
+
+                    fdl.NotifyAsNew = true;
+
+                    db.FDLs.Add(fdl);
+                    db.SaveChanges();
+
+                    Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
                 }
             }
             catch
@@ -335,7 +344,10 @@ namespace Great.Models
                 case EMessageType.FDL_Accepted:
                     FDL accepted = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
                     if (accepted != null)
+                    {
                         accepted.Status = (long)EFDLStatus.Accepted;
+                        Messenger.Default.Send(new ItemChangedMessage<FDL>(this, accepted));
+                    }
                     break;
                 case EMessageType.FDL_Rejected:
                     FDL rejected = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
@@ -343,6 +355,7 @@ namespace Great.Models
                     {
                         rejected.Status = (long)EFDLStatus.Rejected;
                         rejected.LastError = message.Body?.Text;
+                        Messenger.Default.Send(new ItemChangedMessage<FDL>(this, rejected));
                     }
                     break;
                 case EMessageType.EA_Rejected:
@@ -353,6 +366,7 @@ namespace Great.Models
                     {
                         expenseAccount.Status = (long)EFDLStatus.Rejected;
                         expenseAccount.LastError = message.Body?.Text;
+                        Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, expenseAccount));
                     }
                     break;
                 case EMessageType.FDL_EA_New:
