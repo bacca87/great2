@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
@@ -191,10 +192,26 @@ namespace Great.ViewModels
         public ObservableCollection<FDLResult> FDLResults { get; set; }
 
         /// <summary>
+        /// The <see cref="Factories" /> property's name.
+        /// </summary>
+        private BindingList<Factory> _factories;
+
+        /// <summary>
         /// Sets and gets the Factories property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public ObservableCollection<Factory> Factories { get; set; }
+        public BindingList<Factory> Factories
+        {
+            get
+            {
+                return _factories;
+            }
+            set
+            {
+                _factories = value;
+                RaisePropertyChanged(nameof(Factories));
+            }
+        }
         #endregion
 
         #region Commands Definitions
@@ -210,9 +227,9 @@ namespace Great.ViewModels
             _db = new DBEntities();
             _fdlManager = manager;
 
-            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());            
+            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
-            Factories = new ObservableCollection<Factory>(_db.Factories);
+            Factories = new BindingList<Factory>(_db.Factories.ToList());
 
             FDLs.ListChanged += FDLs_ListChanged;
 
@@ -221,6 +238,7 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
+            MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { Factories = p.NewValue; });
         }
 
         private void FDLs_ListChanged(object sender, ListChangedEventArgs e)
@@ -231,11 +249,19 @@ namespace Great.ViewModels
         public void NewFDL(NewItemMessage<FDL> item)
         {
             // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, 
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
                 new Action(() => 
                 {
                     if (item.Content != null)
-                        FDLs.Add(item.Content);
+                    {
+                        _db.FDLs.AddOrUpdate(item.Content);
+                        _db.SaveChanges();
+
+                        FDL fdl = _db.FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
+
+                        if (fdl != null)
+                            FDLs.Add(fdl);
+                    }
                 })
             );
         }
@@ -243,10 +269,16 @@ namespace Great.ViewModels
         public void FDLChanged(ItemChangedMessage<FDL> item)
         {
             // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, 
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
                 new Action(() => 
                 {
-                    //TODO
+                    if (item.Content != null)
+                    {
+                        _db.FDLs.AddOrUpdate(item.Content);
+                        _db.SaveChanges();
+
+                        FDLs.SingleOrDefault(f => f.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
+                    }
                 })
             );
         }

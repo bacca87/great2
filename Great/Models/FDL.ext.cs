@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.Models
 {
@@ -41,6 +37,7 @@ namespace Great.Models
             OnPropertyChanged(nameof(LastError));
 
             OnPropertyChanged(nameof(FDLResult));
+            OnPropertyChanged(nameof(FDLStatu));
             OnPropertyChanged(nameof(Factory1));
         }
 

@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Utils.Messages;
 using System;
@@ -137,24 +136,33 @@ namespace Great.ViewModels
         public void NewFactory(NewItemMessage<Factory> item)
         {
             // Using the dispatcher for preventing thread conflicts
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
                     if (item.Content != null)
-                        Factories.Add(item.Content);
+                    {
+                        _db.Factories.AddOrUpdate(item.Content);
+                        _db.SaveChanges();
+
+                        Factory factory = _db.Factories.SingleOrDefault(f => f.Id == item.Content.Id);
+
+                        if (factory != null)
+                            Factories.Add(factory);
+                    }
                 })
             );
         }
 
         public void FactoryChanged(ItemChangedMessage<Factory> item)
         {
+            // NOT USED
             // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    //TODO
-                })
-            );
+            //Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+            //    new Action(() =>
+            //    {
+            //        //Do something
+            //    })
+            //);
         }
 
         private void ClearSelection()

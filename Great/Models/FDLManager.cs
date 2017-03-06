@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using Great.Utils;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
@@ -35,8 +34,8 @@ namespace Great.Models
             StartBackgroundOperations();
         }
 
-        private FDL CreateNewFDLFromFile(string filePath, DBEntities db)
-        {
+        private FDL CreateNewFDLFromFile(string filePath)
+        {   
             FDL fdl = new FDL();
             PdfDocument pdfDoc = null;
 
@@ -50,6 +49,7 @@ namespace Great.Models
                 fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
+                fdl.Result = 0; 
 
                 string[] days = new string[]
                 {
@@ -73,42 +73,48 @@ namespace Great.Models
 
                 if (fdl.WeekNr == 0)
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
-                
-                if (!db.FDLs.Any(f => f.Id == fdl.Id))
-                {   
-                    // Automatic factories creation
-                    string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
-                    string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
 
-                    if (address != string.Empty && customer != string.Empty)
+                using (DBEntities db = new DBEntities())
+                {
+                    if (!db.FDLs.Any(f => f.Id == fdl.Id))
                     {
-                        Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+                        // Automatic factories creation
+                        string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
+                        string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
 
-                        if (factory == null)
+                        if (address != string.Empty && customer != string.Empty)
                         {
-                            factory = new Factory() {
-                                Name = customer,
-                                CompanyName = customer,
-                                Address = address,
-                                NotifyAsNew = true
-                            };
+                            Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
-                            db.Factories.Add(factory);
-                            Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
+                            if (factory == null)
+                            {
+                                factory = new Factory()
+                                {
+                                    Name = customer,
+                                    CompanyName = customer,
+                                    Address = address,
+                                    NotifyAsNew = true
+                                };
+
+                                db.Factories.Add(factory);
+                                db.SaveChanges();
+
+                                Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
+                            }
+
+                            fdl.Factory = factory.Id;
                         }
 
-                        fdl.Factory = factory.Id;
+                        fdl.NotifyAsNew = true;
+
+                        db.FDLs.Add(fdl);
+                        db.SaveChanges();
+
+                        Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
                     }
-
-                    fdl.NotifyAsNew = true;
-
-                    db.FDLs.Add(fdl);
-                    db.SaveChanges();
-
-                    Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 fdl = null;
             }
@@ -315,8 +321,7 @@ namespace Great.Models
         }
 
         private void SyncAll(ExchangeService service)
-        {
-            DBEntities db = new DBEntities();
+        {            
             ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
             FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
 
@@ -330,43 +335,55 @@ namespace Great.Models
                     continue;
 
                 EmailMessage message = EmailMessage.Bind(service, item.Id);
-                ProcessMessage(message, db);
+                ProcessMessage(message);
             }
         }
 
-        private void ProcessMessage(EmailMessage message, DBEntities db)
-        {
+        private void ProcessMessage(EmailMessage message)
+        {   
             EMessageType type = GetMessageType(message.Subject);
             string fdlNumber = ExtractFDLFromSubject(message.Subject, type);
             
             switch (type)
             {
                 case EMessageType.FDL_Accepted:
-                    FDL accepted = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
-                    if (accepted != null)
+                    using (DBEntities db = new DBEntities())
                     {
-                        accepted.Status = (long)EFDLStatus.Accepted;
-                        Messenger.Default.Send(new ItemChangedMessage<FDL>(this, accepted));
+                        FDL accepted = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
+                        if (accepted != null)
+                        {
+                            accepted.Status = (long)EFDLStatus.Accepted;
+                            db.SaveChanges();
+                            Messenger.Default.Send(new ItemChangedMessage<FDL>(this, accepted));
+                        }
                     }
                     break;
                 case EMessageType.FDL_Rejected:
-                    FDL rejected = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
-                    if (rejected != null)
+                    using (DBEntities db = new DBEntities())
                     {
-                        rejected.Status = (long)EFDLStatus.Rejected;
-                        rejected.LastError = message.Body?.Text;
-                        Messenger.Default.Send(new ItemChangedMessage<FDL>(this, rejected));
+                        FDL rejected = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
+                        if (rejected != null)
+                        {
+                            rejected.Status = (long)EFDLStatus.Rejected;
+                            rejected.LastError = message.Body?.Text;
+                            db.SaveChanges();
+                            Messenger.Default.Send(new ItemChangedMessage<FDL>(this, rejected));
+                        }
                     }
                     break;
                 case EMessageType.EA_Rejected:
                 case EMessageType.EA_RejectedResubmission:
-                    //TODO: differenziare la nota spese R da R1
-                    ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL.Substring(5) == fdlNumber);
-                    if (expenseAccount != null)
+                    using (DBEntities db = new DBEntities())
                     {
-                        expenseAccount.Status = (long)EFDLStatus.Rejected;
-                        expenseAccount.LastError = message.Body?.Text;
-                        Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, expenseAccount));
+                        //TODO: differenziare la nota spese R da R1
+                        ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL.Substring(5) == fdlNumber);
+                        if (expenseAccount != null)
+                        {
+                            expenseAccount.Status = (long)EFDLStatus.Rejected;
+                            expenseAccount.LastError = message.Body?.Text;
+                            db.SaveChanges();
+                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, expenseAccount));
+                        }
                     }
                     break;
                 case EMessageType.FDL_EA_New:
@@ -386,7 +403,7 @@ namespace Great.Models
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
 
-                                    CreateNewFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, db);
+                                    CreateNewFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name);
                                     break;
                                 case EAttachmentType.ExpenseAccount1:
                                 case EAttachmentType.ExpenseAccount2:
@@ -403,8 +420,6 @@ namespace Great.Models
                 default:
                     break;
             }
-
-            db.SaveChanges();
         }
 
         private EMessageType GetMessageType(string subject)
@@ -618,8 +633,6 @@ namespace Great.Models
         #region Subscription Events Handling
         private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
         {
-            DBEntities db = new DBEntities();
-
             foreach (NotificationEvent e in args.Events)
             {
                 var itemEvent = (ItemEvent)e;
@@ -628,7 +641,7 @@ namespace Great.Models
                 switch (e.EventType)
                 {
                     case EventType.NewMail:
-                        ProcessMessage(message, db);
+                        ProcessMessage(message);
                         break;
 
                     default:
