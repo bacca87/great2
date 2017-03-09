@@ -305,8 +305,11 @@ namespace Great.ViewModels
             if (fdl == null)
                 return;
 
-            if(fdl.Factory == null)
+            if (fdl.Factory == null || fdl.Factory == -1)
+            {
                 MessageBox.Show("Please select a factory before continue. Operation cancelled.", "Invalid FDL", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             
             _db.FDLs.AddOrUpdate(fdl);
 

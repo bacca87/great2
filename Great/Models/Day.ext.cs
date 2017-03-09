@@ -1,7 +1,11 @@
 ﻿using Great.Utils.Extensions;
 using Itenso.TimePeriod;
+using Nager.Date;
+using Nager.Date.Model;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Great.Models
 {
@@ -16,7 +20,15 @@ namespace Great.Models
         }
 
         public int WeekNr { get { return Date.WeekNr(); } }
-        public bool IsHoliday { get; }
+        public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, CountryCode.IT); } }
+        public string HolidayLocalName
+        {
+            get
+            {
+                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(CountryCode.IT, Date, Date);
+                return holidays?.Count() > 0 ? holidays.FirstOrDefault().LocalName : string.Empty;
+            }
+        }
 
         public bool IsWorkDay { get { return Type == (long)EDayType.WorkDay; } }
         public bool IsVacationDay { get { return Type == (long)EDayType.VacationDay; } }

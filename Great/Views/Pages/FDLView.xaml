@@ -82,7 +82,23 @@
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
-                <DataGridTextColumn Header="Factory" Binding="{Binding Factory1.Name}"/>
+                <DataGridTemplateColumn Header="Factory">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock >
+                                <Hyperlink NavigateUri="{Binding Factory1.Name}" RequestNavigate="FactoryHyperlink_OnClick">
+                                    <TextBlock Text="{Binding Factory1.Name}"/>
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    
+                    <!--<DataGridHyperlinkColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <EventSetter Event="Hyperlink.Click" Handler="FactoryHyperlink_OnClick" />
+                        </Style>
+                    </DataGridHyperlinkColumn.ElementStyle>-->
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Order" Binding="{Binding Order}"/>
                 <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}"/>
                 <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}"/>
@@ -118,7 +134,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,0,5,5" Text="Factory:" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="1" Grid.Row="0" Margin="0,0,5,5" Width="150" VerticalAlignment="Center"
+                <ComboBox Grid.Column="1" Grid.Row="0" Margin="0,0,5,5" MinWidth="150" VerticalAlignment="Center"
                           SelectedItem="{Binding SelectedFDLClone.Factory1}" 
                           SelectedValue="{Binding SelectedFDLClone.Factory}" 
                           IsEnabled="{Binding IsInputEnabled}" 

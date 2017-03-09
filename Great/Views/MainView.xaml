@@ -48,24 +48,44 @@
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
                                   IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="Year">
-                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
-                        <Fluent:TextBox.ToolTip>
-                            <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
-                        </Fluent:TextBox.ToolTip>
-                    </Fluent:TextBox>
-                    <Fluent:Gallery MaxItemsInRow="2">
-                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-left.png">
-                            <Fluent:Button.ToolTip>
-                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
-                            </Fluent:Button.ToolTip>
-                        </Fluent:Button>
-                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-right.png">
-                            <Fluent:Button.ToolTip>
-                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
-                            </Fluent:Button.ToolTip>
-                        </Fluent:Button>
-                    </Fluent:Gallery>
+                <Fluent:RibbonGroupBox Header="Clipboard">
+                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Cut.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Cut" Text="Cut the selected day." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Copy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Copy" Text="Copy the selected day." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Paste.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Today" Text="Paste on selected day." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Day">                    
+                    <Fluent:RadioButton Header="Day of Work" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                        <Fluent:RadioButton.ToolTip>
+                            <Fluent:ScreenTip Title="Day of Work" Text="Set the selected day as day of work." />
+                        </Fluent:RadioButton.ToolTip>
+                    </Fluent:RadioButton>
+                    <Fluent:RadioButton Header="Sick Leave" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                        <Fluent:RadioButton.ToolTip>
+                            <Fluent:ScreenTip Title="Sick Leave" Text="Set the selected day as sick leave." />
+                        </Fluent:RadioButton.ToolTip>
+                    </Fluent:RadioButton>
+                    <Fluent:RadioButton Header="Vacation Day" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                        <Fluent:RadioButton.ToolTip>
+                            <Fluent:ScreenTip Title="Vacation Day" Text="Set the selected day as vacation day." />
+                        </Fluent:RadioButton.ToolTip>
+                    </Fluent:RadioButton>
+                    <Fluent:Button Header="Today" Command="{Binding SelectTodayCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/calendar.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Today" Text="Select today." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Month">
                     <Fluent:RibbonGroupBox.Resources>
@@ -143,6 +163,25 @@
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Year">
+                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                        <Fluent:TextBox.ToolTip>
+                            <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
+                        </Fluent:TextBox.ToolTip>
+                    </Fluent:TextBox>
+                    <Fluent:Gallery MaxItemsInRow="2">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-left.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-right.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
@@ -156,7 +195,7 @@
             <Fluent:RibbonTabItem Header="TEST">
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <TabControl Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
+        <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabControl}">
                     <Setter Property="Template">

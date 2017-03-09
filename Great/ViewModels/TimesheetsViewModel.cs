@@ -275,7 +275,7 @@ namespace Great.ViewModels
         /// Sets and gets the OnSelectFirstDayInMonth Action.
         /// </summary>
         public Action<Day> OnSelectFirstDayInMonth;
-
+        
         private DBEntities _db { get; set; }
         #endregion
 
@@ -379,6 +379,7 @@ namespace Great.ViewModels
 
         public void SelectToday()
         {
+            SelectFirstDayInMonth(DateTime.Now.Month);
             SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
         }
 
@@ -537,6 +538,10 @@ namespace Great.ViewModels
                 MessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
+            if (timesheet.FDL == null)
+                timesheet.FDL1 = null;
 
             _db.Days.AddOrUpdate(SelectedWorkingDay);
             _db.Timesheets.AddOrUpdate(timesheet);

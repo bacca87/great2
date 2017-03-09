@@ -97,6 +97,20 @@ namespace Great.Views
             }
         }
 
+        private void ZoomOnFactory(Factory factory)
+        {   
+            PointLatLng? point = GetFactoryPosition(factory);
+
+            if (point.HasValue)
+            {
+                ZoomOnPoint(point.Value, ApplicationSettings.GoogleMap.ZoomMarker);
+                FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((Factory)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
+
+                if (marker != null)
+                    marker.PlayBounce();
+            }
+        }
+
         public PointLatLng? GetFactoryPosition(Factory factory)
         {
             PointLatLng? point;
@@ -267,16 +281,7 @@ namespace Great.Views
             if (e.ChangedButton == MouseButton.Left && factoriesListView.SelectedItem != null)
             {
                 Factory factory = (Factory)factoriesListView.SelectedItem;
-                PointLatLng? point = GetFactoryPosition(factory);
-
-                if (point.HasValue)
-                {
-                    ZoomOnPoint(point.Value, ApplicationSettings.GoogleMap.ZoomMarker);
-                    FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((Factory)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
-                    
-                    if(marker != null)
-                        marker.PlayBounce();
-                }
+                ZoomOnFactory(factory);
             }
         }
 

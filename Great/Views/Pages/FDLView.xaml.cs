@@ -1,4 +1,5 @@
 ﻿using Great.ViewModels;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,26 @@ namespace Great.Views.Pages
         {
             if(_viewModel?.SelectedFDLClone != null)
                 _viewModel.SelectedFDLClone.NotifyFDLPropertiesChanged();
+        }
+
+        private void FactoryHyperlink_OnClick(object sender, RequestNavigateEventArgs e)
+        {
+            Window wnd = Window.GetWindow(this);
+            FactoriesViewModel factoriesVM = ServiceLocator.Current.GetInstance<FactoriesViewModel>();
+
+            if (wnd is MainView && factoriesVM != null)
+            {
+                MainView mainView = wnd as MainView;
+                TabItem factoriesTabItem = mainView.NavigationTabControl.Items.Cast<TabItem>().SingleOrDefault(item => (string)item.Header == "Factories");
+
+                if (factoriesTabItem != null)
+                {
+                    factoriesVM.SelectedFactory = factoriesVM.Factories.SingleOrDefault(f => f.Id == _viewModel.SelectedFDL.Factory);
+                    factoriesTabItem.IsSelected = true;
+                }
+
+                e.Handled = true;
+            }
         }
     }
 }

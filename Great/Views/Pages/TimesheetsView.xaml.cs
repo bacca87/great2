@@ -42,7 +42,6 @@ namespace Great.Views.Pages
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             // hack for preselecting the workingDaysDataGrid at startup
-            _viewModel.SelectFirstDayInMonth(DateTime.Now.Month);
             _viewModel.SelectToday();
         }
 

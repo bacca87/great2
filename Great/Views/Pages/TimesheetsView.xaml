@@ -7,6 +7,7 @@
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:m="clr-namespace:Great.Models" 
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet"
@@ -108,10 +109,16 @@
             </DataGrid.GroupStyle>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
-                    <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                    <MenuItem Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" Icon="pack://application:,,,/Great;component/Images/16/Cut.png"/>
+                    <MenuItem Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" Icon="pack://application:,,,/Great;component/Images/16/Copy.png"/>
+                    <MenuItem Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" Icon="pack://application:,,,/Great;component/Images/16/Paste.png"/>
                     <Separator/>
-                    <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                    <MenuItem Header="Day Type">
+                        <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                        <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                        <Separator/>
+                        <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                    </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.InputBindings>
@@ -132,6 +139,7 @@
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" />
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" />
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" />
+                <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="2">
@@ -274,7 +282,23 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" Margin="5" MinWidth="100" ItemsSource="{Binding FDLs}" SelectedItem="{Binding SelectedTimesheetClone.FDL1}" SelectedValue="{Binding SelectedTimesheetClone.FDL}" DisplayMemberPath="FDL_Display" SelectedValuePath="Id"/>
+                        <ComboBox Grid.Column="1" Margin="5" MinWidth="100" 
+                                  SelectedItem="{Binding SelectedTimesheetClone.FDL1}" 
+                                  SelectedValue="{Binding SelectedTimesheetClone.FDL}" 
+                                  IsEnabled="{Binding IsInputEnabled}" 
+                                  DisplayMemberPath="FDL_Display" 
+                                  SelectedValuePath="Id" 
+                                  SelectedIndex="0">
+                            <ComboBox.Resources>
+                                <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
+                            </ComboBox.Resources>
+                            <ComboBox.ItemsSource>
+                                <CompositeCollection>
+                                    <m:FDL/>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                                </CompositeCollection>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
                     </Grid>
                 </GroupBox>
             </Grid>            
