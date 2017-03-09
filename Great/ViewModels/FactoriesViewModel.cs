@@ -99,6 +99,10 @@ namespace Great.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sets and gets the OnZoomOnFactoryRequest Action.
+        /// </summary>
+        public Action<Factory> OnZoomOnFactoryRequest;
 
         private DBEntities _db { get; set; }
         #endregion
@@ -163,6 +167,11 @@ namespace Great.ViewModels
             //        //Do something
             //    })
             //);
+        }
+
+        public void ZoomOnFactoryRequest(Factory factory)
+        {
+            OnZoomOnFactoryRequest?.Invoke(factory);
         }
 
         private void ClearSelection()

@@ -56,6 +56,7 @@ namespace Great.Views.Pages
                 if (factoriesTabItem != null)
                 {
                     factoriesVM.SelectedFactory = factoriesVM.Factories.SingleOrDefault(f => f.Id == _viewModel.SelectedFDL.Factory);
+                    factoriesVM.ZoomOnFactoryRequest(factoriesVM.SelectedFactory);
                     factoriesTabItem.IsSelected = true;
                 }
 

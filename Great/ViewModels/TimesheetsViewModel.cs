@@ -379,6 +379,7 @@ namespace Great.ViewModels
 
         public void SelectToday()
         {
+            CurrentYear = DateTime.Now.Year;
             SelectFirstDayInMonth(DateTime.Now.Month);
             SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
         }
@@ -505,6 +506,7 @@ namespace Great.ViewModels
             {
                 sourceDay.NotifyTimesheetsPropertiesChanged();
                 destinationDay.NotifyTimesheetsPropertiesChanged();
+                SelectedWorkingDay = destinationDay;
             }
         }
 

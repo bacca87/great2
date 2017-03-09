@@ -45,6 +45,7 @@ namespace Great.Views
             
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
             _viewModel.Factories.ListChanged += Factories_ListChanged;
+            _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
         }
         
         private void LatLngSelectionMode(bool enable)
@@ -311,6 +312,11 @@ namespace Great.Views
         {
             if ((bool)e.NewValue == false && IsLatLngSelectionMode)
                 LatLngSelectionMode(false);
+        }
+
+        private void OnZoomOnFactoryRequest(Factory factory)
+        {
+            ZoomOnFactory(factory);
         }
     }
 }
