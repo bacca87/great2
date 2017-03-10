@@ -28,6 +28,8 @@ namespace Great.Views.Pages
         {
             InitializeComponent();
             _viewModel = DataContext as FDLViewModel;
+
+            _viewModel.OnFactoryLink += OnFactoryLink;
         }
         
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -43,7 +45,12 @@ namespace Great.Views.Pages
                 _viewModel.SelectedFDLClone.NotifyFDLPropertiesChanged();
         }
 
-        private void FactoryHyperlink_OnClick(object sender, RequestNavigateEventArgs e)
+        private void FactoryHyperlink_OnNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void OnFactoryLink(long factoryId)
         {
             Window wnd = Window.GetWindow(this);
             FactoriesViewModel factoriesVM = ServiceLocator.Current.GetInstance<FactoriesViewModel>();
@@ -55,12 +62,10 @@ namespace Great.Views.Pages
 
                 if (factoriesTabItem != null)
                 {
-                    factoriesVM.SelectedFactory = factoriesVM.Factories.SingleOrDefault(f => f.Id == _viewModel.SelectedFDL.Factory);
+                    factoriesVM.SelectedFactory = factoriesVM.Factories.SingleOrDefault(f => f.Id == factoryId);
                     factoriesVM.ZoomOnFactoryRequest(factoriesVM.SelectedFactory);
                     factoriesTabItem.IsSelected = true;
-                }
-
-                e.Handled = true;
+                }                
             }
         }
     }

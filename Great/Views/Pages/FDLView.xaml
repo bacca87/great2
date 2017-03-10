@@ -85,19 +85,16 @@
                 <DataGridTemplateColumn Header="Factory">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock >
-                                <Hyperlink NavigateUri="{Binding Factory1.Name}" RequestNavigate="FactoryHyperlink_OnClick">
+                            <TextBlock>
+                                <Hyperlink NavigateUri="{Binding Factory1.Name}" RequestNavigate="FactoryHyperlink_OnNavigate">
+                                    <Hyperlink.InputBindings>
+                                       <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.FactoryLinkCommand}"/>
+                                    </Hyperlink.InputBindings>
                                     <TextBlock Text="{Binding Factory1.Name}"/>
                                 </Hyperlink>
                             </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                    
-                    <!--<DataGridHyperlinkColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <EventSetter Event="Hyperlink.Click" Handler="FactoryHyperlink_OnClick" />
-                        </Style>
-                    </DataGridHyperlinkColumn.ElementStyle>-->
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Order" Binding="{Binding Order}"/>
                 <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}"/>

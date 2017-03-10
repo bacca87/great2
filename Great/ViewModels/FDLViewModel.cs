@@ -212,11 +212,18 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(Factories));
             }
         }
+
+        /// <summary>
+        /// Sets and gets the OnFactoryLink Action.
+        /// </summary>
+        public Action<long> OnFactoryLink;
         #endregion
 
         #region Commands Definitions
         public RelayCommand ClearFDLCommand { get; set; }
         public RelayCommand<FDL> SaveFDLCommand { get; set; }
+
+        public RelayCommand FactoryLinkCommand { get; set; }        
         #endregion
 
         /// <summary>
@@ -235,6 +242,8 @@ namespace Great.ViewModels
 
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled && fdl != null; });
+
+            FactoryLinkCommand = new RelayCommand(FactoryLink);
 
             MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
@@ -281,6 +290,12 @@ namespace Great.ViewModels
                     }
                 })
             );
+        }
+
+        private void FactoryLink()
+        {
+            if(SelectedFDL.Factory.HasValue)
+                OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
         }
 
         public void ClearFDL()
