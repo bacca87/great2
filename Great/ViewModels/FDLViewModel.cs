@@ -263,8 +263,7 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        _db.FDLs.AddOrUpdate(item.Content);
-                        _db.SaveChanges();
+                        _db.Entry(item.Content).State = EntityState.Detached;
 
                         FDL fdl = _db.FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
 
@@ -285,8 +284,18 @@ namespace Great.ViewModels
                     {
                         _db.FDLs.AddOrUpdate(item.Content);
                         _db.SaveChanges();
+                        
+                        FDL fdl = FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
+                        
+                        if (fdl != null)
+                        {
+                            _db.Entry(fdl).Collection(f => f.Timesheets).Load();
 
-                        FDLs.SingleOrDefault(f => f.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
+                            if (SelectedFDL != null && SelectedFDL.Id == fdl.Id)
+                                Timesheets = fdl.Timesheets.ToList();
+
+                            fdl.NotifyFDLPropertiesChanged();
+                        }
                     }
                 })
             );

@@ -20,6 +20,7 @@ namespace Great.Models
         public string LastError { get; set; }
         public bool NotifyAsNew { get; set; }
     
+        public virtual FDLStatu FDLStatu { get; set; }
         public virtual FDL FDL1 { get; set; }
     }
 }

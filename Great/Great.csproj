@@ -170,6 +170,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\ExpenseAccount.ext.cs" />
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />

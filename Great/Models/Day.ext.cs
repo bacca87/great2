@@ -30,9 +30,22 @@ namespace Great.Models
             }
         }
 
-        public bool IsWorkDay { get { return Type == (long)EDayType.WorkDay; } }
-        public bool IsVacationDay { get { return Type == (long)EDayType.VacationDay; } }
-        public bool IsSickLeave { get { return Type == (long)EDayType.SickLeave; } }
+        public EDayType EType
+        {
+            get
+            {
+                return (EDayType)Type;
+            }
+
+            set
+            {
+                Type = (long)value;
+            }
+        }
+
+        public bool IsWorkDay { get { return EType == EDayType.WorkDay; } }
+        public bool IsVacationDay { get { return EType == EDayType.VacationDay; } }
+        public bool IsSickLeave { get { return EType == EDayType.SickLeave; } }
 
         #region Totals
         public float? TotalTime

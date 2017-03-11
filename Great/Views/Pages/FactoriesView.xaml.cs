@@ -46,6 +46,9 @@ namespace Great.Views
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
             _viewModel.Factories.ListChanged += Factories_ListChanged;
             _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
+
+            RefreshMarkers();
+            factoriesMapControl.ZoomAndCenterMarkers(null);
         }
         
         private void LatLngSelectionMode(bool enable)
@@ -175,9 +178,6 @@ namespace Great.Views
                 factoriesMapControl.Manager.Mode = AccessMode.CacheOnly;
                 MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "Factories Map", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
-            RefreshMarkers();
-            factoriesMapControl.ZoomAndCenterMarkers(null);
         }
         
         private void FactoriesView_PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)

@@ -350,9 +350,9 @@ namespace Great.Models
                     using (DBEntities db = new DBEntities())
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
-                        if (accepted != null)
+                        if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
                         {
-                            accepted.Status = (long)EFDLStatus.Accepted;
+                            accepted.EStatus = EFDLStatus.Accepted;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDL>(this, accepted));
                         }
@@ -362,9 +362,9 @@ namespace Great.Models
                     using (DBEntities db = new DBEntities())
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
-                        if (rejected != null)
+                        if (rejected != null && rejected.EStatus != EFDLStatus.Rejected && rejected.EStatus != EFDLStatus.Accepted)
                         {
-                            rejected.Status = (long)EFDLStatus.Rejected;
+                            rejected.EStatus = EFDLStatus.Rejected;
                             rejected.LastError = message.Body?.Text;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDL>(this, rejected));
@@ -377,9 +377,9 @@ namespace Great.Models
                     {
                         //TODO: differenziare la nota spese R da R1
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL.Substring(5) == fdlNumber);
-                        if (expenseAccount != null)
+                        if (expenseAccount != null && expenseAccount.EStatus != EFDLStatus.Rejected && expenseAccount.EStatus != EFDLStatus.Accepted)
                         {
-                            expenseAccount.Status = (long)EFDLStatus.Rejected;
+                            expenseAccount.EStatus = EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, expenseAccount));
@@ -398,7 +398,7 @@ namespace Great.Models
 
                             switch (GetAttachmentType(Path.GetFileNameWithoutExtension(attachment.Name)))
                             {
-                                //TODO: inserire su db i nuovi FDL e Note spese
+                                //TODO: inserire su db Note spese
                                 case EAttachmentType.FDL:
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);

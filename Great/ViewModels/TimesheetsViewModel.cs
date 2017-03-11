@@ -1,8 +1,10 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Utils;
 using Great.Utils.Extensions;
+using Great.Utils.Messages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -187,7 +189,7 @@ namespace Great.ViewModels
                     
                     Timesheets = _db.Timesheets.Where(t => t.Timestamp == _selectedWorkingDay.Timestamp).ToList();
                     SelectedTimesheet = null;
-                    if (_selectedWorkingDay.Type != (long)EDayType.SickLeave && _selectedWorkingDay.Type != (long)EDayType.VacationDay)
+                    if (_selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay)
                         IsInputEnabled = true;
                     else
                         IsInputEnabled = false;
@@ -408,7 +410,7 @@ namespace Great.ViewModels
         {
             bool cancel = false;
 
-            if (day == null || day.Type == (long)type)
+            if (day == null || day.EType == type)
                 cancel = true;
 
             if (!cancel && type != EDayType.WorkDay && day.Timesheets.Count() > 0)
@@ -424,12 +426,12 @@ namespace Great.ViewModels
 
             if(!cancel)
             {
-                day.Type = (long)type;
+                day.EType = type;
                 _db.Days.AddOrUpdate(day);
                 _db.SaveChanges();
             }
 
-            if (day.Type != (long)EDayType.SickLeave && day.Type != (long)EDayType.VacationDay)
+            if (day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay)
                 IsInputEnabled = true;
             else
                 IsInputEnabled = false;
@@ -446,7 +448,7 @@ namespace Great.ViewModels
 
             if (_db.SaveChanges() > 0)
             {
-                day.Type = (long)EDayType.WorkDay;
+                day.EType = EDayType.WorkDay;
                 day.NotifyTimesheetsPropertiesChanged();
                 Timesheets = null;
             }
@@ -544,6 +546,9 @@ namespace Great.ViewModels
             // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
             if (timesheet.FDL == null)
                 timesheet.FDL1 = null;
+
+            if(timesheet.FDL1 != null)
+                Messenger.Default.Send(new ItemChangedMessage<FDL>(this, timesheet.FDL1));
 
             _db.Days.AddOrUpdate(SelectedWorkingDay);
             _db.Timesheets.AddOrUpdate(timesheet);

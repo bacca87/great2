@@ -5,6 +5,7 @@ using Great.Utils.Messages;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
@@ -145,8 +146,7 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        _db.Factories.AddOrUpdate(item.Content);
-                        _db.SaveChanges();
+                        _db.Entry(item.Content).State = EntityState.Detached;
 
                         Factory factory = _db.Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 

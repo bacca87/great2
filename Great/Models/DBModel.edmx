@@ -175,6 +175,18 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ExpenseAccount_0_0">
+          <End Role="FDLStatus" Type="Self.FDLStatus" Multiplicity="1" />
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDLStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseAccount">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseAccount_1_0">
           <End Role="FDL" Type="Self.FDL" Multiplicity="1" />
           <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
           <ReferentialConstraint>
@@ -284,6 +296,10 @@
             <End Role="Day" EntitySet="Day" />
           </AssociationSet>
           <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
+            <End Role="FDLStatus" EntitySet="FDLStatus" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_1_0" Association="Self.FK_ExpenseAccount_1_0">
             <End Role="FDL" EntitySet="FDL" />
             <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
           </AssociationSet>
@@ -346,6 +362,10 @@
             <End Role="Timesheet" EntitySet="Timesheets" />
           </AssociationSet>
           <AssociationSet Name="FK_ExpenseAccount_0_0" Association="DBModel.FK_ExpenseAccount_0_0">
+            <End Role="FDLStatu" EntitySet="FDLStatus" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_1_0" Association="DBModel.FK_ExpenseAccount_1_0">
             <End Role="FDL" EntitySet="FDLs" />
             <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
           </AssociationSet>
@@ -433,7 +453,8 @@
           <Property Name="Status" Type="Int64" Nullable="false" />
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="NotifyAsNew" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="FDL1" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDL" />
+          <NavigationProperty Name="FDLStatu" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDLStatu" />
+          <NavigationProperty Name="FDL1" Relationship="DBModel.FK_ExpenseAccount_1_0" FromRole="ExpenseAccount" ToRole="FDL" />
         </EntityType>
         <EntityType Name="Factory">
           <Key>
@@ -475,7 +496,7 @@
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
           <Property Name="NotifyAsNew" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDL" ToRole="ExpenseAccount" />
+          <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_1_0" FromRole="FDL" ToRole="ExpenseAccount" />
           <NavigationProperty Name="Factory1" Relationship="DBModel.FK_FDL_2_0" FromRole="FDL" ToRole="Factory" />
           <NavigationProperty Name="FDLStatu" Relationship="DBModel.FK_FDL_0_0" FromRole="FDL" ToRole="FDLStatu" />
           <NavigationProperty Name="FDLResult" Relationship="DBModel.FK_FDL_1_0" FromRole="FDL" ToRole="FDLResult" />
@@ -495,6 +516,7 @@
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDLStatu" ToRole="ExpenseAccount" />
           <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="FDLStatu" ToRole="FDL" />
         </EntityType>
         <EntityType Name="Timesheet">
@@ -574,6 +596,18 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ExpenseAccount_0_0">
+          <End Type="DBModel.FDLStatu" Role="FDLStatu" Multiplicity="1" />
+          <End Type="DBModel.ExpenseAccount" Role="ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDLStatu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseAccount">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseAccount_1_0">
           <End Type="DBModel.FDL" Role="FDL" Multiplicity="1" />
           <End Type="DBModel.ExpenseAccount" Role="ExpenseAccount" Multiplicity="*" />
           <ReferentialConstraint>

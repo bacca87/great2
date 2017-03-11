@@ -17,12 +17,15 @@ namespace Great.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public FDLStatu()
         {
+            this.ExpenseAccounts = new HashSet<ExpenseAccount>();
             this.FDLs = new HashSet<FDL>();
         }
     
         public long Id { get; set; }
         public string Name { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FDL> FDLs { get; set; }
     }

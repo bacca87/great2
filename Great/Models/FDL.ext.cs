@@ -9,6 +9,18 @@ namespace Great.Models
         
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
 
+        public EFDLStatus EStatus
+        {
+            get
+            {
+                return (EFDLStatus)Status;
+            }
+            set
+            {
+                Status = (long)value;
+            }
+        }
+
         #region Display Properties
         public string FDL_Display { get { return Id + (IsExtra ? " (EXTRA)" : ""); } }
         #endregion
