@@ -11,7 +11,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Office2013/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>            
             <vm:ViewModelLocator xmlns:vm="clr-namespace:Great.ViewModels" x:Key="Locator" />            
         </ResourceDictionary>
