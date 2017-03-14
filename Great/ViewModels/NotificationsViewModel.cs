@@ -106,6 +106,10 @@ namespace Great.ViewModels
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { NewFactoriesCount = p.NewValue.Count(factory => factory.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<FDL>> p) => { NewFDLCount = p.NewValue.Count(fdl => fdl.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<ExpenseAccount>> p) => { NewExpenseAccountsCount = p.NewValue.Count(ea => ea.NotifyAsNew); });
-        }        
+        }
+
+        //TODO: aggiungere le notifiche baloon
+        // https://github.com/raflop/ToastNotifications
+        // https://github.com/zachatrocity/netoaster
     }
 }
