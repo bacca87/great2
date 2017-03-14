@@ -101,16 +101,21 @@ namespace Great.ViewModels
                 var oldValue = _selectedFDL;
                 _selectedFDL = value;
 
+                SelectedFDLClone = _selectedFDL?.Clone();
+
                 if (_selectedFDL != null)
                 {
                     Timesheets = _db.FDLs.SingleOrDefault(f => f.Id == _selectedFDL.Id).Timesheets.ToList();
-                    SelectedFDLClone = _selectedFDL.Clone();
                     SelectedTimesheet = null;
                     IsInputEnabled = true;
                 }
                 else
-                    IsInputEnabled = false;
-
+                {
+                    Timesheets = null;
+                    IsInputEnabled = false;                    
+                }
+                    
+                
                 RaisePropertyChanged(nameof(SelectedFDL), oldValue, value);
             }
         }
@@ -223,6 +228,10 @@ namespace Great.ViewModels
         public RelayCommand ClearFDLCommand { get; set; }
         public RelayCommand<FDL> SaveFDLCommand { get; set; }
 
+        public RelayCommand<FDL> SendToSAPCommand { get; set; }
+        public RelayCommand<FDL> SendByEmailCommand { get; set; }
+        public RelayCommand<FDL> SaveAsCommand { get; set; }
+
         public RelayCommand FactoryLinkCommand { get; set; }        
         #endregion
 
@@ -241,7 +250,11 @@ namespace Great.ViewModels
             FDLs.ListChanged += FDLs_ListChanged;
 
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
-            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled && fdl != null; });
+            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
+            
+            SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
+            SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
+            SaveAsCommand = new RelayCommand<FDL>(SaveAs);
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
@@ -299,6 +312,21 @@ namespace Great.ViewModels
                     }
                 })
             );
+        }
+
+        public void SendToSAP(FDL fdl)
+        {
+            //TODO
+        }
+
+        public void SendByEmail(FDL fdl)
+        {
+            //TODO
+        }
+
+        public void SaveAs(FDL fdl)
+        {
+            //TODO
         }
 
         private void FactoryLink()

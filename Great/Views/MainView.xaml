@@ -183,13 +183,36 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+            <Fluent:RibbonTabItem Header="HOME" 
+                                  DataContext="{Binding FDL, Source={StaticResource Locator}}"
+                                  Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
+                <Fluent:RibbonGroupBox Header="SAP">
+                    <Fluent:Button Header="Send" Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/cloud-up.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected FDL to the SAP system." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Tools">
+                    <Fluent:Button Header="Send by Email" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/envelope-letter.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/file-pdf.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+            <Fluent:RibbonTabItem Header="HOME" 
+                                  Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+            <Fluent:RibbonTabItem Header="HOME" 
+                                  Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="TEST">

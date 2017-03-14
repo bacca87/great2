@@ -195,7 +195,10 @@ namespace Great.ViewModels
                         IsInputEnabled = false;
                 }
                 else
+                {
+                    Timesheets = null;
                     IsInputEnabled = false;
+                }                    
 
                 RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
                 RaisePropertyChanged(nameof(FDLs));
@@ -223,7 +226,7 @@ namespace Great.ViewModels
                 var oldValue = _selectedTimesheet;
                 _selectedTimesheet = value;
 
-                SelectedTimesheetClone = _selectedTimesheet != null ? _selectedTimesheet.Clone() : new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp };
+                SelectedTimesheetClone = _selectedTimesheet != null ? _selectedTimesheet.Clone() : (SelectedWorkingDay != null ? new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp } : null);
 
                 RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
@@ -323,8 +326,8 @@ namespace Great.ViewModels
             PasteDayCommand = new RelayCommand<Day>(PasteDay);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
-            SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
-            DeleteTimesheetCommand = new RelayCommand<Timesheet>(DeleteTimesheet, (Timesheet timesheet) => { return IsInputEnabled && timesheet != null; });
+            SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled; });
+            DeleteTimesheetCommand = new RelayCommand<Timesheet>(DeleteTimesheet, (Timesheet timesheet) => { return IsInputEnabled; });
 
             UpdateWorkingDays();
             SelectToday();
