@@ -205,6 +205,11 @@
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                    <Fluent:Button Header="Print" Command="{Binding PrintCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/printer.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Print FDL" Text="Print the selected FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="HOME" 

@@ -231,7 +231,8 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SendToSAPCommand { get; set; }
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
-
+        public RelayCommand<FDL> PrintCommand { get; set; }
+        
         public RelayCommand FactoryLinkCommand { get; set; }        
         #endregion
 
@@ -255,6 +256,7 @@ namespace Great.ViewModels
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
+            PrintCommand = new RelayCommand<FDL>(Print);            
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
@@ -325,6 +327,11 @@ namespace Great.ViewModels
         }
 
         public void SaveAs(FDL fdl)
+        {
+            //TODO
+        }
+
+        public void Print(FDL fdl)
         {
             //TODO
         }
