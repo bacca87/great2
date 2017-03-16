@@ -44,6 +44,7 @@ namespace Great.ViewModels
             ////}
             
             SimpleIoc.Default.Register<FDLManager>();
+            SimpleIoc.Default.Register<DBEntities>();
 
             SimpleIoc.Default.Register<TimesheetsViewModel>();
             SimpleIoc.Default.Register<FactoriesViewModel>();

@@ -307,9 +307,9 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public TimesheetsViewModel()
+        public TimesheetsViewModel(DBEntities db)
         {
-            _db = new DBEntities();
+            _db = db;
 
             NextYearCommand = new RelayCommand(SetNextYear);
             PreviousYearCommand = new RelayCommand(SetPreviousYear);
@@ -439,43 +439,28 @@ namespace Great.ViewModels
             else
                 IsInputEnabled = false;
 
-            day.NotifyTimesheetsPropertiesChanged();
+            day.NotifyDayPropertiesChanged();
         }
-
-        public void ResetDay(Day day)
-        {
-            if (!_db.Days.Any(d => d.Timestamp == day.Timestamp))
-                return;
-
-            _db.Days.Remove(day);
-
-            if (_db.SaveChanges() > 0)
-            {
-                day.EType = EDayType.WorkDay;
-                day.NotifyTimesheetsPropertiesChanged();
-                Timesheets = null;
-            }
-        }
-
+        
         public void CopyDay(Day day)
         {
+            IList<Timesheet> timesheets = new List<Timesheet>();
+
             if (day == null)
                 return;
 
             ClipboardX.Clear();
-            ClipboardX.AddItem("Day", day);
-            ClipboardX.AddItem("Timesheets", day.Timesheets.ToList());
+            ClipboardX.AddItem("Day", day.Clone());
+
+            foreach (Timesheet timesheet in day.Timesheets)
+                timesheets.Add(timesheet.Clone());
+
+            ClipboardX.AddItem("Timesheets", timesheets);
         }
 
         public void CutDay(Day day)
         {
-            if (day == null)
-                return;
-            
-            ClipboardX.Clear();
-            ClipboardX.AddItem("Day", day.Clone());
-            ClipboardX.AddItem("Timesheets", day.Timesheets.ToList());
-            
+            CopyDay(day);
             ResetDay(day);
         }
 
@@ -490,43 +475,74 @@ namespace Great.ViewModels
             if (sourceDay == null || sourceTimesheets == null)
                 return;
 
-            IList<Timesheet> destinationTimesheets = new List<Timesheet>();
+            destinationDay.Type = sourceDay.Type;
+            _db.Timesheets.RemoveRange(_db.Timesheets.Where(t => t.Timestamp == destinationDay.Timestamp));
 
             foreach (Timesheet timesheet in sourceTimesheets)
-            {
-                Timesheet tmp = timesheet.Clone();
-                tmp.Timestamp = destinationDay.Timestamp;
-                destinationTimesheets.Add(tmp);
+            {   
+                timesheet.Id = 0;
+                timesheet.Timestamp = destinationDay.Timestamp;
+                _db.Timesheets.Add(timesheet);
             }
-
-            if (destinationDay.Timesheets != null && destinationDay.Timesheets.Count > 0)
-                _db.Timesheets.RemoveRange(destinationDay.Timesheets);
-
-            _db.Timesheets.AddRange(destinationTimesheets);
-
-            destinationDay.Type = sourceDay.Type;
+            
             _db.Days.AddOrUpdate(destinationDay);
 
             if(_db.SaveChanges() > 0)
             {
-                sourceDay.NotifyTimesheetsPropertiesChanged();
-                destinationDay.NotifyTimesheetsPropertiesChanged();
+                sourceDay.NotifyDayPropertiesChanged();
+                destinationDay.NotifyDayPropertiesChanged();
                 SelectedWorkingDay = destinationDay;
+                
+                foreach (Timesheet timesheet in destinationDay.Timesheets)
+                    timesheet.FDL1?.NotifyFDLPropertiesChanged();
+            }
+        }
+
+        public void ResetDay(Day day)
+        {
+            IList<FDL> dayFDLs = new List<FDL>();
+
+            if (!_db.Days.Any(d => d.Timestamp == day.Timestamp))
+                return;
+
+            foreach (Timesheet timesheet in day.Timesheets)
+            {
+                if (timesheet.FDL1 != null)
+                    dayFDLs.Add(timesheet.FDL1);
+            }
+
+            _db.Days.Remove(day);
+
+            if (_db.SaveChanges() > 0)
+            {
+                day.EType = EDayType.WorkDay;
+                day.NotifyDayPropertiesChanged();
+                Timesheets = null;
+
+                foreach (FDL fdl in dayFDLs)
+                    fdl.NotifyFDLPropertiesChanged();
             }
         }
 
         public void DeleteTimesheet(Timesheet timesheet)
         {
+            FDL fdl = null;
+
             if (timesheet == null)
                 return;
+
+            if (timesheet.FDL != null)
+                fdl = _db.FDLs.SingleOrDefault(f => f.Id == timesheet.FDL);
 
             _db.Timesheets.Remove(timesheet);
 
             if (_db.SaveChanges() > 0)
             {
-                SelectedWorkingDay.NotifyTimesheetsPropertiesChanged();
+                SelectedWorkingDay.NotifyDayPropertiesChanged();
                 Timesheets = SelectedWorkingDay.Timesheets.ToList();
                 SelectedTimesheet = null;
+                
+                fdl?.NotifyFDLPropertiesChanged();
             }
         }
 
@@ -549,18 +565,17 @@ namespace Great.ViewModels
             // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
             if (timesheet.FDL == null)
                 timesheet.FDL1 = null;
-
-            if(timesheet.FDL1 != null)
-                Messenger.Default.Send(new ItemChangedMessage<FDL>(this, timesheet.FDL1));
-
+            
             _db.Days.AddOrUpdate(SelectedWorkingDay);
             _db.Timesheets.AddOrUpdate(timesheet);
 
             if (_db.SaveChanges() > 0)
             {
-                SelectedWorkingDay.NotifyTimesheetsPropertiesChanged();
+                SelectedWorkingDay.NotifyDayPropertiesChanged();
                 Timesheets = SelectedWorkingDay.Timesheets.ToList();
                 SelectedTimesheet = null;
+
+                timesheet.FDL1?.NotifyFDLPropertiesChanged();
             }
         }
     }

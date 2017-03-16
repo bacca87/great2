@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
@@ -101,20 +100,17 @@ namespace Great.ViewModels
                 var oldValue = _selectedFDL;
                 _selectedFDL = value;
 
+                RefreshTimesheets();
+
                 SelectedFDLClone = _selectedFDL?.Clone();
 
                 if (_selectedFDL != null)
-                {
-                    Timesheets = _db.FDLs.SingleOrDefault(f => f.Id == _selectedFDL.Id).Timesheets.ToList();
+                {   
                     SelectedTimesheet = null;
                     IsInputEnabled = true;
                 }
                 else
-                {
-                    Timesheets = null;
                     IsInputEnabled = false;                    
-                }
-                    
                 
                 RaisePropertyChanged(nameof(SelectedFDL), oldValue, value);
             }
@@ -239,9 +235,9 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the EmailViewModel class.
         /// </summary>
-        public FDLViewModel(FDLManager manager)
+        public FDLViewModel(FDLManager manager, DBEntities db)
         {
-            _db = new DBEntities();
+            _db = db;
             _fdlManager = manager;
 
             FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());
@@ -265,9 +261,20 @@ namespace Great.ViewModels
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { Factories = p.NewValue; });
         }
 
+        private void RefreshTimesheets()
+        {
+            if (SelectedFDL != null && SelectedFDL.Timesheets != null)
+                Timesheets = SelectedFDL.Timesheets.OrderBy(t => t.Date).ToList();
+            else
+                Timesheets = null;
+        }
+
         private void FDLs_ListChanged(object sender, ListChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(FDLs), null, FDLs, true);
+
+            if (e.ListChangedType == ListChangedType.ItemChanged && SelectedFDL != null && SelectedFDL.Id == FDLs[e.NewIndex].Id)
+                RefreshTimesheets();
         }
 
         public void NewFDL(NewItemMessage<FDL> item)
@@ -278,11 +285,9 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        _db.Entry(item.Content).State = EntityState.Detached;
-
                         FDL fdl = _db.FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (fdl != null)
+                        if (fdl != null && !FDLs.Contains(fdl))
                             FDLs.Add(fdl);
                     }
                 })
@@ -299,18 +304,8 @@ namespace Great.ViewModels
                     {
                         _db.FDLs.AddOrUpdate(item.Content);
                         _db.SaveChanges();
-                        
-                        FDL fdl = FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
-                        
-                        if (fdl != null)
-                        {
-                            _db.Entry(fdl).Collection(f => f.Timesheets).Load();
 
-                            if (SelectedFDL != null && SelectedFDL.Id == fdl.Id)
-                                Timesheets = fdl.Timesheets.ToList();
-
-                            fdl.NotifyFDLPropertiesChanged();
-                        }
+                        FDLs.SingleOrDefault(f => f.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
                     }
                 })
             );

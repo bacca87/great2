@@ -278,7 +278,7 @@ namespace Great.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void NotifyTimesheetsPropertiesChanged()
+        public void NotifyDayPropertiesChanged()
         {
             OnPropertyChanged(nameof(Type));
 

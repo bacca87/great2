@@ -13,8 +13,9 @@ namespace Great.Views.Pages
     /// </summary>
     public partial class TimesheetView : Page
     {
-        TimesheetsViewModel _viewModel;
-        ScrollViewer scrollViewer;
+        private TimesheetsViewModel _viewModel;
+        private ScrollViewer scrollViewer;
+        private bool startup = true;
 
         public TimesheetView()
         {
@@ -41,8 +42,12 @@ namespace Great.Views.Pages
 
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            // hack for preselecting the workingDaysDataGrid at startup
-            _viewModel.SelectToday();
+            if (startup) // run once
+            {
+                // hack for preselecting the workingDaysDataGrid at startup
+                _viewModel.SelectToday();
+                startup = false;
+            }
         }
 
         #region Time MaskedTextBox Autocomplete Methods 

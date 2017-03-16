@@ -5,7 +5,6 @@ using Great.Utils.Messages;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
@@ -117,9 +116,9 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the FactoriesViewModel class.
         /// </summary>
-        public FactoriesViewModel()
+        public FactoriesViewModel(DBEntities db)
         {
-            _db = new DBEntities();
+            _db = db;
 
             Factories = new BindingList<Factory>(_db.Factories.ToList());
 
@@ -146,11 +145,9 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        _db.Entry(item.Content).State = EntityState.Detached;
-
                         Factory factory = _db.Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (factory != null)
+                        if (factory != null && !Factories.Contains(factory))
                             Factories.Add(factory);
                     }
                 })

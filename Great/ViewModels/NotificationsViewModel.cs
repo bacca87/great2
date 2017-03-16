@@ -88,21 +88,22 @@ namespace Great.ViewModels
 
                 RaisePropertyChanged(nameof(NewExpenseAccountsCount), oldValue, value);
             }
-        }        
+        }
+
+        private DBEntities _db;
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the NotificationsViewModel class.
         /// </summary>
-        public NotificationsViewModel()
+        public NotificationsViewModel(DBEntities db)
         {
-            using(DBEntities db = new DBEntities())
-            {
-                NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew);
-                NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew);
-                NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
-            }
-
+            _db = db;
+            
+            NewFactoriesCount = _db.Factories.Count(factory => factory.NotifyAsNew);
+            NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew);
+            NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
+            
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { NewFactoriesCount = p.NewValue.Count(factory => factory.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<FDL>> p) => { NewFDLCount = p.NewValue.Count(fdl => fdl.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<ExpenseAccount>> p) => { NewExpenseAccountsCount = p.NewValue.Count(ea => ea.NotifyAsNew); });
