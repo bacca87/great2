@@ -104,6 +104,7 @@ namespace Great.ViewModels
             NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew);
             NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
             
+            //TODO migliorare questa porcata
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { NewFactoriesCount = p.NewValue.Count(factory => factory.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<FDL>> p) => { NewFDLCount = p.NewValue.Count(fdl => fdl.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<ExpenseAccount>> p) => { NewExpenseAccountsCount = p.NewValue.Count(ea => ea.NotifyAsNew); });
