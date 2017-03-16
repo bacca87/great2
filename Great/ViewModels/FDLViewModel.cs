@@ -2,10 +2,12 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
+using Great.Utils;
 using Great.Utils.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -60,13 +62,13 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="FDLs" /> property's name.
         /// </summary>
-        private BindingList<FDL> _FDLs;
+        private ObservableCollectionEx<FDL> _FDLs;
 
         /// <summary>
         /// Sets and gets the FDLs property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public BindingList<FDL> FDLs
+        public ObservableCollectionEx<FDL> FDLs
         {
             get
             {
@@ -240,11 +242,13 @@ namespace Great.ViewModels
             _db = db;
             _fdlManager = manager;
 
-            FDLs = new BindingList<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id).ToList());
+            //FDLs = new ObservableCollectionEx<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id));
+            FDLs = new ObservableCollectionEx<FDL>(_db.FDLs);
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
             Factories = new BindingList<Factory>(_db.Factories.ToList());
 
-            FDLs.ListChanged += FDLs_ListChanged;
+            FDLs.ItemPropertyChanged += FDLs_ItemPropertyChanged;
+            FDLs.CollectionChanged += FDLs_CollectionChanged;
 
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
@@ -261,6 +265,17 @@ namespace Great.ViewModels
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { Factories = p.NewValue; });
         }
 
+        private void FDLs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(FDLs), null, FDLs, true);
+        }
+
+        private void FDLs_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
+        {   
+            if (SelectedFDL != null && SelectedFDL.Id == FDLs[e.CollectionIndex].Id)
+                RefreshTimesheets();
+        }
+
         private void RefreshTimesheets()
         {
             if (SelectedFDL != null && SelectedFDL.Timesheets != null)
@@ -268,15 +283,7 @@ namespace Great.ViewModels
             else
                 Timesheets = null;
         }
-
-        private void FDLs_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(FDLs), null, FDLs, true);
-
-            if (e.ListChangedType == ListChangedType.ItemChanged && SelectedFDL != null && SelectedFDL.Id == FDLs[e.NewIndex].Id)
-                RefreshTimesheets();
-        }
-
+        
         public void NewFDL(NewItemMessage<FDL> item)
         {
             // Using the dispatcher for preventing thread conflicts   

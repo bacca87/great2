@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
+using Great.Utils;
 using System.ComponentModel;
 using System.Linq;
 
@@ -106,7 +107,7 @@ namespace Great.ViewModels
             
             //TODO migliorare questa porcata
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { NewFactoriesCount = p.NewValue.Count(factory => factory.NotifyAsNew); });
-            MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<FDL>> p) => { NewFDLCount = p.NewValue.Count(fdl => fdl.NotifyAsNew); });
+            MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<FDL>> p) => { NewFDLCount = p.NewValue.Count(fdl => fdl.NotifyAsNew); });
             MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<ExpenseAccount>> p) => { NewExpenseAccountsCount = p.NewValue.Count(ea => ea.NotifyAsNew); });
         }
 

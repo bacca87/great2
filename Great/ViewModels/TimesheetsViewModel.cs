@@ -479,8 +479,7 @@ namespace Great.ViewModels
             _db.Timesheets.RemoveRange(_db.Timesheets.Where(t => t.Timestamp == destinationDay.Timestamp));
 
             foreach (Timesheet timesheet in sourceTimesheets)
-            {   
-                timesheet.Id = 0;
+            {
                 timesheet.Timestamp = destinationDay.Timestamp;
                 _db.Timesheets.Add(timesheet);
             }

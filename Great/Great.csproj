@@ -234,6 +234,7 @@
     <Compile Include="Utils\Extensions\TimeSpanExtensions.cs" />
     <Compile Include="Utils\Messages\ItemChangedMessage.cs" />
     <Compile Include="Utils\Messages\NewItemMessage.cs" />
+    <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\InformationsViewModel.cs" />

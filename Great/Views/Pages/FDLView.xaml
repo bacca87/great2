@@ -6,10 +6,19 @@
       xmlns:m="clr-namespace:Great.Models" 
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       mc:Ignorable="d"      
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView" 
       IsVisibleChanged="Page_IsVisibleChanged">
+    <Page.Resources>
+        <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Status" />
+                <scm:SortDescription PropertyName="Id" Direction="Descending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Page.Resources>
     <Grid Margin="10,0,10,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -27,7 +36,7 @@
                 IsReadOnly="True"                  
                 SelectionMode="Single"
                 HeadersVisibility="Column"
-                ItemsSource="{Binding FDLs}"
+                ItemsSource="{Binding Source={StaticResource FDLCollectionView}}"
                 SelectedItem="{Binding SelectedFDL}"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
