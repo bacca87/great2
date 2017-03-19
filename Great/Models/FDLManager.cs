@@ -3,6 +3,7 @@ using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
 using iText.Forms.Fields;
+using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using Microsoft.Exchange.WebServices.Data;
 using NLog;
@@ -84,6 +85,7 @@ namespace Great.Models
 
                         if (address != string.Empty && customer != string.Empty)
                         {
+                            //TODO: migliorare riconoscimento stabilimenti e inserire flag per attivazione disattivazione inserimento automatico stabilimenti
                             Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
                             if (factory == null)
@@ -125,17 +127,17 @@ namespace Great.Models
 
             return fdl;
         }
-
-        private void CompileFDL(FDL fdl)
+        
+        private void CompileFDL(FDL fdl, string fileName)
         {
-            string file = ApplicationSettings.Directories.FDL + fdl.FileName;
-            string tempFile = Path.GetTempPath() + fdl.FileName;
+            string source = ApplicationSettings.Directories.FDL + fdl.FileName;
+            
             PdfDocument pdfDoc = null;
 
             try
             {
-                pdfDoc = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);                
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
                 
                 Timesheet timesheet = null;
@@ -277,11 +279,11 @@ namespace Great.Models
                 fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue(fdl.ReturnTaxi ? "1" : "0");
                 fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].SetValue(fdl.ReturnAircraft ? "1" : "0");
                 
-                fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].SetValue(fdl.PerformanceDescription);
-                fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].SetValue(fdl.PerformanceDescriptionDetails);
+                fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].SetValue(fdl.PerformanceDescription != null ? fdl.PerformanceDescription : string.Empty);
+                fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].SetValue(fdl.PerformanceDescriptionDetails != null ? fdl.PerformanceDescriptionDetails : string.Empty);
                 fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(fdl.Result.ToString());
-                fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].SetValue(fdl.ResultNotes);
-                fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].SetValue(fdl.Notes);
+                fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].SetValue(fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty);
+                fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].SetValue(fdl.Notes != null ? fdl.Notes : string.Empty);
             }
             catch (Exception ex)
             {
@@ -293,18 +295,38 @@ namespace Great.Models
             }
         }
 
-        public void SendFDL(FDL fdl)
+        public bool SendFDL(FDL fdl)
         {
-            CompileFDL(fdl);
+            if (fdl == null)
+                return false;
 
-            EmailMessage message = new EmailMessage(notificationsService);
+            string filePath = Path.GetTempPath() + fdl.FileName;
+
+            CompileFDL(fdl, filePath);
+            
+            //TODO pensare a come inviare le email utilizzando un thread dedicato e gestire eventuali errori di comunicazione
+
+            EmailMessage message = new EmailMessage(notificationsService);            
             message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            message.Importance = Importance.High;
             message.ToRecipients.Add(ApplicationSettings.FDL.EmailAddress);
-            message.Attachments.AddFileAttachment(Path.GetTempPath() + fdl.FileName);
+            message.Attachments.AddFileAttachment(filePath);
             message.SendAndSaveCopy();
 
             // Delete the temporary FDL file
-            File.Delete(Path.GetTempPath() + fdl.FileName);
+            File.Delete(filePath);
+
+            return true;
+        }
+
+        public bool SaveFDL(FDL fdl, string filePath)
+        {
+            if (fdl == null || filePath == string.Empty)
+                return false;
+
+            CompileFDL(fdl, filePath);
+
+            return true;
         }
         
         private void StartBackgroundOperations()

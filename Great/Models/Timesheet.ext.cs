@@ -2,11 +2,14 @@
 using Itenso.TimePeriod;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Great.Models
 {
-    public partial class Timesheet
+    public partial class Timesheet : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         #region Converted Properties
         public DateTime Date
         {

@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
-using Great.Utils;
-using System.ComponentModel;
+using Great.Utils.Messages;
+using System;
 using System.Linq;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
@@ -105,10 +106,17 @@ namespace Great.ViewModels
             NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew);
             NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
             
-            //TODO migliorare questa porcata
-            MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { NewFactoriesCount = p.NewValue.Count(factory => factory.NotifyAsNew); });
-            MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<FDL>> p) => { NewFDLCount = p.NewValue.Count(fdl => fdl.NotifyAsNew); });
-            MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<ExpenseAccount>> p) => { NewExpenseAccountsCount = p.NewValue.Count(ea => ea.NotifyAsNew); });
+            MessengerInstance.Register(this, (NewItemMessage<FDL> x) => {
+                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew); }));
+            });
+
+            MessengerInstance.Register(this, (NewItemMessage<Factory> x) => {
+                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewFactoriesCount = _db.Factories.Count(factory => factory.NotifyAsNew); }));
+            });
+
+            MessengerInstance.Register(this, (NewItemMessage<ExpenseAccount> x) => {
+                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); }));
+            });
         }
 
         //TODO: aggiungere le notifiche baloon

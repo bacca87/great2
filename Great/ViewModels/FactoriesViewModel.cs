@@ -1,10 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Great.Models;
+using Great.Utils;
 using Great.Utils.Messages;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
@@ -29,13 +29,13 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="Factories" /> property's name.
         /// </summary>
-        private BindingList<Factory> _factories;
+        private ObservableCollectionEx<Factory> _factories;
 
         /// <summary>
         /// Sets and gets the Factories property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public BindingList<Factory> Factories
+        public ObservableCollectionEx<Factory> Factories
         {
             get
             {
@@ -120,23 +120,16 @@ namespace Great.ViewModels
         {
             _db = db;
 
-            Factories = new BindingList<Factory>(_db.Factories.ToList());
-
-            Factories.ListChanged += Factories_ListChanged;
-
+            Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
+            
             DeleteFactoryCommand = new RelayCommand<Factory>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<Factory>(SaveFactory);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
             MessengerInstance.Register<NewItemMessage<Factory>>(this, NewFactory);
             MessengerInstance.Register<ItemChangedMessage<Factory>>(this, FactoryChanged);
-        }
-
-        private void Factories_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(Factories), null, Factories, true);
-        }
-
+        }        
+        
         public void NewFactory(NewItemMessage<Factory> item)
         {
             // Using the dispatcher for preventing thread conflicts

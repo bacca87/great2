@@ -50,13 +50,6 @@
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
                 </Style>
-                <!--<Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
-                            <Setter Property="Background" Value="LightBlue" />
-                        </DataTrigger>                            
-                    </Style.Triggers>
-                </Style>-->
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
                 <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>

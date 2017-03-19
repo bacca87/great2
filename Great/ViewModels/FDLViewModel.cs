@@ -4,12 +4,12 @@ using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Utils;
 using Great.Utils.Messages;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Data.Entity.Migrations;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -197,13 +197,13 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="Factories" /> property's name.
         /// </summary>
-        private BindingList<Factory> _factories;
+        private ObservableCollectionEx<Factory> _factories;
 
         /// <summary>
         /// Sets and gets the Factories property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public BindingList<Factory> Factories
+        public ObservableCollectionEx<Factory> Factories
         {
             get
             {
@@ -229,7 +229,7 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SendToSAPCommand { get; set; }
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
-        public RelayCommand<FDL> PrintCommand { get; set; }
+        public RelayCommand<FDL> OpenCommand { get; set; }
         
         public RelayCommand FactoryLinkCommand { get; set; }        
         #endregion
@@ -245,10 +245,9 @@ namespace Great.ViewModels
             //FDLs = new ObservableCollectionEx<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id));
             FDLs = new ObservableCollectionEx<FDL>(_db.FDLs);
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
-            Factories = new BindingList<Factory>(_db.Factories.ToList());
+            Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
 
             FDLs.ItemPropertyChanged += FDLs_ItemPropertyChanged;
-            FDLs.CollectionChanged += FDLs_CollectionChanged;
 
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
@@ -256,19 +255,14 @@ namespace Great.ViewModels
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
-            PrintCommand = new RelayCommand<FDL>(Print);            
+            OpenCommand = new RelayCommand<FDL>(Open);            
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
             MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
-            MessengerInstance.Register(this, (PropertyChangedMessage<BindingList<Factory>> p) => { Factories = p.NewValue; });
-        }
-
-        private void FDLs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(FDLs), null, FDLs, true);
-        }
+            MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = p.NewValue; });
+        }        
 
         private void FDLs_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
         {   
@@ -320,7 +314,14 @@ namespace Great.ViewModels
 
         public void SendToSAP(FDL fdl)
         {
-            //TODO
+            if (fdl.EStatus == EFDLStatus.Waiting && 
+                MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            _fdlManager.SendFDL(fdl);
+
+            fdl.EStatus = EFDLStatus.Waiting;
+            _db.SaveChanges();
         }
 
         public void SendByEmail(FDL fdl)
@@ -330,12 +331,31 @@ namespace Great.ViewModels
 
         public void SaveAs(FDL fdl)
         {
-            //TODO
+            if (fdl == null)
+                return;
+
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Title = "Save FDL As...";
+            dlg.FileName = fdl.FileName;
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "FDL (.pdf) | *.pdf";
+            dlg.AddExtension = true;
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            
+            if (dlg.ShowDialog() == true)
+                _fdlManager.SaveFDL(fdl, dlg.FileName);
         }
 
-        public void Print(FDL fdl)
-        {
-            //TODO
+        public void Open(FDL fdl)
+        {            
+            if (fdl == null)
+                return;
+
+            string fileName = Path.GetTempPath() + fdl.FileName;
+
+            _fdlManager.SaveFDL(fdl, fileName);
+
+            System.Diagnostics.Process.Start(fileName);
         }
 
         private void FactoryLink()

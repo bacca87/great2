@@ -12,12 +12,11 @@ namespace Great.Views.Pages
     /// </summary>
     public partial class FDLView : Page
     {
-        FDLViewModel _viewModel;
+        FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }
 
         public FDLView()
         {
             InitializeComponent();
-            _viewModel = DataContext as FDLViewModel;
 
             _viewModel.OnFactoryLink += OnFactoryLink;
         }

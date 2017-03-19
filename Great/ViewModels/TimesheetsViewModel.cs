@@ -121,13 +121,13 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="WorkingDays" /> property's name.
         /// </summary>
-        private BindingList<Day> _workingDays;
+        private ObservableCollectionEx<Day> _workingDays;
 
         /// <summary>
         /// Sets and gets the WorkingDays property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public BindingList<Day> WorkingDays
+        public ObservableCollectionEx<Day> WorkingDays
         {
             get
             {
@@ -335,7 +335,7 @@ namespace Great.ViewModels
         
         private void UpdateWorkingDays()
         {
-            BindingList<Day> days = new BindingList<Day>();
+            ObservableCollectionEx<Day> days = new ObservableCollectionEx<Day>();
 
             for (int month = 1; month <= 12; month++)
             {

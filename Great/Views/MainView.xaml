@@ -195,19 +195,19 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Send by Email" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/envelope-letter.png">
+                    <Fluent:Button Header="Send by Email" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/mail.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/file-pdf.png">
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/floppy-disk.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Print" Command="{Binding PrintCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/printer.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/pdf.png">
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Print FDL" Text="Print the selected FDL." />
+                            <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>

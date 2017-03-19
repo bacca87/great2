@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:Gmap="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
       xmlns:c="clr-namespace:Great.Controls"
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       mc:Ignorable="d"
       DataContext="{Binding Factories, Source={StaticResource Locator}}"
 	  Title="FactoriesManagerPage"
@@ -12,6 +13,13 @@
       MinWidth="800"
       MinHeight="600"
       IsVisibleChanged="Page_IsVisibleChanged">
+    <Page.Resources>
+        <CollectionViewSource x:Key="FactoriesCollectionView" Source="{Binding Factories}" IsLiveSortingRequested="True" >
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Page.Resources>
     <Grid Name="layoutGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
@@ -46,7 +54,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
-            <ListView Name="factoriesListView" ItemsSource="{Binding Factories}" SelectedItem="{Binding SelectedFactory}" Grid.Column="0">
+            <ListView Name="factoriesListView" 
+                      ItemsSource="{Binding Source={StaticResource FactoriesCollectionView}}" 
+                      SelectedItem="{Binding SelectedFactory}" Grid.Column="0">
                 <ListView.Resources>
                     <Style TargetType="ListViewItem">
                         <EventSetter Event="MouseDoubleClick" Handler="factoryListViewItem_MouseDoubleClick"/>

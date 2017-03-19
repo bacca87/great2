@@ -44,13 +44,13 @@ namespace Great.Views
             zoomSlider.Value = factoriesMapControl.Zoom;
             
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
-            _viewModel.Factories.ListChanged += Factories_ListChanged;
+            _viewModel.Factories.CollectionChanged += Factories_CollectionChanged;
             _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
 
             RefreshMarkers();
             factoriesMapControl.ZoomAndCenterMarkers(null);
         }
-        
+
         private void LatLngSelectionMode(bool enable)
         {
             IsLatLngSelectionMode = enable;
@@ -179,24 +179,26 @@ namespace Great.Views
                 MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "Factories Map", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-        
-        private void FactoriesView_PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "SelectedFactory")
-            {
-                if (tempPosMarker != null)
-                {   
-                    factoriesMapControl.Markers.Remove(tempPosMarker);
-                    tempPosMarker = null;                    
-                }
-            }
-        }
-        
-        private void Factories_ListChanged(object sender, ListChangedEventArgs e)
+
+        private void Factories_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             RefreshMarkers();
         }
 
+        private void FactoriesView_PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
+        {
+            switch(e.PropertyName)
+            {
+                case nameof(_viewModel.SelectedFactory):
+                    if (tempPosMarker != null)
+                    {
+                        factoriesMapControl.Markers.Remove(tempPosMarker);
+                        tempPosMarker = null;
+                    }
+                    break;
+            }
+        }
+        
         private void marker_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
