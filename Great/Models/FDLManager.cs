@@ -271,17 +271,39 @@ namespace Great.Models
                 //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
                 //fields[ApplicationSettings.FDL.FieldNames.Cars2]
-                
-                fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue(fdl.OutwardCar ? "1" : "0");
-                fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue(fdl.OutwardTaxi ? "1" : "0");
-                fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].SetValue(fdl.OutwardAircraft ? "1" : "0");
-                fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue(fdl.ReturnCar ? "1" : "0");
-                fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue(fdl.ReturnTaxi ? "1" : "0");
-                fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].SetValue(fdl.ReturnAircraft ? "1" : "0");
+
+                if(fdl.OutwardCar)
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue("1");
+                if(fdl.OutwardTaxi)
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue("1");
+                if(fdl.OutwardAircraft)
+                    fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].SetValue("1");
+
+                if(fdl.ReturnCar)
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue("1");
+                if(fdl.ReturnTaxi)
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue("1");
+                if(fdl.ReturnAircraft)
+                    fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].SetValue("1");
                 
                 fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].SetValue(fdl.PerformanceDescription != null ? fdl.PerformanceDescription : string.Empty);
                 fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].SetValue(fdl.PerformanceDescriptionDetails != null ? fdl.PerformanceDescriptionDetails : string.Empty);
-                fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(fdl.Result.ToString());
+
+                switch(fdl.Result)
+                {
+                    case 1:
+                        fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(ApplicationSettings.FDL.Positive);
+                        break;
+                    case 2:
+                        fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(ApplicationSettings.FDL.Negative);
+                        break;
+                    case 3:
+                        fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(ApplicationSettings.FDL.WithReserve);
+                        break;
+                    default:
+                        break;
+                }
+                
                 fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].SetValue(fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty);
                 fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].SetValue(fdl.Notes != null ? fdl.Notes : string.Empty);
             }

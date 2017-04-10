@@ -114,7 +114,11 @@ namespace Great.Models
 
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
             public const string EA_RejectedResubmission = "Reinvio nota spese";
-            
+
+            public const string Positive = "POSITIVO";
+            public const string Negative = "NEGATIVO";
+            public const string WithReserve = "CON RISERVA";
+
             public static class FieldNames
             {
                 public const string FDLNumber = "data[0].#subform[0].Campoditesto1[0]";
