@@ -7,7 +7,7 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-      mc:Ignorable="d"      
+      mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView" 
       IsVisibleChanged="Page_IsVisibleChanged">
@@ -49,10 +49,11 @@
                         <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
-                </Style>
+                </Style>                
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
                 <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
+                <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
             </DataGrid.Resources>
             <!--<DataGrid.ContextMenu>
                 <ContextMenu>
@@ -68,22 +69,25 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Status">
+                <DataGridTemplateColumn Header="Status">                    
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None"/>
+                            <StackPanel Orientation="Horizontal">                                
+                                <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None">
+                                    <Image.ToolTip>
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
+                                    </Image.ToolTip>
+                                </Image>                                
+                                <Image Source="pack://application:,,,/Great;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsExtra}">
+                                    <Image.ToolTip>
+                                        <TextBlock Text="Extra"/>
+                                    </Image.ToolTip>
+                                </Image>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>                
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold"/>
-                <DataGridCheckBoxColumn Header="Extra" Binding="{Binding IsExtra}">
-                    <DataGridCheckBoxColumn.ElementStyle>
-                        <Style>                            
-                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center" />
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center" />
-                        </Style>
-                    </DataGridCheckBoxColumn.ElementStyle>
-                </DataGridCheckBoxColumn>
                 <DataGridTemplateColumn Header="Factory">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

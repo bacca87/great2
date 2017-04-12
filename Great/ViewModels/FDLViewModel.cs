@@ -227,6 +227,7 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SaveFDLCommand { get; set; }
 
         public RelayCommand<FDL> SendToSAPCommand { get; set; }
+        public RelayCommand<FDL> CompileFDLCommand { get; set; }        
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
         public RelayCommand<FDL> OpenCommand { get; set; }
@@ -253,6 +254,7 @@ namespace Great.ViewModels
             SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
             
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
+            CompileFDLCommand = new RelayCommand<FDL>(CompileFDL);
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
             OpenCommand = new RelayCommand<FDL>(Open);            
@@ -323,6 +325,11 @@ namespace Great.ViewModels
             fdl.EStatus = EFDLStatus.Waiting;
             _db.SaveChanges();
         }
+        
+        public void CompileFDL(FDL fdl)
+        {
+            //_fdlManager
+        }
 
         public void SendByEmail(FDL fdl)
         {
@@ -351,9 +358,9 @@ namespace Great.ViewModels
             if (fdl == null)
                 return;
 
-            string fileName = Path.GetTempPath() + fdl.FileName;
+            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(fdl.FileName) + ".FDF";
 
-            _fdlManager.SaveFDL(fdl, fileName);
+            _fdlManager.SaveFDF(fdl, fileName);
 
             System.Diagnostics.Process.Start(fileName);
         }

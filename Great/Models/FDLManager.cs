@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using FDFACXLib;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
@@ -127,17 +128,165 @@ namespace Great.Models
 
             return fdl;
         }
+
+        private void CompileFDF(FDL fdl, string FDLfileName, string FDFFileName)
+        {
+            FdfApp app = new FdfApp();
+            FdfDoc doc = app.FDFCreate();
+            Timesheet timesheet = null;
+
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Monday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Mon_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+          
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Tuesday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Tue_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+          
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Wednesday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Wed_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+          
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Thursday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Thu_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+           
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Friday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Fri_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+                
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Saturday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sat_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+          
+            timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == DayOfWeek.Sunday);
+
+            if (timesheet != null)
+            {
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_TravelStartTimeAM, timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_WorkStartTimeAM, timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_WorkEndTimeAM, timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_TravelEndTimeAM, timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_TravelStartTimePM, timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_WorkStartTimePM, timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_WorkEndTimePM, timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Sun_TravelEndTimePM, timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty, false);
+            }
+           
+            //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
+            //doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Cars1,
+            //doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Cars2,
+
+            if (fdl.OutwardCar)
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.OutwardCar, "1", false);
+            if (fdl.OutwardTaxi)
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.OutwardTaxi, "1", false);
+            if (fdl.OutwardAircraft)
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.OutwardAircraft, "1", false);
+
+            if (fdl.ReturnCar)
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.ReturnCar, "1", false);
+            if (fdl.ReturnTaxi)
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.ReturnTaxi, "1", false);
+            if (fdl.ReturnAircraft)
+                doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.ReturnAircraft, "1", false);
+
+            doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.PerformanceDescription, fdl.PerformanceDescription != null ? fdl.PerformanceDescription : string.Empty, false);
+            doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails, fdl.PerformanceDescriptionDetails != null ? fdl.PerformanceDescriptionDetails : string.Empty, false);
+
+            switch (fdl.Result)
+            {
+                case 1:
+                    doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.Positive, false);
+                    break;
+                case 2:
+                    doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.Negative, false);
+                    break;
+                case 3:
+                    doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.WithReserve, false);
+                    break;
+                default:
+                    doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.Result, null, false);
+                    break;
+            }
+
+            doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty, false);
+            doc.FDFSetValue(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes != null ? fdl.Notes : string.Empty, false);
+
+            doc.FDFSetFile(FDLfileName);
+            doc.FDFSaveToFile(FDFFileName);
+            doc.FDFClose();
+        }
         
         private void CompileFDL(FDL fdl, string fileName)
         {
             string source = ApplicationSettings.Directories.FDL + fdl.FileName;
-            
             PdfDocument pdfDoc = null;
 
             try
             {
                 pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);                
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
                 
                 Timesheet timesheet = null;
@@ -350,7 +499,18 @@ namespace Great.Models
 
             return true;
         }
-        
+
+        public bool SaveFDF(FDL fdl, string filePath)
+        {
+            if (fdl == null || filePath == string.Empty)
+                return false;
+
+            File.Copy(ApplicationSettings.Directories.FDL + fdl.FileName, Path.GetTempPath() + fdl.FileName, true);            
+            CompileFDF(fdl, Path.GetTempPath() + fdl.FileName, filePath);
+
+            return true;
+        }
+
         private void StartBackgroundOperations()
         {
             subscribeThread = new Thread(SubscribeNotifications);

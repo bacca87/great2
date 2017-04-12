@@ -176,6 +176,7 @@
     <Compile Include="Models\ExpenseAccount.ext.cs" />
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
+    <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
     <Compile Include="Utils\Converters\CompareIntConverter.cs" />
@@ -285,6 +286,10 @@
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Pages\CarRentalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -435,6 +440,26 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\72\mail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\16\star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\72\build-fdl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\16\build-fdl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="FDFACXLib">
+      <Guid>{CB830883-2E18-11D1-B8CF-00A0C9259304}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" />
