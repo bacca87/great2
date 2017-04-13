@@ -5,6 +5,7 @@ using Great.Utils;
 using Great.Utils.Messages;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
@@ -121,6 +122,7 @@ namespace Great.ViewModels
             _db = db;
 
             Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
+            Factories.CollectionChanged += Factories_CollectionChanged;
             
             DeleteFactoryCommand = new RelayCommand<Factory>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<Factory>(SaveFactory);
@@ -128,8 +130,13 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<NewItemMessage<Factory>>(this, NewFactory);
             MessengerInstance.Register<ItemChangedMessage<Factory>>(this, FactoryChanged);
-        }        
-        
+        }
+
+        private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(Factories), null, Factories, true);
+        }
+
         public void NewFactory(NewItemMessage<Factory> item)
         {
             // Using the dispatcher for preventing thread conflicts

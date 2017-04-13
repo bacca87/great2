@@ -227,7 +227,6 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SaveFDLCommand { get; set; }
 
         public RelayCommand<FDL> SendToSAPCommand { get; set; }
-        public RelayCommand<FDL> CompileFDLCommand { get; set; }        
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
         public RelayCommand<FDL> OpenCommand { get; set; }
@@ -254,7 +253,6 @@ namespace Great.ViewModels
             SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
             
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
-            CompileFDLCommand = new RelayCommand<FDL>(CompileFDL);
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
             OpenCommand = new RelayCommand<FDL>(Open);            
@@ -326,11 +324,6 @@ namespace Great.ViewModels
             _db.SaveChanges();
         }
         
-        public void CompileFDL(FDL fdl)
-        {
-            //_fdlManager
-        }
-
         public void SendByEmail(FDL fdl)
         {
             //TODO

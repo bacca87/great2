@@ -4,11 +4,11 @@ using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
 using iText.Forms.Fields;
-using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using Microsoft.Exchange.WebServices.Data;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -23,17 +23,56 @@ namespace Great.Models
         private static Logger log = LogManager.GetCurrentClassLogger();
 
         private ExchangeService notificationsService { get; set; }
+        private ExchangeService emailSenderService { get; set; }
         private StreamingSubscription streamingSubscription { get; set; }
         private StreamingSubscriptionConnection connection { get; set; }
 
+        private ConcurrentQueue<EmailMessage> emailQueue = new ConcurrentQueue<EmailMessage>();
+
         private Thread subscribeThread;
         private Thread syncThread;
-        
-        public EExchangeStatus ExchangeStatus { get; internal set; }
+        private Thread emailSenderThread;
+
+        EExchangeStatus exchangeStatus = EExchangeStatus.Offline;
+        public EExchangeStatus ExchangeStatus
+        {
+            get
+            {
+                lock(this)
+                {
+                    return exchangeStatus;
+                }
+            }
+            internal set
+            {
+                lock (this)
+                {
+                    exchangeStatus = value;
+                }
+            }
+        }
         
         public FDLManager()
         {
             StartBackgroundOperations();
+        }
+
+        private void StartBackgroundOperations()
+        {
+            subscribeThread = new Thread(SubscribeNotifications);
+            subscribeThread.Name = "Exchange Subscription Thread";
+            subscribeThread.IsBackground = true;
+            subscribeThread.Start();
+
+            syncThread = new Thread(ExchangeSync);
+            syncThread.Name = "Exchange Sync";
+            syncThread.IsBackground = true;
+            syncThread.Start();
+
+            emailSenderThread = new Thread(EmailSender);
+            emailSenderThread.Name = "Email Sender";
+            emailSenderThread.IsBackground = true;
+            emailSenderThread.Start();
         }
 
         private FDL CreateNewFDLFromFile(string filePath)
@@ -471,23 +510,21 @@ namespace Great.Models
             if (fdl == null)
                 return false;
 
-            string filePath = Path.GetTempPath() + fdl.FileName;
+            using (new WaitCursor())
+            {
+                string filePath = Path.GetTempPath() + fdl.FileName;
 
-            CompileFDL(fdl, filePath);
-            
-            //TODO pensare a come inviare le email utilizzando un thread dedicato e gestire eventuali errori di comunicazione
+                CompileFDL(fdl, filePath);
 
-            EmailMessage message = new EmailMessage(notificationsService);            
-            message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
-            message.Importance = Importance.High;
-            message.ToRecipients.Add(ApplicationSettings.FDL.EmailAddress);
-            message.Attachments.AddFileAttachment(filePath);
-            message.SendAndSaveCopy();
+                EmailMessage message = new EmailMessage(emailSenderService);
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+                message.Importance = Importance.High;
+                message.ToRecipients.Add(ApplicationSettings.FDL.EmailAddress);
+                message.Attachments.AddFileAttachment(filePath);
 
-            // Delete the temporary FDL file
-            File.Delete(filePath);
-
-            return true;
+                emailQueue.Enqueue(message);
+                return true;
+            }
         }
 
         public bool SaveFDL(FDL fdl, string filePath)
@@ -495,9 +532,11 @@ namespace Great.Models
             if (fdl == null || filePath == string.Empty)
                 return false;
 
-            CompileFDL(fdl, filePath);
-
-            return true;
+            using (new WaitCursor())
+            {
+                CompileFDL(fdl, filePath);
+                return true;
+            }
         }
 
         public bool SaveFDF(FDL fdl, string filePath)
@@ -505,23 +544,35 @@ namespace Great.Models
             if (fdl == null || filePath == string.Empty)
                 return false;
 
-            File.Copy(ApplicationSettings.Directories.FDL + fdl.FileName, Path.GetTempPath() + fdl.FileName, true);            
-            CompileFDF(fdl, Path.GetTempPath() + fdl.FileName, filePath);
-
-            return true;
+            using (new WaitCursor())
+            {
+                File.Copy(ApplicationSettings.Directories.FDL + fdl.FileName, Path.GetDirectoryName(filePath) + "\\" + fdl.FileName, true);
+                CompileFDF(fdl, Path.GetDirectoryName(filePath) + "\\" + fdl.FileName, filePath);
+                return true;
+            }
         }
-
-        private void StartBackgroundOperations()
+        
+        private void SendEmails(ExchangeService service)
         {
-            subscribeThread = new Thread(SubscribeNotifications);
-            subscribeThread.Name = "Exchange Subscription Thread";
-            subscribeThread.IsBackground = true;
-            subscribeThread.Start();
+            while(!emailQueue.IsEmpty)
+            {
+                EmailMessage message;
+                bool IsSent = false;
 
-            syncThread = new Thread(ExchangeSync);
-            syncThread.Name = "Exchange Sync";
-            syncThread.IsBackground = true;
-            syncThread.Start();
+                if (!emailQueue.TryDequeue(out message))
+                    continue;
+
+                do
+                {
+                    try
+                    {
+                        message.SendAndSaveCopy();
+                        IsSent = true;
+                    }
+                    catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
+                }
+                while (!IsSent);
+            }
         }
 
         private void SyncAll(ExchangeService service)
@@ -782,12 +833,9 @@ namespace Great.Models
         #region Threads
         private void SubscribeNotifications()
         {
-            bool IsSubscribed = false;
-
             notificationsService = new ExchangeService();
-            notificationsService.TraceEnabled = true;
-            notificationsService.TraceFlags = TraceFlags.None;
-            
+            ExchangeStatus = EExchangeStatus.Connecting;
+
             do
             {
                 try
@@ -803,21 +851,18 @@ namespace Great.Models
                     connection.OnSubscriptionError += Connection_OnSubscriptionError;
                     connection.OnDisconnect += Connection_OnDisconnect;
                     connection.Open();
-
-                    IsSubscribed = true;
                 }
                 catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (!IsSubscribed);
+            } while (!connection.IsOpen);
+
+            ExchangeStatus = EExchangeStatus.Online;
         }
 
         private void ExchangeSync()
-        {
+        {   
+            ExchangeService service = new ExchangeService();
             bool IsSynced = false;
 
-            ExchangeService service = new ExchangeService();
-            service.TraceEnabled = true;
-            service.TraceFlags = TraceFlags.None;
-            
             do
             {
                 try
@@ -831,6 +876,28 @@ namespace Great.Models
                 }
                 catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
             } while (!IsSynced);
+        }
+
+        private void EmailSender()
+        {
+            emailSenderService = new ExchangeService();
+            bool exit = false;
+
+            do
+            {
+                try
+                {
+                    emailSenderService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
+                    emailSenderService.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
+                }
+                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
+            } while (emailSenderService.Url == null);
+
+            while(!exit)
+            {
+                SendEmails(emailSenderService);
+                Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
+            }
         }
         #endregion
 
@@ -856,12 +923,25 @@ namespace Great.Models
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
         {
-            connection.Open();
+            if(ExchangeStatus != EExchangeStatus.Error)
+                ExchangeStatus = EExchangeStatus.Offline;
+
+            Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+            ExchangeStatus = EExchangeStatus.Reconnecting;
+
+            try
+            {
+                connection.Open();
+                ExchangeStatus = EExchangeStatus.Online;
+            }
+            catch { }
+            
             Debugger.Break();
         }
 
         private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
         {
+            ExchangeStatus = EExchangeStatus.Error;
             Debugger.Break();
         }
         #endregion
@@ -887,9 +967,11 @@ namespace Great.Models
 
     public enum EExchangeStatus
     {
-        Disconnected,
-        Syncing,
-        Connected
+        Offline,
+        Connecting,
+        Online,
+        Reconnecting,
+        Error
     }
 
     public enum EFDLStatus

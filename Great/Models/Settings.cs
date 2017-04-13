@@ -223,6 +223,7 @@ namespace Great.Models
         public static class General
         {
             public const int WaitForNextConnectionRetry = 10000;
+            public const int WaitForNextEmailCheck = 1000;
         }
         #endregion
 

@@ -300,7 +300,7 @@
                 <Frame Source="/Views/Pages/FactoriesView.xaml"/>
             </TabItem>
         </TabControl>
-        <Fluent:StatusBar Grid.Row="2">
+        <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Timesheets, Source={StaticResource Locator}}">
             <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
                 <TextBlock Text="EXCHANGE: CONNECTED" />
             </Fluent:StatusBarItem>
