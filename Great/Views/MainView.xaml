@@ -194,12 +194,17 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Tools">                    
-                    <Fluent:Button Header="Send by Email" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/mail.png">
-                        <Fluent:Button.ToolTip>
+                <Fluent:RibbonGroupBox Header="Tools">
+                    <Fluent:DropDownButton Header="Email" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/mail.png">
+                        <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
+                        </Fluent:DropDownButton.ToolTip>
+                        <Fluent:MenuItem Header="New Message" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedFDL}"/>
+                        <Separator/>
+                        <Fluent:MenuItem Header="Send To...">
+                            <Fluent:MenuItem Header="dio@me.can"/>
+                        </Fluent:MenuItem>                        
+                    </Fluent:DropDownButton>
                     <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/floppy-disk.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />

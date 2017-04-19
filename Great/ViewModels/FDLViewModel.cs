@@ -242,7 +242,6 @@ namespace Great.ViewModels
             _db = db;
             _fdlManager = manager;
 
-            //FDLs = new ObservableCollectionEx<FDL>(_db.FDLs.OrderBy(f => f.Status).ThenByDescending(f => f.Id));
             FDLs = new ObservableCollectionEx<FDL>(_db.FDLs);
             FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
             Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
