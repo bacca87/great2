@@ -9,8 +9,7 @@
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
-      Title="FDLView" 
-      IsVisibleChanged="Page_IsVisibleChanged">
+      Title="FDLView">
     <Page.Resources>
         <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
@@ -39,7 +38,8 @@
                 ItemsSource="{Binding Source={StaticResource FDLCollectionView}}"
                 SelectedItem="{Binding SelectedFDL}"
                 VirtualizingPanel.ScrollUnit ="Item" 
-                VirtualizingPanel.VirtualizationMode="Standard">
+                VirtualizingPanel.VirtualizationMode="Standard"
+                Loaded="fdlDataGridView_Loaded">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Style.Setters>

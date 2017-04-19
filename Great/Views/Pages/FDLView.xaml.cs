@@ -12,7 +12,8 @@ namespace Great.Views.Pages
     /// </summary>
     public partial class FDLView : Page
     {
-        FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }
+        private bool runonce = true;
+        private FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }        
 
         public FDLView()
         {
@@ -21,8 +22,20 @@ namespace Great.Views.Pages
             _viewModel.OnFactoryLink += OnFactoryLink;
         }
         
-        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void fdlDataGridView_Loaded(object sender, RoutedEventArgs e)
         {
+            // hack for correctly show all default selected FDL data on the side panel
+            if(runonce)
+            {
+                if(fdlDataGridView.Items.Count > 0)
+                {
+                    fdlDataGridView.SelectedIndex = -1;
+                    fdlDataGridView.SelectedIndex = 0;
+                }
+
+                runonce = false;
+            }
+
             // hack for selecting the first datagrid row by default in a hidden page
             if (fdlDataGridView.SelectedIndex == -1 && fdlDataGridView.Items.Count > 0)
                 fdlDataGridView.SelectedIndex = 0;

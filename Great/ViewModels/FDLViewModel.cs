@@ -242,22 +242,22 @@ namespace Great.ViewModels
             _db = db;
             _fdlManager = manager;
 
-            FDLs = new ObservableCollectionEx<FDL>(_db.FDLs);
-            FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
-            Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
-
-            FDLs.ItemPropertyChanged += FDLs_ItemPropertyChanged;
-
             ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
-            
+
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
-            OpenCommand = new RelayCommand<FDL>(Open);            
+            OpenCommand = new RelayCommand<FDL>(Open);
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
+                        
+            Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
+            FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
+            FDLs = new ObservableCollectionEx<FDL>(_db.FDLs);            
 
+            FDLs.ItemPropertyChanged += FDLs_ItemPropertyChanged;
+            
             MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
             MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = p.NewValue; });
@@ -350,9 +350,9 @@ namespace Great.ViewModels
             if (fdl == null)
                 return;
 
-            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(fdl.FileName) + ".FDF";
+            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(fdl.FileName) + ".XFDF";
 
-            _fdlManager.SaveFDF(fdl, fileName);
+            _fdlManager.SaveXFDF(fdl, fileName);
 
             System.Diagnostics.Process.Start(fileName);
         }
