@@ -128,7 +128,7 @@ namespace Great.Models
                             //TODO: migliorare riconoscimento stabilimenti e inserire flag per attivazione disattivazione inserimento automatico stabilimenti
                             Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
-                            if (factory == null)
+                            if (factory == null && UserSettings.Advanced.AutoAddFactories)
                             {
                                 factory = new Factory()
                                 {
@@ -144,7 +144,8 @@ namespace Great.Models
                                 Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
                             }
 
-                            fdl.Factory = factory.Id;
+                            if(UserSettings.Advanced.AutoAssignFactories)
+                                fdl.Factory = factory.Id;
                         }
 
                         fdl.NotifyAsNew = true;
@@ -403,6 +404,8 @@ namespace Great.Models
                 message.Attachments.AddFileAttachment(filePath);
 
                 emailQueue.Enqueue(message);
+
+                fdl.EStatus = EFDLStatus.Waiting;
                 return true;
             }
         }
@@ -456,7 +459,7 @@ namespace Great.Models
         }
 
         private void SyncAll(ExchangeService service)
-        {            
+        {
             ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
             FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
 
@@ -733,7 +736,7 @@ namespace Great.Models
                     connection.Open();
                 }
                 catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (!connection.IsOpen);
+            } while (connection == null || !connection.IsOpen);
 
             ExchangeStatus = EExchangeStatus.Online;
         }
@@ -859,6 +862,7 @@ namespace Great.Models
         New = 0,
         Waiting = 1,
         Accepted = 2,
-        Rejected = 3
+        Rejected = 3,
+        Cancelled = 4
     }
 }

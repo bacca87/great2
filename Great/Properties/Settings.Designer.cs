@@ -46,5 +46,29 @@ namespace Great.Properties {
                 this["EmailPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoAddFactories {
+            get {
+                return ((bool)(this["AutoAddFactories"]));
+            }
+            set {
+                this["AutoAddFactories"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoAssignFactories {
+            get {
+                return ((bool)(this["AutoAssignFactories"]));
+            }
+            set {
+                this["AutoAssignFactories"] = value;
+            }
+        }
     }
 }

@@ -194,6 +194,18 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Mark as Sent" Command="{Binding MarkAsSentCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/sign-check.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Mark as Sent" Text="Mark the selected FDL as sent." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/sign-ban.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL because it's unused." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
                     <Fluent:DropDownButton Header="Email" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/72/mail.png">
                         <Fluent:DropDownButton.ToolTip>

@@ -52,6 +52,42 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(EmailPassword));
             }
         }
+
+        /// <summary>
+        /// Sets and gets the AutoAddFactories property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public bool AutoAddFactories
+        {
+            get
+            {
+                return UserSettings.Advanced.AutoAddFactories;
+            }
+
+            set
+            {
+                UserSettings.Advanced.AutoAddFactories = value;
+                RaisePropertyChanged(nameof(AutoAddFactories));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the AutoAssignFactories property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public bool AutoAssignFactories
+        {
+            get
+            {
+                return UserSettings.Advanced.AutoAssignFactories;
+            }
+
+            set
+            {
+                UserSettings.Advanced.AutoAssignFactories = value;
+                RaisePropertyChanged(nameof(AutoAssignFactories));
+            }
+        }
         #endregion
 
         /// <summary>

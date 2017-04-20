@@ -291,6 +291,31 @@ namespace Great.Models
             }
         }
         #endregion
+
+        #region Advanced
+        public static class Advanced
+        {
+            public static bool AutoAddFactories
+            {
+                get { return Properties.Settings.Default.AutoAddFactories; }
+                set
+                {
+                    Properties.Settings.Default.AutoAddFactories = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
+
+            public static bool AutoAssignFactories
+            {
+                get { return Properties.Settings.Default.AutoAssignFactories; }
+                set
+                {
+                    Properties.Settings.Default.AutoAssignFactories = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+        #endregion
     }
     #endregion
 }

@@ -230,7 +230,9 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
         public RelayCommand<FDL> OpenCommand { get; set; }
-        
+        public RelayCommand<FDL> MarkAsSentCommand { get; set; }
+        public RelayCommand<FDL> CancelCommand { get; set; }
+
         public RelayCommand FactoryLinkCommand { get; set; }        
         #endregion
 
@@ -249,6 +251,8 @@ namespace Great.ViewModels
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
             OpenCommand = new RelayCommand<FDL>(Open);
+            MarkAsSentCommand = new RelayCommand<FDL>(MarkAsSent);
+            CancelCommand = new RelayCommand<FDL>(Cancel);
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
                         
@@ -318,8 +322,6 @@ namespace Great.ViewModels
                 return;
 
             _fdlManager.SendFDL(fdl);
-
-            fdl.EStatus = EFDLStatus.Waiting;
             _db.SaveChanges();
         }
         
@@ -355,6 +357,16 @@ namespace Great.ViewModels
             _fdlManager.SaveXFDF(fdl, fileName);
 
             System.Diagnostics.Process.Start(fileName);
+        }
+
+        public void MarkAsSent(FDL fdl)
+        {
+            //TODO
+        }
+
+        public void Cancel(FDL fdl)
+        {
+            //TODO
         }
 
         private void FactoryLink()
@@ -394,7 +406,7 @@ namespace Great.ViewModels
             _db.FDLs.AddOrUpdate(fdl);
 
             if (_db.SaveChanges() > 0)
-                SelectedFDL.NotifyFDLPropertiesChanged();
+                SelectedFDL?.NotifyFDLPropertiesChanged();
         }
     }
 }

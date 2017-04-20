@@ -9,7 +9,11 @@
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
       Title="SettingsView">
     <Grid>
-        <GroupBox Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -24,6 +28,12 @@
                 <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
                 <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
             </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel>
+                <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}"/>
+                <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
+            </StackPanel>
         </GroupBox>
     </Grid>
 </Page>

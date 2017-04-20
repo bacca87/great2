@@ -29,6 +29,10 @@ namespace Great.Utils.Converters
                 case 3: // Rejected
                     result = new BitmapImage(new Uri(@"pack://application:,,,/Great;component/Images/16/sign-error.png"));
                     break;
+
+                case 4: // Cancelled
+                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great;component/Images/16/sign-ban.png"));
+                    break;
             }
 
             return result;

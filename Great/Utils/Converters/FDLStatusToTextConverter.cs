@@ -27,6 +27,10 @@ namespace Great.Utils.Converters
                 case 3:
                     result = "Rejected";
                     break;
+
+                case 4:
+                    result = "Cancelled";
+                    break;
             }
 
             return result;
