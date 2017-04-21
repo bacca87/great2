@@ -392,9 +392,6 @@
     <Resource Include="Images\16\ExpandArrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\72\calendar.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\24\sign-left.png" />
     <Resource Include="Images\24\sign-right.png" />
   </ItemGroup>
@@ -427,25 +424,7 @@
     <Resource Include="Images\16\Paste.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\72\cloud-up.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\72\printer.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\72\pdf.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\72\floppy-disk.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\72\mail.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\16\star.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\72\build-fdl.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\16\build-fdl.png" />
@@ -462,11 +441,34 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\72\sign-ban.png" />
-    <Resource Include="Images\72\sign-check.png" />
+    <Resource Include="Images\16\sign-ban.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\16\sign-ban.png" />
+    <Resource Include="Images\32\mail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\calendar.png" />
+    <Resource Include="Images\32\cloud-up.png" />
+    <Resource Include="Images\32\floppy.png" />
+    <Resource Include="Images\32\sign-ban.png" />
+    <Resource Include="Images\32\sign-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\build-fdl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\051-bird.png" />
+    <Resource Include="Images\32\051-kite.png" />
+    <Resource Include="Images\32\051-leaf.png" />
+    <Resource Include="Images\32\bus.png" />
+    <Resource Include="Images\32\cabin-1.png" />
+    <Resource Include="Images\32\christmas-tree.png" />
+    <Resource Include="Images\32\maple-leaf.png" />
+    <Resource Include="Images\32\mushrooms.png" />
+    <Resource Include="Images\32\pumpkin.png" />
+    <Resource Include="Images\32\snowman.png" />
+    <Resource Include="Images\32\sun-umbrella.png" />
+    <Resource Include="Images\32\sun.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" />
