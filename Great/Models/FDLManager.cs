@@ -386,7 +386,7 @@ namespace Great.Models
             xmlDoc.Save(FDFFileName);
         }
 
-        public bool SendFDL(FDL fdl)
+        public bool SendToSAP(FDL fdl)
         {
             if (fdl == null)
                 return false;
@@ -398,14 +398,41 @@ namespace Great.Models
                 CompileFDL(fdl, filePath);
 
                 EmailMessage message = new EmailMessage(emailSenderService);
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";                
                 message.Importance = Importance.High;
-                message.ToRecipients.Add(ApplicationSettings.FDL.EmailAddress);
+                message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+                message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
                 message.Attachments.AddFileAttachment(filePath);
 
                 emailQueue.Enqueue(message);
 
-                fdl.EStatus = EFDLStatus.Waiting;
+                fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                return true;
+            }
+        }
+
+        public bool SendCancellationRequest(FDL fdl)
+        {
+            if (fdl == null)
+                return false;
+
+            using (new WaitCursor())
+            {   
+                EmailMessage message = new EmailMessage(emailSenderService);
+                message.Subject = $"Cancellation Request for FDL {fdl.Id}";
+                message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
+                                  <br>
+                                  FDL: <b>{fdl.Id}</b><br>
+                                  Factory: {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")}<br>
+                                  Order: {fdl.Order}<br>
+                                  <br>
+                                  Thank you";
+                message.Importance = Importance.High;
+                message.ToRecipients.Add("");//TODO: aggiungere destinatari per cancellazione FDL
+
+                emailQueue.Enqueue(message);
+
+                fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
             }
         }
@@ -467,7 +494,7 @@ namespace Great.Models
 
             Directory.CreateDirectory(ApplicationSettings.Directories.FDL);
 
-            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.FDL.EmailAddress, folderView, itemView))
+            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
             {
                 if (!(item is EmailMessage))
                     continue;
