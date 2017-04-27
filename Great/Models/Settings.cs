@@ -95,7 +95,15 @@ namespace Great.Models
             }
         }
         #endregion
-        
+
+        #region Email Recipients
+        public static class EmailRecipients
+        {
+            public const string FDLSystem = "fdl@elettric80.it";
+            public const string HR = "fdl@elettric80.it";
+        }
+        #endregion
+
         #region FDL
         public static class FDL
         {
@@ -105,9 +113,7 @@ namespace Great.Models
             public const int OtherNotesMaxLength = 595;
 
             public const string MIMEType = "application/pdf";
-
-            public const string EmailAddress = "fdl@elettric80.it";
-
+            
             public const string FDL_Accepted = "FDL RECEIVED";
             public const string FDL_Rejected = "INVALID FDL";
             public const string FDL_Extra = "EXTRA";

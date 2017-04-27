@@ -195,9 +195,9 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Mark as Sent" Command="{Binding MarkAsSentCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Mark as Sent" Text="Mark the selected FDL as sent." />
+                            <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                     <Fluent:Button Header="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">

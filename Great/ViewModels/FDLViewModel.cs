@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -230,7 +231,7 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
         public RelayCommand<FDL> OpenCommand { get; set; }
-        public RelayCommand<FDL> MarkAsSentCommand { get; set; }
+        public RelayCommand<FDL> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<FDL> CancelCommand { get; set; }
 
         public RelayCommand FactoryLinkCommand { get; set; }        
@@ -251,7 +252,7 @@ namespace Great.ViewModels
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
             OpenCommand = new RelayCommand<FDL>(Open);
-            MarkAsSentCommand = new RelayCommand<FDL>(MarkAsSent);
+            MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
             CancelCommand = new RelayCommand<FDL>(Cancel);
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
@@ -321,7 +322,7 @@ namespace Great.ViewModels
                 MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            _fdlManager.SendFDL(fdl);
+            _fdlManager.SendToSAP(fdl);
             _db.SaveChanges();
         }
         
@@ -355,18 +356,29 @@ namespace Great.ViewModels
             string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(fdl.FileName) + ".XFDF";
 
             _fdlManager.SaveXFDF(fdl, fileName);
-
-            System.Diagnostics.Process.Start(fileName);
+            Process.Start(fileName);
         }
 
-        public void MarkAsSent(FDL fdl)
+        public void MarkAsAccepted(FDL fdl)
         {
-            //TODO
+            if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            fdl.EStatus = EFDLStatus.Accepted;
+            _db.SaveChanges();
+
+            fdl.NotifyFDLPropertiesChanged();
         }
 
         public void Cancel(FDL fdl)
         {
-            //TODO
+            if (MessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            _fdlManager.SendCancellationRequest(fdl);
+            _db.SaveChanges();
+
+            fdl.NotifyFDLPropertiesChanged();
         }
 
         private void FactoryLink()
