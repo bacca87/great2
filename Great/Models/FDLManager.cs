@@ -305,7 +305,6 @@ namespace Great.Models
                     fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.WithReserve);
                     break;
                 default:
-                    fields.Add(ApplicationSettings.FDL.FieldNames.Result, null);
                     break;
             }
 
