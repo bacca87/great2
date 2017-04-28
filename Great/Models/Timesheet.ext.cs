@@ -207,11 +207,7 @@ namespace Great.Models
 
                 if (TimePeriods == null)
                     return false;
-
-                // The FDL system doesn't permit periods ending after the 04:00 AM of the next day.
-                if (TimePeriods.End.Day > Date.Day && TimePeriods.End.TimeOfDay > TimeSpan.FromHours(4)) 
-                    return false;
-
+                
                 if (TimePeriods.HasOverlaps())
                     return false;
 

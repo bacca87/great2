@@ -552,7 +552,7 @@ namespace Great.ViewModels
 
             if (!timesheet.IsValid)
             {
-                MessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!\nFurthermore the FDL system doesn't permit periods ending after the 04:00 AM of the next day.", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             else if(timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
