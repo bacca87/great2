@@ -232,7 +232,8 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SaveAsCommand { get; set; }
         public RelayCommand<FDL> OpenCommand { get; set; }
         public RelayCommand<FDL> MarkAsAcceptedCommand { get; set; }
-        public RelayCommand<FDL> CancelCommand { get; set; }
+        public RelayCommand<FDL> MarkAsCancelledCommand { get; set; }
+        public RelayCommand<FDL> SendCancellationRequestCommand { get; set; }
 
         public RelayCommand FactoryLinkCommand { get; set; }        
         #endregion
@@ -253,7 +254,8 @@ namespace Great.ViewModels
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
             OpenCommand = new RelayCommand<FDL>(Open);
             MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
-            CancelCommand = new RelayCommand<FDL>(Cancel);
+            MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
+            SendCancellationRequestCommand = new RelayCommand<FDL>(CancellationRequest);
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
                         
@@ -370,7 +372,18 @@ namespace Great.ViewModels
             fdl.NotifyFDLPropertiesChanged();
         }
 
-        public void Cancel(FDL fdl)
+        public void MarkAsCancelled(FDL fdl)
+        {
+            if (MessageBox.Show("Are you sure to mark as Cancelled the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            fdl.EStatus = EFDLStatus.Cancelled;
+            _db.SaveChanges();
+
+            fdl.NotifyFDLPropertiesChanged();
+        }
+
+        public void CancellationRequest(FDL fdl)
         {
             if (MessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;

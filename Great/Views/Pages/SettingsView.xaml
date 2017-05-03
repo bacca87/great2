@@ -4,6 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:wpf="http://wpfcontrols.com/"
       xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
@@ -25,15 +27,36 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="Email Address:" HorizontalAlignment="Right"/>
                 <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
+                <xctk:WatermarkTextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}" Watermark="Enter Email Address"/>
                 <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <StackPanel>
-                <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}"/>
-                <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
-            </StackPanel>
+        <GroupBox Grid.Row="1" Header="FDL" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Cancellation request email recipients:"/>
+                    <wpf:AutoCompleteTextBox Provider="{Binding EmailSuggestionProvider, Mode=OneWay}" DisplayMember="Mailbox.Address">
+                        <wpf:AutoCompleteTextBox.LoadingContent>
+                            <TextBlock Text="Loading..." Margin="5" FontSize="14" />
+                        </wpf:AutoCompleteTextBox.LoadingContent>
+                        <wpf:AutoCompleteTextBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Mailbox.Name}"/>
+                            </DataTemplate>
+                        </wpf:AutoCompleteTextBox.ItemTemplate>
+                    </wpf:AutoCompleteTextBox>
+                </StackPanel>
+                <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <StackPanel>
+                        <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}"/>
+                        <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
         </GroupBox>
     </Grid>
 </Page>

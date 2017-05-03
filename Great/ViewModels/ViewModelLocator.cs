@@ -43,6 +43,7 @@ namespace Great.ViewModels
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
             
+            SimpleIoc.Default.Register<MSExchangeProvider>();
             SimpleIoc.Default.Register<FDLManager>();
             SimpleIoc.Default.Register<DBEntities>();
 

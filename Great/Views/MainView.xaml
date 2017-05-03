@@ -200,11 +200,13 @@
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL because it's unused." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
+                    <Fluent:DropDownButton Header="Cancel" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                        <Fluent:DropDownButton.ToolTip>
+                            <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
+                        </Fluent:DropDownButton.ToolTip>
+                        <Fluent:MenuItem Header="Mark as Cancelled" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}"/>
+                        <Fluent:MenuItem Header="Send cancellation request" Command="{Binding SendCancellationRequestCommand}" CommandParameter="{Binding SelectedFDL}"/>
+                    </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
                     <Fluent:DropDownButton Header="Email" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">

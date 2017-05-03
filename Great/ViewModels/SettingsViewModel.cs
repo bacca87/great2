@@ -1,5 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using Great.Models;
+using Microsoft.Exchange.WebServices.Data;
+using System.Collections.Generic;
+using System.Linq;
+using WpfControls;
 
 namespace Great.ViewModels
 {
@@ -88,13 +92,28 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(AutoAssignFactories));
             }
         }
+
+        public SuggestionProvider EmailSuggestionProvider { get; internal set; }
+
+        private MSExchangeProvider exProvider { get; set; }
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the SettingsViewModel class.
         /// </summary>
-        public SettingsViewModel()
+        public SettingsViewModel(MSExchangeProvider provider)
         {
+            exProvider = provider;
+
+            EmailSuggestionProvider = new SuggestionProvider((string filter) =>
+            {
+                string address = filter.Substring(filter.LastIndexOf(';') + 1).Trim();
+
+                if (address != string.Empty)                
+                    return exProvider.ResolveName(address);
+                else
+                    return null;
+            });
         }
     }
 }
