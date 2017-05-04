@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using Great.Models;
 using Microsoft.Exchange.WebServices.Data;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using WpfControls;
 
 namespace Great.ViewModels
 {
@@ -93,27 +94,35 @@ namespace Great.ViewModels
             }
         }
 
-        public SuggestionProvider EmailSuggestionProvider { get; internal set; }
+        public string FDLCancelRequestRecipients
+        {
+            get
+            {
+                string recipients = string.Empty;
 
-        private MSExchangeProvider exProvider { get; set; }
+                if(UserSettings.Email.Recipients.FDLCancelRequest != null)
+                {
+                    foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
+                        recipients += recipients == string.Empty ? address : "; " + address;
+                }
+                return recipients;
+            }
+            set
+            {
+                StringCollection recipients = new StringCollection();
+                string[] addresses = value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < addresses.Length; i++)
+                    recipients.Add(addresses[i].Trim());
+                UserSettings.Email.Recipients.FDLCancelRequest = recipients;
+            }
+        }
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the SettingsViewModel class.
         /// </summary>
-        public SettingsViewModel(MSExchangeProvider provider)
+        public SettingsViewModel()
         {
-            exProvider = provider;
-
-            EmailSuggestionProvider = new SuggestionProvider((string filter) =>
-            {
-                string address = filter.Substring(filter.LastIndexOf(';') + 1).Trim();
-
-                if (address != string.Empty)                
-                    return exProvider.ResolveName(address);
-                else
-                    return null;
-            });
         }
     }
 }

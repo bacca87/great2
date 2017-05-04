@@ -39,7 +39,10 @@ namespace Great.Models
 
         public NameResolutionCollection ResolveName(string filter)
         {
-            return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
+            if (exService.Url != null)
+                return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
+            else
+                return null;
         }
 
         private bool RedirectionUrlValidationCallback(string redirectionUrl)

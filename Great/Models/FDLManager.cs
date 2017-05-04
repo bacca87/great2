@@ -427,7 +427,9 @@ namespace Great.Models
                                   <br>
                                   Thank you";
                 message.Importance = Importance.High;
-                message.ToRecipients.Add("");//TODO: aggiungere destinatari per cancellazione FDL
+
+                foreach(string address in UserSettings.Email.Recipients.FDLCancelRequest)
+                    message.ToRecipients.Add(address);
 
                 emailQueue.Enqueue(message);
 

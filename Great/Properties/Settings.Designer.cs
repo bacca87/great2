@@ -70,5 +70,16 @@ namespace Great.Properties {
                 this["AutoAssignFactories"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection FDLCancelRequestRecipients {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["FDLCancelRequestRecipients"]));
+            }
+            set {
+                this["FDLCancelRequestRecipients"] = value;
+            }
+        }
     }
 }

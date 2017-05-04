@@ -4,8 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Great.Views.Pages"
-      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-      xmlns:wpf="http://wpfcontrols.com/"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"      
       xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
@@ -38,17 +37,8 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <TextBlock Text="Cancellation request email recipients:"/>
-                    <wpf:AutoCompleteTextBox Provider="{Binding EmailSuggestionProvider, Mode=OneWay}" DisplayMember="Mailbox.Address">
-                        <wpf:AutoCompleteTextBox.LoadingContent>
-                            <TextBlock Text="Loading..." Margin="5" FontSize="14" />
-                        </wpf:AutoCompleteTextBox.LoadingContent>
-                        <wpf:AutoCompleteTextBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Mailbox.Name}"/>
-                            </DataTemplate>
-                        </wpf:AutoCompleteTextBox.ItemTemplate>
-                    </wpf:AutoCompleteTextBox>
+                    <TextBlock Text="Cancellation request email recipients (separated by &quot;;&quot;): "/>
+                    <TextBox Text="{Binding FDLCancelRequestRecipients}"/>
                 </StackPanel>
                 <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <StackPanel>

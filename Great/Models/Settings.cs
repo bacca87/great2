@@ -1,6 +1,8 @@
-﻿using Great.Utils;
+﻿using Great.Properties;
+using Great.Utils;
 using Great.Utils.Extensions;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.Entity.Core.EntityClient;
@@ -100,7 +102,7 @@ namespace Great.Models
         public static class EmailRecipients
         {
             public const string FDLSystem = "fdl@elettric80.it";
-            public const string HR = "fdl@elettric80.it";
+            public const string HR = "hr@elettric80.it";
         }
         #endregion
 
@@ -263,7 +265,7 @@ namespace Great.Models
         #region Constructor
         static UserSettings()
         {
-            Properties.Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
             {
                 SettingsChanged?.Invoke(e.PropertyName);
             };
@@ -275,24 +277,41 @@ namespace Great.Models
         {
             public static string EmailAddress
             {
-                get { return Properties.Settings.Default.EmailAddress; }
+                get { return Settings.Default.EmailAddress; }
                 set
                 {
-                    Properties.Settings.Default.EmailAddress = value;
-                    Properties.Settings.Default.Save();
+                    Settings.Default.EmailAddress = value;
+                    Settings.Default.Save();
                 }
             }
+
             public static string EmailPassword
             {
                 get
                 {
-                    string password = Properties.Settings.Default.EmailPassword;
+                    string password = Settings.Default.EmailPassword;
                     return password.Length > 0 ? password.Decrypt() : string.Empty;
                 }
                 set
                 {
-                    Properties.Settings.Default.EmailPassword = value.Encrypt();
-                    Properties.Settings.Default.Save();
+                    Settings.Default.EmailPassword = value.Encrypt();
+                    Settings.Default.Save();
+                }
+            }
+
+            public static class Recipients
+            {
+                public static StringCollection FDLCancelRequest
+                {
+                    get
+                    {
+                        return Settings.Default.FDLCancelRequestRecipients;
+                    }
+                    set
+                    {
+                        Settings.Default.FDLCancelRequestRecipients = value;
+                        Settings.Default.Save();
+                    }
                 }
             }
         }
@@ -303,21 +322,21 @@ namespace Great.Models
         {
             public static bool AutoAddFactories
             {
-                get { return Properties.Settings.Default.AutoAddFactories; }
+                get { return Settings.Default.AutoAddFactories; }
                 set
                 {
-                    Properties.Settings.Default.AutoAddFactories = value;
-                    Properties.Settings.Default.Save();
+                    Settings.Default.AutoAddFactories = value;
+                    Settings.Default.Save();
                 }
             }
 
             public static bool AutoAssignFactories
             {
-                get { return Properties.Settings.Default.AutoAssignFactories; }
+                get { return Settings.Default.AutoAssignFactories; }
                 set
                 {
-                    Properties.Settings.Default.AutoAssignFactories = value;
-                    Properties.Settings.Default.Save();
+                    Settings.Default.AutoAssignFactories = value;
+                    Settings.Default.Save();
                 }
             }
         }
