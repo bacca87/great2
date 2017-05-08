@@ -13,7 +13,7 @@
     <Page.Resources>
         <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Status" />
+                <scm:SortDescription PropertyName="IsNew" Direction="Descending" />
                 <scm:SortDescription PropertyName="Id" Direction="Descending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>

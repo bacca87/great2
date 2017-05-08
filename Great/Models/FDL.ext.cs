@@ -8,6 +8,7 @@ namespace Great.Models
         public event PropertyChangedEventHandler PropertyChanged;
         
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
+        public bool IsNew { get { return EStatus == EFDLStatus.New; } } // used for sorting purpose
 
         public EFDLStatus EStatus
         {
