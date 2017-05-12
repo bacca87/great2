@@ -7,13 +7,11 @@ using iText.Kernel.Pdf;
 using Microsoft.Exchange.WebServices.Data;
 using NLog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Xml;
 
 namespace Great.Models
@@ -22,57 +20,17 @@ namespace Great.Models
     {
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        private ExchangeService notificationsService { get; set; }
-        private ExchangeService emailSenderService { get; set; }
-        private StreamingSubscription streamingSubscription { get; set; }
-        private StreamingSubscriptionConnection connection { get; set; }
+        MSExchangeProvider exchangeProvider;
 
-        private ConcurrentQueue<EmailMessage> emailQueue = new ConcurrentQueue<EmailMessage>();
-
-        private Thread subscribeThread;
-        private Thread syncThread;
-        private Thread emailSenderThread;
-
-        EExchangeStatus exchangeStatus = EExchangeStatus.Offline;
-        public EExchangeStatus ExchangeStatus
+        public FDLManager(MSExchangeProvider exProvider)
         {
-            get
-            {
-                lock(this)
-                {
-                    return exchangeStatus;
-                }
-            }
-            internal set
-            {
-                lock (this)
-                {
-                    exchangeStatus = value;
-                }
-            }
-        }
-        
-        public FDLManager()
-        {
-            StartBackgroundOperations();
+            exchangeProvider = exProvider;
+            exchangeProvider.OnNewMessage += ExchangeProvider_OnNewMessage;
         }
 
-        private void StartBackgroundOperations()
+        private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
-            subscribeThread = new Thread(SubscribeNotifications);
-            subscribeThread.Name = "Exchange Subscription Thread";
-            subscribeThread.IsBackground = true;
-            subscribeThread.Start();
-
-            syncThread = new Thread(ExchangeSync);
-            syncThread.Name = "Exchange Sync";
-            syncThread.IsBackground = true;
-            syncThread.Start();
-
-            emailSenderThread = new Thread(EmailSender);
-            emailSenderThread.Name = "Email Sender";
-            emailSenderThread.IsBackground = true;
-            emailSenderThread.Start();
+            ProcessMessage(e.Message);
         }
 
         private FDL CreateNewFDLFromFile(string filePath)
@@ -396,14 +354,14 @@ namespace Great.Models
 
                 CompileFDL(fdl, filePath);
 
-                EmailMessage message = new EmailMessage(emailSenderService);
+                EmailMessageDTO message = new EmailMessageDTO();
                 message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";                
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
                 message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
-                message.Attachments.AddFileAttachment(filePath);
+                message.Attachments.Add(filePath);
 
-                emailQueue.Enqueue(message);
+                exchangeProvider.SendEmail(message);
 
                 fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
@@ -416,8 +374,8 @@ namespace Great.Models
                 return false;
 
             using (new WaitCursor())
-            {   
-                EmailMessage message = new EmailMessage(emailSenderService);
+            {
+                EmailMessageDTO message = new EmailMessageDTO();
                 message.Subject = $"Cancellation Request for FDL {fdl.Id}";
                 message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
                                   <br>
@@ -431,7 +389,7 @@ namespace Great.Models
                 foreach(string address in UserSettings.Email.Recipients.FDLCancelRequest)
                     message.ToRecipients.Add(address);
 
-                emailQueue.Enqueue(message);
+                exchangeProvider.SendEmail(message);
 
                 fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
@@ -463,48 +421,6 @@ namespace Great.Models
             }
         }
         
-        private void SendEmails(ExchangeService service)
-        {
-            while(!emailQueue.IsEmpty)
-            {
-                EmailMessage message;
-                bool IsSent = false;
-
-                if (!emailQueue.TryDequeue(out message))
-                    continue;
-
-                do
-                {
-                    try
-                    {
-                        message.SendAndSaveCopy();
-                        IsSent = true;
-                    }
-                    catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-                }
-                while (!IsSent);
-            }
-        }
-
-        private void SyncAll(ExchangeService service)
-        {
-            ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
-            FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
-
-            itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
-
-            Directory.CreateDirectory(ApplicationSettings.Directories.FDL);
-
-            foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
-            {
-                if (!(item is EmailMessage))
-                    continue;
-
-                EmailMessage message = EmailMessage.Bind(service, item.Id);
-                ProcessMessage(message);
-            }
-        }
-
         private void ProcessMessage(EmailMessage message)
         {   
             EMessageType type = GetMessageType(message.Subject);
@@ -680,182 +596,6 @@ namespace Great.Models
 
             return FDL;
         }
-        
-        private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
-        {
-            FindFoldersResults foldersResults;
-            FindItemsResults<Item> itemsResults;
-
-            do
-            {
-                foldersResults = service.FindFolders(root, folderView);
-
-                foreach (Folder folder in foldersResults)
-                {
-                    do
-                    {
-                        itemsResults = service.FindItems(folder.Id, query, itemView);
-                        
-                        foreach (Item item in itemsResults)
-                            yield return item;
-
-                        if (itemsResults.MoreAvailable)
-                            itemView.Offset += itemView.PageSize;
-
-                    } while (itemsResults.MoreAvailable);
-                }
-
-                if (foldersResults.MoreAvailable)
-                    folderView.Offset += folderView.PageSize;
-
-            } while (foldersResults.MoreAvailable);
-
-            // reset the offset for a new search in current folder
-            itemView.Offset = 0;
-
-            do
-            {
-                itemsResults = service.FindItems(root, query, itemView);
-
-                foreach (Item item in itemsResults)
-                    yield return item;
-
-                if (itemsResults.MoreAvailable)
-                    itemView.Offset += itemView.PageSize;
-
-            } while (itemsResults.MoreAvailable);
-        }
-        
-        private bool RedirectionUrlValidationCallback(string redirectionUrl)
-        {
-            // The default for the validation callback is to reject the URL.
-            bool result = false;
-            Uri redirectionUri = new Uri(redirectionUrl);
-
-            // Validate the contents of the redirection URL. In this simple validation
-            // callback, the redirection URL is considered valid if it is using HTTPS
-            // to encrypt the authentication credentials. 
-            if (redirectionUri.Scheme == "https")
-                result = true;
-
-            return result;
-        }
-
-        #region Threads
-        private void SubscribeNotifications()
-        {
-            notificationsService = new ExchangeService();
-            ExchangeStatus = EExchangeStatus.Connecting;
-
-            do
-            {
-                try
-                {
-                    notificationsService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-                    notificationsService.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
-
-                    streamingSubscription = notificationsService.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
-
-                    connection = new StreamingSubscriptionConnection(notificationsService, 30);
-                    connection.AddSubscription(streamingSubscription);
-                    connection.OnNotificationEvent += Connection_OnNotificationEvent;
-                    connection.OnSubscriptionError += Connection_OnSubscriptionError;
-                    connection.OnDisconnect += Connection_OnDisconnect;
-                    connection.Open();
-                }
-                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (connection == null || !connection.IsOpen);
-
-            ExchangeStatus = EExchangeStatus.Online;
-        }
-
-        private void ExchangeSync()
-        {   
-            ExchangeService service = new ExchangeService();
-            bool IsSynced = false;
-
-            do
-            {
-                try
-                {
-                    service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-                    service.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
-
-                    SyncAll(service);
-
-                    IsSynced = true;
-                }
-                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (!IsSynced);
-        }
-
-        private void EmailSender()
-        {
-            emailSenderService = new ExchangeService();
-            bool exit = false;
-
-            do
-            {
-                try
-                {
-                    emailSenderService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-                    emailSenderService.AutodiscoverUrl(UserSettings.Email.EmailAddress, RedirectionUrlValidationCallback);
-                }
-                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
-            } while (emailSenderService.Url == null);
-
-            while(!exit)
-            {
-                SendEmails(emailSenderService);
-                Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
-            }
-        }
-        #endregion
-
-        #region Subscription Events Handling
-        private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
-        {
-            foreach (NotificationEvent e in args.Events)
-            {
-                var itemEvent = (ItemEvent)e;
-                EmailMessage message = EmailMessage.Bind(notificationsService, itemEvent.ItemId);
-
-                switch (e.EventType)
-                {
-                    case EventType.NewMail:
-                        ProcessMessage(message);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
-
-        private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
-        {
-            if(ExchangeStatus != EExchangeStatus.Error)
-                ExchangeStatus = EExchangeStatus.Offline;
-
-            Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
-            ExchangeStatus = EExchangeStatus.Reconnecting;
-
-            try
-            {
-                connection.Open();
-                ExchangeStatus = EExchangeStatus.Online;
-            }
-            catch { }
-            
-            Debugger.Break();
-        }
-
-        private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
-        {
-            ExchangeStatus = EExchangeStatus.Error;
-            Debugger.Break();
-        }
-        #endregion
     }
 
     public enum EAttachmentType
