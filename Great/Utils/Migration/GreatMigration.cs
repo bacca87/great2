@@ -14,15 +14,7 @@ using System.Diagnostics;
 
 namespace Great.Utils
 {
-    public class EventImportArgs : EventArgs
-    {
-        public EventImportArgs(string result)
-        {
-            Result = result;
-        }
-        public string Result { get; set; }
-    }
-    class GreatMigration
+    public class GreatMigration
     {
         #region Events
         public delegate void OperationCompletedHandler(object source, EventImportArgs args);
@@ -31,6 +23,7 @@ namespace Great.Utils
 
         #region Constants
 
+        public const string sGreatDefaultInstallationFolder = @"C:\Program Files (x86)\GREAT";
         const string sAccessConnectionstring = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0}";
         const string sSqliteConnectionString = @"data source={0}";
         const string sGreatIniFilePath = @"Ini\Setting.ini";
@@ -44,29 +37,35 @@ namespace Great.Utils
         public string _sourceAccountPath { get; private set; }
         public string _destinationFdlPath { get; private set; }
         public string _destinationAccountPath { get; private set; }
+
+        public bool Completed { get; internal set; }
         #endregion
 
         #region Fields
 
         //Access database fields
-        OleDbConnection connection;
-        OleDbCommand command;
-        OleDbDataAdapter adapter;
-        DBEntities aEntities = new DBEntities();
-        Thread thrd;
-
+        private OleDbConnection connection;
+        private OleDbCommand command;
+        private OleDbDataAdapter adapter;
+        private DBEntities aEntities = new DBEntities();
+        private Thread thrd;
+        
         //Data from access database
-        DataTable dtHours = new DataTable();
-        DataTable dtPlants = new DataTable();
-        DataTable dtCars = new DataTable();
-        DataTable dtExpenseReview = new DataTable();
-        DataTable dtConfiguration = new DataTable();
+        private DataTable dtHours = new DataTable();
+        private DataTable dtPlants = new DataTable();
+        private DataTable dtCars = new DataTable();
+        private DataTable dtExpenseReview = new DataTable();
+        private DataTable dtConfiguration = new DataTable();
         #endregion
 
-        public GreatMigration(string greatPath)
+        public GreatMigration()
         {
             aEntities.Database.Connection.ConnectionString = string.Format(sSqliteConnectionString, ApplicationSettings.Database.DBFileName);
+        }
 
+        public void StartMigration(string greatPath)
+        {
+            Completed = false;
             _sourceDatabase = GetGreatDatabaseFile(File.ReadAllLines(Path.Combine(greatPath, sGreatIniFilePath))
                                                                                                                 .Where(x => x.Contains("Dir Backup"))
                                                                                                                 .FirstOrDefault()
@@ -79,25 +78,24 @@ namespace Great.Utils
                 _sourceFdlPath = dtConfiguration.Rows[3].ItemArray[1].ToString();
                 _sourceAccountPath = dtConfiguration.Rows[4].ItemArray[1].ToString();
 
-                thrd = new Thread(new ThreadStart(executeMigration));
+                thrd = new Thread(new ThreadStart(MigrationThread));
                 thrd.Start();
             }
             else OnCompleted(new EventImportArgs("Database not found!"));
-
-
         }
 
-        void executeMigration()
+        private void MigrationThread()
         {
             CleanDBTables();
             OnCompleted(new EventImportArgs("Importing PDF files to DB"));
             CompileFdlTable();
             OnCompleted(new EventImportArgs("Importing Hours"));
             CompileHourTable();
+            Completed = true;
             OnCompleted(new EventImportArgs("Operation Completed"));
         }
 
-        public bool GetDataTables()
+        private bool GetDataTables()
         {
             bool result = false;
 
@@ -137,7 +135,8 @@ namespace Great.Utils
 
             return result;
         }
-        public bool CompileHourTable()
+
+        private bool CompileHourTable()
         {
             bool result = false;
 
@@ -262,7 +261,8 @@ namespace Great.Utils
 
             return result;
         }
-        public bool CompileFdlTable()
+
+        private bool CompileFdlTable()
         {
             bool result = false;
 
@@ -322,8 +322,6 @@ namespace Great.Utils
                 aEntities.Database.Connection.Close();
 
             }
-
-
             catch (Exception ex)
             {
                 aEntities.Database.Connection.Close();
@@ -332,10 +330,8 @@ namespace Great.Utils
 
             return result;
         }
-
-
+        
         #region Auxiliar methods
-
         private void CleanDBTables()
         {
             foreach (Timesheet t in aEntities.Timesheets)
@@ -349,6 +345,7 @@ namespace Great.Utils
 
             aEntities.SaveChanges();
         }
+
         private void InitializeDataAccess()
         {
             try
@@ -384,7 +381,7 @@ namespace Great.Utils
 
         }
 
-        string[] GetFileList(string sDir)
+        private string[] GetFileList(string sDir)
         {
             List<string> temp = new List<string>();
             try
@@ -575,13 +572,19 @@ namespace Great.Utils
         #endregion
 
         #region Events
-
         protected void OnCompleted(EventImportArgs e)
         {
-            if (OnOperationCompleted != null)
-                OnOperationCompleted(this, e);
+            OnOperationCompleted?.Invoke(this, e);
         }
         #endregion
     }
 
+    public class EventImportArgs : EventArgs
+    {
+        public EventImportArgs(string result)
+        {
+            Result = result;
+        }
+        public string Result { get; set; }
+    }
 }

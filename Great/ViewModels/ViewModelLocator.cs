@@ -52,7 +52,9 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<InformationsViewModel>();
             SimpleIoc.Default.Register<FDLViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
-            SimpleIoc.Default.Register<NotificationsViewModel>();            
+            SimpleIoc.Default.Register<NotificationsViewModel>();
+            SimpleIoc.Default.Register<ImportExportViewModel>();
+            SimpleIoc.Default.Register<GreatImportWizardViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -103,6 +105,22 @@ namespace Great.ViewModels
             }
         }
 
+        public ImportExportViewModel ImportExport
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ImportExportViewModel>();
+            }
+        }
+
+        public GreatImportWizardViewModel GreatImportWizard
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<GreatImportWizardViewModel>();
+            }
+        }
+        
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

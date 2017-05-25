@@ -32,10 +32,14 @@
                 <Fluent:Backstage Header="FILE">
                     <Fluent:BackstageTabControl Name="menuBackstageTabControl">
                         <Fluent:BackstageTabItem Header="Informations"/>
+                        <Fluent:BackstageTabItem Header="Import/Export">
+                            <Frame Source="/Views/Pages/ImportExportView.xaml"/>
+                        </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem />
                         <Fluent:BackstageTabItem Header="Settings">
                             <Frame Source="/Views/Pages/SettingsView.xaml"/>
                         </Fluent:BackstageTabItem>
+                        <Fluent:SeparatorTabItem />
                         <Fluent:Button Name="exitButton" Header="Exit" Click="exitButton_Click"/>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
