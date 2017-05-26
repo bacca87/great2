@@ -112,32 +112,25 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>                
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}FDL {0}">
-                        <Binding Path="SelectedFDLClone.FDL_Display" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-            <Grid Grid.Row="1" Margin="0,0,0,5">
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,0,5,5" Text="Factory:" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="1" Grid.Row="0" Margin="0,0,5,5" MinWidth="150" VerticalAlignment="Center"
+                <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}FDL {0}">
+                            <Binding Path="SelectedFDLClone.FDL_Display" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,0,5,0" Text="Factory:" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" Grid.Row="0" MinWidth="150" VerticalAlignment="Center"
                           SelectedItem="{Binding SelectedFDLClone.Factory1}" 
                           SelectedValue="{Binding SelectedFDLClone.Factory}" 
                           IsEnabled="{Binding IsInputEnabled}" 
@@ -145,22 +138,19 @@
                           SelectedValuePath="Id" 
                           SelectedIndex="0"
                           SelectionChanged="ComboBox_SelectionChanged">
-                    <ComboBox.Resources>
-                        <CollectionViewSource x:Key="Items" Source="{Binding Factories}" />
-                    </ComboBox.Resources>
-                    <ComboBox.ItemsSource>
-                        <CompositeCollection>
-                            <m:Factory Id="-1"/>
-                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                        </CompositeCollection>
-                    </ComboBox.ItemsSource>
-                </ComboBox>
-                <TextBlock Grid.Column="2" Grid.Row="0" Margin="0,0,5,5" Text="Company:" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="3" Grid.Row="0" Margin="0,0,0,5" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding SelectedFDLClone.Factory1.CompanyName}"/>
-                <TextBlock Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" Text="Address:" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding SelectedFDLClone.Factory1.Address}"/>
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Items" Source="{Binding Factories}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <m:Factory Id="-1"/>
+                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                </StackPanel>
             </Grid>
-            <DataGrid Grid.Row="2"
+            <DataGrid Grid.Row="1"
                       ItemsSource="{Binding Timesheets}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
                       VerticalAlignment="Stretch"
@@ -172,7 +162,7 @@
                       CanUserSortColumns="False"
                       HeadersVisibility="Column"
                       IsReadOnly="True"
-                      Height="150">
+                      Height="160">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
@@ -192,7 +182,7 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='ddd dd MMM'}" Width="70" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='ddd dd MMM'}" Width="75" />
                     <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
                     <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
@@ -203,7 +193,7 @@
                     <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="2" Margin="5">
                 <Grid.Resources>
                     <Style TargetType="CheckBox">
                         <Setter Property="VerticalAlignment" Value="Center" />
@@ -222,53 +212,62 @@
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="1" Content="Car" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Label Grid.Row="0" Grid.Column="2" Content="Taxi" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Label Grid.Row="0" Grid.Column="3" Content="Aircraft" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Outward" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Label Grid.Row="2" Grid.Column="0" Content="Return" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding SelectedFDLClone.OutwardCar}"/>
-                <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding SelectedFDLClone.OutwardTaxi}"/>
-                <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding SelectedFDLClone.OutwardAircraft}"/>
-                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding SelectedFDLClone.ReturnCar}"/>
-                <CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding SelectedFDLClone.ReturnTaxi}"/>
-                <CheckBox Grid.Row="2" Grid.Column="3" IsChecked="{Binding SelectedFDLClone.ReturnAircraft}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Car" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Taxi" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="Aircraft" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Outward" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Return" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <CheckBox Grid.Row="1" Grid.Column="1" Margin="5" IsChecked="{Binding SelectedFDLClone.OutwardCar}"/>
+                <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" IsChecked="{Binding SelectedFDLClone.OutwardTaxi}"/>
+                <CheckBox Grid.Row="1" Grid.Column="3" Margin="5" IsChecked="{Binding SelectedFDLClone.OutwardAircraft}"/>
+                <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" IsChecked="{Binding SelectedFDLClone.ReturnCar}"/>
+                <CheckBox Grid.Row="2" Grid.Column="2" Margin="5" IsChecked="{Binding SelectedFDLClone.ReturnTaxi}"/>
+                <CheckBox Grid.Row="2" Grid.Column="3" Margin="5" IsChecked="{Binding SelectedFDLClone.ReturnAircraft}"/>
             </Grid>
-            <Grid Grid.Row="4">
+            <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="40*"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                    <Label Content="Performance description:"/>
-                    <TextBox TextWrapping="Wrap" Height="70" AcceptsReturn="True" Text="{Binding SelectedFDLClone.PerformanceDescription}" MaxLength="{Binding PerfDescMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Margin="0,0,0,10">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                        <Label Content="Assistant final test result:"/>
-                        <ComboBox ItemsSource="{Binding FDLResults}" SelectedItem="{Binding SelectedFDLClone.FDLResult}" SelectedValue="{Binding SelectedFDLClone.Result}" IsEnabled="{Binding IsInputEnabled}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="100"/>
-                    </StackPanel>
-                    <TextBox TextWrapping="Wrap" Height="70" AcceptsReturn="True" Text="{Binding SelectedFDLClone.ResultNotes}" MaxLength="{Binding FinalTestResultMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-                <StackPanel Grid.Row="2" Margin="0,0,0,10">
-                    <Label Content="Software versions and other notes:"/>
-                    <TextBox TextWrapping="Wrap" Height="70" AcceptsReturn="True" Text="{Binding SelectedFDLClone.Notes}" MaxLength="{Binding OtherNotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-                <Grid Grid.Row="3" VerticalAlignment="Stretch">
+                <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="25"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Content="Performance description details:"/>
-                    <TextBox Grid.Row="1" TextWrapping="Wrap" MinHeight="70" AcceptsReturn="True" Text="{Binding SelectedFDLClone.PerformanceDescriptionDetails}" MaxLength="{Binding PerfDescDetMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Grid.Row="0" Text="Performance description:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDLClone.PerformanceDescription}" MaxLength="{Binding PerfDescMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <TextBlock Text="Assistant final test result:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <ComboBox ItemsSource="{Binding FDLResults}" SelectedItem="{Binding SelectedFDLClone.FDLResult}" SelectedValue="{Binding SelectedFDLClone.Result}" IsEnabled="{Binding IsInputEnabled}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="100" Margin="2"/>
+                    </StackPanel>
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDLClone.ResultNotes}" MaxLength="{Binding FinalTestResultMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDLClone.Notes}" MaxLength="{Binding OtherNotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+                <Grid Grid.Row="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Performance description details:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDLClone.PerformanceDescriptionDetails}" MaxLength="{Binding PerfDescDetMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </Grid>
-            <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <StackPanel Grid.Row="4" Orientation="Horizontal">
                 <Button Margin="10" Content="Clear" Command="{Binding ClearFDLCommand}" />
                 <Button Margin="10" Content="Save" Command="{Binding SaveFDLCommand}" CommandParameter="{Binding SelectedFDLClone}" />
             </StackPanel>

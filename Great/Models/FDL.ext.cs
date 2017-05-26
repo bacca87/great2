@@ -23,7 +23,8 @@ namespace Great.Models
         }
 
         #region Display Properties
-        public string FDL_Display { get { return Id + (IsExtra ? " (EXTRA)" : ""); } }
+        public string FDL_Display { get { return $"{Id}{(IsExtra ? " (EXTRA)" : "")}"; } }
+        public string FDL_Factory_Display { get { return $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}"; } }
         #endregion
 
         private void OnPropertyChanged(string propertyName)

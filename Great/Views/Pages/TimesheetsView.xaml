@@ -277,11 +277,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1" Margin="5" MinWidth="100" 
+                            <ComboBox Grid.Column="1" Margin="5" Width="200" 
                                   SelectedItem="{Binding SelectedTimesheetClone.FDL1}" 
                                   SelectedValue="{Binding SelectedTimesheetClone.FDL}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
-                                  DisplayMemberPath="FDL_Display" 
+                                  DisplayMemberPath="FDL_Factory_Display" 
                                   SelectedValuePath="Id" 
                                   SelectedIndex="0">
                                 <ComboBox.Resources>
