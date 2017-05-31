@@ -22,15 +22,25 @@ namespace Great.Views.Pages
             InitializeComponent();
             
             _viewModel = DataContext as TimesheetsViewModel;
-            _viewModel.OnSelectFirstDayInMonth += scrollToSelectedDay;
+            _viewModel.OnSelectFirstDayInMonth += scrollToFirstDayInMonth;
+            _viewModel.OnSelectToday += scrollToSelectedDay;
         }
 
-        private void scrollToSelectedDay(Day day)
+        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (scrollViewer == null) // run once
+            if (startup) // run once
+            {
                 scrollViewer = WPFTools.GetVisualChild<ScrollViewer>(workingDaysDataGrid);
 
-            // hack for scrolling to the selected item 
+                // hack for preselecting the workingDaysDataGrid at startup
+                _viewModel.SelectToday();
+                startup = false;
+            }
+        }
+
+        private void scrollToFirstDayInMonth(Day day)
+        {
+            // hack for scrolling to the first day in month displaying the group header 
             scrollViewer.ScrollToBottom();
             workingDaysDataGrid.UpdateLayout();
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
@@ -40,14 +50,12 @@ namespace Great.Views.Pages
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 1);
         }
 
-        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void scrollToSelectedDay(Day day)
         {
-            if (startup) // run once
-            {
-                // hack for preselecting the workingDaysDataGrid at startup
-                _viewModel.SelectToday();
-                startup = false;
-            }
+            // hack for scrolling to the selected day 
+            scrollViewer.ScrollToHome();
+            workingDaysDataGrid.UpdateLayout();
+            workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
         }
 
         #region Time MaskedTextBox Autocomplete Methods 

@@ -280,7 +280,9 @@ namespace Great.ViewModels
         /// Sets and gets the OnSelectFirstDayInMonth Action.
         /// </summary>
         public Action<Day> OnSelectFirstDayInMonth;
-        
+
+        public Action<Day> OnSelectToday;
+
         private DBEntities _db { get; set; }
         #endregion
 
@@ -330,7 +332,6 @@ namespace Great.ViewModels
             DeleteTimesheetCommand = new RelayCommand<Timesheet>(DeleteTimesheet, (Timesheet timesheet) => { return IsInputEnabled; });
 
             UpdateWorkingDays();
-            SelectToday();
         }
         
         private void UpdateWorkingDays()
@@ -385,8 +386,9 @@ namespace Great.ViewModels
         public void SelectToday()
         {
             CurrentYear = DateTime.Now.Year;
-            SelectFirstDayInMonth(DateTime.Now.Month);
+            //SelectFirstDayInMonth(DateTime.Now.Month);            
             SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
+            OnSelectToday?.Invoke(SelectedWorkingDay);
         }
 
         public void ClearTimesheet()
