@@ -77,8 +77,8 @@ namespace Great.Utils
                 {
                     GetDataTables();
 
-                    _sourceFdlPath = dtConfiguration.Rows[3].ItemArray[1].ToString();
-                    _sourceAccountPath = dtConfiguration.Rows[4].ItemArray[1].ToString();
+                    _sourceFdlPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 5).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();                    
+                    _sourceAccountPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 8).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
 
                     if (Directory.Exists(_sourceFdlPath) && Directory.Exists(_sourceAccountPath))
                     {
@@ -288,23 +288,39 @@ namespace Great.Utils
 
                         fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();
                         fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
-                        fdl.FileName = s;
+                        fdl.FileName = Path.GetFileName(s);
                         fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
                         fdl.Factory = 0;//??
                         fdl.PerformanceDescription = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].GetValueAsString();
                         fdl.PerformanceDescriptionDetails = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString();
-                        fdl.Result = Convert.ToInt64(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
+
+                        switch(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString())
+                        {
+                            case "POSITIVO":
+                                fdl.Result = 1;
+                                break;
+                            case "NEGATIVO":
+                                fdl.Result = 2;
+                                break;
+                            case "CON RISERVA":
+                                fdl.Result = 3;
+                                break;
+                            default:
+                                fdl.Result = 0;
+                                break;
+                        }
+
                         fdl.ResultNotes = fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString();
                         fdl.Notes = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString();
                         fdl.WeekNr = Convert.ToInt64(s.Substring(s.Length - 14).Substring(0, 2));
                         fdl.Status = 2;
                         fdl.LastError = "";
-                        fdl.ReturnCar = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.ReturnCar].GetValue());
-                        fdl.ReturnTaxi = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue());
-                        fdl.ReturnAircraft = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue());
-                        fdl.OutwardAircraft = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue());
-                        fdl.OutwardCar = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue());
-                        fdl.OutwardTaxi = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue());
+                        fdl.ReturnCar = fields[ApplicationSettings.FDL.FieldNames.ReturnCar].GetValue() != null;
+                        fdl.ReturnTaxi = fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue() != null;
+                        fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
+                        fdl.OutwardAircraft = fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue() != null;
+                        fdl.OutwardCar = fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue() != null;
+                        fdl.OutwardTaxi = fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue() != null;
 
                         pdfDoc.Close();
                         aEntities.FDLs.Add(fdl);
@@ -313,6 +329,7 @@ namespace Great.Utils
                     }
                     catch (Exception ex)
                     {
+                        Debugger.Break();
                         //If here, a problem with fdl file occured (check filename, and that FDL is not a virtual printed PDF)
 
                     }
@@ -367,13 +384,13 @@ namespace Great.Utils
 
         private string GetGreatDatabaseFile(string path)
         {
-
             var childUri = new DirectoryInfo(path).Parent;
-
-            if (Environment.OSVersion.Version.Major < 6)
-                return (Path.Combine(path, "Archivio.mdb"));
+            string virtualStorePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"VirtualStore\", childUri.Parent.Name), Path.Combine(childUri.Name, @"DB\Archivio.mdb"));
+            
+            if (File.Exists(virtualStorePath))
+                return virtualStorePath;
             else
-                return Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"VirtualStore\", childUri.Parent.Name), Path.Combine(childUri.Name, @"DB\Archivio.mdb"));
+                return (Path.Combine(path, "Archivio.mdb"));
         }
 
         private string[] GetFileList(string sDir)
