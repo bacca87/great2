@@ -49,7 +49,7 @@ namespace Great.Utils
         private OleDbDataAdapter adapter;
         private DBEntities aEntities = new DBEntities();
         private Thread thrd;
-        
+
         //Data from access database
         private DataTable dtHours = new DataTable();
         private DataTable dtPlants = new DataTable();
@@ -66,27 +66,35 @@ namespace Great.Utils
         public void StartMigration(string greatPath)
         {
             Completed = false;
-            _sourceDatabase = GetGreatDatabaseFile(File.ReadAllLines(Path.Combine(greatPath, sGreatIniFilePath))
-                                                                                                                .Where(x => x.Contains("Dir Backup"))
-                                                                                                                .FirstOrDefault()
-                                                                                                                .Split('=')[1]);
-
-            if (_sourceDatabase != null)
+            if (Directory.Exists(greatPath))
             {
-                GetDataTables();
+                _sourceDatabase = GetGreatDatabaseFile(File.ReadAllLines(Path.Combine(greatPath, sGreatIniFilePath))
+                                                                                                                    .Where(x => x.Contains("Dir Backup"))
+                                                                                                                    .FirstOrDefault()
+                                                                                                                    .Split('=')[1]);
 
-                _sourceFdlPath = dtConfiguration.Rows[3].ItemArray[1].ToString();
-                _sourceAccountPath = dtConfiguration.Rows[4].ItemArray[1].ToString();
+                if (_sourceDatabase != null)
+                {
+                    GetDataTables();
 
-                thrd = new Thread(new ThreadStart(MigrationThread));
-                thrd.Start();
+                    _sourceFdlPath = dtConfiguration.Rows[3].ItemArray[1].ToString();
+                    _sourceAccountPath = dtConfiguration.Rows[4].ItemArray[1].ToString();
+
+                    if (Directory.Exists(_sourceFdlPath) && Directory.Exists(_sourceAccountPath))
+                    {
+                        thrd = new Thread(new ThreadStart(MigrationThread));
+                        thrd.Start();
+                    }
+                    else OnCompleted(new EventImportArgs("old pdf path not found"));
+                }
+                else OnCompleted(new EventImportArgs("Database not found!"));
             }
-            else OnCompleted(new EventImportArgs("Database not found!"));
+            else OnCompleted(new EventImportArgs("Great Path not existing"));
         }
 
         private void MigrationThread()
         {
-            CleanDBTables();
+            // CleanDBTables();
             OnCompleted(new EventImportArgs("Importing PDF files to DB"));
             CompileFdlTable();
             OnCompleted(new EventImportArgs("Importing Hours"));
@@ -166,11 +174,7 @@ namespace Great.Utils
 
                     var duplicatedEntities = aEntities.Timesheets.Where(x => x.Timestamp == t.Timestamp);
 
-                    if (duplicatedEntities.Count() > 0)
-                    {
-
-                    }
-                    else
+                    if (duplicatedEntities.Count() == 0)
                     {
                         //Add office hourrs
                         if (
@@ -289,23 +293,23 @@ namespace Great.Utils
                         fdl.Factory = 0;//??
                         fdl.PerformanceDescription = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].GetValueAsString();
                         fdl.PerformanceDescriptionDetails = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString();
-                        fdl.Result = 1;
+                        fdl.Result = Convert.ToInt64(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
                         fdl.ResultNotes = fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString();
                         fdl.Notes = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString();
                         fdl.WeekNr = Convert.ToInt64(s.Substring(s.Length - 14).Substring(0, 2));
                         fdl.Status = 2;
                         fdl.LastError = "";
-                        fdl.ReturnCar = false;
-                        fdl.ReturnTaxi = false;
-                        fdl.ReturnAircraft = false;
-                        fdl.OutwardAircraft = false;
-                        fdl.OutwardCar = false;
-                        fdl.OutwardTaxi = false;
+                        fdl.ReturnCar = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.ReturnCar].GetValue());
+                        fdl.ReturnTaxi = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue());
+                        fdl.ReturnAircraft = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue());
+                        fdl.OutwardAircraft = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue());
+                        fdl.OutwardCar = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue());
+                        fdl.OutwardTaxi = Convert.ToBoolean(fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue());
 
+                        pdfDoc.Close();
                         aEntities.FDLs.Add(fdl);
-                        CompileFDL(fdl, s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name));
-                        
 
+                        File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
                     }
                     catch (Exception ex)
                     {
@@ -330,7 +334,7 @@ namespace Great.Utils
 
             return result;
         }
-        
+
         #region Auxiliar methods
         private void CleanDBTables()
         {
@@ -363,22 +367,13 @@ namespace Great.Utils
 
         private string GetGreatDatabaseFile(string path)
         {
-            foreach (string s in sPathToCheck)
-            {
-                var parentUri = new Uri(s);
-                var childUri = new DirectoryInfo(path).Parent;
-                while (childUri != null)
-                {
-                    if (new Uri(childUri.FullName) == parentUri & Environment.OSVersion.Version.Major >= 6)
-                        return Path.Combine(path.Replace(childUri.FullName, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"VirtualStore\", childUri.Name)), "Archivio.mdb");
 
-                    childUri = childUri.Parent;
-                }
-                return Path.Combine(path, "Archivio.mdb");
+            var childUri = new DirectoryInfo(path).Parent;
 
-            }
-            return null;
-
+            if (Environment.OSVersion.Version.Major < 6)
+                return (Path.Combine(path, "Archivio.mdb"));
+            else
+                return Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"VirtualStore\", childUri.Parent.Name), Path.Combine(childUri.Name, @"DB\Archivio.mdb"));
         }
 
         private string[] GetFileList(string sDir)
@@ -403,171 +398,6 @@ namespace Great.Utils
         public void Close()
         {
             connection.Dispose();
-        }
-
-        private void CompileFDL(FDL fdl, string source, string destination)
-        {
-            PdfDocument pdfDoc = null;
-
-            try
-            {
-                pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(destination));
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-                IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                Timesheet timesheet = null;
-
-                string monday = fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString();
-                if (monday != string.Empty)
-                {
-                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(monday));
-
-                    if (timesheet != null)
-                    {
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_WorkEndTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Mon_TravelEndTimePM].SetValue(string.Empty);
-                    }
-                }
-
-                string tuesday = fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString();
-                if (tuesday != string.Empty)
-                {
-                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(tuesday));
-
-                    if (timesheet != null)
-                    {
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_WorkEndTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Tue_TravelEndTimePM].SetValue(string.Empty);
-                    }
-                }
-
-                string wednesday = fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString();
-                if (wednesday != string.Empty)
-                {
-                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(wednesday));
-
-                    if (timesheet != null)
-                    {
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_WorkEndTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Wed_TravelEndTimePM].SetValue(string.Empty);
-                    }
-                }
-
-                string thursday = fields[ApplicationSettings.FDL.FieldNames.Thu_Date].GetValueAsString();
-                if (thursday != string.Empty)
-                {
-                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(thursday));
-
-                    if (timesheet != null)
-                    {
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_WorkEndTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Thu_TravelEndTimePM].SetValue(string.Empty);
-                    }
-                }
-
-                string friday = fields[ApplicationSettings.FDL.FieldNames.Fri_Date].GetValueAsString();
-                if (friday != string.Empty)
-                {
-                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(friday));
-
-                    if (timesheet != null)
-                    {
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_WorkEndTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Fri_TravelEndTimePM].SetValue(string.Empty);
-                    }
-                }
-
-                string saturday = fields[ApplicationSettings.FDL.FieldNames.Sat_Date].GetValueAsString();
-                if (saturday != string.Empty)
-                {
-                    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(saturday));
-
-                    if (timesheet != null)
-                    {
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkStartTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelEndTimeAM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkStartTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_WorkEndTimePM].SetValue(string.Empty);
-                        fields[ApplicationSettings.FDL.FieldNames.Sat_TravelEndTimePM].SetValue(string.Empty);
-                    }
-
-                    string sunday = fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString();
-                    if (sunday != string.Empty)
-                    {
-                        timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date == DateTime.Parse(sunday));
-
-                        if (timesheet != null)
-                        {
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_TravelStartTimeAM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_WorkStartTimeAM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_WorkEndTimeAM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_TravelEndTimeAM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_TravelStartTimePM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_WorkStartTimePM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_WorkEndTimePM].SetValue(string.Empty);
-                            fields[ApplicationSettings.FDL.FieldNames.Sun_TravelEndTimePM].SetValue(string.Empty);
-                        }
-                    }
-
-                    //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
-                    //fields[ApplicationSettings.FDL.FieldNames.Cars1]
-                    //fields[ApplicationSettings.FDL.FieldNames.Cars2]
-
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardCar].SetValue("0");
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].SetValue("0");
-                    fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].SetValue("0");
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnCar].SetValue("0");
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].SetValue("0");
-                    fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].SetValue("0");
-
-                    fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].SetValue(string.Empty);
-                    fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].SetValue(string.Empty);
-                    fields[ApplicationSettings.FDL.FieldNames.Result].SetValue(string.Empty);
-                    fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].SetValue(string.Empty);
-                    fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].SetValue(string.Empty);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debugger.Break();
-            }
-            finally
-            {
-                pdfDoc?.Close();
-            }
         }
         #endregion
 
