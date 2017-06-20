@@ -26,6 +26,8 @@ namespace Great.Models
         {
             exchangeProvider = exProvider;
             exchangeProvider.OnNewMessage += ExchangeProvider_OnNewMessage;
+
+            CreateNewFDLFromFile(@"c:\\test.pdf");
         }
 
         private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
@@ -48,7 +50,25 @@ namespace Great.Models
                 fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
-                fdl.Result = 0; 
+                fdl.EResult = GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
+                fdl.OutwardCar = fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue() != null;
+                fdl.OutwardTaxi = fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue() != null;
+                fdl.OutwardAircraft = fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue() != null;
+                fdl.ReturnCar = fields[ApplicationSettings.FDL.FieldNames.ReturnCar].GetValue() != null;
+                fdl.ReturnTaxi = fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue() != null;
+                fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
+
+                string value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].GetValueAsString();
+                fdl.PerformanceDescription = value != string.Empty ? value : null;
+
+                value = fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].GetValueAsString();
+                fdl.ResultNotes = value != string.Empty ? value : null;
+
+                value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString();
+                fdl.Notes = value != string.Empty ? value : null;
+
+                value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString();
+                fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
 
                 string[] days = new string[]
                 {
@@ -72,7 +92,7 @@ namespace Great.Models
 
                 if (fdl.WeekNr == 0)
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
-
+                
                 using (DBEntities db = new DBEntities())
                 {
                     if (!db.FDLs.Any(f => f.Id == fdl.Id))
@@ -83,7 +103,7 @@ namespace Great.Models
 
                         if (address != string.Empty && customer != string.Empty)
                         {
-                            //TODO: migliorare riconoscimento stabilimenti e inserire flag per attivazione disattivazione inserimento automatico stabilimenti
+                            //TODO: migliorare riconoscimento stabilimenti 
                             Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
                             if (factory == null && UserSettings.Advanced.AutoAddFactories)
@@ -596,8 +616,23 @@ namespace Great.Models
 
             return FDL;
         }
-    }
 
+        private EFDLResult GetFDLResultFromString(string result)
+        {
+            switch (result)
+            {
+                case "1":
+                    return EFDLResult.Positive;
+                case "2":
+                    return EFDLResult.Negative;
+                case "3":
+                    return EFDLResult.WithReserve;
+                default:
+                    return EFDLResult.None;
+            }
+        }
+    }
+    
     public enum EAttachmentType
     {
         Unknown,
@@ -632,5 +667,13 @@ namespace Great.Models
         Accepted = 2,
         Rejected = 3,
         Cancelled = 4
+    }
+
+    public enum EFDLResult
+    {
+        None = 0,
+        Positive = 1,
+        Negative = 2,
+        WithReserve = 3
     }
 }
