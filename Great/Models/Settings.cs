@@ -2,6 +2,7 @@
 using Great.Utils;
 using Great.Utils.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
@@ -207,7 +208,7 @@ namespace Great.Models
                 public const string Sun_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAINILP[0]";
                 public const string Sun_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAENDLP[0]";
                 public const string Sun_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAENDAP[0]";
-
+                
                 public const string Cars1 = "data[0].#subform[0].Tabella1[0].Riga7[3].Campoditesto16[0]";
                 public const string Cars2 = "data[0].#subform[0].Tabella1[0].Riga7[4].Campoditesto17[0]";
 
@@ -223,6 +224,118 @@ namespace Great.Models
                 public const string AssistantFinalTestResult = "data[0].#subform[0].Tabella4[2].Riga1[0].#field[0]";
                 public const string Result = "data[0].#subform[0].Elencoadiscesa1[0]";
                 public const string SoftwareVersionsOtherNotes = "data[0].#subform[0].Tabella16[0].Riga2[0].Cella1[0]";
+
+                // Helpers
+                #region TimesMatrix
+                public static readonly Dictionary<DayOfWeek, Dictionary<string, string>> TimesMatrix = new Dictionary<DayOfWeek, Dictionary<string, string>>()
+                {
+                    {
+                        DayOfWeek.Monday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Mon_Date },
+                            { "TravelStartTimeAM", Mon_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Mon_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Mon_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Mon_TravelEndTimeAM },
+                            { "TravelStartTimePM", Mon_TravelStartTimePM },
+                            { "WorkStartTimePM",   Mon_WorkStartTimePM },
+                            { "WorkEndTimePM",     Mon_WorkEndTimePM },
+                            { "TravelEndTimePM",   Mon_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Tuesday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Tue_Date },
+                            { "TravelStartTimeAM", Tue_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Tue_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Tue_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Tue_TravelEndTimeAM },
+                            { "TravelStartTimePM", Tue_TravelStartTimePM },
+                            { "WorkStartTimePM",   Tue_WorkStartTimePM },
+                            { "WorkEndTimePM",     Tue_WorkEndTimePM },
+                            { "TravelEndTimePM",   Tue_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Wednesday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Wed_Date },
+                            { "TravelStartTimeAM", Wed_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Wed_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Wed_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Wed_TravelEndTimeAM },
+                            { "TravelStartTimePM", Wed_TravelStartTimePM },
+                            { "WorkStartTimePM",   Wed_WorkStartTimePM },
+                            { "WorkEndTimePM",     Wed_WorkEndTimePM },
+                            { "TravelEndTimePM",   Wed_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Thursday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Thu_Date },
+                            { "TravelStartTimeAM", Thu_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Thu_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Thu_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Thu_TravelEndTimeAM },
+                            { "TravelStartTimePM", Thu_TravelStartTimePM },
+                            { "WorkStartTimePM",   Thu_WorkStartTimePM },
+                            { "WorkEndTimePM",     Thu_WorkEndTimePM },
+                            { "TravelEndTimePM",   Thu_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Friday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Fri_Date },
+                            { "TravelStartTimeAM", Fri_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Fri_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Fri_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Fri_TravelEndTimeAM },
+                            { "TravelStartTimePM", Fri_TravelStartTimePM },
+                            { "WorkStartTimePM",   Fri_WorkStartTimePM },
+                            { "WorkEndTimePM",     Fri_WorkEndTimePM },
+                            { "TravelEndTimePM",   Fri_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Saturday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Sat_Date },
+                            { "TravelStartTimeAM", Sat_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Sat_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Sat_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Sat_TravelEndTimeAM },
+                            { "TravelStartTimePM", Sat_TravelStartTimePM },
+                            { "WorkStartTimePM",   Sat_WorkStartTimePM },
+                            { "WorkEndTimePM",     Sat_WorkEndTimePM },
+                            { "TravelEndTimePM",   Sat_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Sunday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Sun_Date },
+                            { "TravelStartTimeAM", Sun_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Sun_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Sun_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Sun_TravelEndTimeAM },
+                            { "TravelStartTimePM", Sun_TravelStartTimePM },
+                            { "WorkStartTimePM",   Sun_WorkStartTimePM },
+                            { "WorkEndTimePM",     Sun_WorkEndTimePM },
+                            { "TravelEndTimePM",   Sun_TravelEndTimePM }
+                        }
+                    }
+                };
+                #endregion
             }
         }
         #endregion
