@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Great.Models
 {
@@ -9,7 +10,8 @@ namespace Great.Models
         
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
         public bool IsNew { get { return EStatus == EFDLStatus.New; } } // used for sorting purpose
-
+        public bool IsValid { get { return Timesheets.All(ts => ts.IsValid); } }
+        
         public EFDLStatus EStatus
         {
             get

@@ -11,6 +11,8 @@ using iText.Forms;
 using iText.Forms.Fields;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Practices.ServiceLocation;
+using System.Data.Entity.Migrations;
 
 namespace Great.Utils
 {
@@ -46,8 +48,7 @@ namespace Great.Utils
         //Access database fields
         private OleDbConnection connection;
         private OleDbCommand command;
-        private OleDbDataAdapter adapter;
-        private DBEntities aEntities = new DBEntities();
+        private OleDbDataAdapter adapter;        
         private Thread thrd;
 
         //Data from access database
@@ -59,8 +60,7 @@ namespace Great.Utils
         #endregion
 
         public GreatMigration()
-        {
-            aEntities.Database.Connection.ConnectionString = string.Format(sSqliteConnectionString, ApplicationSettings.Database.DBFileName);
+        {   
         }
 
         public void StartMigration(string greatPath)
@@ -148,119 +148,118 @@ namespace Great.Utils
         {
             bool result = false;
 
-            try
+            using (DBEntities db = new DBEntities())
             {
-                aEntities.Database.Connection.Open();
-
-                //Get enumerable rows fron datatable
-                IEnumerable<DataRow> collection = dtHours.Rows.Cast<DataRow>();
-
-                foreach (DataRow r in collection)
+                Timesheet t = null;
+                try
                 {
-                    Day d = new Day();
-                    d.Type = r.Field<byte>("dbf_Tipo_Giorno");
+                    //Get enumerable rows fron datatable
+                    IEnumerable<DataRow> collection = dtHours.Rows.Cast<DataRow>();
 
-                    if (d.Type != 3 && d.Type != 6)
-                        d.Type = 0;
-                    else if (d.Type == 3)
-                        d.Type = 1;
-                    else if (d.Type == 6)
-                        d.Type = 2;
-
-                    d.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
-
-                    Timesheet t = new Timesheet();
-                    t.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
-
-                    var duplicatedEntities = aEntities.Timesheets.Where(x => x.Timestamp == t.Timestamp);
-
-                    if (duplicatedEntities.Count() == 0)
+                    foreach (DataRow r in collection)
                     {
-                        //Add office hourrs
-                        if (
-                        r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
-                        r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
-                        r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
-                        r.Field<Int16>("Dbf_Uff_Fine_PM") != 0
-                      )
+                        Day d = new Day();
+                        d.Type = r.Field<byte>("dbf_Tipo_Giorno");
+
+                        if (d.Type != 3 && d.Type != 6)
+                            d.Type = 0;
+                        else if (d.Type == 3)
+                            d.Type = 1;
+                        else if (d.Type == 6)
+                            d.Type = 2;
+
+                        d.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
+
+                        db.Days.AddOrUpdate(d);
+                        
+                        t = new Timesheet();
+                        t.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
+
+                        var duplicatedEntities = db.Timesheets.Where(x => x.Timestamp == t.Timestamp);
+
+                        if (duplicatedEntities.Count() == 0)
                         {
-
-                            t.TravelStartTimeAM = null;
-                            t.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
-                            t.WorkEndTimeAM = r.Field<Int16>("Dbf_Uff_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_AM")).TotalSeconds : null;
-                            t.TravelEndTimeAM = null;
-                            t.TravelStartTimePM = null;
-                            t.WorkStartTimePM = r.Field<Int16>("Dbf_Uff_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_PM")).TotalSeconds : null;
-                            t.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
-                            t.TravelEndTimePM = null;
-
-                            aEntities.Timesheets.Add(t);
-                        }
-
-                        //Add FDL hours
-                        if (
-                            r.Field<Int16>("Dbf_Partenza_AM") != 0 |
-                            r.Field<Int16>("Dbf_Trasf_Inizio_AM") != 0 |
-                            r.Field<Int16>("Dbf_Trasf_Fine_AM") != 0 |
-                            r.Field<Int16>("Dbf_Arrivo_AM") != 0 |
-                            r.Field<Int16>("Dbf_Partenza_PM") != 0 |
-                            r.Field<Int16>("Dbf_Trasf_Inizio_PM") != 0 |
-                            r.Field<Int16>("Dbf_Trasf_Fine_PM") != 0
+                            //Add office hourrs
+                            if (
+                            r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
+                            r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
+                            r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
+                            r.Field<Int16>("Dbf_Uff_Fine_PM") != 0
                           )
-                        {
-                            //Compile FDL details
-                            t.TravelStartTimeAM = r.Field<Int16>("Dbf_Partenza_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_AM")).TotalSeconds : null;
-                            t.WorkStartTimeAM = r.Field<Int16>("Dbf_Trasf_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Inizio_AM")).TotalSeconds : null;
-                            t.WorkEndTimeAM = r.Field<Int16>("Dbf_Trasf_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Fine_AM")).TotalSeconds : null;
-                            t.TravelEndTimeAM = r.Field<Int16>("Dbf_Arrivo_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Arrivo_AM")).TotalSeconds : null;
-                            t.TravelStartTimePM = r.Field<Int16>("Dbf_Partenza_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_PM")).TotalSeconds : null;
-                            t.WorkStartTimePM = r.Field<Int16>("Dbf_Trasf_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Inizio_PM")).TotalSeconds : null;
-                            t.WorkEndTimePM = r.Field<Int16>("Dbf_Trasf_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Fine_PM")).TotalSeconds : null;
-                            t.TravelEndTimePM = r.Field<Int16>("Dbf_Arrivo_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Arrivo_PM")).TotalSeconds : null;
-
-                            //Add details for first FDL
-                            if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_Foglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_Foglio"))))
                             {
-                                t.FDL = r.Field<string>("Dbf_Foglio");
-                                string[] parts = t.FDL.Split('/');
 
-                                for (int i = 0; i < parts.Length; i++)
-                                    parts[i] = parts[i].Trim();
+                                t.TravelStartTimeAM = null;
+                                t.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
+                                t.WorkEndTimeAM = r.Field<Int16>("Dbf_Uff_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_AM")).TotalSeconds : null;
+                                t.TravelEndTimeAM = null;
+                                t.TravelStartTimePM = null;
+                                t.WorkStartTimePM = r.Field<Int16>("Dbf_Uff_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_PM")).TotalSeconds : null;
+                                t.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
+                                t.TravelEndTimePM = null;
 
-                                t.FDL = $"{parts[1]}/{parts[0]}".Trim();
-
-
-                                aEntities.Timesheets.Add(t);
+                                db.Timesheets.Add(t);
                             }
 
-                            //Add details for second FDL
-                            if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_SecondoFoglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_SecondoFoglio"))))
+                            //Add FDL hours
+                            if (
+                                r.Field<Int16>("Dbf_Partenza_AM") != 0 |
+                                r.Field<Int16>("Dbf_Trasf_Inizio_AM") != 0 |
+                                r.Field<Int16>("Dbf_Trasf_Fine_AM") != 0 |
+                                r.Field<Int16>("Dbf_Arrivo_AM") != 0 |
+                                r.Field<Int16>("Dbf_Partenza_PM") != 0 |
+                                r.Field<Int16>("Dbf_Trasf_Inizio_PM") != 0 |
+                                r.Field<Int16>("Dbf_Trasf_Fine_PM") != 0
+                              )
                             {
-                                t.FDL = r.Field<string>("Dbf_Foglio");
-                                string[] parts = t.FDL.Split('/');
+                                //Compile FDL details
+                                t.TravelStartTimeAM = r.Field<Int16>("Dbf_Partenza_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_AM")).TotalSeconds : null;
+                                t.WorkStartTimeAM = r.Field<Int16>("Dbf_Trasf_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Inizio_AM")).TotalSeconds : null;
+                                t.WorkEndTimeAM = r.Field<Int16>("Dbf_Trasf_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Fine_AM")).TotalSeconds : null;
+                                t.TravelEndTimeAM = r.Field<Int16>("Dbf_Arrivo_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Arrivo_AM")).TotalSeconds : null;
+                                t.TravelStartTimePM = r.Field<Int16>("Dbf_Partenza_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_PM")).TotalSeconds : null;
+                                t.WorkStartTimePM = r.Field<Int16>("Dbf_Trasf_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Inizio_PM")).TotalSeconds : null;
+                                t.WorkEndTimePM = r.Field<Int16>("Dbf_Trasf_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Fine_PM")).TotalSeconds : null;
+                                t.TravelEndTimePM = r.Field<Int16>("Dbf_Arrivo_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Arrivo_PM")).TotalSeconds : null;
 
-                                for (int i = 0; i < parts.Length; i++)
-                                    parts[i] = parts[i].Trim();
+                                //Add details for first FDL
+                                if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_Foglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_Foglio"))))
+                                {
+                                    t.FDL = r.Field<string>("Dbf_Foglio");
+                                    string[] parts = t.FDL.Split('/');
 
-                                t.FDL = $"{parts[1]}/{parts[0]}";
+                                    for (int i = 0; i < parts.Length; i++)
+                                        parts[i] = parts[i].Trim();
 
-                                aEntities.Timesheets.Add(t);
+                                    t.FDL = $"{parts[1]}/{parts[0]}".Trim();
 
+
+                                    db.Timesheets.Add(t);
+                                }
+
+                                //Add details for second FDL
+                                if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_SecondoFoglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_SecondoFoglio"))))
+                                {
+                                    t.FDL = r.Field<string>("Dbf_Foglio");
+                                    string[] parts = t.FDL.Split('/');
+
+                                    for (int i = 0; i < parts.Length; i++)
+                                        parts[i] = parts[i].Trim();
+
+                                    t.FDL = $"{parts[1]}/{parts[0]}";
+
+                                    db.Timesheets.Add(t);
+                                }
                             }
-                        }
+                        }                        
                     }
 
-                    if (aEntities.Days.Where(x => x.Timestamp == d.Timestamp).Count() == 0) aEntities.Days.Add(d);
+                    db.SaveChanges();
+                    db.Database.Connection.Close();
                 }
-
-                aEntities.SaveChanges();
-                aEntities.Database.Connection.Close();
-            }
-
-            catch (Exception ex)
-            {
-                aEntities.Database.Connection.Close();
-                result = false;
+                catch (Exception ex)
+                {   
+                    result = false;
+                }
             }
 
             return result;
@@ -269,83 +268,29 @@ namespace Great.Utils
         private bool CompileFdlTable()
         {
             bool result = false;
-
-            foreach (var entity in aEntities.FDLs)
-                aEntities.FDLs.Remove(entity);
+            
             try
             {
-                aEntities.Database.Connection.Open();
-
                 foreach (string s in GetFileList(_sourceFdlPath))
                 {
-                    PdfDocument pdfDoc;
-                    FDL fdl = new FDL();
                     try
                     {
-                        pdfDoc = new PdfDocument(new PdfReader(s));
-                        PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-                        IDictionary<string, PdfFormField> fields = form.GetFormFields();
+                        FDLManager manager = ServiceLocator.Current.GetInstance<FDLManager>();
 
-                        fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();
-                        fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
-                        fdl.FileName = Path.GetFileName(s);
-                        fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
-                        fdl.Factory = 0;//??
-                        fdl.PerformanceDescription = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].GetValueAsString();
-                        fdl.PerformanceDescriptionDetails = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString();
-
-                        switch(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString())
-                        {
-                            case "POSITIVO":
-                                fdl.Result = 1;
-                                break;
-                            case "NEGATIVO":
-                                fdl.Result = 2;
-                                break;
-                            case "CON RISERVA":
-                                fdl.Result = 3;
-                                break;
-                            default:
-                                fdl.Result = 0;
-                                break;
-                        }
-
-                        fdl.ResultNotes = fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString();
-                        fdl.Notes = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString();
-                        fdl.WeekNr = Convert.ToInt64(s.Substring(s.Length - 14).Substring(0, 2));
-                        fdl.Status = 2;
-                        fdl.LastError = "";
-                        fdl.ReturnCar = fields[ApplicationSettings.FDL.FieldNames.ReturnCar].GetValue() != null;
-                        fdl.ReturnTaxi = fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue() != null;
-                        fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
-                        fdl.OutwardAircraft = fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue() != null;
-                        fdl.OutwardCar = fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue() != null;
-                        fdl.OutwardTaxi = fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue() != null;
-
-                        pdfDoc.Close();
-                        aEntities.FDLs.Add(fdl);
-
-                        File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
+                        if(manager.ImportFDLFromFile(s, false, true, true) != null)
+                            File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
                     }
                     catch (Exception ex)
                     {
                         Debugger.Break();
                         //If here, a problem with fdl file occured (check filename, and that FDL is not a virtual printed PDF)
-
                     }
-
                 }
 
-                aEntities.SaveChanges();
-
                 result = true;
-
-                aEntities.Database.Connection.Close();
-
             }
             catch (Exception ex)
             {
-                aEntities.Database.Connection.Close();
                 result = false;
             }
 
@@ -355,16 +300,17 @@ namespace Great.Utils
         #region Auxiliar methods
         private void CleanDBTables()
         {
-            foreach (Timesheet t in aEntities.Timesheets)
-                aEntities.Timesheets.Remove(t);
-            foreach (FDL f in aEntities.FDLs)
-                aEntities.FDLs.Remove(f);
-            foreach (Day d in aEntities.Days)
-                aEntities.Days.Remove(d);
+            using (DBEntities db = new DBEntities())
+            {
+                db.Timesheets.RemoveRange(db.Timesheets);
+                db.FDLs.RemoveRange(db.FDLs);
+                db.Days.RemoveRange(db.Days);
+
+                db.SaveChanges();
+            }
+
             foreach (string s in GetFileList(_destinationFdlPath))
                 File.Delete(s);
-
-            aEntities.SaveChanges();
         }
 
         private void InitializeDataAccess()
@@ -374,7 +320,7 @@ namespace Great.Utils
                 connection = new OleDbConnection(string.Format(sAccessConnectionstring, _sourceDatabase));
                 connection.Open();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;

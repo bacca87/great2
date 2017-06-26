@@ -668,7 +668,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Timesheet_0_0">
-          <End Type="DBModel.FDL" Role="FDL" Multiplicity="0..1" />
+          <End Type="DBModel.FDL" Role="FDL" Multiplicity="0..1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="DBModel.Timesheet" Role="Timesheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FDL">

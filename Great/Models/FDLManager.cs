@@ -8,6 +8,7 @@ using Microsoft.Exchange.WebServices.Data;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Great.Models
             exchangeProvider = exProvider;
             exchangeProvider.OnNewMessage += ExchangeProvider_OnNewMessage;
 
-            CreateNewFDLFromFile(@"c:\\test.pdf");
+            //ImportFDLFromFile(@"c:\\test.pdf", false, false, true);
         }
 
         private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
@@ -35,7 +36,7 @@ namespace Great.Models
             ProcessMessage(e.Message);
         }
 
-        private FDL CreateNewFDLFromFile(string filePath)
+        public FDL ImportFDLFromFile(string filePath, bool NotifyAsNew, bool ExcludeTimesheets, bool OverrideIfExist = false)
         {   
             FDL fdl = new FDL();
             PdfDocument pdfDoc = null;
@@ -63,16 +64,16 @@ namespace Great.Models
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
                 //fields[ApplicationSettings.FDL.FieldNames.Cars2]
 
-                string value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].GetValueAsString();
+                string value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescription].GetValueAsString().Trim();
                 fdl.PerformanceDescription = value != string.Empty ? value : null;
 
-                value = fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].GetValueAsString();
+                value = fields[ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult].GetValueAsString().Trim();
                 fdl.ResultNotes = value != string.Empty ? value : null;
 
-                value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString();
+                value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString().Trim();
                 fdl.Notes = value != string.Empty ? value : null;
 
-                value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString();
+                value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
                 fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
 
                 // Extract week number
@@ -99,88 +100,122 @@ namespace Great.Models
                 if (fdl.WeekNr == 0)
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
                 
-                //// Timesheets
-                //IList<Day> days = new List<Day>();
-                //IList<Timesheet> timesheets = new List<Timesheet>();
-                
-                //foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
-                //{
-                //    if (fields[entry.Value["Date"]].GetValue() != null)
-                //    {
-                //        Day day = new Day();
-                //        day.Date = DateTime.Parse(fields[entry.Value["Date"]].GetValueAsString());
-                //        day.EType = EDayType.WorkDay;
-
-                //        Timesheet timesheet = new Timesheet();
-                //        timesheet.Date = day.Date;
-
-                //        TimeSpan time;
-
-                //        if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString(), out time))
-                //            timesheet.TravelStartTimeAM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString(), out time))
-                //            timesheet.WorkStartTimeAM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString(), out time))
-                //            timesheet.WorkEndTimeAM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString(), out time))
-                //            timesheet.TravelEndTimeAM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString(), out time))
-                //            timesheet.TravelStartTimePM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString(), out time))
-                //            timesheet.WorkStartTimePM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString(), out time))
-                //            timesheet.WorkEndTimePM_t = time;
-                //        if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString(), out time))
-                //            timesheet.TravelEndTimePM_t = time;
-
-                //        if (timesheet.IsValid)
-                //        {
-                //            days.Add(day);
-                //            timesheets.Add(timesheet);
-                //        }
-                //    }
-                //}
-                
                 // Save
                 using (DBEntities db = new DBEntities())
                 {
-                    if (!db.FDLs.Any(f => f.Id == fdl.Id))
+                    using (var transaction = db.Database.BeginTransaction())
                     {
-                        // Automatic factories creation
-                        string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
-                        string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
-
-                        if (address != string.Empty && customer != string.Empty)
+                        try
                         {
-                            //TODO: migliorare riconoscimento stabilimenti 
-                            Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+                            FDL tmpFdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
+                            Factory factory = null;
+                            bool IsNewFactory = false;
 
-                            if (factory == null && UserSettings.Advanced.AutoAddFactories)
+                            if (tmpFdl != null && OverrideIfExist)
                             {
-                                factory = new Factory()
-                                {
-                                    Name = customer,
-                                    CompanyName = customer,
-                                    Address = address,
-                                    NotifyAsNew = true
-                                };
-
-                                db.Factories.Add(factory);
+                                db.FDLs.Remove(tmpFdl);
                                 db.SaveChanges();
-
-                                Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
+                                tmpFdl = null;
                             }
 
-                            if(UserSettings.Advanced.AutoAssignFactories)
-                                fdl.Factory = factory.Id;
+                            if (tmpFdl == null)
+                            {
+                                #region Automatic factories creation/assignment                                
+                                string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
+                                string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
+
+                                if (address != string.Empty && customer != string.Empty)
+                                {
+                                    //TODO: migliorare riconoscimento stabilimenti 
+                                    factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+
+                                    if (factory == null && UserSettings.Advanced.AutoAddFactories)
+                                    {
+                                        factory = new Factory()
+                                        {
+                                            Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength),
+                                            CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength),
+                                            Address = address.Left(ApplicationSettings.Factories.AddressMaxLength),
+                                            NotifyAsNew = true
+                                        };
+                                        
+                                        db.Factories.Add(factory);
+                                        db.SaveChanges();
+                                        IsNewFactory = true;
+                                    }
+
+                                    if (UserSettings.Advanced.AutoAssignFactories)
+                                        fdl.Factory = factory.Id;
+                                }
+                                #endregion
+                                
+                                #region Timesheets
+                                if(!ExcludeTimesheets)
+                                {
+                                    foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
+                                    {
+                                        string strDate = fields[entry.Value["Date"]].GetValueAsString();
+
+                                        if (strDate != string.Empty)
+                                        {
+                                            Day day = new Day();
+                                            day.Date = DateTime.Parse(strDate);
+                                            day.EType = EDayType.WorkDay;
+
+                                            Timesheet timesheet = new Timesheet();
+                                            timesheet.FDL = fdl.Id;
+                                            timesheet.Date = DateTime.Parse(strDate);
+
+                                            TimeSpan time;
+
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString(), out time))
+                                                timesheet.TravelStartTimeAM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString(), out time))
+                                                timesheet.WorkStartTimeAM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString(), out time))
+                                                timesheet.WorkEndTimeAM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString(), out time))
+                                                timesheet.TravelEndTimeAM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString(), out time))
+                                                timesheet.TravelStartTimePM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString(), out time))
+                                                timesheet.WorkStartTimePM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString(), out time))
+                                                timesheet.WorkEndTimePM_t = time;
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString(), out time))
+                                                timesheet.TravelEndTimePM_t = time;
+
+                                            if (timesheet.TimePeriods != null)
+                                            {
+                                                db.Days.AddOrUpdate(day);
+                                                db.Timesheets.Add(timesheet);
+                                            }
+                                        }
+                                    }
+                                }
+                                #endregion
+
+                                fdl.NotifyAsNew = NotifyAsNew;
+                                db.FDLs.Add(fdl);
+                                db.SaveChanges();
+
+                                // TODO: gestione segnalazione in caso di errori
+                                if (fdl.IsValid)
+                                {
+                                    transaction.Commit();
+
+                                    if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
+                                    Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
+                                }
+                                else
+                                    transaction.Rollback();
+                            }
                         }
-
-                        fdl.NotifyAsNew = true;
-
-                        db.FDLs.Add(fdl);
-                        db.SaveChanges();
-
-                        Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            fdl = null;
+                        }
                     }
                 }
             }
@@ -473,7 +508,7 @@ namespace Great.Models
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
 
-                                    CreateNewFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name);
+                                    ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true);
                                     break;
                                 case EAttachmentType.ExpenseAccount1:
                                 case EAttachmentType.ExpenseAccount2:

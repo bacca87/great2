@@ -205,10 +205,10 @@ namespace Great.Models
                     (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
                     return false;
 
-                if (TimePeriods == null)
+                if (TimePeriods == null && FDL == string.Empty)
                     return false;
                 
-                if (TimePeriods.HasOverlaps())
+                if (TimePeriods != null && TimePeriods.HasOverlaps())
                     return false;
 
                 return true;
@@ -230,7 +230,7 @@ namespace Great.Models
             }
 
             return false;
-        }
+        }        
         #endregion
         
         public Timesheet Clone()

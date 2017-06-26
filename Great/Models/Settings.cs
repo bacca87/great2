@@ -365,6 +365,15 @@ namespace Great.Models
             public const int MaxYear = 2100;
         }
         #endregion
+
+        #region Factories
+        public static class Factories
+        {
+            public const int FactoryNameMaxLength = 50;
+            public const int CompanyNameMaxLength = 100;
+            public const int AddressMaxLength = 255;
+        }
+        #endregion
     }
     #endregion
 

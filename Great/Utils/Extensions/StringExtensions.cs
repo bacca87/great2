@@ -6,6 +6,11 @@ namespace Great.Utils.Extensions
 {
     public static class StringExtensions
     {
+        public static string Left(this string input, int length)
+        {
+            return (input.Length < length) ? input : input.Substring(0, length);
+        }
+
         /// <summary>
         /// Encrypts a given password and returns the encrypted data
         /// as a base64 string.

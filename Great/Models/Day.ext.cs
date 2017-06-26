@@ -265,7 +265,7 @@ namespace Great.Models
                         factories += timesheet?.FDL1?.Factory1?.Name + "; ";
                 }
 
-                if (factories.Length > 1)
+                if (factories != string.Empty)
                     factories = factories.Remove(factories.Length - 2);
 
                 return factories;

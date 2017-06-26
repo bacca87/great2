@@ -217,15 +217,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\EmailMessageDTO.cs" />
-    <Compile Include="Models\ExpenseAccount.ext.cs" />
-    <Compile Include="Models\MSExchangeProvider.cs" />
-    <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
-    <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
-    <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
-    <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
-    <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
-    <Compile Include="Utils\Converters\CompareIntConverter.cs" />
     <Compile Include="Models\Car.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -238,19 +229,17 @@
     <Compile Include="Models\Day.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Day.ext.cs" />
     <Compile Include="Models\DayType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\FDL.ext.cs" />
-    <Compile Include="Models\FDLManager.cs" />
+    <Compile Include="Models\EmailMessageDTO.cs" />
     <Compile Include="Models\ExpenseAccount.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ExpenseAccount.ext.cs" />
     <Compile Include="Models\Factory.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Factory.ext.cs" />
     <Compile Include="Models\FDL.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -260,12 +249,23 @@
     <Compile Include="Models\FDLStatu.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MSExchangeProvider.cs" />
     <Compile Include="Models\Timesheet.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TransferType.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
+    <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
+    <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
+    <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
+    <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
+    <Compile Include="Utils\Converters\CompareIntConverter.cs" />
+    <Compile Include="Models\Day.ext.cs" />
+    <Compile Include="Models\FDL.ext.cs" />
+    <Compile Include="Models\FDLManager.cs" />
+    <Compile Include="Models\Factory.ext.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
