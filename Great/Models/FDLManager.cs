@@ -27,16 +27,47 @@ namespace Great.Models
         {
             exchangeProvider = exProvider;
             exchangeProvider.OnNewMessage += ExchangeProvider_OnNewMessage;
-
-            //ImportFDLFromFile(@"c:\\test.pdf", false, false, true);
         }
 
         private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
             ProcessMessage(e.Message);
+
+            ImportEAFromFile("c:\\notaspese.pdf", false, false);
         }
 
-        public FDL ImportFDLFromFile(string filePath, bool NotifyAsNew, bool ExcludeTimesheets, bool OverrideIfExist = false)
+        public ExpenseAccount ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
+        {
+            ExpenseAccount ea = new ExpenseAccount();
+            PdfDocument pdfDoc = null;
+
+            try
+            {
+                pdfDoc = new PdfDocument(new PdfReader(filePath));
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                IDictionary<string, PdfFormField> fields = form.GetFormFields();
+
+                //General Info
+
+                foreach(KeyValuePair<string, PdfFormField> field in fields)
+                {
+                    Console.Out.WriteLine(field.Key + "\t\t\t\t Value: " + field.Value.GetValueAsString());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ea = null;
+            }
+            finally
+            {
+                pdfDoc?.Close();
+            }
+
+            return ea;
+        }
+
+        public FDL ImportFDLFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {   
             FDL fdl = new FDL();
             PdfDocument pdfDoc = null;
@@ -120,33 +151,36 @@ namespace Great.Models
 
                             if (tmpFdl == null)
                             {
-                                #region Automatic factories creation/assignment                                
-                                string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
-                                string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
-
-                                if (address != string.Empty && customer != string.Empty)
+                                #region Automatic factories creation/assignment
+                                if(!ExcludeFactories)
                                 {
-                                    //TODO: migliorare riconoscimento stabilimenti 
-                                    factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+                                    string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
+                                    string address = fields[ApplicationSettings.FDL.FieldNames.Address].GetValueAsString();
 
-                                    if (factory == null && UserSettings.Advanced.AutoAddFactories)
+                                    if (address != string.Empty && customer != string.Empty)
                                     {
-                                        factory = new Factory()
-                                        {
-                                            Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength),
-                                            CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength),
-                                            Address = address.Left(ApplicationSettings.Factories.AddressMaxLength),
-                                            NotifyAsNew = true
-                                        };
-                                        
-                                        db.Factories.Add(factory);
-                                        db.SaveChanges();
-                                        IsNewFactory = true;
-                                    }
+                                        //TODO: migliorare riconoscimento stabilimenti 
+                                        factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
-                                    if (UserSettings.Advanced.AutoAssignFactories)
-                                        fdl.Factory = factory.Id;
-                                }
+                                        if (factory == null && UserSettings.Advanced.AutoAddFactories)
+                                        {
+                                            factory = new Factory()
+                                            {
+                                                Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength),
+                                                CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength),
+                                                Address = address.Left(ApplicationSettings.Factories.AddressMaxLength),
+                                                NotifyAsNew = true
+                                            };
+
+                                            db.Factories.Add(factory);
+                                            db.SaveChanges();
+                                            IsNewFactory = true;
+                                        }
+
+                                        if (UserSettings.Advanced.AutoAssignFactories)
+                                            fdl.Factory = factory.Id;
+                                    }
+                                }                                
                                 #endregion
                                 
                                 #region Timesheets

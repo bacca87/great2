@@ -340,6 +340,200 @@ namespace Great.Models
         }
         #endregion
 
+        #region Expense Account
+        public static class ExpenseAccount
+        {
+            public const int NotesMaxLength = 352;
+
+            public static class FieldNames
+            {
+                public const string Technician = "data[0].#subform[0].W_SNAME[0]";
+                public const string DateFrom = "data[0].#subform[0].DATA[0]";
+                public const string DateTo = "data[0].#subform[0].DATA[1]";
+                public const string Customer = "data[0].#subform[0].W_CLIENT[0]";
+                public const string Address = "data[0].#subform[0].W_ADRESS[0]";
+                public const string Currency = "data[0].#subform[0].Elencoadiscesa1[0]";
+                public const string CdC = "data[0].#subform[0].W_CdC[0]";
+                public const string FDLNumber = "data[0].#subform[0].Sottomodulo1[0].NUM_FOG[0]";
+                public const string PSPNR = "data[0].#subform[0].Sottomodulo1[0].PSPNR[0]";
+                public const string Order = "data[0].#subform[0].Sottomodulo1[0].COMMESSA[0]";
+                public const string InternalOrder = "data[0].#subform[0].Sottomodulo1[0].ORD_INTE[0]";
+                public const string PAG_CC1 = "data[0].#subform[0].Sottomodulo1[0].PAG_CC[0]";
+                public const string PAG_CC2 = "data[0].#subform[0].Sottomodulo1[0].PAG_CC[1]";
+                public const string SignatureDate = "data[0].#subform[0].data[0]";
+                public const string Notes = "data[0].#subform[0].Campoditesto1[0]";
+                
+                public const string Mon_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella4[0]";
+                public const string Tue_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella5[0]";
+                public const string Wed_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella6[0]";
+                public const string Thu_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella7[0]";
+                public const string Fri_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella8[0]";
+                public const string Sat_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella9[0]";
+                public const string Sun_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella10[0]";
+
+                public const string Total_Mon = "data[0].#subform[0].Tabella6[0].Riga8[1].totday1[0]";
+                public const string Total_Tue = "data[0].#subform[0].Tabella6[0].Riga8[1].totday2[0]";
+                public const string Total_Wed = "data[0].#subform[0].Tabella6[0].Riga8[1].totday3[0]";
+                public const string Total_Thu = "data[0].#subform[0].Tabella6[0].Riga8[1].totday4[0]";
+                public const string Total_Fri = "data[0].#subform[0].Tabella6[0].Riga8[1].totday5[0]";
+                public const string Total_Sat = "data[0].#subform[0].Tabella6[0].Riga8[1].totday6[0]";
+                public const string Total_Sun = "data[0].#subform[0].Tabella6[0].Riga8[1].totday7[0]";
+                public const string SubTotal = "data[0].#subform[0].Tabella6[0].Riga8[1].tottotale[0]";
+                public const string Total = "data[0].#subform[0].Tabella6[0].Riga8[2].Totalespese[0]";
+
+                public const string EX1_Type       = "data[0].#subform[0].Tabella6[0].Riga1[0].r1Spesa[0]";
+                public const string EX1_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day1[0]";
+                public const string EX1_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day2[0]";
+                public const string EX1_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day3[0]";
+                public const string EX1_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day4[0]";
+                public const string EX1_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day5[0]";
+                public const string EX1_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day6[0]";
+                public const string EX1_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga1[0].r1day7[0]";
+                public const string EX1_Total      = "data[0].#subform[0].Tabella6[0].Riga1[0].r1totale[0]";
+
+                public const string EX2_Type       = "data[0].#subform[0].Tabella6[0].Riga2[0].r2spesa[0]";
+                public const string EX2_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day1[0]";
+                public const string EX2_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day2[0]";
+                public const string EX2_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day3[0]";
+                public const string EX2_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day4[0]";
+                public const string EX2_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day5[0]";
+                public const string EX2_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day6[0]";
+                public const string EX2_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga2[0].r2day7[0]";
+                public const string EX2_Total      = "data[0].#subform[0].Tabella6[0].Riga2[0].r2totale[0]";
+
+                public const string EX3_Type       = "data[0].#subform[0].Tabella6[0].Riga3[0].r3spesa[0]";
+                public const string EX3_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day1[0]";
+                public const string EX3_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day2[0]";
+                public const string EX3_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day3[0]";
+                public const string EX3_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day4[0]";
+                public const string EX3_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day5[0]";
+                public const string EX3_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day6[0]";
+                public const string EX3_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga3[0].r3day7[0]";
+                public const string EX3_Total      = "data[0].#subform[0].Tabella6[0].Riga3[0].r3totale[0]";
+
+                public const string EX4_Type       = "data[0].#subform[0].Tabella6[0].Riga4[0].r4spesa[0]";
+                public const string EX4_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day1[0]";
+                public const string EX4_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day2[0]";
+                public const string EX4_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day3[0]";
+                public const string EX4_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day4[0]";
+                public const string EX4_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day5[0]";
+                public const string EX4_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day6[0]";
+                public const string EX4_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga4[0].r4day7[0]";
+                public const string EX4_Total      = "data[0].#subform[0].Tabella6[0].Riga4[0].r4totale[0]";
+
+                public const string EX5_Type       = "data[0].#subform[0].Tabella6[0].Riga5[0].r5spesa[0]";
+                public const string EX5_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day1[0]";
+                public const string EX5_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day2[0]";
+                public const string EX5_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day3[0]";
+                public const string EX5_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day4[0]";
+                public const string EX5_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day5[0]";
+                public const string EX5_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day6[0]";
+                public const string EX5_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga5[0].r5day7[0]";
+                public const string EX5_Total      = "data[0].#subform[0].Tabella6[0].Riga5[0].r5totale[0]";
+
+                public const string EX6_Type       = "data[0].#subform[0].Tabella6[0].Riga6[0].r6spesa[0]";
+                public const string EX6_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day1[0]";
+                public const string EX6_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day2[0]";
+                public const string EX6_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day3[0]";
+                public const string EX6_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day4[0]";
+                public const string EX6_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day5[0]";
+                public const string EX6_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day6[0]";
+                public const string EX6_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga6[0].r6day7[0]";
+                public const string EX6_Total      = "data[0].#subform[0].Tabella6[0].Riga6[0].r6totale[0]";
+
+                public const string EX7_Type       = "data[0].#subform[0].Tabella6[0].Riga7[0].r7spesa[0]";
+                public const string EX7_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day1[0]";
+                public const string EX7_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day2[0]";
+                public const string EX7_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day3[0]";
+                public const string EX7_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day4[0]";
+                public const string EX7_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day5[0]";
+                public const string EX7_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day6[0]";
+                public const string EX7_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga7[0].r7day7[0]";
+                public const string EX7_Total      = "data[0].#subform[0].Tabella6[0].Riga7[0].r7totale[0]";
+
+                public const string EX8_Type       = "data[0].#subform[0].Tabella6[0].Riga8[0].r8spesa[0]";
+                public const string EX8_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day1[0]";
+                public const string EX8_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day2[0]";
+                public const string EX8_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day3[0]";
+                public const string EX8_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day4[0]";
+                public const string EX8_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day5[0]";
+                public const string EX8_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day6[0]";
+                public const string EX8_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga8[0].r8day7[0]";
+                public const string EX8_Total      = "data[0].#subform[0].Tabella6[0].Riga8[0].r8totale[0]";
+
+                public const string EX9_Type       = "data[0].#subform[0].Tabella6[0].Riga9[0].r9spesa[0]";
+                public const string EX9_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day1[0]";
+                public const string EX9_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day2[0]";
+                public const string EX9_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day3[0]";
+                public const string EX9_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day4[0]";
+                public const string EX9_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day5[0]";
+                public const string EX9_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day6[0]";
+                public const string EX9_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga9[0].r9day7[0]";
+                public const string EX9_Total      = "data[0].#subform[0].Tabella6[0].Riga9[0].r9totale[0]";
+
+                public const string EX10_Type       = "data[0].#subform[0].Tabella6[0].Riga0[0].r0spesa[0]";
+                public const string EX10_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day1[0]";
+                public const string EX10_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day2[0]";
+                public const string EX10_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day3[0]";
+                public const string EX10_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day4[0]";
+                public const string EX10_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day5[0]";
+                public const string EX10_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day6[0]";
+                public const string EX10_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga0[0].r0day7[0]";
+                public const string EX10_Total      = "data[0].#subform[0].Tabella6[0].Riga0[0].r0totale[0]";
+
+                public const string EX11_Type       = "data[0].#subform[0].Tabella6[0].Riga11[0].r11spesa[0]";
+                public const string EX11_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day1[0]";
+                public const string EX11_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day2[0]";
+                public const string EX11_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day3[0]";
+                public const string EX11_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day4[0]";
+                public const string EX11_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day5[0]";
+                public const string EX11_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day6[0]";
+                public const string EX11_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga11[0].r11day7[0]";
+                public const string EX11_Total      = "data[0].#subform[0].Tabella6[0].Riga11[0].r11totale[0]";
+
+                public const string EX12_Type       = "data[0].#subform[0].Tabella6[0].Riga12[0].r12spesa[0]";
+                public const string EX12_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day1[0]";
+                public const string EX12_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day2[0]";
+                public const string EX12_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day3[0]";
+                public const string EX12_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day4[0]";
+                public const string EX12_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day5[0]";
+                public const string EX12_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day6[0]";
+                public const string EX12_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga12[0].r12day7[0]";
+                public const string EX12_Total      = "data[0].#subform[0].Tabella6[0].Riga12[0].r12totale[0]";
+
+                public const string EX13_Type       = "data[0].#subform[0].Tabella6[0].Riga13[0].r13spesa[0]";
+                public const string EX13_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day1[0]";
+                public const string EX13_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day2[0]";
+                public const string EX13_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day3[0]";
+                public const string EX13_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day4[0]";
+                public const string EX13_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day5[0]";
+                public const string EX13_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day6[0]";
+                public const string EX13_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga13[0].r13day7[0]";
+                public const string EX13_Total      = "data[0].#subform[0].Tabella6[0].Riga13[0].r13totale[0]";
+
+                public const string EX14_Type       = "data[0].#subform[0].Tabella6[0].Riga14[0].r14spesa[0]";
+                public const string EX14_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day1[0]";
+                public const string EX14_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day2[0]";
+                public const string EX14_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day3[0]";
+                public const string EX14_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day4[0]";
+                public const string EX14_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day5[0]";
+                public const string EX14_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day6[0]";
+                public const string EX14_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga14[0].r14day7[0]";
+                public const string EX14_Total      = "data[0].#subform[0].Tabella6[0].Riga14[0].r14totale[0]";
+
+                public const string EX15_Type       = "data[0].#subform[0].Tabella6[0].Riga15[0].r15spesa[0]";
+                public const string EX15_Mon_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day1[0]";
+                public const string EX15_Tue_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day2[0]";
+                public const string EX15_Wed_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day3[0]";
+                public const string EX15_Thu_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day4[0]";
+                public const string EX15_Fri_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day5[0]";
+                public const string EX15_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day6[0]";
+                public const string EX15_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day7[0]";
+                public const string EX15_Total      = "data[0].#subform[0].Tabella6[0].Riga15[0].r15totale[0]";
+            }
+        }
+        #endregion
+
         #region General
         public static class General
         {
