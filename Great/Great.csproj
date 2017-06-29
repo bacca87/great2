@@ -310,6 +310,7 @@
     <Compile Include="Utils\Migration\GreatMigration.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
+    <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\GreatImportWizardViewModel.cs" />
     <Compile Include="ViewModels\ImportExportViewModel.cs" />

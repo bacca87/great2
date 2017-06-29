@@ -4,11 +4,167 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:conv="clr-namespace:Great.Utils.Converters"
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+      xmlns:m="clr-namespace:Great.Models" 
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
       Title="ExpenseAccount">
-
-    <Grid>
-        
+    <Page.Resources>
+        <CollectionViewSource x:Key="EACollectionView" Source="{Binding ExpenseAccounts}" IsLiveSortingRequested="True" >
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="IsNew" Direction="Descending" />
+                <scm:SortDescription PropertyName="Id" Direction="Descending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Page.Resources>
+    <Grid Margin="10,0,10,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <DataGrid Name="EADataGridView"
+                Grid.Column="0"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
+                AutoGenerateColumns="False" 
+                CanUserReorderColumns="False" 
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False" 
+                CanUserSortColumns="False" 
+                IsReadOnly="True"                  
+                SelectionMode="Single"
+                HeadersVisibility="Column"
+                ItemsSource="{Binding Source={StaticResource EACollectionView}}"
+                SelectedItem="{Binding SelectedEA}"
+                VirtualizingPanel.ScrollUnit ="Item" 
+                VirtualizingPanel.VirtualizationMode="Standard">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                        <Setter Property="TextBlock.FontSize" Value="15" />
+                        <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    </Style.Setters>
+                </Style>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
+                <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
+            </DataGrid.Resources>
+            <!--<DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />                        
+                    <Separator/>
+                    <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>-->
+            <!--<DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding ResetDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+            </DataGrid.InputBindings>-->
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None">
+                                    <Image.ToolTip>
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
+                                    </Image.ToolTip>
+                                </Image>
+                                <Image Source="pack://application:,,,/Great;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsExtra}">
+                                    <Image.ToolTip>
+                                        <TextBlock Text="Extra"/>
+                                    </Image.ToolTip>
+                                </Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL}" FontWeight="Bold"/>                
+                <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}"/>
+                <DataGridTextColumn Header="CdC" Binding="{Binding CdC}"/>
+                <DataGridTextColumn Header="Week Nr" Binding="{Binding FDL1.WeekNr}"/>
+                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Column="1" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <DataGrid 
+                Grid.Row="0"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
+                AutoGenerateColumns="False" 
+                CanUserReorderColumns="False" 
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False" 
+                CanUserSortColumns="False" 
+                SelectionMode="Single"
+                HeadersVisibility="Column"
+                ItemsSource="{Binding Expenses}"
+                SelectedItem="{Binding SelectedExpense}"
+                VirtualizingPanel.ScrollUnit ="Item" 
+                VirtualizingPanel.VirtualizationMode="Standard">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                    <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
+                    <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
+                </DataGrid.Resources>
+                <!--<DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />                        
+                    <Separator/>
+                    <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>-->
+                <!--<DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding ResetDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+            </DataGrid.InputBindings>-->
+                <DataGrid.Columns>
+                    <DataGridComboBoxColumn Header="Expense Type"/>
+                    <DataGridTextColumn Header="1"/>
+                    <DataGridTextColumn Header="2"/>
+                    <DataGridTextColumn Header="3"/>
+                    <DataGridTextColumn Header="4"/>
+                    <DataGridTextColumn Header="5"/>
+                    <DataGridTextColumn Header="6"/>
+                    <DataGridTextColumn Header="7"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedEAClone.Notes}" MaxLength="{Binding NotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+            </Grid>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" />
+                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEAClone}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

@@ -123,6 +123,8 @@ namespace Great.Models
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
             public const string EA_RejectedResubmission = "Reinvio nota spese";
 
+            public const string Reminder = "REMINDER:";
+
             public const string Positive = "POSITIVO";
             public const string Negative = "NEGATIVO";
             public const string WithReserve = "CON RISERVA";

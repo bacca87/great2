@@ -51,6 +51,7 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
             SimpleIoc.Default.Register<FDLViewModel>();
+            SimpleIoc.Default.Register<ExpenseAccountViewModel>();            
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<NotificationsViewModel>();
             SimpleIoc.Default.Register<ImportExportViewModel>();
@@ -86,6 +87,14 @@ namespace Great.ViewModels
             get
             {
                 return ServiceLocator.Current.GetInstance<FDLViewModel>();
+            }
+        }
+
+        public ExpenseAccountViewModel ExpenseAccount
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ExpenseAccountViewModel>();
             }
         }
 

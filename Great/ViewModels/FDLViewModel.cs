@@ -55,8 +55,8 @@ namespace Great.ViewModels
                 _isInputEnabled = value;
 
                 RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
-                SaveFDLCommand.RaiseCanExecuteChanged();
-                ClearFDLCommand.RaiseCanExecuteChanged();
+                SaveCommand.RaiseCanExecuteChanged();
+                ClearCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -224,8 +224,8 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands Definitions
-        public RelayCommand ClearFDLCommand { get; set; }
-        public RelayCommand<FDL> SaveFDLCommand { get; set; }
+        public RelayCommand ClearCommand { get; set; }
+        public RelayCommand<FDL> SaveCommand { get; set; }
 
         public RelayCommand<FDL> SendToSAPCommand { get; set; }
         public RelayCommand<FDL> SendByEmailCommand { get; set; }
@@ -246,8 +246,8 @@ namespace Great.ViewModels
             _db = db;
             _fdlManager = manager;
 
-            ClearFDLCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
-            SaveFDLCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
+            ClearCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
+            SaveCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
             SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);

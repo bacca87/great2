@@ -26,6 +26,7 @@ namespace Great.Models
         public string Currency { get; set; }
         public long Status { get; set; }
         public string LastError { get; set; }
+        public string FileName { get; set; }
         public bool NotifyAsNew { get; set; }
     
         public virtual Currency Currency1 { get; set; }

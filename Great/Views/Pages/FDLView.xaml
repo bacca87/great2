@@ -3,10 +3,10 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:m="clr-namespace:Great.Models" 
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+      xmlns:m="clr-namespace:Great.Models" 
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView">
@@ -268,8 +268,8 @@
                 </Grid>
             </Grid>
             <StackPanel Grid.Row="4" Orientation="Horizontal">
-                <Button Margin="10" Content="Clear" Command="{Binding ClearFDLCommand}" />
-                <Button Margin="10" Content="Save" Command="{Binding SaveFDLCommand}" CommandParameter="{Binding SelectedFDLClone}" />
+                <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" />
+                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedFDLClone}" />
             </StackPanel>
         </Grid>
     </Grid>

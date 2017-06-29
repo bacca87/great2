@@ -33,7 +33,8 @@ namespace Great.Models
         {
             ProcessMessage(e.Message);
 
-            ImportEAFromFile("c:\\notaspese.pdf", false, false);
+            //TEST
+            //ImportEAFromFile("c:\\notaspese.pdf", false, false);
         }
 
         public ExpenseAccount ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
@@ -48,12 +49,50 @@ namespace Great.Models
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
 
                 //General Info
+                ea.FDL = fields[ApplicationSettings.ExpenseAccount.FieldNames.FDLNumber].GetValueAsString();
+                ea.FileName = Path.GetFileName(filePath);
+                ea.NotifyAsNew = NotifyAsNew;
 
-                foreach(KeyValuePair<string, PdfFormField> field in fields)
+                int cdc;
+                if (int.TryParse(fields[ApplicationSettings.ExpenseAccount.FieldNames.CdC].GetValueAsString(), out cdc))
+                    ea.CdC = cdc;
+
+                string currency = fields[ApplicationSettings.ExpenseAccount.FieldNames.Currency].GetValueAsString();
+                if (currency.Length > 4)
+                    ea.Currency = currency.Substring(0, 4).Trim();
+
+                //TODO: importazione spese
+
+                using (DBEntities db = new DBEntities())
                 {
-                    Console.Out.WriteLine(field.Key + "\t\t\t\t Value: " + field.Value.GetValueAsString());
-                }
+                    using (var transaction = db.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(e => e.FDL == ea.FDL);
+                            
+                            if (tmpEA != null && OverrideIfExist)
+                            {
+                                db.ExpenseAccounts.Remove(tmpEA);
+                                db.SaveChanges();
+                                tmpEA = null;
+                            }
 
+                            if (tmpEA == null)
+                            {
+                                db.ExpenseAccounts.Add(ea);
+                                db.SaveChanges();
+                                transaction.Commit();
+                                Messenger.Default.Send(new NewItemMessage<ExpenseAccount>(this, ea));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            ea = null;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -90,6 +129,7 @@ namespace Great.Models
                 fdl.ReturnCar = fields[ApplicationSettings.FDL.FieldNames.ReturnCar].GetValue() != null;
                 fdl.ReturnTaxi = fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue() != null;
                 fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
+                fdl.NotifyAsNew = NotifyAsNew;
 
                 // TODO: gestire automobili
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
@@ -228,8 +268,7 @@ namespace Great.Models
                                     }
                                 }
                                 #endregion
-
-                                fdl.NotifyAsNew = NotifyAsNew;
+                                
                                 db.FDLs.Add(fdl);
                                 db.SaveChanges();
 
@@ -481,17 +520,18 @@ namespace Great.Models
         private void ProcessMessage(EmailMessage message)
         {   
             EMessageType type = GetMessageType(message.Subject);
-            string fdlNumber = ExtractFDLFromSubject(message.Subject, type);
+            string fdlNumber = GetFDLNumber(message, type);
             
             switch (type)
             {
                 case EMessageType.FDL_Accepted:
                     using (DBEntities db = new DBEntities())
                     {
-                        FDL accepted = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
+                        FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
                         if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
                         {
                             accepted.EStatus = EFDLStatus.Accepted;
+                            accepted.LastError = null;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDL>(this, accepted));
                         }
@@ -500,7 +540,7 @@ namespace Great.Models
                 case EMessageType.FDL_Rejected:
                     using (DBEntities db = new DBEntities())
                     {
-                        FDL rejected = db.FDLs.SingleOrDefault(f => f.Id.Substring(5) == fdlNumber);
+                        FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
                         if (rejected != null && rejected.EStatus != EFDLStatus.Rejected && rejected.EStatus != EFDLStatus.Accepted)
                         {
                             rejected.EStatus = EFDLStatus.Rejected;
@@ -515,7 +555,7 @@ namespace Great.Models
                     using (DBEntities db = new DBEntities())
                     {
                         //TODO: differenziare la nota spese R da R1
-                        ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL.Substring(5) == fdlNumber);
+                        ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
                         if (expenseAccount != null && expenseAccount.EStatus != EFDLStatus.Rejected && expenseAccount.EStatus != EFDLStatus.Accepted)
                         {
                             expenseAccount.EStatus = EFDLStatus.Rejected;
@@ -535,19 +575,19 @@ namespace Great.Models
 
                             FileAttachment fileAttachment = attachment as FileAttachment;
 
-                            switch (GetAttachmentType(Path.GetFileNameWithoutExtension(attachment.Name)))
+                            switch (GetAttachmentType(attachment.Name))
                             {
-                                //TODO: inserire su db Note spese
                                 case EAttachmentType.FDL:
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
 
                                     ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true);
                                     break;
-                                case EAttachmentType.ExpenseAccount1:
-                                case EAttachmentType.ExpenseAccount2:
+                                case EAttachmentType.ExpenseAccount:
                                     if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
+
+                                    ImportEAFromFile(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name, true, true);
                                     break;
                                 default:
                                     break;
@@ -571,6 +611,8 @@ namespace Great.Models
                 return EMessageType.EA_Rejected;
             else if (subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
                 return EMessageType.EA_RejectedResubmission;
+            else if (subject.Contains(ApplicationSettings.FDL.Reminder))
+                return EMessageType.Reminder;
             else if (GetAttachmentType(subject) == EAttachmentType.FDL)
                 return EMessageType.FDL_EA_New;
             else
@@ -581,7 +623,7 @@ namespace Great.Models
         {
             try
             {
-                string[] words = filename.Split(' ');
+                string[] words = Path.GetFileNameWithoutExtension(filename).Split(' ');
 
                 if (words.Length > 5)
                 {
@@ -593,10 +635,8 @@ namespace Great.Models
 
                     if (FDL.All(char.IsDigit))
                     {
-                        if (words.LastOrDefault().Contains("R1"))
-                            return EAttachmentType.ExpenseAccount2;
-                        else if (words.LastOrDefault().Contains("R"))
-                            return EAttachmentType.ExpenseAccount1;
+                        if (words.LastOrDefault().Contains("R"))
+                            return EAttachmentType.ExpenseAccount;
                         else if (CID.All(char.IsDigit) &&
                                  WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
                                  Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
@@ -610,43 +650,67 @@ namespace Great.Models
             return EAttachmentType.Unknown;
         }
         
-        private string ExtractFDLFromSubject(string subject, EMessageType type)
+        private string GetFDLNumber(EmailMessage message, EMessageType type)
         {
             string FDL = string.Empty;
             string[] words;
 
             try
             {
-                switch(type)
+                if (message.HasAttachments)
                 {
-                    case EMessageType.FDL_Accepted:
-                    case EMessageType.FDL_Rejected:
-                        // INVALID FDL (XXXXX)
-                        // FDL RECEIVED (XXXXX)
-                        Match match = Regex.Match(subject, @"\(([^)]*)\)");
-                        if (match.Success || match.Groups.Count > 0)
-                            FDL = match.Groups[1].Value;
+                    foreach (Attachment attachment in message.Attachments)
+                    {
+                        if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                            continue;
+
+                        EAttachmentType attType = GetAttachmentType(attachment.Name);
+
+                        if (attType == EAttachmentType.Unknown)
+                            continue;
+
+                        words = Path.GetFileNameWithoutExtension(attachment.Name).Split(' ');
+
+                        if (attType == EAttachmentType.FDL)
+                            FDL = $"{words[words.Length - 1]}/{words[0]}";
+                        else if (attType == EAttachmentType.ExpenseAccount)
+                            FDL = $"{words[words.Length - 2]}/{words[0]}";
                         break;
-                    case EMessageType.EA_Rejected:
-                        // FDL XXXXX NOTA SPESE RIFIUTATA
-                        //  0    1    2     3       4
-                        words = subject.Split(' ');
-                        if(words.Length > 1)
-                            FDL = words[1];
-                        break;
-                    case EMessageType.EA_RejectedResubmission:
-                        // Reinvio nota spese YYYY/XXXXX respinto
-                        //    0      1    2       3         4
-                        words = subject.Split(' ');
-                        if (words.Length > 3)
-                        {
-                            words = words[3].Split('/');
-                            if(words.Length > 1)
-                                FDL = words[1];
-                        }
-                        break;
-                    default:
-                        break;
+                    }
+                }
+
+                if (FDL == string.Empty)
+                {
+                    // NB In case of missing attachments, there might be an inconrrect result if you recive the message regarding an FDL of the previous year in the new year.
+                    // there are no solutions for this kind of issue.                    
+
+                    switch (type)
+                    {
+                        case EMessageType.FDL_Accepted:
+                        case EMessageType.FDL_Rejected:
+                            // INVALID FDL (XXXXX)
+                            // FDL RECEIVED (XXXXX)
+                            Match match = Regex.Match(message.Subject, @"\(([^)]*)\)");
+                            if (match.Success || match.Groups.Count > 0)
+                                FDL = $"{message.DateTimeSent.Year}/{match.Groups[1].Value}";
+                            break;
+                        case EMessageType.EA_Rejected:
+                            // FDL XXXXX NOTA SPESE RIFIUTATA
+                            //  0    1    2     3       4
+                            words = message.Subject.Split(' ');
+                            if (words.Length > 1)
+                                FDL = $"{message.DateTimeSent.Year}/{words[1]}";
+                            break;
+                        case EMessageType.EA_RejectedResubmission:
+                            // Reinvio nota spese YYYY/XXXXX respinto
+                            //    0      1    2       3         4
+                            words = message.Subject.Split(' ');
+                            if (words.Length > 3)
+                                FDL = words[3];
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             catch { }
@@ -674,8 +738,7 @@ namespace Great.Models
     {
         Unknown,
         FDL,
-        ExpenseAccount1,
-        ExpenseAccount2
+        ExpenseAccount
     }
 
     public enum EMessageType
@@ -685,7 +748,8 @@ namespace Great.Models
         FDL_Rejected,
         EA_Rejected,
         EA_RejectedResubmission,
-        FDL_EA_New
+        FDL_EA_New,
+        Reminder
     }
 
     public enum EExchangeStatus
