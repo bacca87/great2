@@ -316,8 +316,6 @@
     <Compile Include="ViewModels\InformationsViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\Pages\CarRentalView.xaml.cs">
       <DependentUpon>CarRentalView.xaml</DependentUpon>
     </Compile>
