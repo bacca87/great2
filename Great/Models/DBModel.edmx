@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\SNaKE\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DBModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=C:\Users\baccarani.m\Documents\Repositories\Great2\Great\DB\archive.db3;datetimeformat=Ticks" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Car">
           <Key>
             <PropertyRef Name="Id" />
@@ -38,6 +38,13 @@
           <Property Name="EndFuelLevel" Type="integer" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Currency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
         <EntityType Name="Day">
           <Key>
             <PropertyRef Name="Timestamp" />
@@ -52,15 +59,46 @@
           <Property Name="Id" Type="integer" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
+        <EntityType Name="Expense">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExpenseAccount" Type="integer" Nullable="false" />
+          <Property Name="Type" Type="integer" Nullable="false" />
+          <Property Name="MondayAmount" Type="real" />
+          <Property Name="MondayCashAmount" Type="real" />
+          <Property Name="TuesdayAmount" Type="real" />
+          <Property Name="TuesdayCashAmount" Type="real" />
+          <Property Name="WednesdayAmount" Type="real" />
+          <Property Name="WednesdayCashAmount" Type="real" />
+          <Property Name="ThursdayAmount" Type="real" />
+          <Property Name="ThursdayCashAmount" Type="real" />
+          <Property Name="FridayAmount" Type="real" />
+          <Property Name="FridayCashAmount" Type="real" />
+          <Property Name="SaturdayAmount" Type="real" />
+          <Property Name="SaturdayCashAmount" Type="real" />
+          <Property Name="SundayAmount" Type="real" />
+          <Property Name="SundayCashAmount" Type="real" />
+        </EntityType>
         <EntityType Name="ExpenseAccount">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FDL" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CdC" Type="integer" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="Status" Type="integer" Nullable="false" />
           <Property Name="LastError" Type="nvarchar" MaxLength="250" />
           <Property Name="NotifyAsNew" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ExpenseType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Factory">
           <Key>
@@ -174,6 +212,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Expense_0_0">
+          <End Role="ExpenseType" Type="Self.ExpenseType" Multiplicity="1" />
+          <End Role="Expense" Type="Self.Expense" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Expense">
+              <PropertyRef Name="Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Expense_1_0">
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="1" />
+          <End Role="Expense" Type="Self.Expense" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseAccount">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Expense">
+              <PropertyRef Name="ExpenseAccount" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ExpenseAccount_0_0">
           <End Role="FDLStatus" Type="Self.FDLStatus" Multiplicity="1" />
           <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
@@ -187,6 +249,18 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ExpenseAccount_1_0">
+          <End Role="Currency" Type="Self.Currency" Multiplicity="0..1" />
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Currency">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseAccount">
+              <PropertyRef Name="Currency" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseAccount_2_0">
           <End Role="FDL" Type="Self.FDL" Multiplicity="1" />
           <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
           <ReferentialConstraint>
@@ -274,9 +348,12 @@
           <EntitySet Name="Car" EntityType="Self.Car" store:Type="Tables" />
           <EntitySet Name="CarRentalCompany" EntityType="Self.CarRentalCompany" store:Type="Tables" />
           <EntitySet Name="CarRentalHistory" EntityType="Self.CarRentalHistory" store:Type="Tables" />
+          <EntitySet Name="Currency" EntityType="Self.Currency" store:Type="Tables" />
           <EntitySet Name="Day" EntityType="Self.Day" store:Type="Tables" />
           <EntitySet Name="DayType" EntityType="Self.DayType" store:Type="Tables" />
+          <EntitySet Name="Expense" EntityType="Self.Expense" store:Type="Tables" />
           <EntitySet Name="ExpenseAccount" EntityType="Self.ExpenseAccount" store:Type="Tables" />
+          <EntitySet Name="ExpenseType" EntityType="Self.ExpenseType" store:Type="Tables" />
           <EntitySet Name="Factory" EntityType="Self.Factory" store:Type="Tables" />
           <EntitySet Name="FDL" EntityType="Self.FDL" store:Type="Tables" />
           <EntitySet Name="FDLResult" EntityType="Self.FDLResult" store:Type="Tables" />
@@ -295,11 +372,23 @@
             <End Role="DayType" EntitySet="DayType" />
             <End Role="Day" EntitySet="Day" />
           </AssociationSet>
+          <AssociationSet Name="FK_Expense_0_0" Association="Self.FK_Expense_0_0">
+            <End Role="ExpenseType" EntitySet="ExpenseType" />
+            <End Role="Expense" EntitySet="Expense" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Expense_1_0" Association="Self.FK_Expense_1_0">
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
+            <End Role="Expense" EntitySet="Expense" />
+          </AssociationSet>
           <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
             <End Role="FDLStatus" EntitySet="FDLStatus" />
             <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
           </AssociationSet>
           <AssociationSet Name="FK_ExpenseAccount_1_0" Association="Self.FK_ExpenseAccount_1_0">
+            <End Role="Currency" EntitySet="Currency" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_2_0" Association="Self.FK_ExpenseAccount_2_0">
             <End Role="FDL" EntitySet="FDL" />
             <End Role="ExpenseAccount" EntitySet="ExpenseAccount" />
           </AssociationSet>
@@ -328,87 +417,30 @@
             <End Role="Timesheet" EntitySet="Timesheet" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Cars" EntityType="DBModel.Car" />
-          <EntitySet Name="CarRentalCompanies" EntityType="DBModel.CarRentalCompany" />
-          <EntitySet Name="CarRentalHistories" EntityType="DBModel.CarRentalHistory" />
-          <EntitySet Name="Days" EntityType="DBModel.Day" />
-          <EntitySet Name="DayTypes" EntityType="DBModel.DayType" />
-          <EntitySet Name="ExpenseAccounts" EntityType="DBModel.ExpenseAccount" />
-          <EntitySet Name="Factories" EntityType="DBModel.Factory" />
-          <EntitySet Name="FDLs" EntityType="DBModel.FDL" />
-          <EntitySet Name="FDLResults" EntityType="DBModel.FDLResult" />
-          <EntitySet Name="FDLStatus" EntityType="DBModel.FDLStatu" />
-          <EntitySet Name="Timesheets" EntityType="DBModel.Timesheet" />
-          <EntitySet Name="TransferTypes" EntityType="DBModel.TransferType" />
-          <AssociationSet Name="FK_Car_0_0" Association="DBModel.FK_Car_0_0">
-            <End Role="CarRentalCompany" EntitySet="CarRentalCompanies" />
-            <End Role="Car" EntitySet="Cars" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CarRentalHistory_0_0" Association="DBModel.FK_CarRentalHistory_0_0">
-            <End Role="Car" EntitySet="Cars" />
-            <End Role="CarRentalHistory" EntitySet="CarRentalHistories" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Day_0_0" Association="DBModel.FK_Day_0_0">
-            <End Role="DayType" EntitySet="DayTypes" />
-            <End Role="Day" EntitySet="Days" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Timesheet_1_0" Association="DBModel.FK_Timesheet_1_0">
-            <End Role="Day" EntitySet="Days" />
-            <End Role="Timesheet" EntitySet="Timesheets" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ExpenseAccount_0_0" Association="DBModel.FK_ExpenseAccount_0_0">
-            <End Role="FDLStatu" EntitySet="FDLStatus" />
-            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ExpenseAccount_1_0" Association="DBModel.FK_ExpenseAccount_1_0">
-            <End Role="FDL" EntitySet="FDLs" />
-            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Factory_0_0" Association="DBModel.FK_Factory_0_0">
-            <End Role="TransferType" EntitySet="TransferTypes" />
-            <End Role="Factory" EntitySet="Factories" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FDL_2_0" Association="DBModel.FK_FDL_2_0">
-            <End Role="Factory" EntitySet="Factories" />
-            <End Role="FDL" EntitySet="FDLs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FDL_0_0" Association="DBModel.FK_FDL_0_0">
-            <End Role="FDLStatu" EntitySet="FDLStatus" />
-            <End Role="FDL" EntitySet="FDLs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FDL_1_0" Association="DBModel.FK_FDL_1_0">
-            <End Role="FDLResult" EntitySet="FDLResults" />
-            <End Role="FDL" EntitySet="FDLs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Timesheet_0_0" Association="DBModel.FK_Timesheet_0_0">
-            <End Role="FDL" EntitySet="FDLs" />
-            <End Role="Timesheet" EntitySet="Timesheets" />
-          </AssociationSet>
-        </EntityContainer>
         <EntityType Name="Car">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LicensePlate" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="Brand" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Model" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="LicensePlate" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Brand" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CarRentalCompany" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="CarRentalCompany1" Relationship="DBModel.FK_Car_0_0" FromRole="Car" ToRole="CarRentalCompany" />
-          <NavigationProperty Name="CarRentalHistories" Relationship="DBModel.FK_CarRentalHistory_0_0" FromRole="Car" ToRole="CarRentalHistory" />
+          <NavigationProperty Name="CarRentalCompany1" Relationship="Self.FK_Car_0_0" FromRole="Car" ToRole="CarRentalCompany" />
+          <NavigationProperty Name="CarRentalHistories" Relationship="Self.FK_CarRentalHistory_0_0" FromRole="Car" ToRole="CarRentalHistory" />
         </EntityType>
         <EntityType Name="CarRentalCompany">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Cars" Relationship="DBModel.FK_Car_0_0" FromRole="CarRentalCompany" ToRole="Car" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Cars" Relationship="Self.FK_Car_0_0" FromRole="CarRentalCompany" ToRole="Car" />
         </EntityType>
         <EntityType Name="CarRentalHistory">
           <Key>
@@ -418,14 +450,22 @@
           <Property Name="Car" Type="Int64" Nullable="false" />
           <Property Name="StartKm" Type="Int64" Nullable="false" />
           <Property Name="EndKm" Type="Int64" />
-          <Property Name="StartLocation" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="EndLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="StartDate" Type="Int64" Nullable="false" />
           <Property Name="EndDate" Type="Int64" />
           <Property Name="StartFuelLevel" Type="Int64" Nullable="false" />
           <Property Name="EndFuelLevel" Type="Int64" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Car1" Relationship="DBModel.FK_CarRentalHistory_0_0" FromRole="CarRentalHistory" ToRole="Car" />
+          <NavigationProperty Name="Car1" Relationship="Self.FK_CarRentalHistory_0_0" FromRole="CarRentalHistory" ToRole="Car" />
+        </EntityType>
+        <EntityType Name="Currency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ExpenseAccounts" Relationship="Self.FK_ExpenseAccount_1_0" FromRole="Currency" ToRole="ExpenseAccount" />
         </EntityType>
         <EntityType Name="Day">
           <Key>
@@ -433,35 +473,71 @@
           </Key>
           <Property Name="Timestamp" Type="Int64" Nullable="false" />
           <Property Name="Type" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="DayType" Relationship="DBModel.FK_Day_0_0" FromRole="Day" ToRole="DayType" />
-          <NavigationProperty Name="Timesheets" Relationship="DBModel.FK_Timesheet_1_0" FromRole="Day" ToRole="Timesheet" />
+          <NavigationProperty Name="DayType" Relationship="Self.FK_Day_0_0" FromRole="Day" ToRole="DayType" />
+          <NavigationProperty Name="Timesheets" Relationship="Self.FK_Timesheet_1_0" FromRole="Day" ToRole="Timesheet" />
         </EntityType>
         <EntityType Name="DayType">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Days" Relationship="DBModel.FK_Day_0_0" FromRole="DayType" ToRole="Day" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Days" Relationship="Self.FK_Day_0_0" FromRole="DayType" ToRole="Day" />
+        </EntityType>
+        <EntityType Name="Expense">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExpenseAccount" Type="Int64" Nullable="false" />
+          <Property Name="Type" Type="Int64" Nullable="false" />
+          <Property Name="MondayAmount" Type="Double" />
+          <Property Name="MondayCashAmount" Type="Double" />
+          <Property Name="TuesdayAmount" Type="Double" />
+          <Property Name="TuesdayCashAmount" Type="Double" />
+          <Property Name="WednesdayAmount" Type="Double" />
+          <Property Name="WednesdayCashAmount" Type="Double" />
+          <Property Name="ThursdayAmount" Type="Double" />
+          <Property Name="ThursdayCashAmount" Type="Double" />
+          <Property Name="FridayAmount" Type="Double" />
+          <Property Name="FridayCashAmount" Type="Double" />
+          <Property Name="SaturdayAmount" Type="Double" />
+          <Property Name="SaturdayCashAmount" Type="Double" />
+          <Property Name="SundayAmount" Type="Double" />
+          <Property Name="SundayCashAmount" Type="Double" />
+          <NavigationProperty Name="ExpenseType" Relationship="Self.FK_Expense_0_0" FromRole="Expense" ToRole="ExpenseType" />
+          <NavigationProperty Name="ExpenseAccount1" Relationship="Self.FK_Expense_1_0" FromRole="Expense" ToRole="ExpenseAccount" />
         </EntityType>
         <EntityType Name="ExpenseAccount">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FDL" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="FDL" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CdC" Type="Int64" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int64" Nullable="false" />
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="NotifyAsNew" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="FDLStatu" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDLStatu" />
-          <NavigationProperty Name="FDL1" Relationship="DBModel.FK_ExpenseAccount_1_0" FromRole="ExpenseAccount" ToRole="FDL" />
+          <NavigationProperty Name="Currency1" Relationship="Self.FK_ExpenseAccount_1_0" FromRole="ExpenseAccount" ToRole="Currency" />
+          <NavigationProperty Name="Expenses" Relationship="Self.FK_Expense_1_0" FromRole="ExpenseAccount" ToRole="Expense" />
+          <NavigationProperty Name="FDLStatu" Relationship="Self.FK_ExpenseAccount_0_0" FromRole="ExpenseAccount" ToRole="FDLStatus" />
+          <NavigationProperty Name="FDL1" Relationship="Self.FK_ExpenseAccount_2_0" FromRole="ExpenseAccount" ToRole="FDL" />
+        </EntityType>
+        <EntityType Name="ExpenseType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Expenses" Relationship="Self.FK_Expense_0_0" FromRole="ExpenseType" ToRole="Expense" />
         </EntityType>
         <EntityType Name="Factory">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="Double" />
@@ -469,18 +545,18 @@
           <Property Name="TransferType" Type="Int64" Nullable="false" />
           <Property Name="IsForfait" Type="Boolean" Nullable="false" />
           <Property Name="NotifyAsNew" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="TransferType1" Relationship="DBModel.FK_Factory_0_0" FromRole="Factory" ToRole="TransferType" />
-          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_2_0" FromRole="Factory" ToRole="FDL" />
+          <NavigationProperty Name="TransferType1" Relationship="Self.FK_Factory_0_0" FromRole="Factory" ToRole="TransferType" />
+          <NavigationProperty Name="FDLs" Relationship="Self.FK_FDL_2_0" FromRole="Factory" ToRole="FDL" />
         </EntityType>
         <EntityType Name="FDL">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="WeekNr" Type="Int64" Nullable="false" />
           <Property Name="IsExtra" Type="Boolean" Nullable="false" />
           <Property Name="Factory" Type="Int64" />
-          <Property Name="Order" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Order" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="OutwardCar" Type="Boolean" Nullable="false" />
           <Property Name="ReturnCar" Type="Boolean" Nullable="false" />
           <Property Name="OutwardTaxi" Type="Boolean" Nullable="false" />
@@ -494,30 +570,30 @@
           <Property Name="PerformanceDescriptionDetails" Type="String" MaxLength="5000" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int64" Nullable="false" />
           <Property Name="LastError" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="FileName" Type="String" Nullable="false" MaxLength="260" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="260" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="NotifyAsNew" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_1_0" FromRole="FDL" ToRole="ExpenseAccount" />
-          <NavigationProperty Name="Factory1" Relationship="DBModel.FK_FDL_2_0" FromRole="FDL" ToRole="Factory" />
-          <NavigationProperty Name="FDLStatu" Relationship="DBModel.FK_FDL_0_0" FromRole="FDL" ToRole="FDLStatu" />
-          <NavigationProperty Name="FDLResult" Relationship="DBModel.FK_FDL_1_0" FromRole="FDL" ToRole="FDLResult" />
-          <NavigationProperty Name="Timesheets" Relationship="DBModel.FK_Timesheet_0_0" FromRole="FDL" ToRole="Timesheet" />
+          <NavigationProperty Name="ExpenseAccounts" Relationship="Self.FK_ExpenseAccount_2_0" FromRole="FDL" ToRole="ExpenseAccount" />
+          <NavigationProperty Name="Factory1" Relationship="Self.FK_FDL_2_0" FromRole="FDL" ToRole="Factory" />
+          <NavigationProperty Name="FDLStatu" Relationship="Self.FK_FDL_0_0" FromRole="FDL" ToRole="FDLStatus" />
+          <NavigationProperty Name="FDLResult" Relationship="Self.FK_FDL_1_0" FromRole="FDL" ToRole="FDLResult" />
+          <NavigationProperty Name="Timesheets" Relationship="Self.FK_Timesheet_0_0" FromRole="FDL" ToRole="Timesheet" />
         </EntityType>
         <EntityType Name="FDLResult">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_1_0" FromRole="FDLResult" ToRole="FDL" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="FDLs" Relationship="Self.FK_FDL_1_0" FromRole="FDLResult" ToRole="FDL" />
         </EntityType>
         <EntityType Name="FDLStatu">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ExpenseAccounts" Relationship="DBModel.FK_ExpenseAccount_0_0" FromRole="FDLStatu" ToRole="ExpenseAccount" />
-          <NavigationProperty Name="FDLs" Relationship="DBModel.FK_FDL_0_0" FromRole="FDLStatu" ToRole="FDL" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ExpenseAccounts" Relationship="Self.FK_ExpenseAccount_0_0" FromRole="FDLStatus" ToRole="ExpenseAccount" />
+          <NavigationProperty Name="FDLs" Relationship="Self.FK_FDL_0_0" FromRole="FDLStatus" ToRole="FDL" />
         </EntityType>
         <EntityType Name="Timesheet">
           <Key>
@@ -534,20 +610,20 @@
           <Property Name="WorkStartTimePM" Type="Int64" />
           <Property Name="WorkEndTimePM" Type="Int64" />
           <Property Name="FDL" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Day" Relationship="DBModel.FK_Timesheet_1_0" FromRole="Timesheet" ToRole="Day" />
-          <NavigationProperty Name="FDL1" Relationship="DBModel.FK_Timesheet_0_0" FromRole="Timesheet" ToRole="FDL" />
+          <NavigationProperty Name="Day" Relationship="Self.FK_Timesheet_1_0" FromRole="Timesheet" ToRole="Day" />
+          <NavigationProperty Name="FDL1" Relationship="Self.FK_Timesheet_0_0" FromRole="Timesheet" ToRole="FDL" />
         </EntityType>
         <EntityType Name="TransferType">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Factories" Relationship="DBModel.FK_Factory_0_0" FromRole="TransferType" ToRole="Factory" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Factories" Relationship="Self.FK_Factory_0_0" FromRole="TransferType" ToRole="Factory" />
         </EntityType>
         <Association Name="FK_Car_0_0">
-          <End Type="DBModel.CarRentalCompany" Role="CarRentalCompany" Multiplicity="1" />
-          <End Type="DBModel.Car" Role="Car" Multiplicity="*" />
+          <End Role="CarRentalCompany" Type="Self.CarRentalCompany" Multiplicity="1" />
+          <End Role="Car" Type="Self.Car" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CarRentalCompany">
               <PropertyRef Name="Id" />
@@ -558,8 +634,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CarRentalHistory_0_0">
-          <End Type="DBModel.Car" Role="Car" Multiplicity="1" />
-          <End Type="DBModel.CarRentalHistory" Role="CarRentalHistory" Multiplicity="*" />
+          <End Role="Car" Type="Self.Car" Multiplicity="1" />
+          <End Role="CarRentalHistory" Type="Self.CarRentalHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Car">
               <PropertyRef Name="Id" />
@@ -569,9 +645,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ExpenseAccount_1_0">
+          <End Role="Currency" Type="Self.Currency" Multiplicity="0..1" />
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Currency">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseAccount">
+              <PropertyRef Name="Currency" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Day_0_0">
-          <End Type="DBModel.DayType" Role="DayType" Multiplicity="1" />
-          <End Type="DBModel.Day" Role="Day" Multiplicity="*" />
+          <End Role="DayType" Type="Self.DayType" Multiplicity="1" />
+          <End Role="Day" Type="Self.Day" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="DayType">
               <PropertyRef Name="Id" />
@@ -582,10 +670,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Timesheet_1_0">
-          <End Type="DBModel.Day" Role="Day" Multiplicity="1" >
+          <End Role="Day" Type="Self.Day" Multiplicity="1" >
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="DBModel.Timesheet" Role="Timesheet" Multiplicity="*" />
+          <End Role="Timesheet" Type="Self.Timesheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Day">
               <PropertyRef Name="Timestamp" />
@@ -595,11 +683,37 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ExpenseAccount_0_0">
-          <End Type="DBModel.FDLStatu" Role="FDLStatu" Multiplicity="1" />
-          <End Type="DBModel.ExpenseAccount" Role="ExpenseAccount" Multiplicity="*" />
+        <Association Name="FK_Expense_0_0">
+          <End Role="ExpenseType" Type="Self.ExpenseType" Multiplicity="1" />
+          <End Role="Expense" Type="Self.Expense" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="FDLStatu">
+            <Principal Role="ExpenseType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Expense">
+              <PropertyRef Name="Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Expense_1_0">
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Expense" Type="Self.Expense" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseAccount">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Expense">
+              <PropertyRef Name="ExpenseAccount" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseAccount_0_0">
+          <End Role="FDLStatus" Type="Self.FDLStatu" Multiplicity="1" />
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FDLStatus">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ExpenseAccount">
@@ -607,9 +721,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ExpenseAccount_1_0">
-          <End Type="DBModel.FDL" Role="FDL" Multiplicity="1" />
-          <End Type="DBModel.ExpenseAccount" Role="ExpenseAccount" Multiplicity="*" />
+        <Association Name="FK_ExpenseAccount_2_0">
+          <End Role="FDL" Type="Self.FDL" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ExpenseAccount" Type="Self.ExpenseAccount" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FDL">
               <PropertyRef Name="Id" />
@@ -620,8 +736,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Factory_0_0">
-          <End Type="DBModel.TransferType" Role="TransferType" Multiplicity="1" />
-          <End Type="DBModel.Factory" Role="Factory" Multiplicity="*" />
+          <End Role="TransferType" Type="Self.TransferType" Multiplicity="1" />
+          <End Role="Factory" Type="Self.Factory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TransferType">
               <PropertyRef Name="Id" />
@@ -632,8 +748,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FDL_2_0">
-          <End Type="DBModel.Factory" Role="Factory" Multiplicity="0..1" />
-          <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
+          <End Role="Factory" Type="Self.Factory" Multiplicity="0..1" />
+          <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Factory">
               <PropertyRef Name="Id" />
@@ -644,10 +760,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FDL_0_0">
-          <End Type="DBModel.FDLStatu" Role="FDLStatu" Multiplicity="1" />
-          <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
+          <End Role="FDLStatus" Type="Self.FDLStatu" Multiplicity="1" />
+          <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="FDLStatu">
+            <Principal Role="FDLStatus">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="FDL">
@@ -656,8 +772,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FDL_1_0">
-          <End Type="DBModel.FDLResult" Role="FDLResult" Multiplicity="1" />
-          <End Type="DBModel.FDL" Role="FDL" Multiplicity="*" />
+          <End Role="FDLResult" Type="Self.FDLResult" Multiplicity="1" />
+          <End Role="FDL" Type="Self.FDL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FDLResult">
               <PropertyRef Name="Id" />
@@ -668,10 +784,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Timesheet_0_0">
-          <End Type="DBModel.FDL" Role="FDL" Multiplicity="0..1" >
+          <End Role="FDL" Type="Self.FDL" Multiplicity="0..1" >
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="DBModel.Timesheet" Role="Timesheet" Multiplicity="*" />
+          <End Role="Timesheet" Type="Self.Timesheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FDL">
               <PropertyRef Name="Id" />
@@ -681,7 +797,80 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        </Schema>
+        <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Cars" EntityType="Self.Car" />
+          <EntitySet Name="CarRentalCompanies" EntityType="Self.CarRentalCompany" />
+          <EntitySet Name="CarRentalHistories" EntityType="Self.CarRentalHistory" />
+          <EntitySet Name="Currencies" EntityType="Self.Currency" />
+          <EntitySet Name="Days" EntityType="Self.Day" />
+          <EntitySet Name="DayTypes" EntityType="Self.DayType" />
+          <EntitySet Name="Expenses" EntityType="Self.Expense" />
+          <EntitySet Name="ExpenseAccounts" EntityType="Self.ExpenseAccount" />
+          <EntitySet Name="ExpenseTypes" EntityType="Self.ExpenseType" />
+          <EntitySet Name="Factories" EntityType="Self.Factory" />
+          <EntitySet Name="FDLs" EntityType="Self.FDL" />
+          <EntitySet Name="FDLResults" EntityType="Self.FDLResult" />
+          <EntitySet Name="FDLStatus" EntityType="Self.FDLStatu" />
+          <EntitySet Name="Timesheets" EntityType="Self.Timesheet" />
+          <EntitySet Name="TransferTypes" EntityType="Self.TransferType" />
+          <AssociationSet Name="FK_Car_0_0" Association="Self.FK_Car_0_0">
+            <End Role="CarRentalCompany" EntitySet="CarRentalCompanies" />
+            <End Role="Car" EntitySet="Cars" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CarRentalHistory_0_0" Association="Self.FK_CarRentalHistory_0_0">
+            <End Role="Car" EntitySet="Cars" />
+            <End Role="CarRentalHistory" EntitySet="CarRentalHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_1_0" Association="Self.FK_ExpenseAccount_1_0">
+            <End Role="Currency" EntitySet="Currencies" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Day_0_0" Association="Self.FK_Day_0_0">
+            <End Role="DayType" EntitySet="DayTypes" />
+            <End Role="Day" EntitySet="Days" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timesheet_1_0" Association="Self.FK_Timesheet_1_0">
+            <End Role="Day" EntitySet="Days" />
+            <End Role="Timesheet" EntitySet="Timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Expense_0_0" Association="Self.FK_Expense_0_0">
+            <End Role="ExpenseType" EntitySet="ExpenseTypes" />
+            <End Role="Expense" EntitySet="Expenses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Expense_1_0" Association="Self.FK_Expense_1_0">
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
+            <End Role="Expense" EntitySet="Expenses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_0_0" Association="Self.FK_ExpenseAccount_0_0">
+            <End Role="FDLStatus" EntitySet="FDLStatus" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseAccount_2_0" Association="Self.FK_ExpenseAccount_2_0">
+            <End Role="FDL" EntitySet="FDLs" />
+            <End Role="ExpenseAccount" EntitySet="ExpenseAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Factory_0_0" Association="Self.FK_Factory_0_0">
+            <End Role="TransferType" EntitySet="TransferTypes" />
+            <End Role="Factory" EntitySet="Factories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_2_0" Association="Self.FK_FDL_2_0">
+            <End Role="Factory" EntitySet="Factories" />
+            <End Role="FDL" EntitySet="FDLs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_0_0" Association="Self.FK_FDL_0_0">
+            <End Role="FDLStatus" EntitySet="FDLStatus" />
+            <End Role="FDL" EntitySet="FDLs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FDL_1_0" Association="Self.FK_FDL_1_0">
+            <End Role="FDLResult" EntitySet="FDLResults" />
+            <End Role="FDL" EntitySet="FDLs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Timesheet_0_0" Association="Self.FK_Timesheet_0_0">
+            <End Role="FDL" EntitySet="FDLs" />
+            <End Role="Timesheet" EntitySet="Timesheets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -690,145 +879,186 @@
           <EntitySetMapping Name="Cars">
             <EntityTypeMapping TypeName="DBModel.Car">
               <MappingFragment StoreEntitySet="Car">
-                <ScalarProperty Name="CarRentalCompany" ColumnName="CarRentalCompany" />
-                <ScalarProperty Name="Model" ColumnName="Model" />
-                <ScalarProperty Name="Brand" ColumnName="Brand" />
-                <ScalarProperty Name="LicensePlate" ColumnName="LicensePlate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LicensePlate" ColumnName="LicensePlate" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="CarRentalCompany" ColumnName="CarRentalCompany" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CarRentalCompanies">
             <EntityTypeMapping TypeName="DBModel.CarRentalCompany">
               <MappingFragment StoreEntitySet="CarRentalCompany">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CarRentalHistories">
             <EntityTypeMapping TypeName="DBModel.CarRentalHistory">
               <MappingFragment StoreEntitySet="CarRentalHistory">
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="EndFuelLevel" ColumnName="EndFuelLevel" />
-                <ScalarProperty Name="StartFuelLevel" ColumnName="StartFuelLevel" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-                <ScalarProperty Name="EndLocation" ColumnName="EndLocation" />
-                <ScalarProperty Name="StartLocation" ColumnName="StartLocation" />
-                <ScalarProperty Name="EndKm" ColumnName="EndKm" />
-                <ScalarProperty Name="StartKm" ColumnName="StartKm" />
-                <ScalarProperty Name="Car" ColumnName="Car" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Car" ColumnName="Car" />
+                <ScalarProperty Name="StartKm" ColumnName="StartKm" />
+                <ScalarProperty Name="EndKm" ColumnName="EndKm" />
+                <ScalarProperty Name="StartLocation" ColumnName="StartLocation" />
+                <ScalarProperty Name="EndLocation" ColumnName="EndLocation" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartFuelLevel" ColumnName="StartFuelLevel" />
+                <ScalarProperty Name="EndFuelLevel" ColumnName="EndFuelLevel" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Currencies">
+            <EntityTypeMapping TypeName="DBModel.Currency">
+              <MappingFragment StoreEntitySet="Currency">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Days">
             <EntityTypeMapping TypeName="DBModel.Day">
               <MappingFragment StoreEntitySet="Day">
-                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DayTypes">
             <EntityTypeMapping TypeName="DBModel.DayType">
               <MappingFragment StoreEntitySet="DayType">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Expenses">
+            <EntityTypeMapping TypeName="DBModel.Expense">
+              <MappingFragment StoreEntitySet="Expense">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ExpenseAccount" ColumnName="ExpenseAccount" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="MondayAmount" ColumnName="MondayAmount" />
+                <ScalarProperty Name="MondayCashAmount" ColumnName="MondayCashAmount" />
+                <ScalarProperty Name="TuesdayAmount" ColumnName="TuesdayAmount" />
+                <ScalarProperty Name="TuesdayCashAmount" ColumnName="TuesdayCashAmount" />
+                <ScalarProperty Name="WednesdayAmount" ColumnName="WednesdayAmount" />
+                <ScalarProperty Name="WednesdayCashAmount" ColumnName="WednesdayCashAmount" />
+                <ScalarProperty Name="ThursdayAmount" ColumnName="ThursdayAmount" />
+                <ScalarProperty Name="ThursdayCashAmount" ColumnName="ThursdayCashAmount" />
+                <ScalarProperty Name="FridayAmount" ColumnName="FridayAmount" />
+                <ScalarProperty Name="FridayCashAmount" ColumnName="FridayCashAmount" />
+                <ScalarProperty Name="SaturdayAmount" ColumnName="SaturdayAmount" />
+                <ScalarProperty Name="SaturdayCashAmount" ColumnName="SaturdayCashAmount" />
+                <ScalarProperty Name="SundayAmount" ColumnName="SundayAmount" />
+                <ScalarProperty Name="SundayCashAmount" ColumnName="SundayCashAmount" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ExpenseAccounts">
             <EntityTypeMapping TypeName="DBModel.ExpenseAccount">
               <MappingFragment StoreEntitySet="ExpenseAccount">
-                <ScalarProperty Name="NotifyAsNew" ColumnName="NotifyAsNew" />
-                <ScalarProperty Name="LastError" ColumnName="LastError" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="FDL" ColumnName="FDL" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FDL" ColumnName="FDL" />
+                <ScalarProperty Name="CdC" ColumnName="CdC" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastError" ColumnName="LastError" />
+                <ScalarProperty Name="NotifyAsNew" ColumnName="NotifyAsNew" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseTypes">
+            <EntityTypeMapping TypeName="DBModel.ExpenseType">
+              <MappingFragment StoreEntitySet="ExpenseType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Factories">
             <EntityTypeMapping TypeName="DBModel.Factory">
               <MappingFragment StoreEntitySet="Factory">
-                <ScalarProperty Name="NotifyAsNew" ColumnName="NotifyAsNew" />
-                <ScalarProperty Name="IsForfait" ColumnName="IsForfait" />
-                <ScalarProperty Name="TransferType" ColumnName="TransferType" />
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="TransferType" ColumnName="TransferType" />
+                <ScalarProperty Name="IsForfait" ColumnName="IsForfait" />
+                <ScalarProperty Name="NotifyAsNew" ColumnName="NotifyAsNew" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FDLs">
             <EntityTypeMapping TypeName="DBModel.FDL">
               <MappingFragment StoreEntitySet="FDL">
-                <ScalarProperty Name="NotifyAsNew" ColumnName="NotifyAsNew" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-                <ScalarProperty Name="LastError" ColumnName="LastError" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="PerformanceDescriptionDetails" ColumnName="PerformanceDescriptionDetails" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="ResultNotes" ColumnName="ResultNotes" />
-                <ScalarProperty Name="Result" ColumnName="Result" />
-                <ScalarProperty Name="PerformanceDescription" ColumnName="PerformanceDescription" />
-                <ScalarProperty Name="ReturnAircraft" ColumnName="ReturnAircraft" />
-                <ScalarProperty Name="OutwardAircraft" ColumnName="OutwardAircraft" />
-                <ScalarProperty Name="ReturnTaxi" ColumnName="ReturnTaxi" />
-                <ScalarProperty Name="OutwardTaxi" ColumnName="OutwardTaxi" />
-                <ScalarProperty Name="ReturnCar" ColumnName="ReturnCar" />
-                <ScalarProperty Name="OutwardCar" ColumnName="OutwardCar" />
-                <ScalarProperty Name="Order" ColumnName="Order" />
-                <ScalarProperty Name="Factory" ColumnName="Factory" />
-                <ScalarProperty Name="IsExtra" ColumnName="IsExtra" />
-                <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="WeekNr" ColumnName="WeekNr" />
+                <ScalarProperty Name="IsExtra" ColumnName="IsExtra" />
+                <ScalarProperty Name="Factory" ColumnName="Factory" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="OutwardCar" ColumnName="OutwardCar" />
+                <ScalarProperty Name="ReturnCar" ColumnName="ReturnCar" />
+                <ScalarProperty Name="OutwardTaxi" ColumnName="OutwardTaxi" />
+                <ScalarProperty Name="ReturnTaxi" ColumnName="ReturnTaxi" />
+                <ScalarProperty Name="OutwardAircraft" ColumnName="OutwardAircraft" />
+                <ScalarProperty Name="ReturnAircraft" ColumnName="ReturnAircraft" />
+                <ScalarProperty Name="PerformanceDescription" ColumnName="PerformanceDescription" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="ResultNotes" ColumnName="ResultNotes" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="PerformanceDescriptionDetails" ColumnName="PerformanceDescriptionDetails" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastError" ColumnName="LastError" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="NotifyAsNew" ColumnName="NotifyAsNew" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FDLResults">
             <EntityTypeMapping TypeName="DBModel.FDLResult">
               <MappingFragment StoreEntitySet="FDLResult">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FDLStatus">
             <EntityTypeMapping TypeName="DBModel.FDLStatu">
               <MappingFragment StoreEntitySet="FDLStatus">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Timesheets">
             <EntityTypeMapping TypeName="DBModel.Timesheet">
               <MappingFragment StoreEntitySet="Timesheet">
-                <ScalarProperty Name="FDL" ColumnName="FDL" />
-                <ScalarProperty Name="WorkEndTimePM" ColumnName="WorkEndTimePM" />
-                <ScalarProperty Name="WorkStartTimePM" ColumnName="WorkStartTimePM" />
-                <ScalarProperty Name="WorkEndTimeAM" ColumnName="WorkEndTimeAM" />
-                <ScalarProperty Name="WorkStartTimeAM" ColumnName="WorkStartTimeAM" />
-                <ScalarProperty Name="TravelEndTimePM" ColumnName="TravelEndTimePM" />
-                <ScalarProperty Name="TravelStartTimePM" ColumnName="TravelStartTimePM" />
-                <ScalarProperty Name="TravelEndTimeAM" ColumnName="TravelEndTimeAM" />
-                <ScalarProperty Name="TravelStartTimeAM" ColumnName="TravelStartTimeAM" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="TravelStartTimeAM" ColumnName="TravelStartTimeAM" />
+                <ScalarProperty Name="TravelEndTimeAM" ColumnName="TravelEndTimeAM" />
+                <ScalarProperty Name="TravelStartTimePM" ColumnName="TravelStartTimePM" />
+                <ScalarProperty Name="TravelEndTimePM" ColumnName="TravelEndTimePM" />
+                <ScalarProperty Name="WorkStartTimeAM" ColumnName="WorkStartTimeAM" />
+                <ScalarProperty Name="WorkEndTimeAM" ColumnName="WorkEndTimeAM" />
+                <ScalarProperty Name="WorkStartTimePM" ColumnName="WorkStartTimePM" />
+                <ScalarProperty Name="WorkEndTimePM" ColumnName="WorkEndTimePM" />
+                <ScalarProperty Name="FDL" ColumnName="FDL" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TransferTypes">
             <EntityTypeMapping TypeName="DBModel.TransferType">
               <MappingFragment StoreEntitySet="TransferType">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -846,7 +1076,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

@@ -12,26 +12,18 @@ namespace Great.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ExpenseAccount
+    public partial class Currency
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ExpenseAccount()
+        public Currency()
         {
-            this.Expenses = new HashSet<Expense>();
+            this.ExpenseAccounts = new HashSet<ExpenseAccount>();
         }
     
-        public long Id { get; set; }
-        public string FDL { get; set; }
-        public Nullable<long> CdC { get; set; }
-        public string Currency { get; set; }
-        public long Status { get; set; }
-        public string LastError { get; set; }
-        public bool NotifyAsNew { get; set; }
+        public string Id { get; set; }
+        public string Description { get; set; }
     
-        public virtual Currency Currency1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Expense> Expenses { get; set; }
-        public virtual FDLStatu FDLStatu { get; set; }
-        public virtual FDL FDL1 { get; set; }
+        public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
     }
 }

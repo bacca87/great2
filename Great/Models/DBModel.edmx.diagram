@@ -4,30 +4,37 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c8aa48876be545bf99036f75d002c8fe" Name="Diagram1" ZoomLevel="73">
-        <EntityTypeShape EntityType="DBModel.Car" Width="1.5" PointX="14.25" PointY="3.25" />
-        <EntityTypeShape EntityType="DBModel.CarRentalCompany" Width="1.5" PointX="12" PointY="3.625" />
-        <EntityTypeShape EntityType="DBModel.CarRentalHistory" Width="1.5" PointX="16.5" PointY="2.75" />
-        <EntityTypeShape EntityType="DBModel.Day" Width="1.5" PointX="6" PointY="0.75" />
-        <EntityTypeShape EntityType="DBModel.DayType" Width="1.5" PointX="3.75" PointY="1" />
-        <EntityTypeShape EntityType="DBModel.ExpenseAccount" Width="1.5" PointX="5.75" PointY="5.5" />
-        <EntityTypeShape EntityType="DBModel.Factory" Width="1.5" PointX="0.5" PointY="6.375" />
-        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="3" PointY="3.75" />
-        <EntityTypeShape EntityType="DBModel.FDLResult" Width="1.5" PointX="0.875" PointY="1" />
-        <EntityTypeShape EntityType="DBModel.FDLStatu" Width="1.5" PointX="8.375" PointY="6.125" />
-        <EntityTypeShape EntityType="DBModel.Timesheet" Width="1.5" PointX="9.125" PointY="0.75" />
-        <EntityTypeShape EntityType="DBModel.TransferType" Width="1.5" PointX="0.5" PointY="3.75" />
-        <AssociationConnector Association="DBModel.FK_Car_0_0" />
-        <AssociationConnector Association="DBModel.FK_CarRentalHistory_0_0" />
-        <AssociationConnector Association="DBModel.FK_Day_0_0" />
-        <AssociationConnector Association="DBModel.FK_Timesheet_1_0" />
-        <AssociationConnector Association="DBModel.FK_ExpenseAccount_0_0" />
-        <AssociationConnector Association="DBModel.FK_ExpenseAccount_1_0" />
-        <AssociationConnector Association="DBModel.FK_Factory_0_0" />
-        <AssociationConnector Association="DBModel.FK_FDL_2_0" />
-        <AssociationConnector Association="DBModel.FK_FDL_0_0" />
-        <AssociationConnector Association="DBModel.FK_FDL_1_0" />
-        <AssociationConnector Association="DBModel.FK_Timesheet_0_0" />
+      <Diagram DiagramId="77204513bdde4cdfb20419255f56c16b" Name="Diagram1" ZoomLevel="89">
+        <EntityTypeShape EntityType="DBModel.Car" Width="1.5" PointX="16.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.CarRentalCompany" Width="1.5" PointX="14.5" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.CarRentalHistory" Width="1.5" PointX="19" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.Currency" Width="1.5" PointX="12.125" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.Day" Width="1.5" PointX="3.5" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.DayType" Width="1.5" PointX="1.125" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.Expense" Width="1.5" PointX="14.5" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.ExpenseAccount" Width="1.5" PointX="12.125" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.ExpenseType" Width="1.5" PointX="16.875" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.Factory" Width="1.5" PointX="3.125" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.FDL" Width="1.5" PointX="8.375" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.FDLResult" Width="1.5" PointX="5.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.FDLStatu" Width="1.5" PointX="10.25" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.Timesheet" Width="1.5" PointX="5.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBModel.TransferType" Width="1.5" PointX="0.5" PointY="2.125" IsExpanded="true" />
+        <AssociationConnector Association="DBModel.FK_Car_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_CarRentalHistory_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_ExpenseAccount_1_0" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="DBModel.FK_Day_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_Timesheet_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_Expense_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_Expense_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_ExpenseAccount_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_ExpenseAccount_2_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_Factory_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_FDL_2_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_FDL_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_FDL_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="DBModel.FK_Timesheet_0_0" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
