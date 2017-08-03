@@ -565,19 +565,12 @@
           <Property Name="ExpenseAccount" Type="Int64" Nullable="false" />
           <Property Name="Type" Type="Int64" Nullable="false" />
           <Property Name="MondayAmount" Type="Double" />
-          <Property Name="MondayCashAmount" Type="Double" />
           <Property Name="TuesdayAmount" Type="Double" />
-          <Property Name="TuesdayCashAmount" Type="Double" />
           <Property Name="WednesdayAmount" Type="Double" />
-          <Property Name="WednesdayCashAmount" Type="Double" />
           <Property Name="ThursdayAmount" Type="Double" />
-          <Property Name="ThursdayCashAmount" Type="Double" />
           <Property Name="FridayAmount" Type="Double" />
-          <Property Name="FridayCashAmount" Type="Double" />
           <Property Name="SaturdayAmount" Type="Double" />
-          <Property Name="SaturdayCashAmount" Type="Double" />
           <Property Name="SundayAmount" Type="Double" />
-          <Property Name="SundayCashAmount" Type="Double" />
           <NavigationProperty Name="ExpenseType" Relationship="DBModel.FK_Expense_0_0" FromRole="Expense" ToRole="ExpenseType" />
           <NavigationProperty Name="ExpenseAccount1" Relationship="DBModel.FK_Expense_1_0" FromRole="Expense" ToRole="ExpenseAccount" />
         </EntityType>
@@ -940,19 +933,12 @@
           <EntitySetMapping Name="Expenses">
             <EntityTypeMapping TypeName="DBModel.Expense">
               <MappingFragment StoreEntitySet="Expense">
-                <ScalarProperty Name="SundayCashAmount" ColumnName="SundayCashAmount" />
                 <ScalarProperty Name="SundayAmount" ColumnName="SundayAmount" />
-                <ScalarProperty Name="SaturdayCashAmount" ColumnName="SaturdayCashAmount" />
                 <ScalarProperty Name="SaturdayAmount" ColumnName="SaturdayAmount" />
-                <ScalarProperty Name="FridayCashAmount" ColumnName="FridayCashAmount" />
                 <ScalarProperty Name="FridayAmount" ColumnName="FridayAmount" />
-                <ScalarProperty Name="ThursdayCashAmount" ColumnName="ThursdayCashAmount" />
                 <ScalarProperty Name="ThursdayAmount" ColumnName="ThursdayAmount" />
-                <ScalarProperty Name="WednesdayCashAmount" ColumnName="WednesdayCashAmount" />
                 <ScalarProperty Name="WednesdayAmount" ColumnName="WednesdayAmount" />
-                <ScalarProperty Name="TuesdayCashAmount" ColumnName="TuesdayCashAmount" />
                 <ScalarProperty Name="TuesdayAmount" ColumnName="TuesdayAmount" />
-                <ScalarProperty Name="MondayCashAmount" ColumnName="MondayCashAmount" />
                 <ScalarProperty Name="MondayAmount" ColumnName="MondayAmount" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ExpenseAccount" ColumnName="ExpenseAccount" />

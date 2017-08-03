@@ -256,6 +256,7 @@
     <Compile Include="Models\Expense.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Expense.ext.cs" />
     <Compile Include="Models\ExpenseAccount.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -283,6 +284,7 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
+    <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />

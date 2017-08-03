@@ -18,19 +18,12 @@ namespace Great.Models
         public long ExpenseAccount { get; set; }
         public long Type { get; set; }
         public Nullable<double> MondayAmount { get; set; }
-        public Nullable<double> MondayCashAmount { get; set; }
         public Nullable<double> TuesdayAmount { get; set; }
-        public Nullable<double> TuesdayCashAmount { get; set; }
         public Nullable<double> WednesdayAmount { get; set; }
-        public Nullable<double> WednesdayCashAmount { get; set; }
         public Nullable<double> ThursdayAmount { get; set; }
-        public Nullable<double> ThursdayCashAmount { get; set; }
         public Nullable<double> FridayAmount { get; set; }
-        public Nullable<double> FridayCashAmount { get; set; }
         public Nullable<double> SaturdayAmount { get; set; }
-        public Nullable<double> SaturdayCashAmount { get; set; }
         public Nullable<double> SundayAmount { get; set; }
-        public Nullable<double> SundayCashAmount { get; set; }
     
         public virtual ExpenseType ExpenseType { get; set; }
         public virtual ExpenseAccount ExpenseAccount1 { get; set; }

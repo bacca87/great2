@@ -11,6 +11,8 @@ namespace Great.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public bool IsNew { get { return EStatus == EFDLStatus.New; } } // used for sorting purpose
+
         public EFDLStatus EStatus
         {
             get

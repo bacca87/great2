@@ -190,9 +190,9 @@ namespace Great.ViewModels
         }
 
         /// <summary>
-        /// The <see cref="FDLResults" /> property's name.
+        /// The <see cref="ExpenseTypes" /> property's name.
         /// </summary>
-        public ObservableCollection<FDLResult> FDLResults { get; set; }        
+        public ObservableCollection<ExpenseType> ExpenseTypes { get; set; }        
         #endregion
 
         #region Commands Definitions
@@ -225,7 +225,7 @@ namespace Great.ViewModels
             //MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
             //MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
 
-            FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
+            ExpenseTypes = new ObservableCollection<ExpenseType>(_db.ExpenseTypes);
             ExpenseAccounts = new ObservableCollectionEx<ExpenseAccount>(_db.ExpenseAccounts);
 
             ExpenseAccounts.ItemPropertyChanged += ExpenseAccounts_ItemPropertyChanged;
