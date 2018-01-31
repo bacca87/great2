@@ -1,5 +1,6 @@
-﻿using Great.ViewModels;
-using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
+using GalaSoft.MvvmLight.Ioc;
+using Great.ViewModels;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,7 +56,7 @@ namespace Great.Views.Pages
         private void OnFactoryLink(long factoryId)
         {
             Window wnd = Window.GetWindow(this);
-            FactoriesViewModel factoriesVM = ServiceLocator.Current.GetInstance<FactoriesViewModel>();
+            FactoriesViewModel factoriesVM = SimpleIoc.Default.GetInstance<FactoriesViewModel>();
 
             if (wnd is MainView && factoriesVM != null)
             {

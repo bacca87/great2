@@ -11,8 +11,9 @@ using iText.Forms;
 using iText.Forms.Fields;
 using System.Threading;
 using System.Diagnostics;
-using Microsoft.Practices.ServiceLocation;
 using System.Data.Entity.Migrations;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace Great.Utils
 {
@@ -275,7 +276,7 @@ namespace Great.Utils
                 {
                     try
                     {
-                        FDLManager manager = ServiceLocator.Current.GetInstance<FDLManager>();
+                        FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
 
                         if(manager.ImportFDLFromFile(s, false, true, true, true) != null)
                             File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);

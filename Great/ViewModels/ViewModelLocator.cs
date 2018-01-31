@@ -12,10 +12,10 @@
   See http://www.galasoft.ch/mvvm
 */
 
+using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
-using Microsoft.Practices.ServiceLocation;
 
 namespace Great.ViewModels
 {
@@ -30,7 +30,7 @@ namespace Great.ViewModels
         /// </summary>
         public ViewModelLocator()
         {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+            //ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             ////if (ViewModelBase.IsInDesignModeStatic)
             ////{
@@ -62,7 +62,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<TimesheetsViewModel>();
+                return SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
             }
         }
 
@@ -70,7 +70,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<FactoriesViewModel>();
+                return SimpleIoc.Default.GetInstance<FactoriesViewModel>();
             }
         }
 
@@ -78,7 +78,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<InformationsViewModel>();
+                return SimpleIoc.Default.GetInstance<InformationsViewModel>();
             }
         }
 
@@ -86,7 +86,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<FDLViewModel>();
+                return SimpleIoc.Default.GetInstance<FDLViewModel>();
             }
         }
 
@@ -94,7 +94,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<ExpenseAccountViewModel>();
+                return SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
             }
         }
 
@@ -102,7 +102,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<SettingsViewModel>();
+                return SimpleIoc.Default.GetInstance<SettingsViewModel>();
             }
         }
 
@@ -110,7 +110,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<NotificationsViewModel>();
+                return SimpleIoc.Default.GetInstance<NotificationsViewModel>();
             }
         }
 
@@ -118,7 +118,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<ImportExportViewModel>();
+                return SimpleIoc.Default.GetInstance<ImportExportViewModel>();
             }
         }
 
@@ -126,7 +126,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<GreatImportWizardViewModel>();
+                return SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
             }
         }
         
