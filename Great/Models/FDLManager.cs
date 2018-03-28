@@ -368,6 +368,70 @@ namespace Great.Models
             return fields;
         }
 
+        private Dictionary<string, string> GetAcroFormFields(ExpenseAccount ea)
+        {
+            Dictionary<string, string> fields = new Dictionary<string, string>();
+            ExpenseAccount expense = null;
+
+            //foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.ExpenseAccount.FieldNames.)
+            //{
+            //    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
+
+            //    if (timesheet != null)
+            //    {
+            //        fields.Add(entry.Value["TravelStartTimeAM"], timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["WorkStartTimeAM"], timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["WorkEndTimeAM"], timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["TravelEndTimeAM"], timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["TravelStartTimePM"], timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["WorkStartTimePM"], timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["WorkEndTimePM"], timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //        fields.Add(entry.Value["TravelEndTimePM"], timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+            //    }
+            //}
+
+            ////TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
+            ////fields.Add(ApplicationSettings.FDL.FieldNames.Cars1,
+            ////fields.Add(ApplicationSettings.FDL.FieldNames.Cars2,
+
+            //if (fdl.OutwardCar)
+            //    fields.Add(ApplicationSettings.FDL.FieldNames.OutwardCar, "1");
+            //if (fdl.OutwardTaxi)
+            //    fields.Add(ApplicationSettings.FDL.FieldNames.OutwardTaxi, "1");
+            //if (fdl.OutwardAircraft)
+            //    fields.Add(ApplicationSettings.FDL.FieldNames.OutwardAircraft, "1");
+
+            //if (fdl.ReturnCar)
+            //    fields.Add(ApplicationSettings.FDL.FieldNames.ReturnCar, "1");
+            //if (fdl.ReturnTaxi)
+            //    fields.Add(ApplicationSettings.FDL.FieldNames.ReturnTaxi, "1");
+            //if (fdl.ReturnAircraft)
+            //    fields.Add(ApplicationSettings.FDL.FieldNames.ReturnAircraft, "1");
+
+            //fields.Add(ApplicationSettings.FDL.FieldNames.PerformanceDescription, fdl.PerformanceDescription != null ? fdl.PerformanceDescription : string.Empty);
+            //fields.Add(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails, fdl.PerformanceDescriptionDetails != null ? fdl.PerformanceDescriptionDetails : string.Empty);
+
+            //switch (fdl.Result)
+            //{
+            //    case 1:
+            //        fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.Positive);
+            //        break;
+            //    case 2:
+            //        fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.Negative);
+            //        break;
+            //    case 3:
+            //        fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.WithReserve);
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+            //fields.Add(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty);
+            //fields.Add(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes != null ? fdl.Notes : string.Empty);
+
+            return fields;
+        }
+
         private void CompileFDL(FDL fdl, string fileName)
         {
             string source = ApplicationSettings.Directories.FDL + fdl.FileName;
@@ -382,6 +446,33 @@ namespace Great.Models
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
                 {
                     if(fields.ContainsKey(entry.Key))
+                        fields[entry.Key].SetValue(entry.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.Break();
+            }
+            finally
+            {
+                pdfDoc?.Close();
+            }
+        }
+
+        private void CompileEA(ExpenseAccount ea, string fileName)
+        {
+            string source = ApplicationSettings.Directories.ExpenseAccount + ea.FileName;
+            PdfDocument pdfDoc = null;
+
+            try
+            {
+                pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                IDictionary<string, PdfFormField> fields = form.GetFormFields();
+
+                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(ea))
+                {
+                    if (fields.ContainsKey(entry.Key))
                         fields[entry.Key].SetValue(entry.Value);
                 }
             }
@@ -438,6 +529,49 @@ namespace Great.Models
             
             xmlDoc.Save(FDFFileName);
         }
+        private void CompileXEA(ExpenseAccount ea, string FDLfileName, string FDFFileName)
+        {
+            //XmlDocument xmlDoc = new XmlDocument();
+
+            //XmlNode docNode = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            //XmlNode xfdfNode = xmlDoc.CreateElement("xfdf", "http://ns.adobe.com/xfdf/");
+            //XmlNode fNode = xmlDoc.CreateElement("f", xfdfNode.NamespaceURI);
+            //XmlNode fieldsNode = xmlDoc.CreateElement("fields", xfdfNode.NamespaceURI);
+
+            //XmlAttribute space = xmlDoc.CreateAttribute("xml:space");
+            //XmlAttribute href = xmlDoc.CreateAttribute("href");
+
+            //space.Value = "preserve";
+            //href.Value = FDLfileName;
+
+            //xfdfNode.Attributes.Append(space);
+            //fNode.Attributes.Append(href);
+
+            //xmlDoc.AppendChild(docNode);
+            //xmlDoc.AppendChild(xfdfNode);
+            //xfdfNode.AppendChild(fNode);
+            //xfdfNode.AppendChild(fieldsNode);
+
+            //foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
+            //{
+            //    if (entry.Value == string.Empty)
+            //        continue;
+
+            //    XmlNode fieldNode = xmlDoc.CreateElement("field", xfdfNode.NamespaceURI);
+            //    XmlNode valueNode = xmlDoc.CreateElement("value", xfdfNode.NamespaceURI);
+
+            //    XmlAttribute name = xmlDoc.CreateAttribute("name");
+            //    name.Value = entry.Key;
+
+            //    fieldNode.Attributes.Append(name);
+            //    valueNode.InnerText = entry.Value;
+
+            //    fieldNode.AppendChild(valueNode);
+            //    fieldsNode.AppendChild(fieldNode);
+            //}
+
+            //xmlDoc.Save(FDFFileName);
+        }
 
         public bool SendToSAP(FDL fdl)
         {
@@ -460,6 +594,31 @@ namespace Great.Models
                 exchangeProvider.SendEmail(message);
 
                 fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                return true;
+            }
+        }
+
+        public bool SendToSAP(ExpenseAccount ea)
+        {
+            if (ea == null)
+            return false;
+
+            using (new WaitCursor())
+            {
+                string filePath = Path.GetTempPath() + ea.FileName;
+
+                CompileEA(ea, filePath);
+
+                EmailMessageDTO message = new EmailMessageDTO();
+                message.Subject = $"Expense Account {ea.Id}";
+                message.Importance = Importance.High;
+                message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+               // message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
+                message.Attachments.Add(filePath);
+
+                exchangeProvider.SendEmail(message);
+
+                ea.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
             }
         }
@@ -504,6 +663,18 @@ namespace Great.Models
             }
         }
 
+        public bool SaveEA(ExpenseAccount ea, string filePath)
+        {
+            if (ea == null || filePath == string.Empty)
+                return false;
+
+            using (new WaitCursor())
+            {
+                CompileEA(ea, filePath);
+                return true;
+            }
+        }
+
         public bool SaveXFDF(FDL fdl, string filePath)
         {
             if (fdl == null || filePath == string.Empty)
@@ -516,7 +687,20 @@ namespace Great.Models
                 return true;
             }
         }
-        
+
+        public bool SaveXEA(ExpenseAccount ea, string filePath)
+        {
+            if (ea == null || filePath == string.Empty)
+                return false;
+
+            using (new WaitCursor())
+            {
+                File.Copy(ApplicationSettings.Directories.ExpenseAccount + ea.FileName, Path.GetDirectoryName(filePath) + "\\" + ea.FileName, true);
+                CompileXEA(ea, Path.GetDirectoryName(filePath) + "\\" + ea.FileName, filePath);
+                return true;
+            }
+        }
+
         private void ProcessMessage(EmailMessage message)
         {   
             EMessageType type = GetMessageType(message.Subject);
