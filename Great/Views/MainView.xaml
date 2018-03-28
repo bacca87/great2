@@ -187,7 +187,7 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" 
+            <Fluent:RibbonTabItem Header="FDL" 
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
@@ -235,13 +235,56 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" 
-                                  Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
-            </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" 
+            <Fluent:RibbonTabItem Header="ACCOUNT" 
+                                  DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
+                <Fluent:RibbonGroupBox Header="SAP">
+                    <Fluent:Button Header="Send" Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedExpense}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/cloud-up.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected Expense Account to the SAP system." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedExpense}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected expense account as accepted." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:DropDownButton Header="Cancel" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                        <Fluent:DropDownButton.ToolTip>
+                            <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
+                        </Fluent:DropDownButton.ToolTip>
+                        <Fluent:MenuItem Header="Mark as Cancelled" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding ExpenseAccounts}"/>
+                    </Fluent:DropDownButton>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Tools">
+                    <Fluent:DropDownButton Header="Email" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
+                        <Fluent:DropDownButton.ToolTip>
+                            <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected expense account by email." />
+                        </Fluent:DropDownButton.ToolTip>
+                        <Fluent:MenuItem Header="New Message" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedExpense}"/>
+                        <Separator/>
+                        <Fluent:MenuItem Header="Send To...">
+                            <Fluent:MenuItem Header="dio@me.can"/>
+                        </Fluent:MenuItem>
+                    </Fluent:DropDownButton>
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedExpense}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedExpense}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Open FDL" Text="Open the selected expense account with the default viewer." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="CAR" 
+                                  Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
@@ -323,7 +366,7 @@
         </TabControl>
         <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Timesheets, Source={StaticResource Locator}}">
             <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
-                <TextBlock Text="EXCHANGE: CONNECTED" />
+                <TextBlock  DataContext="{Binding Notifications, Source={StaticResource Locator}}" Text="{Binding NewExchangeStatus}" />
             </Fluent:StatusBarItem>
         </Fluent:StatusBar>
     </Grid>

@@ -81,7 +81,6 @@ namespace Great.ViewModels
                 return SimpleIoc.Default.GetInstance<InformationsViewModel>();
             }
         }
-
         public FDLViewModel FDL
         {
             get
@@ -97,7 +96,6 @@ namespace Great.ViewModels
                 return SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
             }
         }
-
         public SettingsViewModel Settings
         {
             get
@@ -105,7 +103,6 @@ namespace Great.ViewModels
                 return SimpleIoc.Default.GetInstance<SettingsViewModel>();
             }
         }
-
         public NotificationsViewModel Notifications
         {
             get
@@ -129,7 +126,7 @@ namespace Great.ViewModels
                 return SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
             }
         }
-        
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

@@ -12,6 +12,7 @@ namespace Great.Models
         private ExchangeService exService = new ExchangeService();
 
         public event EventHandler<NewMessageEventArgs> OnNewMessage;
+        public event EventHandler<EExchangeStatus> OnNewConnectionStatus;
 
         private Thread mainThread;
         private Thread emailSenderThread;
@@ -37,6 +38,7 @@ namespace Great.Models
                 lock (this)
                 {
                     exchangeStatus = value;
+                    NotifyNewConnectionStatus(exchangeStatus);
                 }
             }
         }
@@ -151,7 +153,7 @@ namespace Great.Models
                 try
                 {
                     StreamingSubscription streamingSubscription = service.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
-                                        
+                 
                     connection.AddSubscription(streamingSubscription);
                     connection.OnNotificationEvent += Connection_OnNotificationEvent;
                     connection.OnSubscriptionError += Connection_OnSubscriptionError;
@@ -257,6 +259,11 @@ namespace Great.Models
         protected void NotifyNewMessage(EmailMessage e)
         {
             OnNewMessage?.Invoke(this, new NewMessageEventArgs(e));
+        }
+
+        protected void NotifyNewConnectionStatus(EExchangeStatus e)
+        {
+            OnNewConnectionStatus?.Invoke(this, e);
         }
 
         #region Subscription Events Handling

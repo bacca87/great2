@@ -3,10 +3,13 @@ using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Great.Utils;
 using Great.Utils.Messages;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -218,19 +221,19 @@ namespace Great.ViewModels
             ClearCommand = new RelayCommand(ClearEA, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<ExpenseAccount>(SaveEA, (ExpenseAccount ea) => { return IsInputEnabled; });
 
-            //SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
-            //SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
-            //SaveAsCommand = new RelayCommand<FDL>(SaveAs);
-            //OpenCommand = new RelayCommand<FDL>(Open);
-            //MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
-            //MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
+            SendToSAPCommand = new RelayCommand<ExpenseAccount>(SendToSAP);
+            SendByEmailCommand = new RelayCommand<ExpenseAccount>(SendByEmail);
+            SaveAsCommand = new RelayCommand<ExpenseAccount>(SaveAs);
+            OpenCommand = new RelayCommand<ExpenseAccount>(Open);
+            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccount>(MarkAsAccepted);
+            MarkAsCancelledCommand = new RelayCommand<ExpenseAccount>(MarkAsCancelled);
 
             ExpenseTypes = new ObservableCollection<ExpenseType>(_db.ExpenseTypes);
             ExpenseAccounts = new ObservableCollectionEx<ExpenseAccount>(_db.ExpenseAccounts);
 
             ExpenseAccounts.ItemPropertyChanged += ExpenseAccounts_ItemPropertyChanged;
 
-            MessengerInstance.Register<NewItemMessage<ExpenseAccount>>(this, NewEA);
+            MessengerInstance.Register<NewItemMessage<Expense>>(this, NewEA);
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccount>>(this, EAChanged);
         }
 
@@ -248,7 +251,7 @@ namespace Great.ViewModels
                 Expenses = null;
         }
 
-        public void NewEA(NewItemMessage<ExpenseAccount> item)
+        public void NewEA(NewItemMessage<Expense> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -282,6 +285,69 @@ namespace Great.ViewModels
             );
         }
 
+        public void SendToSAP(ExpenseAccount ea)
+        {
+            if (ea.EStatus == EFDLStatus.Waiting &&
+                MessageBox.Show("The selected Expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            _fdlManager.SendToSAP(ea);
+            _db.SaveChanges();
+        }
+
+        public void SendByEmail(ExpenseAccount ea)
+        {
+            //TODO
+        }
+
+        public void SaveAs(ExpenseAccount ea)
+        {
+            if (ea == null)
+                return;
+
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Title = "Save Expense account As...";
+            dlg.FileName = ea.FileName;
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "ExpenseAccount (.pdf) | *.pdf";
+            dlg.AddExtension = true;
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            if (dlg.ShowDialog() == true)
+                _fdlManager.SaveEA(ea, dlg.FileName);
+        }
+
+        public void Open(ExpenseAccount ea)
+        {
+            if (ea == null)
+                return;
+
+            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(ea.FileName) + ".XFDF";
+
+            _fdlManager.SaveXEA(ea, fileName);
+            Process.Start(fileName);
+        }
+
+        public void MarkAsAccepted(ExpenseAccount ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as accepted the selected Expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.EStatus = EFDLStatus.Accepted;
+            _db.SaveChanges();
+        }
+
+        public void MarkAsCancelled(ExpenseAccount ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as Cancelled the selected Expense account ?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.EStatus = EFDLStatus.Cancelled;
+            _db.SaveChanges();
+
+
+        }
+
         public void ClearEA()
         {
 
@@ -289,7 +355,11 @@ namespace Great.ViewModels
 
         public void SaveEA(ExpenseAccount ea)
         {
+            if (ea == null)
+                return;
 
+            _db.ExpenseAccounts.AddOrUpdate(ea);
+            _db.SaveChanges();
         }
     }
 }
