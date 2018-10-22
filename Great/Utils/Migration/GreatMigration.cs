@@ -149,7 +149,7 @@ namespace Great.Utils
         {
             bool result = false;
 
-            using (DBEntities db = new DBEntities())
+            using (DBArchive db = new DBArchive())
             {
                 Timesheet t = null;
                 try
@@ -301,7 +301,7 @@ namespace Great.Utils
         #region Auxiliar methods
         private void CleanDBTables()
         {
-            using (DBEntities db = new DBEntities())
+            using (DBArchive db = new DBArchive())
             {
                 db.Timesheets.RemoveRange(db.Timesheets);
                 db.FDLs.RemoveRange(db.FDLs);

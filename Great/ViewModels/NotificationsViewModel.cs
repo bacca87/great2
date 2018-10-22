@@ -92,13 +92,13 @@ namespace Great.ViewModels
             }
         }
 
-        private DBEntities _db;
+        private DBArchive _db;
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the NotificationsViewModel class.
         /// </summary>
-        public NotificationsViewModel(DBEntities db)
+        public NotificationsViewModel(DBArchive db)
         {
             _db = db;
             

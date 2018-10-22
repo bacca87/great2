@@ -63,7 +63,7 @@ namespace Great.Models
 
                 //TODO: importazione spese
 
-                using (DBEntities db = new DBEntities())
+                using (DBArchive db = new DBArchive())
                 {
                     using (var transaction = db.Database.BeginTransaction())
                     {
@@ -116,7 +116,18 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-                
+
+                //using (StreamWriter writetext = new StreamWriter("c:\\anal.txt"))
+                //{
+                //    foreach(PdfFormField f in fields.Values)
+                //    {
+                //        writetext.WriteLine($"Field: {f.GetFieldName()}");
+                //        writetext.WriteLine($"Value: {f.GetValueAsString()}");
+                //        writetext.WriteLine($"###########################################");
+                //    }
+                    
+                //}
+
                 // General info 
                 fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                
                 fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
@@ -172,7 +183,7 @@ namespace Great.Models
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
                 
                 // Save
-                using (DBEntities db = new DBEntities())
+                using (DBArchive db = new DBArchive())
                 {
                     using (var transaction = db.Database.BeginTransaction())
                     {
@@ -525,7 +536,7 @@ namespace Great.Models
             switch (type)
             {
                 case EMessageType.FDL_Accepted:
-                    using (DBEntities db = new DBEntities())
+                    using (DBArchive db = new DBArchive())
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
                         if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
@@ -538,7 +549,7 @@ namespace Great.Models
                     }
                     break;
                 case EMessageType.FDL_Rejected:
-                    using (DBEntities db = new DBEntities())
+                    using (DBArchive db = new DBArchive())
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
                         if (rejected != null && rejected.EStatus != EFDLStatus.Rejected && rejected.EStatus != EFDLStatus.Accepted)
@@ -552,7 +563,7 @@ namespace Great.Models
                     break;
                 case EMessageType.EA_Rejected:
                 case EMessageType.EA_RejectedResubmission:
-                    using (DBEntities db = new DBEntities())
+                    using (DBArchive db = new DBArchive())
                     {
                         //TODO: differenziare la nota spese R da R1
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);

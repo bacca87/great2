@@ -105,7 +105,7 @@ namespace Great.ViewModels
         /// </summary>
         public Action<Factory> OnZoomOnFactoryRequest;
 
-        private DBEntities _db { get; set; }
+        private DBArchive _db { get; set; }
         #endregion
 
         #region Commands
@@ -117,7 +117,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the FactoriesViewModel class.
         /// </summary>
-        public FactoriesViewModel(DBEntities db)
+        public FactoriesViewModel(DBArchive db)
         {
             _db = db;
 

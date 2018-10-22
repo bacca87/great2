@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data.Entity.Core.EntityClient;
 using System.Data.SQLite;
 
 namespace Great.Models
@@ -20,7 +19,7 @@ namespace Great.Models
             {
                 get
                 {
-                    string connectionString = ConfigurationManager.ConnectionStrings["DBEntities"].ConnectionString;
+                    string connectionString = ConfigurationManager.ConnectionStrings["DBArchive"].ConnectionString;
 
                     if (connectionString == null || connectionString == string.Empty)
                         throw new ConfigurationErrorsException("Missing DBEntities connection string!");
@@ -33,8 +32,7 @@ namespace Great.Models
                 get
                 {
                     string DataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-                    EntityConnectionStringBuilder efBuilder = new EntityConnectionStringBuilder(ConnectionString);
-                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(efBuilder.ProviderConnectionString);                                        
+                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(ConnectionString);                                        
                     return sqliteBuilder.DataSource.Replace("|DataDirectory|", DataDirectory.Remove(DataDirectory.Length - 1)); // remove last \ to the DataDirectory path
                 }
             }

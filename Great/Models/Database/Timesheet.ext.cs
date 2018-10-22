@@ -3,6 +3,7 @@ using Itenso.TimePeriod;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Great.Models
 {
@@ -11,54 +12,63 @@ namespace Great.Models
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Converted Properties
+        [NotMapped]
         public DateTime Date
         {
             get { return DateTime.Now.FromUnixTimestamp(Timestamp); }
             set { Timestamp = value.ToUnixTimestamp(); }
         }
 
+        [NotMapped]
         public TimeSpan? TravelStartTimeAM_t
         {
             get { return TravelStartTimeAM.HasValue ? TimeSpan.FromSeconds(TravelStartTimeAM.Value) : (TimeSpan?)null; }
             set { TravelStartTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? TravelEndTimeAM_t
         {
             get { return TravelEndTimeAM.HasValue ? TimeSpan.FromSeconds(TravelEndTimeAM.Value) : (TimeSpan?)null; }
             set { TravelEndTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? TravelStartTimePM_t
         {
             get { return TravelStartTimePM.HasValue ? TimeSpan.FromSeconds(TravelStartTimePM.Value) : (TimeSpan?)null; }
             set { TravelStartTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? TravelEndTimePM_t
         {
             get { return TravelEndTimePM.HasValue ? TimeSpan.FromSeconds(TravelEndTimePM.Value) : (TimeSpan?)null; }
             set { TravelEndTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? WorkStartTimeAM_t
         {
             get { return WorkStartTimeAM.HasValue ? TimeSpan.FromSeconds(WorkStartTimeAM.Value) : (TimeSpan?)null; }
             set { WorkStartTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? WorkEndTimeAM_t
         {
             get { return WorkEndTimeAM.HasValue ? TimeSpan.FromSeconds(WorkEndTimeAM.Value) : (TimeSpan?)null; }
             set { WorkEndTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? WorkStartTimePM_t
         {
             get { return WorkStartTimePM.HasValue ? TimeSpan.FromSeconds(WorkStartTimePM.Value) : (TimeSpan?)null; }
             set { WorkStartTimePM = value.HasValue ? (long?)value?.TotalSeconds : null; }
         }
 
+        [NotMapped]
         public TimeSpan? WorkEndTimePM_t
         {
             get { return WorkEndTimePM.HasValue ? TimeSpan.FromSeconds(WorkEndTimePM.Value) : (TimeSpan?)null; }
@@ -67,6 +77,7 @@ namespace Great.Models
         #endregion
 
         #region Totals
+        [NotMapped]
         public float? TotalTime
         {
             get
@@ -75,6 +86,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? WorkTime
         {
             get
@@ -83,6 +95,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? TravelTime
         {
             get
@@ -93,6 +106,7 @@ namespace Great.Models
         #endregion
 
         #region Time Periods
+        [NotMapped]
         public TimePeriodCollection TimePeriods
         {
             get
@@ -109,6 +123,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public TimePeriodCollection WorkPeriods
         {
             get
@@ -135,6 +150,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public TimePeriodCollection TravelPeriods
         {
             get
@@ -187,6 +203,7 @@ namespace Great.Models
         #endregion
 
         #region Validation
+        [NotMapped]
         public bool IsValid
         {
             get
