@@ -278,7 +278,7 @@ namespace Great.Utils
                     {
                         FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
 
-                        if(manager.ImportFDLFromFile(s, false, true, true, true) != null)
+                        if(manager.ImportFDLFromFile(s, false, false, true, true, true) != null)
                             File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
                     }
                     catch (Exception ex)
