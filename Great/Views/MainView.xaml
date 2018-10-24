@@ -31,7 +31,9 @@
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage Header="FILE">
                     <Fluent:BackstageTabControl Name="menuBackstageTabControl">
-                        <Fluent:BackstageTabItem Header="Informations"/>
+                        <Fluent:BackstageTabItem Header="Informations">
+                            <Frame Source="/Views/Pages/InformationsView.xaml"/>
+                        </Fluent:BackstageTabItem>
                         <Fluent:BackstageTabItem Header="Import/Export">
                             <Frame Source="/Views/Pages/ImportExportView.xaml"/>
                         </Fluent:BackstageTabItem>

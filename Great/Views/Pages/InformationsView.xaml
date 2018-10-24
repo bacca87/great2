@@ -4,11 +4,95 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-      DataContext="{Binding Informations, Source={StaticResource Locator}}"
-      d:DesignHeight="300" d:DesignWidth="300"
-	Title="InformationsPage">
+      DataContext="{Binding Informations, Source={StaticResource Locator}}"      
+	  Title="InformationsPage">
 
-    <Grid>
-        <!--Insert statistic charts inside the page http://lvcharts.net/-->
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="40" FontWeight="Bold"/>
+            <TextBlock Grid.Row="1" Text="{Binding Version, StringFormat='Version {0}'}" FontSize="15" FontStyle="Italic"/>
+            <TextBlock Grid.Row="2" Text="{Binding Copyright}" FontSize="15" FontStyle="Italic"/>
+            <TextBlock Grid.Row="3" Text="This is a free software." FontSize="15" FontWeight="Bold"/>
+        </Grid>
+        
+        <Grid Grid.Row="1" Margin="0,30,0,0" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Contributors:" FontSize="15"/>
+            <RichTextBox Grid.Row="1" IsReadOnly="True" IsDocumentEnabled="True" Width="500">
+                <FlowDocument>
+                    <Paragraph>
+                        Marco Baccarani (<Hyperlink NavigateUri="https://github.com/bacca87" RequestNavigate="Hyperlink_RequestNavigate">github.com/bacca87</Hyperlink>)
+                        <LineBreak/>
+                        Andrea Corradini (<Hyperlink NavigateUri="https://github.com/corradinia91" RequestNavigate="Hyperlink_RequestNavigate">github.com/corradinia91</Hyperlink>)
+                        <LineBreak/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,30,0,0" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Open Source Components / Libraries / Code:" FontSize="15"/>
+            <RichTextBox Grid.Row="1" IsReadOnly="True" IsDocumentEnabled="True" Width="1000">
+                <FlowDocument>
+                    <Paragraph>
+                        <Hyperlink NavigateUri="https://github.com/fluentribbon/Fluent.Ribbon" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Fluent.Ribbon">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/FluentRibbon.png" Stretch="None" Margin="5"/>
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/radioman/greatmaps" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="GMap.NET">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/gmap.png" Stretch="Fill" Width="64" Margin="5"/>
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="http://www.mvvmlight.net/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MVVM Light">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/mvvmlight.png" Stretch="Fill" Width="100" Margin="5"/>
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://nlog-project.org/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="NLOG">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/nlog.png" Stretch="None" Margin="5"/>
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://www.sqlite.org" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="SQLite">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/sqlite.gif" Stretch="Fill" Width="100" Margin="5"/>
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/xceedsoftware/wpftoolkit" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Extended WPF Toolkit™">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/WPF_Toolkit.png" Stretch="Fill" Width="200" Margin="5"/>
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://itextpdf.com/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="ITEXT">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/itext.png" Stretch="Fill" Width="200" Margin="5"/>
+                        </Hyperlink>
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/tinohager/Nager.Date" RequestNavigate="Hyperlink_RequestNavigate">
+                            Nager.Date
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://www.codeproject.com/Articles/168662/Time-Period-Library-for-NET" RequestNavigate="Hyperlink_RequestNavigate">
+                            Time Period Library for .NET
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="http://paomedia.github.io/small-n-flat/" RequestNavigate="Hyperlink_RequestNavigate">
+                            small-n-flat
+                        </Hyperlink>
+                        <LineBreak/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </Grid>
     </Grid>
 </Page>
