@@ -14,6 +14,7 @@ namespace Great.Models
         }
 
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Timestamp { get; set; }
         public long Type { get; set; }
 
