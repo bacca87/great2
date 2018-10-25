@@ -108,15 +108,15 @@ namespace Great.Models
             return ea;
         }
 
-        public FDL ImportFDLFromFile(string filePath, bool IsXfaPdf, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false, bool MarkAsAccepted = false)
+        public FDL ImportFDLFromFile(string filePath, bool IsXfaPdf, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {
             if (IsXfaPdf)
-                return ImportFDL_XFAForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist, MarkAsAccepted);
+                return ImportFDL_XFAForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
             else
-                return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist, MarkAsAccepted);
+                return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
         }
 
-        public FDL ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false, bool MarkAsAccepted = false)
+        public FDL ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {
             FDL fdl = new FDL();
             PdfDocument pdfDoc = null;
@@ -206,8 +206,6 @@ namespace Great.Models
 
                             if (tmpFdl == null)
                             {
-                                fdl.EStatus = MarkAsAccepted ? EFDLStatus.Accepted : EFDLStatus.New;
-
                                 #region Automatic factories creation/assignment
                                 if (!ExcludeFactories)
                                 {
@@ -321,7 +319,7 @@ namespace Great.Models
             return fdl;
         }
 
-        public FDL ImportFDL_AcroForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false, bool MarkAsAccepted = false)
+        public FDL ImportFDL_AcroForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {   
             FDL fdl = new FDL();
             PdfDocument pdfDoc = null;
@@ -406,8 +404,6 @@ namespace Great.Models
 
                             if (tmpFdl == null)
                             {
-                                fdl.EStatus = MarkAsAccepted ? EFDLStatus.Accepted : EFDLStatus.New;
-
                                 #region Automatic factories creation/assignment
                                 if (!ExcludeFactories)
                                 {
