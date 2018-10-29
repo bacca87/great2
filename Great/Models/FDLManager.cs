@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -241,7 +242,7 @@ namespace Great.Models
                                 #region Timesheets
                                 if (!ExcludeTimesheets)
                                 {
-                                    foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.XFAFieldNames.TimesMatrix)
+                                    foreach (var entry in ApplicationSettings.FDL.XFAFieldNames.TimesMatrix)
                                     {
                                         string strDate = GetFieldValue(entry.Value["Date"]);
 
@@ -551,7 +552,22 @@ namespace Great.Models
             fields.Add(ApplicationSettings.FDL.FieldNames.Technician2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Technician));
             fields.Add(ApplicationSettings.FDL.FieldNames.RequestedBy2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.RequestedBy));
             fields.Add(ApplicationSettings.FDL.FieldNames.AssistanceDescription2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.AssistanceDescription));
-            
+
+
+            var AcroTimes = ApplicationSettings.FDL.FieldNames.TimesMatrix.Values.ToList();
+            var XFATimes = ApplicationSettings.FDL.XFAFieldNames.TimesMatrix.Values.ToList();
+
+            for (int i = 0; i < AcroTimes.Count && i < XFATimes.Count; i++)
+            {
+                string strDate = GetFieldValue(XFATimes[i]["Date"]);
+
+                if (!string.IsNullOrEmpty(strDate))
+                {
+                    DateTime date = DateTime.ParseExact(strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    fields.Add(AcroTimes[i]["Date"], date.ToString("dd/MMM/yy"));
+                }
+            }
+
             return fields;
         }
 
@@ -560,7 +576,7 @@ namespace Great.Models
             Dictionary<string, string> fields = new Dictionary<string, string>();
             Timesheet timesheet = null;
 
-            foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
+            foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
                 timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
