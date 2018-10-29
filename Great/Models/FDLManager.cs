@@ -329,7 +329,16 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-                
+
+                // only for testing purpose
+                //using (StreamWriter writetext = new StreamWriter("c:\\test.txt"))
+                //{
+                //    foreach(PdfFormField f in fields.Values)
+                //    {
+                //        writetext.WriteLine($"Field: {f.GetFieldName()} Value: {f.GetValueAsString()}");
+                //    }
+                //}
+
                 // General info 
                 fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                
                 fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
@@ -516,7 +525,36 @@ namespace Great.Models
 
             return fdl;
         }
-        
+
+        private Dictionary<string, string> GetXFAFormFields(XfaForm form)
+        {
+            // this is an hack for display fixed fields on saved read only FDL
+            Dictionary<string, string> fields = new Dictionary<string, string>();
+            Func<string, string> GetFieldValue = (fieldName) => { return (form.FindDatasetsNode(fieldName) as XElement).Value; };
+
+            fields.Add(ApplicationSettings.FDL.FieldNames.FDLNumber, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Order, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order));
+            fields.Add(ApplicationSettings.FDL.FieldNames.OrderType, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Customer, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Customer));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Address, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Address));
+            fields.Add(ApplicationSettings.FDL.FieldNames.CID, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.CID));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Technician, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Technician));
+            fields.Add(ApplicationSettings.FDL.FieldNames.RequestedBy, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.RequestedBy));
+            fields.Add(ApplicationSettings.FDL.FieldNames.AssistanceDescription, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.AssistanceDescription));
+
+            fields.Add(ApplicationSettings.FDL.FieldNames.FDLNumber2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Order2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order));
+            fields.Add(ApplicationSettings.FDL.FieldNames.OrderType2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Customer2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Customer));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Address2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Address));
+            fields.Add(ApplicationSettings.FDL.FieldNames.CID2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.CID));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Technician2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Technician));
+            fields.Add(ApplicationSettings.FDL.FieldNames.RequestedBy2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.RequestedBy));
+            fields.Add(ApplicationSettings.FDL.FieldNames.AssistanceDescription2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.AssistanceDescription));
+            
+            return fields;
+        }
+
         private Dictionary<string, string> GetAcroFormFields(FDL fdl)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
@@ -591,7 +629,15 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-                
+
+                // this is an hack for display fixed fields on saved read only FDL
+                foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                {
+                    if (fields.ContainsKey(entry.Key))
+                        fields[entry.Key].SetValue(entry.Value);
+                }
+                //
+
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
                 {
                     if(fields.ContainsKey(entry.Key))

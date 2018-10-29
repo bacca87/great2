@@ -137,7 +137,18 @@ namespace Great.Models
                 public const string RequestedBy = "data[0].#subform[0].Tabella5[1].Riga1[0].Cella2[0]";
                 public const string Order = "data[0].#subform[0].Tabella5[0].Riga1[0].#field[0]";
                 public const string OrderType = "data[0].#subform[0].Tabella5[0].Riga1[1].#field[0]";
+                public const string AssistanceDescription = "data[0].#subform[0].Tabella4[0].Riga1[0].Cella1[0]";
                 
+                public const string FDLNumber2 = "data[0].#subform[12].Campoditesto1[1]";
+                public const string Customer2 = "data[0].#subform[12].Tabella2[1].Riga1[0].Cella2[0]";
+                public const string Address2 = "data[0].#subform[12].Tabella2[1].Riga2[0].Cella2[0]";
+                public const string Technician2 = "data[0].#subform[12].Tabella3[1].Riga1[0].Cella1[0]";
+                public const string CID2 = "data[0].#subform[12].Tabella3[1].Riga2[0].Cella1[0]";
+                public const string RequestedBy2 = "data[0].#subform[12].Tabella5[6].Riga1[0].REQMR[0]";
+                public const string Order2 = "data[0].#subform[12].Tabella5[3].Riga1[0].#field[0]";
+                public const string OrderType2 = "data[0].#subform[12].Tabella5[3].Riga1[1].#field[0]";
+                public const string AssistanceDescription2 = "data[0].#subform[12].Tabella4[3].Riga1[0].Cella1[0]";
+
                 public const string Mon_Date = "data[0].#subform[0].Tabella1[0].Riga2[0].DATA[0]";
                 public const string Mon_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga2[0].ORAINIPM[0]";
                 public const string Mon_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga2[0].ORAINILM[0]";
@@ -347,6 +358,7 @@ namespace Great.Models
                 public const string RequestedBy = "data[0].ZFDLK[0].REQMR[0]";
                 public const string Order = "data[0].ZFDLK[0].ORD_PROD[0]";
                 public const string OrderType = "data[0].ZFDLK[0].LTXA1[0]";
+                public const string AssistanceDescription = "data[0].P_TEXT[0]";
 
                 public const string Mon_Date = "data[0].ZFDLP1[0].DATA[0]";
                 public const string Mon_TravelStartTimeAM = "data[0].ZFDLP1[0].ORAINIPM[0]";
@@ -428,11 +440,11 @@ namespace Great.Models
                 public const string ReturnTaxi = "not implemented";
                 public const string ReturnAircraft = "not implemented";
 
-                public const string PerformanceDescription = "data[0].#subform[0].Tabella4[1].Riga1[0].Cella1[0]";
-                public const string PerformanceDescriptionDetails = "data[0].#subform[12].Tabella4[3].#subformSet[0].Riga1[1].Cella1[0]";
-                public const string AssistantFinalTestResult = "data[0].#subform[0].Tabella4[2].Riga1[0].#field[0]";
-                public const string Result = "data[0].#subform[0].Elencoadiscesa1[0]";
-                public const string SoftwareVersionsOtherNotes = "data[0].#subform[0].Tabella16[0].Riga2[0].Cella1[0]";
+                public const string PerformanceDescription = "not implemented";
+                public const string PerformanceDescriptionDetails = "not implemented";
+                public const string AssistantFinalTestResult = "not implemented";
+                public const string Result = "not implemented";
+                public const string SoftwareVersionsOtherNotes = "not implemented";
 
                 // Helpers
                 #region TimesMatrix
