@@ -7,6 +7,9 @@ using System.Threading;
 
 namespace Great.Models
 {
+    //La libreria Microsoft EWS (https://github.com/OfficeDev/ews-managed-api) è deprecata
+    //il pacchetto Nuget non viene aggiornato e la versione su github è piu aggiornata e con parecchi bugs corretti, di conseguenza la libreria è stata ricompilata a mano e aggiunta alle reference del progetto.
+
     public class MSExchangeProvider
     {
         private ExchangeService exService = new ExchangeService();
@@ -178,8 +181,9 @@ namespace Great.Models
                 {
                     ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
                     FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
+                    folderView.PropertySet.Add(FolderSchema.WellKnownFolderName);
 
-                    itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending); //TODO: controllare che non riduca la velocità
+                    itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
                     
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
                     {
@@ -207,6 +211,19 @@ namespace Great.Models
 
                 foreach (Folder folder in foldersResults)
                 {
+                    if (folder.WellKnownFolderName == WellKnownFolderName.DeletedItems ||
+                        folder.WellKnownFolderName == WellKnownFolderName.SentItems ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Drafts ||
+                        folder.WellKnownFolderName == WellKnownFolderName.JunkEmail ||
+                        folder.WellKnownFolderName == WellKnownFolderName.ConversationHistory ||
+                        folder.WellKnownFolderName == WellKnownFolderName.SearchFolders ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Calendar ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Contacts ||
+                        folder.WellKnownFolderName == WellKnownFolderName.QuickContacts ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Tasks ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Contacts)
+                        continue;
+
                     do
                     {
                         itemsResults = service.FindItems(folder.Id, query, itemView);
