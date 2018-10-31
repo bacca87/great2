@@ -10,6 +10,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Data.Entity.Migrations;
 using GalaSoft.MvvmLight.Ioc;
+using Great.Models.Database;
 
 namespace Great.Utils
 {

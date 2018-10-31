@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Great.Models.Database;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
@@ -131,10 +132,8 @@ namespace Great.Models
 
                 // General info 
                 fdl.Id = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber);
-                fdl.Order = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order);
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType).Contains(ApplicationSettings.FDL.FDL_Extra);
-
                 // TODO: Not yet implemented fields
                 //fdl.EResult = GetFDLResultFromString(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Result));
                 //fdl.OutwardCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardCar) != null;
@@ -143,6 +142,11 @@ namespace Great.Models
                 //fdl.ReturnCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.ReturnCar) != null;
                 //fdl.ReturnTaxi = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.ReturnTaxi) != null;
                 //fdl.ReturnAircraft = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.ReturnAircraft) != null;
+
+                long longResult;
+
+                if (long.TryParse(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order), out longResult))
+                    fdl.Order = longResult;
 
                 fdl.NotifyAsNew = NotifyAsNew;
 
@@ -341,8 +345,7 @@ namespace Great.Models
                 //}
 
                 // General info 
-                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                
-                fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
+                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                                
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
                 fdl.EResult = GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
@@ -353,6 +356,11 @@ namespace Great.Models
                 fdl.ReturnTaxi = fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue() != null;
                 fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
                 fdl.NotifyAsNew = NotifyAsNew;
+
+                long longResult;
+
+                if (long.TryParse(fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString(), out longResult))
+                    fdl.Order = longResult;
 
                 // TODO: gestire automobili
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
@@ -726,11 +734,21 @@ namespace Great.Models
                 CompileFDL(fdl, filePath);
 
                 EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";                
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
                 message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
                 message.Attachments.Add(filePath);
+
+                using (DBArchive db = new DBArchive())
+                {
+                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order);
+
+                    //TODO: gestire inserimento destinatari aggiuntivi per FDL quando non ne sono mai stati inseriti.
+
+                    foreach(var r in recipients)
+                        message.CcRecipients.Add(r.Recipient);
+                }
 
                 exchangeProvider.SendEmail(message);
 

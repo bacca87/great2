@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
+using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Messages;
 using Microsoft.Win32;

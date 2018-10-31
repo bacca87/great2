@@ -11,6 +11,7 @@ using System.Windows.Input;
 using Great.ViewModels;
 using System.ComponentModel;
 using Great.Controls;
+using Great.Models.Database;
 
 namespace Great.Views
 {

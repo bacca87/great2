@@ -2,7 +2,7 @@
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 
-namespace Great.Models
+namespace Great.Models.Database
 {
     public partial class DBArchive : DbContext
     {
@@ -24,6 +24,7 @@ namespace Great.Models
         public virtual DbSet<FDL> FDLs { get; set; }
         public virtual DbSet<FDLResult> FDLResults { get; set; }
         public virtual DbSet<FDLStatus> FDLStatus { get; set; }
+        public virtual DbSet<OrderEmailRecipient> OrderEmailRecipients { get; set; }
         public virtual DbSet<Timesheet> Timesheets { get; set; }
         public virtual DbSet<TransferType> TransferTypes { get; set; }
     }

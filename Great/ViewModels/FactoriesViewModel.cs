@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Great.Models;
+using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Messages;
 using System;

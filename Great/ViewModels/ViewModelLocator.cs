@@ -16,6 +16,7 @@ using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
+using Great.Models.Database;
 
 namespace Great.ViewModels
 {

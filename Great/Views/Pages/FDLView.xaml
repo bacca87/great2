@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-      xmlns:m="clr-namespace:Great.Models" 
+      xmlns:m="clr-namespace:Great.Models.Database" 
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView">

@@ -7,7 +7,7 @@
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
-      xmlns:m="clr-namespace:Great.Models" 
+      xmlns:m="clr-namespace:Great.Models.Database" 
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet"
