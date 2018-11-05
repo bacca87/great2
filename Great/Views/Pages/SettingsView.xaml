@@ -8,7 +8,8 @@
       xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
-      Title="SettingsView">
+      Title="SettingsView"
+      Style="{DynamicResource MetroPage}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

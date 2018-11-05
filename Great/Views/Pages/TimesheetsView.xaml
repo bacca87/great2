@@ -11,7 +11,8 @@
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet"
-      Loaded="Page_Loaded">
+      Loaded="Page_Loaded"
+      Style="{DynamicResource MetroPage}">
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
@@ -44,7 +45,7 @@
                   VirtualizingPanel.ScrollUnit ="Item" 
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
+                <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         <Setter Property="TextBlock.FontSize" Value="15" />
@@ -53,7 +54,7 @@
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
                 </Style>
-                <Style TargetType="DataGridRow">
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
                             <Setter Property="Background" Value="LightBlue" />
@@ -72,8 +73,6 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
             </DataGrid.Resources>
             <DataGrid.GroupStyle>
                 <GroupStyle>
@@ -178,36 +177,34 @@
                       HeadersVisibility="Column"
                       IsReadOnly="True">
                     <DataGrid.Resources>
-                        <Style TargetType="DataGridCell">
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                             <Setter Property="TextBlock.TextAlignment" Value="Right" />
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                             <Setter Property="FontSize" Value="15"/>
                         </Style>
-                        <Style TargetType="DataGridColumnHeader">
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">                            
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center" />
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
                     </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="70" />
-                        <DataGridTextColumn Header="Working Time" Binding="{Binding WorkTime, StringFormat=N2}" Width="70"/>
-                        <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" Width="70"/>
-                        <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" Width="70"/>
+                        <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                        <DataGridTextColumn Header="Working Time" Binding="{Binding WorkTime, StringFormat=N2}" Width="100"/>
+                        <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" Width="100"/>
+                        <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" Width="100"/>
                         <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.FDL_Display}" Width="100"/>
                         <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="*"/>
                     </DataGrid.Columns>

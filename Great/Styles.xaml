@@ -8,4 +8,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <!--<Style TargetType="{x:Type TabPanel}">
+        <Setter Property="Background" Value=""/>
+    </Style>-->
 </ResourceDictionary>

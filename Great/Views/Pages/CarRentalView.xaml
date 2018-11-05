@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="CarRental">
+      Title="CarRental"
+      Style="{DynamicResource MetroPage}">
 
     <Grid>
         
