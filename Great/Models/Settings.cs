@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data.Entity.Core.EntityClient;
 using System.Data.SQLite;
 
 namespace Great.Models
@@ -20,7 +19,7 @@ namespace Great.Models
             {
                 get
                 {
-                    string connectionString = ConfigurationManager.ConnectionStrings["DBEntities"].ConnectionString;
+                    string connectionString = ConfigurationManager.ConnectionStrings["DBArchive"].ConnectionString;
 
                     if (connectionString == null || connectionString == string.Empty)
                         throw new ConfigurationErrorsException("Missing DBEntities connection string!");
@@ -33,8 +32,7 @@ namespace Great.Models
                 get
                 {
                     string DataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-                    EntityConnectionStringBuilder efBuilder = new EntityConnectionStringBuilder(ConnectionString);
-                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(efBuilder.ProviderConnectionString);                                        
+                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(ConnectionString);                                        
                     return sqliteBuilder.DataSource.Replace("|DataDirectory|", DataDirectory.Remove(DataDirectory.Length - 1)); // remove last \ to the DataDirectory path
                 }
             }
@@ -338,6 +336,217 @@ namespace Great.Models
                 };
                 #endregion
             }
+
+            public static class XFAFieldNames
+            {
+                public const string FDLNumber = "data[0].ZFDLK[0].NUM_FOG[0]";
+                public const string Customer = "data[0].ZFDLK[0].NAME[0]";
+                public const string Address = "data[0].ZFDLK[0].ADDRESS[0]";
+                public const string Technician = "data[0].ZFDLK[0].SNAME[0]";
+                public const string CID = "data[0].ZFDLK[0].NUMCID[0]";
+                public const string RequestedBy = "data[0].ZFDLK[0].REQMR[0]";
+                public const string Order = "data[0].ZFDLK[0].ORD_PROD[0]";
+                public const string OrderType = "data[0].ZFDLK[0].LTXA1[0]";
+
+                public const string Mon_Date = "data[0].ZFDLP1[0].DATA[0]";
+                public const string Mon_TravelStartTimeAM = "data[0].ZFDLP1[0].ORAINIPM[0]";
+                public const string Mon_WorkStartTimeAM = "data[0].ZFDLP1[0].ORAINILM[0]";
+                public const string Mon_WorkEndTimeAM = "data[0].ZFDLP1[0].ORAENDLM[0]";
+                public const string Mon_TravelEndTimeAM = "data[0].ZFDLP1[0].ORAENDAM[0]";
+                public const string Mon_TravelStartTimePM = "data[0].ZFDLP1[0].ORAINIPP[0]";
+                public const string Mon_WorkStartTimePM = "data[0].ZFDLP1[0].ORAINILP[0]";
+                public const string Mon_WorkEndTimePM = "data[0].ZFDLP1[0].ORAENDLP[0]";
+                public const string Mon_TravelEndTimePM = "data[0].ZFDLP1[0].ORAENDAP[0]";
+
+                public const string Tue_Date = "data[0].ZFDLP2[0].DATA[0]";
+                public const string Tue_TravelStartTimeAM = "data[0].ZFDLP2[0].ORAINIPM[0]";
+                public const string Tue_WorkStartTimeAM = "data[0].ZFDLP2[0].ORAINILM[0]";
+                public const string Tue_WorkEndTimeAM = "data[0].ZFDLP2[0].ORAENDLM[0]";
+                public const string Tue_TravelEndTimeAM = "data[0].ZFDLP2[0].ORAENDAM[0]";
+                public const string Tue_TravelStartTimePM = "data[0].ZFDLP2[0].ORAINIPP[0]";
+                public const string Tue_WorkStartTimePM = "data[0].ZFDLP2[0].ORAINILP[0]";
+                public const string Tue_WorkEndTimePM = "data[0].ZFDLP2[0].ORAENDLP[0]";
+                public const string Tue_TravelEndTimePM = "data[0].ZFDLP2[0].ORAENDAP[0]";
+
+                public const string Wed_Date = "data[0].ZFDLP3[0].DATA[0]";
+                public const string Wed_TravelStartTimeAM = "data[0].ZFDLP3[0].ORAINIPM[0]";
+                public const string Wed_WorkStartTimeAM = "data[0].ZFDLP3[0].ORAINILM[0]";
+                public const string Wed_WorkEndTimeAM = "data[0].ZFDLP3[0].ORAENDLM[0]";
+                public const string Wed_TravelEndTimeAM = "data[0].ZFDLP3[0].ORAENDAM[0]";
+                public const string Wed_TravelStartTimePM = "data[0].ZFDLP3[0].ORAINIPP[0]";
+                public const string Wed_WorkStartTimePM = "data[0].ZFDLP3[0].ORAINILP[0]";
+                public const string Wed_WorkEndTimePM = "data[0].ZFDLP3[0].ORAENDLP[0]";
+                public const string Wed_TravelEndTimePM = "data[0].ZFDLP3[0].ORAENDAP[0]";
+
+                public const string Thu_Date = "data[0].ZFDLP4[0].DATA[0]";
+                public const string Thu_TravelStartTimeAM = "data[0].ZFDLP4[0].ORAINIPM[0]";
+                public const string Thu_WorkStartTimeAM = "data[0].ZFDLP4[0].ORAINILM[0]";
+                public const string Thu_WorkEndTimeAM = "data[0].ZFDLP4[0].ORAENDLM[0]";
+                public const string Thu_TravelEndTimeAM = "data[0].ZFDLP4[0].ORAENDAM[0]";
+                public const string Thu_TravelStartTimePM = "data[0].ZFDLP4[0].ORAINIPP[0]";
+                public const string Thu_WorkStartTimePM = "data[0].ZFDLP4[0].ORAINILP[0]";
+                public const string Thu_WorkEndTimePM = "data[0].ZFDLP4[0].ORAENDLP[0]";
+                public const string Thu_TravelEndTimePM = "data[0].ZFDLP4[0].ORAENDAP[0]";
+
+                public const string Fri_Date = "data[0].ZFDLP5[0].DATA[0]";
+                public const string Fri_TravelStartTimeAM = "data[0].ZFDLP5[0].ORAINIPM[0]";
+                public const string Fri_WorkStartTimeAM = "data[0].ZFDLP5[0].ORAINILM[0]";
+                public const string Fri_WorkEndTimeAM = "data[0].ZFDLP5[0].ORAENDLM[0]";
+                public const string Fri_TravelEndTimeAM = "data[0].ZFDLP5[0].ORAENDAM[0]";
+                public const string Fri_TravelStartTimePM = "data[0].ZFDLP5[0].ORAINIPP[0]";
+                public const string Fri_WorkStartTimePM = "data[0].ZFDLP5[0].ORAINILP[0]";
+                public const string Fri_WorkEndTimePM = "data[0].ZFDLP5[0].ORAENDLP[0]";
+                public const string Fri_TravelEndTimePM = "data[0].ZFDLP5[0].ORAENDAP[0]";
+
+                public const string Sat_Date = "data[0].ZFDLP6[0].DATA[0]";
+                public const string Sat_TravelStartTimeAM = "data[0].ZFDLP6[0].ORAINIPM[0]";
+                public const string Sat_WorkStartTimeAM = "data[0].ZFDLP6[0].ORAINILM[0]";
+                public const string Sat_WorkEndTimeAM = "data[0].ZFDLP6[0].ORAENDLM[0]";
+                public const string Sat_TravelEndTimeAM = "data[0].ZFDLP6[0].ORAENDAM[0]";
+                public const string Sat_TravelStartTimePM = "data[0].ZFDLP6[0].ORAINIPP[0]";
+                public const string Sat_WorkStartTimePM = "data[0].ZFDLP6[0].ORAINILP[0]";
+                public const string Sat_WorkEndTimePM = "data[0].ZFDLP6[0].ORAENDLP[0]";
+                public const string Sat_TravelEndTimePM = "data[0].ZFDLP6[0].ORAENDAP[0]";
+
+                public const string Sun_Date = "data[0].ZFDLP7[0].DATA[0]";
+                public const string Sun_TravelStartTimeAM = "data[0].ZFDLP7[0].ORAINIPM[0]";
+                public const string Sun_WorkStartTimeAM = "data[0].ZFDLP7[0].ORAINILM[0]";
+                public const string Sun_WorkEndTimeAM = "data[0].ZFDLP7[0].ORAENDLM[0]";
+                public const string Sun_TravelEndTimeAM = "data[0].ZFDLP7[0].ORAENDAM[0]";
+                public const string Sun_TravelStartTimePM = "data[0].ZFDLP7[0].ORAINIPP[0]";
+                public const string Sun_WorkStartTimePM = "data[0].ZFDLP7[0].ORAINILP[0]";
+                public const string Sun_WorkEndTimePM = "data[0].ZFDLP7[0].ORAENDLP[0]";
+                public const string Sun_TravelEndTimePM = "data[0].ZFDLP7[0].ORAENDAP[0]";
+
+                public const string Cars1 = "not implemented";
+                public const string Cars2 = "not implemented";
+
+                public const string OutwardCar = "not implemented";
+                public const string OutwardTaxi = "not implemented";
+                public const string OutwardAircraft = "not implemented";
+                public const string ReturnCar = "not implemented";
+                public const string ReturnTaxi = "not implemented";
+                public const string ReturnAircraft = "not implemented";
+
+                public const string PerformanceDescription = "data[0].#subform[0].Tabella4[1].Riga1[0].Cella1[0]";
+                public const string PerformanceDescriptionDetails = "data[0].#subform[12].Tabella4[3].#subformSet[0].Riga1[1].Cella1[0]";
+                public const string AssistantFinalTestResult = "data[0].#subform[0].Tabella4[2].Riga1[0].#field[0]";
+                public const string Result = "data[0].#subform[0].Elencoadiscesa1[0]";
+                public const string SoftwareVersionsOtherNotes = "data[0].#subform[0].Tabella16[0].Riga2[0].Cella1[0]";
+
+                // Helpers
+                #region TimesMatrix
+                public static readonly Dictionary<DayOfWeek, Dictionary<string, string>> TimesMatrix = new Dictionary<DayOfWeek, Dictionary<string, string>>()
+                {
+                    {
+                        DayOfWeek.Monday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Mon_Date },
+                            { "TravelStartTimeAM", Mon_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Mon_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Mon_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Mon_TravelEndTimeAM },
+                            { "TravelStartTimePM", Mon_TravelStartTimePM },
+                            { "WorkStartTimePM",   Mon_WorkStartTimePM },
+                            { "WorkEndTimePM",     Mon_WorkEndTimePM },
+                            { "TravelEndTimePM",   Mon_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Tuesday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Tue_Date },
+                            { "TravelStartTimeAM", Tue_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Tue_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Tue_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Tue_TravelEndTimeAM },
+                            { "TravelStartTimePM", Tue_TravelStartTimePM },
+                            { "WorkStartTimePM",   Tue_WorkStartTimePM },
+                            { "WorkEndTimePM",     Tue_WorkEndTimePM },
+                            { "TravelEndTimePM",   Tue_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Wednesday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Wed_Date },
+                            { "TravelStartTimeAM", Wed_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Wed_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Wed_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Wed_TravelEndTimeAM },
+                            { "TravelStartTimePM", Wed_TravelStartTimePM },
+                            { "WorkStartTimePM",   Wed_WorkStartTimePM },
+                            { "WorkEndTimePM",     Wed_WorkEndTimePM },
+                            { "TravelEndTimePM",   Wed_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Thursday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Thu_Date },
+                            { "TravelStartTimeAM", Thu_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Thu_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Thu_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Thu_TravelEndTimeAM },
+                            { "TravelStartTimePM", Thu_TravelStartTimePM },
+                            { "WorkStartTimePM",   Thu_WorkStartTimePM },
+                            { "WorkEndTimePM",     Thu_WorkEndTimePM },
+                            { "TravelEndTimePM",   Thu_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Friday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Fri_Date },
+                            { "TravelStartTimeAM", Fri_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Fri_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Fri_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Fri_TravelEndTimeAM },
+                            { "TravelStartTimePM", Fri_TravelStartTimePM },
+                            { "WorkStartTimePM",   Fri_WorkStartTimePM },
+                            { "WorkEndTimePM",     Fri_WorkEndTimePM },
+                            { "TravelEndTimePM",   Fri_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Saturday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Sat_Date },
+                            { "TravelStartTimeAM", Sat_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Sat_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Sat_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Sat_TravelEndTimeAM },
+                            { "TravelStartTimePM", Sat_TravelStartTimePM },
+                            { "WorkStartTimePM",   Sat_WorkStartTimePM },
+                            { "WorkEndTimePM",     Sat_WorkEndTimePM },
+                            { "TravelEndTimePM",   Sat_TravelEndTimePM }
+                        }
+                    },
+                    {
+                        DayOfWeek.Sunday,
+                        new Dictionary<string, string>
+                        {
+                            { "Date",              Sun_Date },
+                            { "TravelStartTimeAM", Sun_TravelStartTimeAM },
+                            { "WorkStartTimeAM",   Sun_WorkStartTimeAM },
+                            { "WorkEndTimeAM",     Sun_WorkEndTimeAM },
+                            { "TravelEndTimeAM",   Sun_TravelEndTimeAM },
+                            { "TravelStartTimePM", Sun_TravelStartTimePM },
+                            { "WorkStartTimePM",   Sun_WorkStartTimePM },
+                            { "WorkEndTimePM",     Sun_WorkEndTimePM },
+                            { "TravelEndTimePM",   Sun_TravelEndTimePM }
+                        }
+                    }
+                };
+                #endregion
+            }
+
         }
         #endregion
 
@@ -543,12 +752,10 @@ namespace Great.Models
         }
         #endregion
 
-        #region Google Map
-        public static class GoogleMap
+        #region Map
+        public static class Map
         {
             public const double ZoomMarker = 15;
-            public const string GoogleUrl = "google.com";
-
             public const string NewFactoryName = "New Factory";
         }
         #endregion

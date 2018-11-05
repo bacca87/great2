@@ -22,7 +22,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Fluent:Ribbon Grid.Row="0">            
+        <Fluent:Ribbon Grid.Row="0">
             <Fluent:Ribbon.Resources>
                 <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
                 <conv:CompareIntConverter x:Key="CompareIntConverter"/>
@@ -31,7 +31,9 @@
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage Header="FILE">
                     <Fluent:BackstageTabControl Name="menuBackstageTabControl">
-                        <Fluent:BackstageTabItem Header="Informations"/>
+                        <Fluent:BackstageTabItem Header="Informations">
+                            <Frame Source="/Views/Pages/InformationsView.xaml"/>
+                        </Fluent:BackstageTabItem>
                         <Fluent:BackstageTabItem Header="Import/Export">
                             <Frame Source="/Views/Pages/ImportExportView.xaml"/>
                         </Fluent:BackstageTabItem>
@@ -45,7 +47,7 @@
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
             <!--Contextual Tab Groups-->
-            <Fluent:Ribbon.ContextualGroups>                
+            <Fluent:Ribbon.ContextualGroups>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="HOME"
@@ -69,7 +71,7 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Day">                    
+                <Fluent:RibbonGroupBox Header="Day">
                     <Fluent:RadioButton Header="Day of Work" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Day of Work" Text="Set the selected day as day of work." />
@@ -221,7 +223,7 @@
                         <Separator/>
                         <Fluent:MenuItem Header="Send To...">
                             <Fluent:MenuItem Header="dio@me.can"/>
-                        </Fluent:MenuItem>                        
+                        </Fluent:MenuItem>
                     </Fluent:DropDownButton>
                     <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
@@ -283,8 +285,10 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="CAR" 
+                                  DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
+
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">

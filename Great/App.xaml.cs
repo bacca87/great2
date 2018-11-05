@@ -32,7 +32,7 @@ namespace Great
         private void InitializeDatabase()
         {
             // disable EF database initializer
-            Database.SetInitializer<DBEntities>(null);
+            Database.SetInitializer<DBArchive>(null);
             
             string dbDirectory = Path.GetDirectoryName(ApplicationSettings.Database.DBFileName);
             string dbFileName = dbDirectory + "\\" + Path.GetFileName(ApplicationSettings.Database.DBFileName);

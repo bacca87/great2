@@ -12,8 +12,6 @@
   See http://www.galasoft.ch/mvvm
 */
 
-using CommonServiceLocator;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
 
@@ -42,90 +40,39 @@ namespace Great.ViewModels
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
-            
+
             SimpleIoc.Default.Register<MSExchangeProvider>();
             SimpleIoc.Default.Register<FDLManager>();
-            SimpleIoc.Default.Register<DBEntities>();
+            SimpleIoc.Default.Register<DBArchive>();
 
             SimpleIoc.Default.Register<TimesheetsViewModel>();
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
             SimpleIoc.Default.Register<FDLViewModel>();
-            SimpleIoc.Default.Register<ExpenseAccountViewModel>();            
+            SimpleIoc.Default.Register<ExpenseAccountViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<NotificationsViewModel>();
             SimpleIoc.Default.Register<ImportExportViewModel>();
             SimpleIoc.Default.Register<GreatImportWizardViewModel>();
+            SimpleIoc.Default.Register<CarRentalViewModel>();
         }
 
-        public TimesheetsViewModel Timesheets
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
-            }
-        }
+        public TimesheetsViewModel Timesheets => SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
 
-        public FactoriesViewModel Factories
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<FactoriesViewModel>();
-            }
-        }
+        public FactoriesViewModel Factories => SimpleIoc.Default.GetInstance<FactoriesViewModel>();
 
-        public InformationsViewModel Informations
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<InformationsViewModel>();
-            }
-        }
-        public FDLViewModel FDL
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<FDLViewModel>();
-            }
-        }
+        public InformationsViewModel Informations => SimpleIoc.Default.GetInstance<InformationsViewModel>();
+        public FDLViewModel FDL => SimpleIoc.Default.GetInstance<FDLViewModel>();
 
-        public ExpenseAccountViewModel ExpenseAccount
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
-            }
-        }
-        public SettingsViewModel Settings
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<SettingsViewModel>();
-            }
-        }
-        public NotificationsViewModel Notifications
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-            }
-        }
+        public ExpenseAccountViewModel ExpenseAccount => SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
+        public SettingsViewModel Settings => SimpleIoc.Default.GetInstance<SettingsViewModel>();
+        public NotificationsViewModel Notifications => SimpleIoc.Default.GetInstance<NotificationsViewModel>();
 
-        public ImportExportViewModel ImportExport
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<ImportExportViewModel>();
-            }
-        }
+        public ImportExportViewModel ImportExport => SimpleIoc.Default.GetInstance<ImportExportViewModel>();
 
-        public GreatImportWizardViewModel GreatImportWizard
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
-            }
-        }
+        public GreatImportWizardViewModel GreatImportWizard => SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
+
+        public CarRentalViewModel CarRental => SimpleIoc.Default.GetInstance<CarRentalViewModel>();
 
         public static void Cleanup()
         {

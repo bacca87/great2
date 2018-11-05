@@ -5,6 +5,7 @@ using Nager.Date.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Great.Models
@@ -13,14 +14,18 @@ namespace Great.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [NotMapped]
         public DateTime Date
         {
             get { return DateTime.Now.FromUnixTimestamp(Timestamp); }
             set { Timestamp = value.ToUnixTimestamp(); }
         }
 
+        [NotMapped]
         public int WeekNr { get { return Date.WeekNr(); } }
+        [NotMapped]
         public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, CountryCode.IT); } }
+        [NotMapped]
         public string HolidayLocalName
         {
             get
@@ -30,6 +35,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public EDayType EType
         {
             get
@@ -43,11 +49,15 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public bool IsWorkDay { get { return EType == EDayType.WorkDay; } }
+        [NotMapped]
         public bool IsVacationDay { get { return EType == EDayType.VacationDay; } }
+        [NotMapped]
         public bool IsSickLeave { get { return EType == EDayType.SickLeave; } }
 
         #region Totals
+        [NotMapped]
         public float? TotalTime
         {
             get
@@ -65,6 +75,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? WorkTime
         {
             get
@@ -82,6 +93,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? TravelTime
         {
             get
@@ -99,6 +111,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? HoursOfLeave
         {
             get
@@ -112,6 +125,7 @@ namespace Great.Models
         #endregion
 
         #region Time Periods
+        [NotMapped]
         public TimePeriodCollection TimePeriods
         {
             get
@@ -129,6 +143,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public TimePeriodCollection WorkPeriods
         {
             get
@@ -146,6 +161,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public TimePeriodCollection TravelPeriods
         {
             get
@@ -165,6 +181,7 @@ namespace Great.Models
         #endregion
 
         #region Overtimes
+        [NotMapped]
         public float? Overtime34
         {
             get
@@ -193,6 +210,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? Overtime35
         {
             get
@@ -215,6 +233,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? Overtime50
         {
             get
@@ -237,6 +256,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public float? Overtime100
         {
             get
@@ -251,8 +271,10 @@ namespace Great.Models
         }
         #endregion
 
-        #region Display Properties        
+        #region Display Properties
+        [NotMapped]
         public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday ? WeekNr.ToString() : ""; } }
+        [NotMapped]
         public string Factories_Display
         {
             get

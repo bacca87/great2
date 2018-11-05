@@ -33,7 +33,7 @@ namespace Great.Views
             InitializeComponent();
 
             factoriesMapControl.CacheLocation = ApplicationSettings.Directories.Cache;
-            factoriesMapControl.MapProvider = GMapProviders.GoogleMap;
+            factoriesMapControl.MapProvider = GMapProviders.OpenStreetMap;            
             factoriesMapControl.ShowCenter = false; //The block of wood display centre cross burns
             factoriesMapControl.DragButton = MouseButton.Right; //The key drags left dragging a map
             factoriesMapControl.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
@@ -85,10 +85,10 @@ namespace Great.Views
                 if (tempMarker != null)
                     factoriesMapControl.Markers.Remove(tempMarker);
 
-                tempMarker = CreateMarker(point.Value, new Factory() { Name = ApplicationSettings.GoogleMap.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
+                tempMarker = CreateMarker(point.Value, new Factory() { Name = ApplicationSettings.Map.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
                 factoriesMapControl.Markers.Add(tempMarker);
 
-                ZoomOnPoint(point.Value, ApplicationSettings.GoogleMap.ZoomMarker);
+                ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Great.Views
 
             if (point.HasValue)
             {
-                ZoomOnPoint(point.Value, ApplicationSettings.GoogleMap.ZoomMarker);
+                ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
                 FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((Factory)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
 
                 if (marker != null)
@@ -132,8 +132,7 @@ namespace Great.Views
             PointLatLng? point;
             GeoCoderStatusCode status;
 
-            point = GMapProviders.GoogleMap.GetPoint(address, out status);
-
+            point = (factoriesMapControl.MapProvider as GeocodingProvider).GetPoint(address, out status);
             //TODO: log errors -> switch(status) case: GeoCoderStatusCode.G_GEO_SUCCESS
             return point;
         }
@@ -142,7 +141,7 @@ namespace Great.Views
         {
             FactoryMarker shape = new FactoryMarker() { DataContext = factory, Color = color };
 
-            GMapMarker marker = new GMapMarker((PointLatLng)point);
+            GMapMarker marker = new GMapMarker(point);
             marker.Shape = shape;
             marker.Offset = new Point(-(shape.Rectangle.Width / 2), -shape.Rectangle.Height);
 
@@ -171,7 +170,7 @@ namespace Great.Views
         {
             try
             {
-                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry(ApplicationSettings.GoogleMap.GoogleUrl);
+                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry(new Uri(factoriesMapControl.MapProvider.RefererUrl).Host);
             }
             catch
             {
@@ -220,16 +219,16 @@ namespace Great.Views
             {
                 Point mousePos = e.GetPosition(factoriesMapControl);
                 PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
-                List<Placemark> placemarks = null;
 
-                GeoCoderStatusCode status = GMapProviders.GoogleMap.GetPlacemarks(mapPosition, out placemarks);
+                GeoCoderStatusCode status;
+                Placemark? placemark = (factoriesMapControl.MapProvider as GeocodingProvider).GetPlacemark(mapPosition, out status);
 
-                if (status == GeoCoderStatusCode.G_GEO_SUCCESS && placemarks != null && placemarks.Count > 0)
+                if (status == GeoCoderStatusCode.G_GEO_SUCCESS && placemark.HasValue)
                 {
                     if (tempMarker != null)
                         factoriesMapControl.Markers.Remove(tempMarker);
 
-                    Factory factory = new Factory() { Name = ApplicationSettings.GoogleMap.NewFactoryName, Address = placemarks.FirstOrDefault().Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
+                    Factory factory = new Factory() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
                     GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
                     tempMarker = marker;
                     factoriesMapControl.Markers.Add(marker);

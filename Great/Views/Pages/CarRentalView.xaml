@@ -3,12 +3,129 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       xmlns:local="clr-namespace:Great.Views.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
+            DataContext="{Binding CarRental, Source={StaticResource Locator}}"
       Title="CarRental">
 
-    <Grid>
-        
+    <Page.Resources>
+        <CollectionViewSource x:Key="CarRentalHistoryView" Source="{Binding CarRentals}" IsLiveSortingRequested="True" >
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="EndDate" Direction="Descending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Page.Resources>
+
+    <Grid Margin="10,0,10,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Margin="10,0,10,0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                <TextBlock>Rent Start Date:</TextBlock>
+                <DatePicker SelectedDate=""></DatePicker>
+                <TextBlock>Rent End Date</TextBlock>
+                <DatePicker SelectedDate=""></DatePicker>
+                <TextBlock>Car Plate</TextBlock>
+                <TextBox Width="100" Height="20"></TextBox>
+                <Button Margin="10" Content="Apply Filter" Command="{Binding ApplyFilter}" />
+                <Button Margin="10" Content="Clear Filter" Command="{Binding ClearFilter}"  />
+            </StackPanel>
+
+            <DataGrid Name="CarRentalHistoryView"
+                Grid.Row="1"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
+                AutoGenerateColumns="False" 
+                CanUserReorderColumns="False" 
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False" 
+                CanUserSortColumns="False" 
+                IsReadOnly="True"                  
+                SelectionMode="Single"
+                HeadersVisibility="Column"
+                ItemsSource="{Binding Source={StaticResource CarRentalHistoryView}}"
+                SelectedItem="{Binding SelectedCarRental}"
+                VirtualizingPanel.ScrollUnit ="Item" 
+                VirtualizingPanel.VirtualizationMode="Standard">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Status">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Rent Start Date" Binding="{Binding StartDate }" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="Rent End Date" Binding="{Binding EndDate.Order}"/>
+                    <DataGridTextColumn Header="Car" Binding="{Binding Car}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Vertical">
+                <TextBlock>Car Plate</TextBlock>
+                <TextBox></TextBox>
+                <TextBlock>Brand</TextBlock>
+                <TextBox></TextBox>
+                <TextBlock>Model</TextBlock>
+                <TextBox></TextBox>
+                <TextBlock>Rent Company;</TextBlock>
+                <ComboBox ItemsSource="{Binding Companies }" DisplayMemberPath="Name"></ComboBox>
+                <TextBlock>Initial Km</TextBlock>
+                <TextBox></TextBox>
+                <TextBlock>Ending Km</TextBlock>
+                <TextBox></TextBox>
+                 <TextBlock>Driven Km</TextBlock>
+                <TextBox></TextBox>
+                 <TextBlock>Rent Start Date:</TextBlock>
+                <DatePicker SelectedDate=""></DatePicker>
+                <TextBlock>Rent End Date</TextBlock>
+                <DatePicker SelectedDate=""></DatePicker>
+                <TextBlock>Rent Start Location</TextBlock>
+                <TextBox></TextBox>
+                <TextBlock>Rent End Llocation</TextBlock>
+                <TextBox></TextBox>                
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Orientation="Horizontal">            
+                <Button Margin="10" Content="Save" Command="{Binding SaveRentCommand}" />
+                <Button Margin="10" Content="Delete" Command="{Binding DeleteRentCommand}"  />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

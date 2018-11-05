@@ -92,48 +92,20 @@ namespace Great.ViewModels
             }
         }
 
-        private EExchangeStatus _newExchangeStatus;
-
-        /// <summary>
-        /// Sets and gets the NewExchangeStatus property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public EExchangeStatus NewExchangeStatus
-        {
-            get
-            {
-                return _newExchangeStatus;
-            }
-
-            set
-            {
-                var oldValue = _newExchangeStatus;
-                _newExchangeStatus = value;
-
-                RaisePropertyChanged(nameof(NewExchangeStatus), oldValue, value);
-            }
-        }
-
-        private DBEntities _db;
-        private MSExchangeProvider _exchangeProvider;
+        private DBArchive _db;
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the NotificationsViewModel class.
         /// </summary>
-        public NotificationsViewModel(DBEntities db, MSExchangeProvider exchangeProvider)
+        public NotificationsViewModel(DBArchive db)
         {
             _db = db;
-            _exchangeProvider = exchangeProvider;
-            _exchangeProvider.OnNewConnectionStatus += _exchangeProvider_OnNewConnectionStatus;
-
-            NewExchangeStatus = _exchangeProvider.ExchangeStatus;
+            
             NewFactoriesCount = _db.Factories.Count(factory => factory.NotifyAsNew);
             NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew);
             NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
-
-        
-
+            
             MessengerInstance.Register(this, (NewItemMessage<FDL> x) => {
                 Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew); }));
             });
@@ -145,12 +117,6 @@ namespace Great.ViewModels
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccount> x) => {
                 Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); }));
             });
-
-        }
-
-        private void _exchangeProvider_OnNewConnectionStatus(object sender, EExchangeStatus e)
-        {
-             NewExchangeStatus = _exchangeProvider.ExchangeStatus;
         }
 
         //TODO: aggiungere le notifiche baloon

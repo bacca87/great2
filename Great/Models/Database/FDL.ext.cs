@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Great.Models
@@ -7,11 +8,15 @@ namespace Great.Models
     public partial class FDL : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
+        [NotMapped]
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
+        [NotMapped]
         public bool IsNew { get { return EStatus == EFDLStatus.New; } } // used for sorting purpose
+        [NotMapped]
         public bool IsValid { get { return Timesheets.All(ts => ts.IsValid); } }
-        
+
+        [NotMapped]
         public EFDLStatus EStatus
         {
             get
@@ -24,6 +29,7 @@ namespace Great.Models
             }
         }
 
+        [NotMapped]
         public EFDLResult EResult
         {
             get
@@ -37,7 +43,9 @@ namespace Great.Models
         }
 
         #region Display Properties
+        [NotMapped]
         public string FDL_Display { get { return $"{Id}{(IsExtra ? " (EXTRA)" : "")}"; } }
+        [NotMapped]
         public string FDL_Factory_Display { get { return $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}"; } }
         #endregion
 
@@ -65,7 +73,7 @@ namespace Great.Models
             OnPropertyChanged(nameof(LastError));
 
             OnPropertyChanged(nameof(FDLResult));
-            OnPropertyChanged(nameof(FDLStatu));
+            OnPropertyChanged(nameof(FDLStatus));
             OnPropertyChanged(nameof(Factory1));
         }
 

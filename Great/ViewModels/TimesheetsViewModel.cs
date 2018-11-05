@@ -283,7 +283,7 @@ namespace Great.ViewModels
 
         public Action<Day> OnSelectToday;
 
-        private DBEntities _db { get; set; }
+        private DBArchive _db { get; set; }
         #endregion
 
         #region Commands Definitions
@@ -309,7 +309,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public TimesheetsViewModel(DBEntities db)
+        public TimesheetsViewModel(DBArchive db)
         {
             _db = db;
 

@@ -6,13 +6,9 @@ using System.Data;
 using Great.Models;
 using Great.Utils.Extensions;
 using System.IO;
-using iText.Kernel.Pdf;
-using iText.Forms;
-using iText.Forms.Fields;
 using System.Threading;
 using System.Diagnostics;
 using System.Data.Entity.Migrations;
-using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
 
 namespace Great.Utils
@@ -58,6 +54,11 @@ namespace Great.Utils
         private DataTable dtCars = new DataTable();
         private DataTable dtExpenseReview = new DataTable();
         private DataTable dtConfiguration = new DataTable();
+        private DataTable dtSentFiles = new DataTable();
+        #endregion
+
+        #region Temp Cache
+        IDictionary<long, long> _factories = new Dictionary<long, long>();
         #endregion
 
         public GreatMigration()
@@ -96,12 +97,14 @@ namespace Great.Utils
         private void MigrationThread()
         {
             // CleanDBTables();
-            OnCompleted(new EventImportArgs("Importing PDF files to DB"));
+            OnCompleted(new EventImportArgs("Importing Factories..."));
+            CompileFactoriesTable();
+            OnCompleted(new EventImportArgs("Importing PDF files..."));
             CompileFdlTable();
-            OnCompleted(new EventImportArgs("Importing Hours"));
+            OnCompleted(new EventImportArgs("Importing Hours..."));
             CompileHourTable();
             Completed = true;
-            OnCompleted(new EventImportArgs("Operation Completed"));
+            OnCompleted(new EventImportArgs("Operation Completed!"));
         }
 
         private bool GetDataTables()
@@ -132,6 +135,10 @@ namespace Great.Utils
                 adapter = new OleDbDataAdapter(command);
                 adapter.Fill(dtConfiguration);
 
+                command = new OleDbCommand("SELECT * FROM dbt_Invii", connection);
+                adapter = new OleDbDataAdapter(command);
+                adapter.Fill(dtSentFiles);
+
                 Close();
 
                 result = true;
@@ -145,11 +152,49 @@ namespace Great.Utils
             return result;
         }
 
+        private bool CompileFactoriesTable()
+        {
+            bool result = false;
+
+            using (DBArchive db = new DBArchive())
+            {
+                Timesheet t = null;
+                try
+                {
+                    //Get enumerable rows fron datatable
+                    IEnumerable<DataRow> collection = dtPlants.Rows.Cast<DataRow>();
+
+                    foreach (DataRow r in collection)
+                    {
+                        Factory f = new Factory();
+                        f.Name = r.Field<string>("dbf_Stabilimento");
+                        f.CompanyName = r.Field<string>("dbf_RagioneSociale");
+                        f.Address = r.Field<string>("dbf_Indirizzo");
+                        f.IsForfait = r.Field<bool>("dbf_Forfettario");
+
+                        long transferType = r.Field<byte>("dbf_Tipo_Trasf");
+                        f.TransferType = transferType != 4 ? transferType : 0;                        
+
+                        db.Factories.AddOrUpdate(f);
+                        db.SaveChanges();
+
+                        _factories.Add(r.Field<int>("dbf_Index"), f.Id);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
         private bool CompileHourTable()
         {
             bool result = false;
 
-            using (DBEntities db = new DBEntities())
+            using (DBArchive db = new DBArchive())
             {
                 Timesheet t = null;
                 try
@@ -225,30 +270,28 @@ namespace Great.Utils
                                 //Add details for first FDL
                                 if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_Foglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_Foglio"))))
                                 {
-                                    t.FDL = r.Field<string>("Dbf_Foglio");
-                                    string[] parts = t.FDL.Split('/');
-
-                                    for (int i = 0; i < parts.Length; i++)
-                                        parts[i] = parts[i].Trim();
-
-                                    t.FDL = $"{parts[1]}/{parts[0]}".Trim();
-
-
+                                    t.FDL = FormatFDL(r.Field<string>("Dbf_Foglio"));
                                     db.Timesheets.Add(t);
                                 }
 
                                 //Add details for second FDL
                                 if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_SecondoFoglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_SecondoFoglio"))))
                                 {
-                                    t.FDL = r.Field<string>("Dbf_Foglio");
-                                    string[] parts = t.FDL.Split('/');
-
-                                    for (int i = 0; i < parts.Length; i++)
-                                        parts[i] = parts[i].Trim();
-
-                                    t.FDL = $"{parts[1]}/{parts[0]}";
-
+                                    t.FDL = FormatFDL(r.Field<string>("Dbf_Foglio"));
                                     db.Timesheets.Add(t);
+                                }
+
+                                // Factory association
+                                long factoryId = r.Field<short>("Dbf_Impianto");
+                                if (_factories.ContainsKey(factoryId))
+                                {
+                                    FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == t.FDL);
+
+                                    if (!fdl.Factory.HasValue)
+                                    {
+                                        fdl.Factory = _factories[factoryId];
+                                        db.FDLs.AddOrUpdate(fdl);
+                                    }
                                 }
                             }
                         }                        
@@ -266,26 +309,63 @@ namespace Great.Utils
             return result;
         }
 
+        private string FormatFDL(string fdl_Id)
+        {   
+            string[] parts = fdl_Id.Split('/');
+
+            for (int i = 0; i < parts.Length; i++)
+                parts[i] = parts[i].Trim();
+
+            return $"{parts[1]}/{parts[0]}";
+        }
+
         private bool CompileFdlTable()
         {
             bool result = false;
             
             try
             {
-                foreach (string s in GetFileList(_sourceFdlPath))
-                {
-                    try
-                    {
-                        FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
+                IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
 
-                        if(manager.ImportFDLFromFile(s, false, true, true, true) != null)
-                            File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
-                    }
-                    catch (Exception ex)
+                using (DBArchive db = new DBArchive())
+                {
+                    foreach (string s in GetFileList(_sourceFdlPath))
                     {
-                        Debugger.Break();
-                        //If here, a problem with fdl file occured (check filename, and that FDL is not a virtual printed PDF)
+                        try
+                        {
+                            FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
+                            FDL fdl = manager.ImportFDLFromFile(s, false, false, true, true, true);
+
+                            if (fdl != null)
+                            {
+                                File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
+
+                                DataRow sent = sentFiles.Where(file => !string.IsNullOrEmpty(file.Field<string>("Dbf_Foglio")) && FormatFDL(file.Field<string>("Dbf_Foglio")) == fdl.Id && file.Field<int>("dbf_TipoInvio") == 2).Select(file => file).FirstOrDefault();
+
+                                if (sent != null)
+                                {
+                                    // we must override recived fdl with the same of current dbcontext istance
+                                    fdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
+
+                                    if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
+                                        fdl.EStatus = EFDLStatus.Waiting;
+                                    else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
+                                        fdl.EStatus = EFDLStatus.Accepted;
+                                    else
+                                        fdl.EStatus = EFDLStatus.Cancelled;
+
+                                    db.FDLs.AddOrUpdate(fdl);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Debugger.Break();
+                        }
                     }
+
+                    db.SaveChanges();
                 }
 
                 result = true;
@@ -301,7 +381,7 @@ namespace Great.Utils
         #region Auxiliar methods
         private void CleanDBTables()
         {
-            using (DBEntities db = new DBEntities())
+            using (DBArchive db = new DBArchive())
             {
                 db.Timesheets.RemoveRange(db.Timesheets);
                 db.FDLs.RemoveRange(db.FDLs);

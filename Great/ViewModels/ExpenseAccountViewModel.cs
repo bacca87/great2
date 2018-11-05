@@ -28,7 +28,7 @@ namespace Great.ViewModels
         public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
 
         private FDLManager _fdlManager;
-        private DBEntities _db;
+        private DBArchive _db;
 
         /// <summary>
         /// The <see cref="IsInputEnabled" /> property's name.
@@ -213,7 +213,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the ExpenseAccountViewModel class.
         /// </summary>
-        public ExpenseAccountViewModel(FDLManager manager, DBEntities db)
+        public ExpenseAccountViewModel(FDLManager manager, DBArchive db)
         {
             _db = db;
             _fdlManager = manager;
@@ -276,8 +276,8 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        _db.ExpenseAccounts.AddOrUpdate(item.Content);
-                        _db.SaveChanges();
+                        //_db.ExpenseAccounts.AddOrUpdate(item.Content);
+                        //_db.SaveChanges();
 
                         //ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
                     }

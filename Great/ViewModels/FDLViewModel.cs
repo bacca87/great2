@@ -26,7 +26,7 @@ namespace Great.ViewModels
         public int PerfDescDetMaxLength { get { return ApplicationSettings.FDL.PerformanceDescriptionDetailsMaxLength; } }
 
         private FDLManager _fdlManager;
-        private DBEntities _db;
+        private DBArchive _db;
 
         /// <summary>
         /// The <see cref="IsInputEnabled" /> property's name.
@@ -241,7 +241,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the EmailViewModel class.
         /// </summary>
-        public FDLViewModel(FDLManager manager, DBEntities db)
+        public FDLViewModel(FDLManager manager, DBArchive db)
         {
             _db = db;
             _fdlManager = manager;
