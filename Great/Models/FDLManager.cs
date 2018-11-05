@@ -742,12 +742,10 @@ namespace Great.Models
 
                 using (DBArchive db = new DBArchive())
                 {
-                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order);
-
-                    //TODO: gestire inserimento destinatari aggiuntivi per FDL quando non ne sono mai stati inseriti.
+                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Recipient);
 
                     foreach(var r in recipients)
-                        message.CcRecipients.Add(r.Recipient);
+                        message.CcRecipients.Add(r);
                 }
 
                 exchangeProvider.SendEmail(message);

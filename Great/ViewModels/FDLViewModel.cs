@@ -325,6 +325,9 @@ namespace Great.ViewModels
                 MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
+            if(_db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+
+
             _fdlManager.SendToSAP(fdl);
             _db.SaveChanges();
         }

@@ -97,13 +97,15 @@ namespace Great.Utils
 
         private void MigrationThread()
         {
-            // CleanDBTables();
+            //CleanDBTables();
             OnCompleted(new EventImportArgs("Importing Factories..."));
             CompileFactoriesTable();
             OnCompleted(new EventImportArgs("Importing PDF files..."));
             CompileFdlTable();
             OnCompleted(new EventImportArgs("Importing Hours..."));
             CompileHourTable();
+            OnCompleted(new EventImportArgs("Importing Car Rents..."));
+            CompileCarRents();
             Completed = true;
             OnCompleted(new EventImportArgs("Operation Completed!"));
         }
@@ -148,6 +150,71 @@ namespace Great.Utils
             {
 
                 result = false;
+            }
+
+            return result;
+        }
+
+        private bool CompileCarRents()
+        {
+            IDictionary<string, long> _cars = new Dictionary<string, long>();
+            bool result = false;
+
+            using (DBArchive db = new DBArchive())
+            {
+                Timesheet t = null;
+                try
+                {
+                    //Get enumerable rows fron datatable
+                    IEnumerable<DataRow> collection = dtCars.Rows.Cast<DataRow>();
+
+                    var cars = collection.GroupBy(c => c.Field<string>("dbf_Targa")).Select(c => c.First());
+
+                    // Import Cars
+                    foreach (DataRow r in cars)
+                    {
+                        Car car = new Car();
+                        car.LicensePlate = r.Field<string>("dbf_Targa").Trim();
+                        car.Brand = r.Field<string>("dbf_Marca").Trim();
+                        car.Model = r.Field<string>("dbf_Modello").Trim();
+                        car.CarRentalCompany = r.Field<short>("dbf_Nolo");
+
+                        db.Cars.AddOrUpdate(car);
+                        db.SaveChanges();
+
+                        _cars.Add(r.Field<string>("dbf_Targa"), car.Id);
+                    }
+
+                    // Import Rents
+                    foreach (DataRow r in collection)
+                    {
+                        string licensePlate = r.Field<string>("dbf_Targa");
+                        if (_cars.ContainsKey(licensePlate))
+                        {
+                            CarRentalHistory his = new CarRentalHistory();
+                            his.Car = _cars[licensePlate];
+                            his.StartKm = r.Field<int>("dbf_KmInizio");
+                            his.EndKm = r.Field<int>("dbf_KmFine");
+                            his.StartLocation = r.Field<string>("dbf_LuogoPrel").Trim();
+                            his.EndLocation = r.Field<string>("dbf_LuogoDepo").Trim();
+
+                            his.StartDate = (r.Field<DateTime>("dbf_DataPrel") + r.Field<DateTime>("dbf_OraPrel").TimeOfDay).ToUnixTimestamp();
+                            his.EndDate = (r.Field<DateTime>("dbf_DataDepo") + r.Field<DateTime>("dbf_OraDepo").TimeOfDay).ToUnixTimestamp();
+
+                            his.StartFuelLevel = r.Field<short>("dbf_SerbPrel");
+                            his.EndFuelLevel = r.Field<short>("dbf_SerbRicon");
+                            his.Notes = r.Field<string>("dbf_Note").Trim();
+
+                            db.CarRentalHistories.AddOrUpdate(his);
+                        }
+                    }
+
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    result = false;
+                }
             }
 
             return result;
