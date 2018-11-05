@@ -5,7 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       DataContext="{Binding Informations, Source={StaticResource Locator}}"      
-	  Title="InformationsPage">
+	  Title="InformationsPage"
+      Style="{DynamicResource MetroPage}">
 
     <Grid Margin="20">
         <Grid.RowDefinitions>

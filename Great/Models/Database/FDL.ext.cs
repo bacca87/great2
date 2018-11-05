@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Great.Models
+namespace Great.Models.Database
 {
     public partial class FDL : INotifyPropertyChanged
     {

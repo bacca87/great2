@@ -10,7 +10,8 @@
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
-      Title="ExpenseAccount">
+      Title="ExpenseAccount"
+      Style="{DynamicResource MetroPage}">
     <Page.Resources>
         <CollectionViewSource x:Key="EACollectionView" Source="{Binding ExpenseAccounts}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
@@ -41,7 +42,7 @@
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
+                <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
                         <Setter Property="TextBlock.TextAlignment" Value="Left" />
                         <Setter Property="TextBlock.FontSize" Value="15" />
@@ -49,9 +50,7 @@
                         <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
-                </Style>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                </Style>                
                 <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
                 <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
             </DataGrid.Resources>
@@ -116,7 +115,7 @@
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
-                    <Style TargetType="DataGridCell">
+                    <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                         <Style.Setters>
                             <Setter Property="TextBlock.TextAlignment" Value="Left" />
                             <Setter Property="TextBlock.FontSize" Value="15" />
@@ -125,8 +124,6 @@
                             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                         </Style.Setters>
                     </Style>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
                     <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
                     <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
                 </DataGrid.Resources>

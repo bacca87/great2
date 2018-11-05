@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Great.Models.Database;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -130,10 +132,8 @@ namespace Great.Models
 
                 // General info 
                 fdl.Id = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber);
-                fdl.Order = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order);
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType).Contains(ApplicationSettings.FDL.FDL_Extra);
-
                 // TODO: Not yet implemented fields
                 //fdl.EResult = GetFDLResultFromString(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Result));
                 //fdl.OutwardCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardCar) != null;
@@ -142,6 +142,11 @@ namespace Great.Models
                 //fdl.ReturnCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.ReturnCar) != null;
                 //fdl.ReturnTaxi = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.ReturnTaxi) != null;
                 //fdl.ReturnAircraft = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.ReturnAircraft) != null;
+
+                long longResult;
+
+                if (long.TryParse(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order), out longResult))
+                    fdl.Order = longResult;
 
                 fdl.NotifyAsNew = NotifyAsNew;
 
@@ -241,7 +246,7 @@ namespace Great.Models
                                 #region Timesheets
                                 if (!ExcludeTimesheets)
                                 {
-                                    foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.XFAFieldNames.TimesMatrix)
+                                    foreach (var entry in ApplicationSettings.FDL.XFAFieldNames.TimesMatrix)
                                     {
                                         string strDate = GetFieldValue(entry.Value["Date"]);
 
@@ -329,10 +334,18 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-                
+
+                // only for testing purpose
+                //using (StreamWriter writetext = new StreamWriter("c:\\test.txt"))
+                //{
+                //    foreach(PdfFormField f in fields.Values)
+                //    {
+                //        writetext.WriteLine($"Field: {f.GetFieldName()} Value: {f.GetValueAsString()}");
+                //    }
+                //}
+
                 // General info 
-                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                
-                fdl.Order = fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString();
+                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                                
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
                 fdl.EResult = GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
@@ -343,6 +356,11 @@ namespace Great.Models
                 fdl.ReturnTaxi = fields[ApplicationSettings.FDL.FieldNames.ReturnTaxi].GetValue() != null;
                 fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
                 fdl.NotifyAsNew = NotifyAsNew;
+
+                long longResult;
+
+                if (long.TryParse(fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString(), out longResult))
+                    fdl.Order = longResult;
 
                 // TODO: gestire automobili
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
@@ -516,13 +534,57 @@ namespace Great.Models
 
             return fdl;
         }
-        
+
+        private Dictionary<string, string> GetXFAFormFields(XfaForm form)
+        {
+            // this is an hack for display fixed fields on saved read only FDL
+            Dictionary<string, string> fields = new Dictionary<string, string>();
+            Func<string, string> GetFieldValue = (fieldName) => { return (form.FindDatasetsNode(fieldName) as XElement).Value; };
+
+            fields.Add(ApplicationSettings.FDL.FieldNames.FDLNumber, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Order, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order));
+            fields.Add(ApplicationSettings.FDL.FieldNames.OrderType, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Customer, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Customer));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Address, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Address));
+            fields.Add(ApplicationSettings.FDL.FieldNames.CID, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.CID));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Technician, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Technician));
+            fields.Add(ApplicationSettings.FDL.FieldNames.RequestedBy, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.RequestedBy));
+            fields.Add(ApplicationSettings.FDL.FieldNames.AssistanceDescription, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.AssistanceDescription));
+
+            fields.Add(ApplicationSettings.FDL.FieldNames.FDLNumber2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Order2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order));
+            fields.Add(ApplicationSettings.FDL.FieldNames.OrderType2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Customer2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Customer));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Address2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Address));
+            fields.Add(ApplicationSettings.FDL.FieldNames.CID2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.CID));
+            fields.Add(ApplicationSettings.FDL.FieldNames.Technician2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Technician));
+            fields.Add(ApplicationSettings.FDL.FieldNames.RequestedBy2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.RequestedBy));
+            fields.Add(ApplicationSettings.FDL.FieldNames.AssistanceDescription2, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.AssistanceDescription));
+
+
+            var AcroTimes = ApplicationSettings.FDL.FieldNames.TimesMatrix.Values.ToList();
+            var XFATimes = ApplicationSettings.FDL.XFAFieldNames.TimesMatrix.Values.ToList();
+
+            for (int i = 0; i < AcroTimes.Count && i < XFATimes.Count; i++)
+            {
+                string strDate = GetFieldValue(XFATimes[i]["Date"]);
+
+                if (!string.IsNullOrEmpty(strDate))
+                {
+                    DateTime date = DateTime.ParseExact(strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    fields.Add(AcroTimes[i]["Date"], date.ToString("dd/MMM/yy"));
+                }
+            }
+
+            return fields;
+        }
+
         private Dictionary<string, string> GetAcroFormFields(FDL fdl)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             Timesheet timesheet = null;
 
-            foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
+            foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
                 timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
@@ -655,7 +717,15 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-                
+
+                // this is an hack for display fixed fields on saved read only FDL
+                foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                {
+                    if (fields.ContainsKey(entry.Key))
+                        fields[entry.Key].SetValue(entry.Value);
+                }
+                //
+
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
                 {
                     if(fields.ContainsKey(entry.Key))
@@ -798,11 +868,19 @@ namespace Great.Models
                 CompileFDL(fdl, filePath);
 
                 EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";                
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
                 message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
                 message.Attachments.Add(filePath);
+
+                using (DBArchive db = new DBArchive())
+                {
+                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Recipient);
+
+                    foreach(var r in recipients)
+                        message.CcRecipients.Add(r);
+                }
 
                 exchangeProvider.SendEmail(message);
 

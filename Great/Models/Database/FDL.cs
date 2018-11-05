@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Great.Models
+namespace Great.Models.Database
 {
     [Table("FDL")]
     public partial class FDL
@@ -20,7 +20,7 @@ namespace Great.Models
         public long WeekNr { get; set; }
         public bool IsExtra { get; set; }
         public long? Factory { get; set; }
-        public string Order { get; set; }
+        public long Order { get; set; }
         public bool OutwardCar { get; set; }
         public bool ReturnCar { get; set; }
         public bool OutwardTaxi { get; set; }

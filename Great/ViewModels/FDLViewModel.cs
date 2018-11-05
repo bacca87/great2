@@ -2,8 +2,10 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
+using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Messages;
+using Great.Views.Dialogs;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -323,6 +325,12 @@ namespace Great.ViewModels
             if (fdl.EStatus == EFDLStatus.Waiting && 
                 MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
+
+            if (_db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+            {
+                OrderRecipientsView recipientsView = new OrderRecipientsView();
+                recipientsView.ShowDialog();
+            }
 
             _fdlManager.SendToSAP(fdl);
             _db.SaveChanges();

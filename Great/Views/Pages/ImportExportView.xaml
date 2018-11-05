@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       mc:Ignorable="d" 
       DataContext="{Binding ImportExport, Source={StaticResource Locator}}"
-      Title="ImportExportView">
+      Title="ImportExportView"
+      Style="{DynamicResource MetroPage}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>

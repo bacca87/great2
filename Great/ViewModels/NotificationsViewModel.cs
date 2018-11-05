@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using Great.Models;
+using Great.Models.Database;
 using Great.Utils.Messages;
 using System;
 using System.Linq;

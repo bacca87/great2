@@ -12,7 +12,8 @@
       Loaded="Page_Loaded"
       MinWidth="800"
       MinHeight="600"
-      IsVisibleChanged="Page_IsVisibleChanged">
+      IsVisibleChanged="Page_IsVisibleChanged"
+      Style="{DynamicResource MetroPage}">
     <Page.Resources>
         <CollectionViewSource x:Key="FactoriesCollectionView" Source="{Binding Factories}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
@@ -58,7 +59,7 @@
                       ItemsSource="{Binding Source={StaticResource FactoriesCollectionView}}" 
                       SelectedItem="{Binding SelectedFactory}" Grid.Column="0">
                 <ListView.Resources>
-                    <Style TargetType="ListViewItem">
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
                         <EventSetter Event="MouseDoubleClick" Handler="factoryListViewItem_MouseDoubleClick"/>
                     </Style>
                 </ListView.Resources>

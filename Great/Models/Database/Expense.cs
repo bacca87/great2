@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Great.Models
+namespace Great.Models.Database
 {
     [Table("Expense")]
     public partial class Expense

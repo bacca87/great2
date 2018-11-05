@@ -5,12 +5,12 @@
     xmlns:conv="clr-namespace:Great.Utils.Converters"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+    xmlns:mc="http://metro.mahapps.com/winfx/xaml/controls"
     Title="Great 2.0" 
     Width="1024" 
     Height="768"
     MinWidth="800"
-    MinHeight="600"
-    Background="#dedede"
+    MinHeight="600"    
     WindowStartupLocation="CenterScreen" 
     WindowState="Maximized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -293,50 +293,35 @@
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
-                <Style TargetType="{x:Type TabControl}">
+                <!--<Style TargetType="{x:Type TabControl}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabControl}">
                                 <DockPanel KeyboardNavigation.TabNavigation="Local" LastChildFill="True">
-                                    <TabPanel IsItemsHost="True"
-                                              Background="#c9c9c9"
+                                    <TabPanel IsItemsHost="True"                                              
                                               DockPanel.Dock="{TemplateBinding TabStripPlacement}"/>
                                     <ContentPresenter ContentSource="SelectedContent" />
                                 </DockPanel>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                </Style>
-                <Style TargetType="TabItem">
+                </Style>-->
+                <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
                                 <Border Name="Border">
                                     <Grid>
+                                        <mc:Badged Name="NotificationCount"
+                                                   Margin="0,5"
+                                                   Badge="{Binding (ap:NotificationHelper.NotificationCount), Mode=TwoWay, RelativeSource={RelativeSource Self}}">                                            
+                                        </mc:Badged>
                                         <ContentPresenter x:Name="ContentSite"
                                                           VerticalAlignment="Center"
                                                           HorizontalAlignment="Center"
                                                           ContentSource="Header"
-                                                          Margin="10,5"                                        
-                                                          TextElement.FontSize="20"/>
-                                        <Border Name="NotificationCount"
-                                                Margin="0,5"
-                                                Width="15"
-                                                Height="15"
-                                                CornerRadius="10"
-                                                Background="Red"
-                                                BorderBrush="Black"
-                                                BorderThickness="0"
-                                                VerticalAlignment="Top"
-                                                HorizontalAlignment="Right">
-                                            <TextBlock HorizontalAlignment="Center" 
-                                                       VerticalAlignment="Center" 
-                                                       FontSize="10" 
-                                                       Foreground="White" 
-                                                       FontWeight="Bold" 
-                                                       Text="{Binding (ap:NotificationHelper.NotificationCount), Mode=TwoWay, RelativeSource={RelativeSource Self}}">
-                                            </TextBlock>
-                                        </Border>
+                                                          Margin="10,5"
+                                                          TextElement.FontSize="25"/>
                                     </Grid>
                                 </Border>
                                 <ControlTemplate.Triggers>

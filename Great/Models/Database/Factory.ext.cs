@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel;
 
-namespace Great.Models
+namespace Great.Models.Database
 {
     public partial class Factory : INotifyPropertyChanged
     {
