@@ -77,6 +77,9 @@
                         <Hyperlink NavigateUri="https://itextpdf.com/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="ITEXT">
                             <Image Source="pack://application:,,,/Great;component/Images/Logos/itext.png" Stretch="Fill" Width="200" Margin="5"/>
                         </Hyperlink>
+                        <Hyperlink NavigateUri="https://mahapps.com/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MahApps.Metro">
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/mahapps.metro.png" Stretch="Fill" Width="80" Margin="5"/>
+                        </Hyperlink>
                         <LineBreak/>
                         <LineBreak/>
                         <Hyperlink NavigateUri="https://github.com/tinohager/Nager.Date" RequestNavigate="Hyperlink_RequestNavigate">
