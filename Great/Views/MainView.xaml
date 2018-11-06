@@ -246,7 +246,7 @@
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" 
+        <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MetroTabControl}">
@@ -255,12 +255,12 @@
                             <ControlTemplate TargetType="{x:Type TabControl}">
                                 <DockPanel KeyboardNavigation.TabNavigation="Local" LastChildFill="True">
                                     <TabPanel IsItemsHost="True"                                              
-                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}"/>
+                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}" Background="{DynamicResource GrayBrush10}"/>
                                     <ContentPresenter ContentSource="SelectedContent" />
                                 </DockPanel>
                             </ControlTemplate>
                         </Setter.Value>
-                    </Setter>
+                    </Setter>                    
                 </Style>
                 <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
                     <Setter Property="Template">
@@ -268,8 +268,7 @@
                             <ControlTemplate TargetType="TabItem">
                                 <Border Name="Border">
                                     <Grid>
-                                        <mc:Badged Name="NotificationCount"
-                                                   Margin="0,10,3,0"
+                                        <mc:Badged Name="NotificationCount" Margin="0,10,3,0"
                                                    Badge="{Binding (ap:NotificationHelper.NotificationCount), Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
                                         <ContentPresenter x:Name="ContentSite"
                                                           VerticalAlignment="Center"
