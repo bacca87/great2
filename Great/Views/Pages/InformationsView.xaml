@@ -53,9 +53,14 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="Open Source Components / Libraries / Code:" FontSize="15"/>
             <RichTextBox Grid.Row="1" IsReadOnly="True" IsDocumentEnabled="True" Width="1000">
-                <FlowDocument>
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Hyperlink}">                       
+                        <Setter Property="TextDecorations" Value="{x:Null}" />
+                    </Style>
+                </RichTextBox.Resources>
+                    <FlowDocument>
                     <Paragraph>
-                        <Hyperlink NavigateUri="https://github.com/fluentribbon/Fluent.Ribbon" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Fluent.Ribbon">
+                        <Hyperlink NavigateUri="https://github.com/fluentribbon/Fluent.Ribbon" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Fluent.Ribbon" TextDecorations="{x:Null}">
                             <Image Source="pack://application:,,,/Great;component/Images/Logos/FluentRibbon.png" Stretch="None" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://github.com/radioman/greatmaps" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="GMap.NET">
