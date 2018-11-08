@@ -59,24 +59,14 @@ namespace Great.Models
             {
                 get
                 {
-                    string fdlDirName = ConfigurationManager.AppSettings["FDLDirectoryName"];
-
-                    if (fdlDirName == null || fdlDirName == string.Empty)
-                        throw new ConfigurationErrorsException("Missing or invalid FDLDirectory configuration!");
-
-                    return Data + fdlDirName + (!fdlDirName.EndsWith("\\") ? "\\" : "");
+                    return Data + "FDL\\";
                 }
             }
             public static string ExpenseAccount
             {
                 get
                 {
-                    string expenseAccountDirName = ConfigurationManager.AppSettings["ExpenseAccountDirectoryName"];
-
-                    if (expenseAccountDirName == null || expenseAccountDirName == string.Empty)
-                        throw new ConfigurationErrorsException("Missing or invalid ExpenseAccountDirectory configuration!");
-
-                    return Data + expenseAccountDirName + (!expenseAccountDirName.EndsWith("\\") ? "\\" : "");
+                    return Data + "Expense Account\\";
                 }
             }
 
@@ -91,6 +81,14 @@ namespace Great.Models
 
                     cacheDirectoryPath = Environment.ExpandEnvironmentVariables(cacheDirectoryPath);
                     return cacheDirectoryPath + (!cacheDirectoryPath.EndsWith("\\") ? "\\" : "");
+                }
+            }
+
+            public static string Log
+            {
+                get
+                {
+                    return Data + "Log\\";
                 }
             }
         }
@@ -761,6 +759,7 @@ namespace Great.Models
         {
             public const int WaitForNextConnectionRetry = 10000;
             public const int WaitForNextEmailCheck = 1000;
+            public const int WaitForCredentialsCheck = 1000;
         }
         #endregion
 

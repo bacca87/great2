@@ -1,10 +1,15 @@
-﻿<Window x:Class="Great.Wizards.Views.GreatImportWizardView"
+﻿<mah:MetroWindow
+        x:Class="Great.Wizards.Views.GreatImportWizardView"    
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Great.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
         mc:Ignorable="d"
         DataContext="{Binding GreatImportWizard, Source={StaticResource Locator}}"
         ResizeMode="NoResize"
@@ -12,16 +17,35 @@
         Height="480">
     <Grid>
         <xctk:Wizard FinishButtonClosesWindow="True" HelpButtonVisibility="Hidden">
+            <xctk:Wizard.Resources>
+                <Style TargetType="{x:Type xctk:Wizard}">
+                    <Style.Setters>
+                        <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
+                    </Style.Setters>
+                </Style>
+                <Style TargetType="{x:Type xctk:WizardPage}">
+                    <Style.Setters>
+                        <Setter Property="Background" Value="{StaticResource GrayBrush8}" />
+                        <Setter Property="ExteriorPanelBackground" Value="{StaticResource ControlBackgroundBrush}" />
+                        <Setter Property="HeaderBackground" Value="{StaticResource ControlBackgroundBrush}" />
+                    </Style.Setters>
+                </Style>
+            </xctk:Wizard.Resources>
             <xctk:WizardPage Title="Welcome to the GREAT data import Wizard"
-                             Description="This Wizard will walk you though how to import all the FDL, expense accounts and work hours from an old GREAT installation." />
+                             Description="This Wizard will walk you though how to import all the FDL, expense accounts and work hours from an old GREAT installation."/>
             <xctk:WizardPage Title="Configuration"
                              Description="Configuration process."
                              PageType="Interior">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Next">
+                        <mvvm:EventToCommand Command="{Binding StartMigrationCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <TextBlock Text="Installation Folder:"/>
-                        <TextBox Text="{Binding InstallationFolder}" Width="300"/>
-                        <Button Content="..." Command="{Binding SelectFolderCommand}"/>
+                        <TextBlock Text="Installation Folder:" VerticalAlignment="Center"/>
+                        <TextBox Margin="5" Text="{Binding InstallationFolder}" Width="300"/>
+                        <Button Margin="0,5" Content="..." Command="{Binding SelectFolderCommand}"/>
                     </StackPanel>
                 </Grid>
             </xctk:WizardPage>
@@ -32,12 +56,13 @@
                              CanSelectNextPage="False"
                              CanFinish="{Binding Completed}">
                 <Grid>
-                    <StackPanel>
-                        <Button Content="Start Migration" HorizontalAlignment="Center" VerticalAlignment="Top" Command="{Binding StartMigrationCommand}"/>
-                        <TextBlock Text="{Binding Status, StringFormat={}Status: {0}}"/>
-                    </StackPanel>
+                    <DockPanel>
+                        <Button Content="Start Import" DockPanel.Dock="Top" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top" Command="{Binding StartMigrationCommand}"/>
+                        <TextBlock DockPanel.Dock="Top" Margin="5" Text="{Binding Status, StringFormat={}Status: {0}}"/>
+                        <TextBox Text="{Binding LogText, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ap:TextBoxHelper.AutoScrollToEnd="True"/>
+                    </DockPanel>
                 </Grid>
             </xctk:WizardPage>
         </xctk:Wizard>
     </Grid>
-</Window>
+</mah:MetroWindow>

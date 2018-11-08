@@ -11,14 +11,19 @@ using System.Diagnostics;
 using System.Data.Entity.Migrations;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models.Database;
+using NLog;
 
 namespace Great.Utils
 {
-    public class GreatMigration
+    public class GreatImport
     {
         #region Events
-        public delegate void OperationCompletedHandler(object source, EventImportArgs args);
-        public event OperationCompletedHandler OnOperationCompleted;
+        public delegate void OperationCompletedHandler(object source);
+        public delegate void StatusChangedHandler(object source, GreatImportArgs args);
+        public delegate void MessageHandler(object source, GreatImportArgs args);
+        public event OperationCompletedHandler OnCompleted;
+        public event StatusChangedHandler OnStatusChanged;
+        public event MessageHandler OnMessage;
         #endregion
 
         #region Constants
@@ -32,21 +37,12 @@ namespace Great.Utils
         #endregion
 
         #region Properties
-        public string _sourceDatabase { get; private set; }
-        public string _sourceFdlPath { get; private set; }
-        public string _sourceAccountPath { get; private set; }
-        public string _destinationFdlPath { get; private set; }
-        public string _destinationAccountPath { get; private set; }
-
-        public bool Completed { get; internal set; }
-        #endregion
-
-        #region Fields
-
+        private readonly Logger log = LogManager.GetLogger("GreatImport");
+        
         //Access database fields
         private OleDbConnection connection;
         private OleDbCommand command;
-        private OleDbDataAdapter adapter;        
+        private OleDbDataAdapter adapter;
         private Thread thrd;
 
         //Data from access database
@@ -56,58 +52,70 @@ namespace Great.Utils
         private DataTable dtExpenseReview = new DataTable();
         private DataTable dtConfiguration = new DataTable();
         private DataTable dtSentFiles = new DataTable();
-        #endregion
 
-        #region Temp Cache
-        IDictionary<long, long> _factories = new Dictionary<long, long>();
-        #endregion
+        // Temp Cache
+        private IDictionary<long, long> _factories = new Dictionary<long, long>();
 
-        public GreatMigration()
-        {   
-        }
+        public string _sourceDatabase { get; private set; }
+        public string _sourceFdlPath { get; private set; }
+        public string _sourceAccountPath { get; private set; }
+        public string _destinationFdlPath { get; private set; }
+        public string _destinationAccountPath { get; private set; }
+        #endregion
 
         public void StartMigration(string greatPath)
         {
-            Completed = false;
+            StatusChanged("Migration Started...");
+
             if (Directory.Exists(greatPath))
             {
-                _sourceDatabase = GetGreatDatabaseFile(File.ReadAllLines(Path.Combine(greatPath, sGreatIniFilePath))
-                                                                                                                    .Where(x => x.Contains("Dir Backup"))
-                                                                                                                    .FirstOrDefault()
-                                                                                                                    .Split('=')[1]);
+                _sourceDatabase = GetGreatDatabaseFile(greatPath);
 
-                if (_sourceDatabase != null)
+                if (!string.IsNullOrEmpty(_sourceDatabase))
                 {
-                    GetDataTables();
-
-                    _sourceFdlPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 5).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();                    
-                    _sourceAccountPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 8).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
-
-                    if (Directory.Exists(_sourceFdlPath) && Directory.Exists(_sourceAccountPath))
+                    if (GetDataTables())
                     {
-                        thrd = new Thread(new ThreadStart(MigrationThread));
-                        thrd.Start();
+                        bool start = true;
+
+                        _sourceFdlPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 5).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
+                        _sourceAccountPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 8).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
+
+                        if (!Directory.Exists(_sourceFdlPath))
+                        {
+                            start = false;
+                            Error($"FDLs folder not found: {_sourceFdlPath}");
+                        }
+
+                        if (!Directory.Exists(_sourceAccountPath))
+                        {
+                            start = false;
+                            Error($"Expense accounts folder not found: {_sourceAccountPath}");
+                        }
+
+                        if (start)
+                        {
+                            thrd = new Thread(new ThreadStart(MigrationThread));
+                            thrd.Start();
+                        }
                     }
-                    else OnCompleted(new EventImportArgs("old pdf path not found"));
                 }
-                else OnCompleted(new EventImportArgs("Database not found!"));
+                else Error($"Database not found on path: {_sourceDatabase}");
             }
-            else OnCompleted(new EventImportArgs("Great Path not existing"));
+            else Error($"Wrong GREAT directory path: {greatPath}");
         }
 
         private void MigrationThread()
         {
-            //CleanDBTables();
-            OnCompleted(new EventImportArgs("Importing Factories..."));
+            StatusChanged("Importing Factories...");
             CompileFactoriesTable();
-            OnCompleted(new EventImportArgs("Importing PDF files..."));
+            StatusChanged("Importing PDF files...");
             CompileFdlTable();
-            OnCompleted(new EventImportArgs("Importing Hours..."));
+            StatusChanged("Importing Hours...");
             CompileHourTable();
-            OnCompleted(new EventImportArgs("Importing Car Rents..."));
+            StatusChanged("Importing Car Rents...");
             CompileCarRents();
-            Completed = true;
-            OnCompleted(new EventImportArgs("Operation Completed!"));
+            StatusChanged("Operation Completed!");
+            Completed();
         }
 
         private bool GetDataTables()
@@ -116,40 +124,52 @@ namespace Great.Utils
 
             try
             {
-                InitializeDataAccess();
+                StatusChanged("Loading GREAT data...");
 
-                command = new OleDbCommand("SELECT * FROM dbt_Ore", connection);
-                adapter = new OleDbDataAdapter(command);
-                adapter.Fill(dtHours);
-
-                command = new OleDbCommand("SELECT * FROM dbt_Auto", connection);
-                adapter = new OleDbDataAdapter(command);
-                adapter.Fill(dtCars);
-
-                command = new OleDbCommand("SELECT * FROM dbt_NotaSpese", connection);
-                adapter = new OleDbDataAdapter(command);
-                adapter.Fill(dtExpenseReview);
-
-                command = new OleDbCommand("SELECT * FROM dbt_Stabilimenti", connection);
-                adapter = new OleDbDataAdapter(command);
-                adapter.Fill(dtPlants);
+                Message("Open GREAT database");
+                connection = new OleDbConnection(string.Format(sAccessConnectionstring, _sourceDatabase));
+                connection.Open();
 
                 command = new OleDbCommand("SELECT * FROM dbt_File_Config", connection);
                 adapter = new OleDbDataAdapter(command);
                 adapter.Fill(dtConfiguration);
+                Message("Configurations loaded");
+
+                command = new OleDbCommand("SELECT * FROM dbt_Ore order by Dbf_Data", connection);
+                adapter = new OleDbDataAdapter(command);
+                adapter.Fill(dtHours);
+                Message("Timesheets loaded");
+
+                command = new OleDbCommand("SELECT * FROM dbt_NotaSpese order by Dbf_dtConsegna", connection);
+                adapter = new OleDbDataAdapter(command);
+                adapter.Fill(dtExpenseReview);
+                Message("Expense account loaded");
+
+                command = new OleDbCommand("SELECT * FROM dbt_Auto order by Dbf_DataPrel", connection);
+                adapter = new OleDbDataAdapter(command);
+                adapter.Fill(dtCars);
+                Message("Car rental loaded");
+
+                command = new OleDbCommand("SELECT * FROM dbt_Stabilimenti", connection);
+                adapter = new OleDbDataAdapter(command);
+                adapter.Fill(dtPlants);
+                Message("Factories loaded");
 
                 command = new OleDbCommand("SELECT * FROM dbt_Invii", connection);
                 adapter = new OleDbDataAdapter(command);
                 adapter.Fill(dtSentFiles);
+                Message("Sent items loaded");
 
                 Close();
 
                 result = true;
+
+                StatusChanged("GREAT data loaded!");
             }
             catch (Exception ex)
             {
-
                 result = false;
+                Error($"Error during load GREAT data: {ex}", ex);
             }
 
             return result;
@@ -160,11 +180,12 @@ namespace Great.Utils
             IDictionary<string, long> _cars = new Dictionary<string, long>();
             bool result = false;
 
-            using (DBArchive db = new DBArchive())
+            try
             {
-                Timesheet t = null;
-                try
+                using (DBArchive db = new DBArchive())
                 {
+                    Timesheet t = null;
+
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtCars.Rows.Cast<DataRow>();
 
@@ -174,15 +195,25 @@ namespace Great.Utils
                     foreach (DataRow r in cars)
                     {
                         Car car = new Car();
-                        car.LicensePlate = r.Field<string>("dbf_Targa").Trim();
-                        car.Brand = r.Field<string>("dbf_Marca").Trim();
-                        car.Model = r.Field<string>("dbf_Modello").Trim();
-                        car.CarRentalCompany = r.Field<short>("dbf_Nolo");
 
-                        db.Cars.AddOrUpdate(car);
-                        db.SaveChanges();
+                        try
+                        {
+                            car.LicensePlate = r.Field<string>("dbf_Targa").Trim();
+                            car.Brand = r.Field<string>("dbf_Marca").Trim();
+                            car.Model = r.Field<string>("dbf_Modello").Trim();
+                            car.CarRentalCompany = r.Field<short>("dbf_Nolo");
 
-                        _cars.Add(r.Field<string>("dbf_Targa"), car.Id);
+                            db.Cars.AddOrUpdate(x => x.LicensePlate, car);
+                            db.SaveChanges();
+
+                            _cars.Add(r.Field<string>("dbf_Targa"), car.Id);
+
+                            Message($"Car {car.LicensePlate} | {car.Brand} {car.Model} OK");
+                        }
+                        catch(Exception ex)
+                        {
+                            Error($"Failed to import the car {car.LicensePlate}. {ex}", ex);
+                        }
                     }
 
                     // Import Rents
@@ -192,29 +223,38 @@ namespace Great.Utils
                         if (_cars.ContainsKey(licensePlate))
                         {
                             CarRentalHistory his = new CarRentalHistory();
-                            his.Car = _cars[licensePlate];
-                            his.StartKm = r.Field<int>("dbf_KmInizio");
-                            his.EndKm = r.Field<int>("dbf_KmFine");
-                            his.StartLocation = r.Field<string>("dbf_LuogoPrel").Trim();
-                            his.EndLocation = r.Field<string>("dbf_LuogoDepo").Trim();
+                            try
+                            {
+                                his.Car = _cars[licensePlate];
+                                his.StartKm = r.Field<int>("dbf_KmInizio");
+                                his.EndKm = r.Field<int>("dbf_KmFine");
+                                his.StartLocation = r.Field<string>("dbf_LuogoPrel").Trim();
+                                his.EndLocation = r.Field<string>("dbf_LuogoDepo").Trim();
 
-                            his.StartDate = (r.Field<DateTime>("dbf_DataPrel") + r.Field<DateTime>("dbf_OraPrel").TimeOfDay).ToUnixTimestamp();
-                            his.EndDate = (r.Field<DateTime>("dbf_DataDepo") + r.Field<DateTime>("dbf_OraDepo").TimeOfDay).ToUnixTimestamp();
+                                his.StartDate = (r.Field<DateTime>("dbf_DataPrel") + r.Field<DateTime>("dbf_OraPrel").TimeOfDay).ToUnixTimestamp();
+                                his.EndDate = (r.Field<DateTime>("dbf_DataDepo") + r.Field<DateTime>("dbf_OraDepo").TimeOfDay).ToUnixTimestamp();
 
-                            his.StartFuelLevel = r.Field<short>("dbf_SerbPrel");
-                            his.EndFuelLevel = r.Field<short>("dbf_SerbRicon");
-                            his.Notes = r.Field<string>("dbf_Note").Trim();
+                                his.StartFuelLevel = r.Field<short>("dbf_SerbPrel");
+                                his.EndFuelLevel = r.Field<short>("dbf_SerbRicon");
+                                his.Notes = r.Field<string>("dbf_Note").Trim();
 
-                            db.CarRentalHistories.AddOrUpdate(his);
+                                db.CarRentalHistories.AddOrUpdate(x => x.StartDate, his);
+
+                                Message($"Rent {DateTime.Now.FromUnixTimestamp(his.StartDate).ToShortDateString()} Car {licensePlate} OK");
+                            }
+                            catch(Exception ex)
+                            {
+                                Error($"Failed to import the rent in date {DateTime.Now.FromUnixTimestamp(his.StartDate).ToShortDateString()}, Car {licensePlate}. {ex}", ex);
+                            }
                         }
                     }
 
                     db.SaveChanges();
                 }
-                catch (Exception ex)
-                {
-                    result = false;
-                }
+            }
+            catch (Exception ex)
+            {
+                Error($"Failed importing car rents. {ex}", ex);
             }
 
             return result;
@@ -223,36 +263,47 @@ namespace Great.Utils
         private bool CompileFactoriesTable()
         {
             bool result = false;
-
-            using (DBArchive db = new DBArchive())
+            try
             {
-                Timesheet t = null;
-                try
+                using (DBArchive db = new DBArchive())
                 {
+                    Timesheet t = null;
+
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtPlants.Rows.Cast<DataRow>();
 
                     foreach (DataRow r in collection)
                     {
                         Factory f = new Factory();
-                        f.Name = r.Field<string>("dbf_Stabilimento");
-                        f.CompanyName = r.Field<string>("dbf_RagioneSociale");
-                        f.Address = r.Field<string>("dbf_Indirizzo");
-                        f.IsForfait = r.Field<bool>("dbf_Forfettario");
 
-                        long transferType = r.Field<byte>("dbf_Tipo_Trasf");
-                        f.TransferType = transferType != 4 ? transferType : 0;                        
+                        try
+                        {   
+                            f.Name = r.Field<string>("dbf_Stabilimento");
+                            f.CompanyName = r.Field<string>("dbf_RagioneSociale");
+                            f.Address = r.Field<string>("dbf_Indirizzo");
+                            f.IsForfait = r.Field<bool>("dbf_Forfettario");
 
-                        db.Factories.AddOrUpdate(f);
-                        db.SaveChanges();
+                            long transferType = r.Field<byte>("dbf_Tipo_Trasf");
+                            f.TransferType = transferType != 4 ? transferType : 0;
 
-                        _factories.Add(r.Field<int>("dbf_Index"), f.Id);
+                            db.Factories.AddOrUpdate(f);
+                            db.SaveChanges();
+
+                            _factories.Add(r.Field<int>("dbf_Index"), f.Id);
+
+                            Message($"Factory {f.Name} OK");
+                        }
+                        catch (Exception ex)
+                        {
+                            Error($"Failed to import factory {f.Name}. {ex}", ex);
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-                    result = false;
-                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                Error($"Failed importing factories. {ex}", ex);
             }
 
             return result;
@@ -262,44 +313,48 @@ namespace Great.Utils
         {
             bool result = false;
 
-            using (DBArchive db = new DBArchive())
+            try
             {
-                Timesheet t = null;
-                try
+                using (DBArchive db = new DBArchive())
                 {
+                    Timesheet t = null;
+
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtHours.Rows.Cast<DataRow>();
 
                     foreach (DataRow r in collection)
                     {
                         Day d = new Day();
-                        d.Type = r.Field<byte>("dbf_Tipo_Giorno");
 
-                        if (d.Type != 3 && d.Type != 6)
-                            d.Type = 0;
-                        else if (d.Type == 3)
-                            d.Type = 1;
-                        else if (d.Type == 6)
-                            d.Type = 2;
-
-                        d.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
-
-                        db.Days.AddOrUpdate(d);
-                        
-                        t = new Timesheet();
-                        t.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
-
-                        var duplicatedEntities = db.Timesheets.Where(x => x.Timestamp == t.Timestamp);
-
-                        if (duplicatedEntities.Count() == 0)
+                        try
                         {
+                            d.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
+
+                            d.Type = r.Field<byte>("dbf_Tipo_Giorno");
+
+                            if (d.Type != 3 && d.Type != 6)
+                                d.Type = 0;
+                            else if (d.Type == 3)
+                                d.Type = 1;
+                            else if (d.Type == 6)
+                                d.Type = 2;
+
+                            db.Days.AddOrUpdate(d);
+
+                            t = new Timesheet();
+                            t.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
+
+                            var duplicatedEntities = db.Timesheets.Where(x => x.Timestamp == t.Timestamp);
+
+                            if (duplicatedEntities.Count() > 0)
+                                continue;
+
                             //Add office hourrs
                             if (
-                            r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
-                            r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
-                            r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
-                            r.Field<Int16>("Dbf_Uff_Fine_PM") != 0
-                          )
+                                r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
+                                r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
+                                r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
+                                r.Field<Int16>("Dbf_Uff_Fine_PM") != 0)
                             {
 
                                 t.TravelStartTimeAM = null;
@@ -322,8 +377,7 @@ namespace Great.Utils
                                 r.Field<Int16>("Dbf_Arrivo_AM") != 0 |
                                 r.Field<Int16>("Dbf_Partenza_PM") != 0 |
                                 r.Field<Int16>("Dbf_Trasf_Inizio_PM") != 0 |
-                                r.Field<Int16>("Dbf_Trasf_Fine_PM") != 0
-                              )
+                                r.Field<Int16>("Dbf_Trasf_Fine_PM") != 0)
                             {
                                 //Compile FDL details
                                 t.TravelStartTimeAM = r.Field<Int16>("Dbf_Partenza_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_AM")).TotalSeconds : null;
@@ -362,16 +416,21 @@ namespace Great.Utils
                                     }
                                 }
                             }
-                        }                        
+
+                            Message($"Day {d.Date.ToShortDateString()} OK");
+                        }
+                        catch (Exception ex)
+                        {
+                            Error($"Failed to import the Timesheet {d.Date.ToShortDateString()}. {ex}", ex);
+                        }
                     }
 
                     db.SaveChanges();
-                    db.Database.Connection.Close();
                 }
-                catch (Exception ex)
-                {   
-                    result = false;
-                }
+            }
+            catch (Exception ex)
+            {
+                Error($"Failed importing the timesheets. {ex}", ex);
             }
 
             return result;
@@ -397,16 +456,19 @@ namespace Great.Utils
 
                 using (DBArchive db = new DBArchive())
                 {
-                    foreach (string s in GetFileList(_sourceFdlPath))
+                    FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
+
+                    foreach (string fdlPath in GetFileList(_sourceFdlPath))
                     {
+                        FDL fdl = null;
+
                         try
                         {
-                            FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
-                            FDL fdl = manager.ImportFDLFromFile(s, false, false, true, true, true);
+                            fdl = manager.ImportFDLFromFile(fdlPath, false, false, true, true, true);
 
                             if (fdl != null)
                             {
-                                File.Copy(s, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(s).Name), true);
+                                File.Copy(fdlPath, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(fdlPath).Name), true);
 
                                 DataRow sent = sentFiles.Where(file => !string.IsNullOrEmpty(file.Field<string>("Dbf_Foglio")) && FormatFDL(file.Field<string>("Dbf_Foglio")) == fdl.Id && file.Field<int>("dbf_TipoInvio") == 2).Select(file => file).FirstOrDefault();
 
@@ -421,15 +483,17 @@ namespace Great.Utils
                                         fdl.EStatus = EFDLStatus.Accepted;
                                     else
                                         fdl.EStatus = EFDLStatus.Cancelled;
-
-                                    db.FDLs.AddOrUpdate(fdl);
                                 }
-                            }
 
+                                db.FDLs.AddOrUpdate(fdl);
+                                Message($"FDL {fdl.Id} OK");
+                            }
+                            else
+                                Error($"Failed to import FDL from file: {fdlPath}");
                         }
                         catch (Exception ex)
                         {
-                            Debugger.Break();
+                            Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
                         }
                     }
 
@@ -440,52 +504,22 @@ namespace Great.Utils
             }
             catch (Exception ex)
             {
-                result = false;
+                Error($"Failed importing FDLs. {ex}", ex);
             }
 
             return result;
         }
 
         #region Auxiliar methods
-        private void CleanDBTables()
+        private string GetGreatDatabaseFile(string folder)
         {
-            using (DBArchive db = new DBArchive())
-            {
-                db.Timesheets.RemoveRange(db.Timesheets);
-                db.FDLs.RemoveRange(db.FDLs);
-                db.Days.RemoveRange(db.Days);
-
-                db.SaveChanges();
-            }
-
-            foreach (string s in GetFileList(_destinationFdlPath))
-                File.Delete(s);
-        }
-
-        private void InitializeDataAccess()
-        {
-            try
-            {
-                connection = new OleDbConnection(string.Format(sAccessConnectionstring, _sourceDatabase));
-                connection.Open();
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-        }
-
-        private string GetGreatDatabaseFile(string path)
-        {
-            var childUri = new DirectoryInfo(path).Parent;
-            string virtualStorePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"VirtualStore\", childUri.Parent.Name), Path.Combine(childUri.Name, @"DB\Archivio.mdb"));
+            var uri = new DirectoryInfo(folder);
+            string virtualStorePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\", uri.Parent.Name), Path.Combine(uri.Name, "DB\\Archivio.mdb"));
             
             if (File.Exists(virtualStorePath))
                 return virtualStorePath;
             else
-                return (Path.Combine(path, "Archivio.mdb"));
+                return (Path.Combine(folder, "DB\\Archivio.mdb"));
         }
 
         private string[] GetFileList(string sDir)
@@ -514,19 +548,39 @@ namespace Great.Utils
         #endregion
 
         #region Events
-        protected void OnCompleted(EventImportArgs e)
+        protected void StatusChanged(string status)
         {
-            OnOperationCompleted?.Invoke(this, e);
+            OnStatusChanged?.Invoke(this, new GreatImportArgs(status));
+            OnMessage?.Invoke(this, new GreatImportArgs(status));
+            log.Info(status);
+        }
+
+        protected void Error(string message, Exception ex = null)
+        {
+            OnMessage?.Invoke(this, new GreatImportArgs($"ERROR: {message}"));
+            log.Error(ex, message);
+        }
+
+        protected void Message(string message)
+        {
+            OnMessage?.Invoke(this, new GreatImportArgs(message));
+            log.Debug(message);
+        }
+
+        protected void Completed()
+        {
+            OnCompleted?.Invoke(this);
         }
         #endregion
     }
 
-    public class EventImportArgs : EventArgs
+    public class GreatImportArgs : EventArgs
     {
-        public EventImportArgs(string result)
+        public GreatImportArgs(string message)
         {
-            Result = result;
+            Message = message;
         }
-        public string Result { get; set; }
+
+        public string Message { get; set; }
     }
 }

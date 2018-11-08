@@ -25,7 +25,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Email Address:" HorizontalAlignment="Right"/>
+                <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
                 <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
                 <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
                 <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
