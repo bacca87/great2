@@ -60,7 +60,9 @@ namespace Great.Models
             {
                 try
                 {
+                    exService.TraceEnabled = true;
                     exService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
+                    //exService.UseDefaultCredentials = true;
                     exService.AutodiscoverUrl(UserSettings.Email.EmailAddress, (string redirectionUrl) => {
                         // The default for the validation callback is to reject the URL.
                         bool result = false;

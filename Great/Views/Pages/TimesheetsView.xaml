@@ -29,8 +29,6 @@
         </Grid.RowDefinitions>
         <DataGrid Name="workingDaysDataGrid"
                   Grid.Row="0"
-                  HorizontalAlignment="Stretch" 
-                  VerticalAlignment="Stretch" 
                   AutoGenerateColumns="False" 
                   CanUserReorderColumns="False" 
                   CanUserResizeColumns="False" 
@@ -38,42 +36,56 @@
                   CanUserSortColumns="False" 
                   IsReadOnly="True"                  
                   SelectionMode="Single"
-                  HeadersVisibility="Column"
+                  HeadersVisibility="Column"                  
                   ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item" 
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
-                <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         <Setter Property="TextBlock.FontSize" Value="15" />
                         <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                         <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
                 </Style>
+                <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    </Style.Setters>
+                </Style>
+                <Style x:Key="RightAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                    </Style.Setters>
+                </Style>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="#64646464" />
+                </Style>               
+            </DataGrid.Resources>
+            <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
-                            <Setter Property="Background" Value="LightBlue" />
+                            <Setter Property="Background" Value="#0D47A1" /> <!--Blue-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                            <Setter Property="Background" Value="Tomato" />
+                            <Setter Property="Background" Value="#B71C1C" /> <!--Red-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                            <Setter Property="Background" Value="Tomato" />
+                            <Setter Property="Background" Value="#B71C1C" /> <!--Red-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="1">
-                            <Setter Property="Background" Value="Orange" />
+                            <Setter Property="Background" Value="#4A148C" /><!--Orange-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="2">
-                            <Setter Property="Background" Value="Pink" />
+                            <Setter Property="Background" Value="#880E4F" /><!--Purple-->
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </DataGrid.Resources>
+            </DataGrid.RowStyle>
             <DataGrid.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -139,18 +151,18 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Week Nr." Binding="{Binding WeekNr_Display}" FontWeight="Bold" />
-                <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" />
-                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" />
-                <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" />
-                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" />
-                <DataGridTextColumn Header="Hours of Leave" Binding="{Binding HoursOfLeave, StringFormat=N2}" />
-                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=N2}" />
-                <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" />
-                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" />
-                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" />
-                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" />
-                <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" />
+                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
+                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Hours of Leave" Binding="{Binding HoursOfLeave, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
+                <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="2">
@@ -166,9 +178,7 @@
                 </Grid.ColumnDefinitions>
                 <DataGrid Grid.Column="0"
                       ItemsSource="{Binding Timesheets}"                      
-                      SelectedItem="{Binding SelectedTimesheet}"                      
-                      VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"                         
+                      SelectedItem="{Binding SelectedTimesheet}"
                       AutoGenerateColumns="False" 
                       CanUserReorderColumns="False" 
                       CanUserResizeColumns="False" 
@@ -178,9 +188,8 @@
                       IsReadOnly="True">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
-                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
                             <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                             <Setter Property="FontSize" Value="15"/>
                         </Style>
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">                            
@@ -256,17 +265,17 @@
                     <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
                     <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
                     <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
-                    
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightBlue"/>
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightGreen"/>
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightGreen"/>
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightBlue" />
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightBlue" />
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightGreen"/>
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightGreen"/>
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="LightBlue" />
+
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B"/>
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
                 </Grid>                
-                <Grid Grid.Column="0" Grid.Row="1">
+                <Grid Grid.Column="0" Grid.Row="1" Margin="15">
                     <GroupBox Header="FDL" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}">
                         <Grid>
                             <Grid.ColumnDefinitions>

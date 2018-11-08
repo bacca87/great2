@@ -48,7 +48,7 @@ namespace Great.ViewModels
         {
             get
             {
-                return "Snoop my ass faggot!!!";
+                return UserSettings.Email.EmailPassword;
             }
 
             set
