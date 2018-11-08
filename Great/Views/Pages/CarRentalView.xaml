@@ -11,11 +11,7 @@
       Title="CarRental">
 
     <Page.Resources>
-        <CollectionViewSource x:Key="CarRentalHistoryView" Source="{Binding CarRentals}" IsLiveSortingRequested="True" >
-            <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="EndDate" Direction="Descending" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+
     </Page.Resources>
 
     <Grid Margin="10,0,10,0">
@@ -54,8 +50,8 @@
                 IsReadOnly="True"                  
                 SelectionMode="Single"
                 HeadersVisibility="Column"
-                ItemsSource="{Binding Source={StaticResource CarRentalHistoryView}}"
-                SelectedItem="{Binding SelectedCarRental}"
+                ItemsSource="{Binding Rentals}"
+                SelectedItem="{Binding SelectedRent}"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
@@ -83,8 +79,8 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Rent Start Date" Binding="{Binding StartDate }" FontWeight="Bold"/>
-                    <DataGridTextColumn Header="Rent End Date" Binding="{Binding EndDate.Order}"/>
-                    <DataGridTextColumn Header="Car" Binding="{Binding Car}"/>
+                    <DataGridTextColumn Header="Rent End Date" Binding="{Binding EndDate}"/>
+                    <DataGridTextColumn Header="Car" Binding="{Binding Car1.Brand}"/>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -99,31 +95,31 @@
 
             <StackPanel Grid.Row="0" Orientation="Vertical">
                 <TextBlock>Car Plate</TextBlock>
-                <TextBox></TextBox>
+                <TextBox  Text="{Binding SelectedRentClone.Car1.LicensePlate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Brand</TextBlock>
-                <TextBox></TextBox>
+                <TextBox Text="{Binding SelectedRentClone.Car1.Brand}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Model</TextBlock>
-                <TextBox></TextBox>
-                <TextBlock>Rent Company;</TextBlock>
-                <ComboBox ItemsSource="{Binding Companies }" DisplayMemberPath="Name"></ComboBox>
+                <TextBox Text="{Binding SelectedRentClone.Car1.Model}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent Company</TextBlock>
+                <ComboBox ItemsSource="{Binding RentalCompanies}" SelectedItem="{Binding SelectedRentClone.Car1.CarRentalCompany1}" DisplayMemberPath="Name" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Initial Km</TextBlock>
-                <TextBox></TextBox>
+                <TextBox Text="{Binding SelectedRentClone.StartKm}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Ending Km</TextBlock>
-                <TextBox></TextBox>
-                 <TextBlock>Driven Km</TextBlock>
-                <TextBox></TextBox>
-                 <TextBlock>Rent Start Date:</TextBlock>
-                <DatePicker SelectedDate=""></DatePicker>
+                <TextBox Text="{Binding SelectedRentClone.EndKm}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Driven Km</TextBlock>
+                <TextBox Text="{Binding SelectedRentClone.EndKm}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent Start Date:</TextBlock>
+                <DatePicker SelectedDate="{Binding SelectedRentClone.StartDate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Date</TextBlock>
-                <DatePicker SelectedDate=""></DatePicker>
+                <DatePicker SelectedDate="{Binding SelectedRentClone.EndDate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Start Location</TextBlock>
-                <TextBox></TextBox>
+                <TextBox Text="{Binding SelectedRentClone.StartLocation}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Llocation</TextBlock>
-                <TextBox></TextBox>                
+                <TextBox Text="{Binding SelectedRentClone.EndLocation}" IsEnabled="{Binding IsInputEnabled}"/>
             </StackPanel>
-            
-            <StackPanel Grid.Row="1" Orientation="Horizontal">            
-                <Button Margin="10" Content="Save" Command="{Binding SaveRentCommand}" />
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" IsEnabled="True"  />
                 <Button Margin="10" Content="Delete" Command="{Binding DeleteRentCommand}"  />
             </StackPanel>
         </Grid>

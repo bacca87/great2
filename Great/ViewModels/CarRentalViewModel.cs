@@ -1,14 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Models;
-using Great.Utils.Messages;
+using Great.Models.Database;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
@@ -21,172 +16,184 @@ namespace Great.ViewModels
     public class CarRentalViewModel : ViewModelBase
     {
         #region Properties
-        private DBArchive _db { get; set; }
+        private DBArchive _db;
 
         /// <summary>
-        /// The <see cref="CarRentalHostory" /> property's name.
+        /// The <see cref="IsInputEnabled" /> property's name.
         /// </summary>
-        private ObservableCollection<CarRentalHistory> _carRentals;
+        private bool _isInputEnabled = false;
 
         /// <summary>
-        /// Sets and gets the CarRentalHistory property.
+        /// Sets and gets the IsInputEnabled property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public bool IsInputEnabled
+        {
+            get => _isInputEnabled;
+
+            set
+            {
+                if (_isInputEnabled == value)
+                {
+                    return;
+                }
+
+                var oldValue = _isInputEnabled;
+                _isInputEnabled = value;
+
+                RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
+
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="Rentals" /> property's name.
+        /// </summary>
+        private ObservableCollection<CarRentalHistory> _rentals;
+
+        /// <summary>
+        /// Sets and gets the Rentals property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public ObservableCollection<CarRentalHistory> CarRentals
+        public ObservableCollection<CarRentalHistory> Rentals
         {
-            get => _carRentals;
+            get => _rentals;
             set
             {
-                _carRentals = value;
-                RaisePropertyChanged(nameof(CarRentalCompany), true);
+                _rentals = value;
+                RaisePropertyChanged(nameof(Rentals), true);
             }
         }
 
         /// <summary>
-        /// The <see cref="SelectedCarRental" /> property's name.
+        /// The <see cref="SelectedRent" /> property's name.
         /// </summary>
-        private CarRentalHistory _selectedCarRental;
+        private CarRentalHistory _selectedRent;
 
         /// <summary>
-        /// Sets and gets the NewCar property.
-        /// Changes to that property's value raise the PropertyChanged event. 
+        /// Sets and gets the SelectedRent property.
+        /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public Car NewCar
+        public CarRentalHistory SelectedRent
         {
-            get => _newCar;
+            get => _selectedRent;
 
             set
             {
-                _newCar = value;
-                RaisePropertyChanged(nameof(NewCar), value);
+                var oldValue = _selectedRent;
+                _selectedRent = value;
+
+                RefreshRentals();
+                SelectedRentClone = _selectedRent?.Clone();
+
+
+
+                RaisePropertyChanged(nameof(SelectedRent), oldValue, value);
             }
         }
 
         /// <summary>
-        /// The <see cref="NewCar" /> property's name.
+        /// The <see cref="SelectedRentClone" /> property's name.
         /// </summary>
-        private Car _newCar;
+        private CarRentalHistory _selectedRentClone;
 
         /// <summary>
-        /// Sets and gets the SelectedCarRentalHistory property.
-        /// Changes to that property's value raise the PropertyChanged event. 
+        /// Sets and gets the SelectedRentClone property.
+        /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public CarRentalHistory SelectedCarRental
+        public CarRentalHistory SelectedRentClone
         {
-            get => _selectedCarRental;
+            get => _selectedRentClone;
 
             set
             {
-                _selectedCarRental = value;
-                RaisePropertyChanged(nameof(SelectedCarRental), value);
+                var oldValue = _selectedRentClone;
+                _selectedRentClone = value;
+                RaisePropertyChanged(nameof(SelectedRentClone), oldValue, value);
             }
         }
 
+  
         /// <summary>
-        /// Sets and gets the Companies property.
-        /// Changes to that property's value raise the PropertyChanged event. 
+        /// The <see cref="RentalCompanies" /> property's name.
         /// </summary>
-        /// 
-        /// <summary>
-        /// The <see cref="Companies" /> property's name.
-        /// </summary>
-        private ObservableCollection<CarRentalCompany> _companies;
-        public ObservableCollection<CarRentalCompany> Companies
-        {
-            get => _companies;
-            set
-            {
-                _companies = value;
-                RaisePropertyChanged(nameof(Companies), value);
-            }
-        }
+        public ObservableCollection<CarRentalCompany> RentalCompanies { get; set; }
+        #endregion
+
+        #region Commands Definitions
+        public RelayCommand ClearCommand { get; set; }
+        public RelayCommand<CarRentalHistory> SaveCommand { get; set; }
+        public RelayCommand<CarRentalHistory> DeleteCommand { get; set; }
+        public RelayCommand<CarRentalHistory> NewCommand {get;set; }
 
         #endregion
 
-        #region Commands
-        public RelayCommand<CarRentalHistory> DeleteRentCommand { get; set; }
-        public RelayCommand<CarRentalHistory> SaveRentCommand { get; set; }
-        public RelayCommand ClearSelectionCommand { get; set; }
-        #endregion
-
         /// <summary>
-        /// Initializes a new instance of the CarRentalViewModel class.
+        /// Initializes a new instance of the ExpenseAccountViewModel class.
         /// </summary>
         public CarRentalViewModel(DBArchive db)
         {
             _db = db;
 
-            CarRentals = new ObservableCollection<CarRentalHistory>(_db.CarRentalHistories.ToList());
-            Companies = new ObservableCollection<CarRentalCompany>(_db.CarRentalCompanies.ToList());
-            CarRentals.CollectionChanged += CarRentals_CollectionChanged;
+            IsInputEnabled =false;
 
-            DeleteRentCommand = new RelayCommand<CarRentalHistory>(DeleteRent);
-            SaveRentCommand = new RelayCommand<CarRentalHistory>(SaveRent);
-            ClearSelectionCommand = new RelayCommand(ClearSelection);
+            ClearCommand = new RelayCommand(ClearRent);
+            SaveCommand = new RelayCommand<CarRentalHistory>(SaveRent);
+            DeleteCommand = new RelayCommand<CarRentalHistory>(DeleteRent);
+            NewCommand = new RelayCommand<CarRentalHistory>(NewRent);
+
+            Rentals = new ObservableCollection<CarRentalHistory>(_db.CarRentalHistories);
+            RentalCompanies = new ObservableCollection<CarRentalCompany>(_db.CarRentalCompanies);
 
         }
 
-        private void CarRentals_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void NewRent(CarRentalHistory obj)
         {
-            RaisePropertyChanged(nameof(CarRentals), null, CarRentals, true);
+            ClearRent();
+            IsInputEnabled = true;
+
         }
 
-        public void NewFactory(NewItemMessage<CarRentalHistory> item)
+        private void DeleteRent(CarRentalHistory cr)
         {
-            // Using the dispatcher for preventing thread conflicts
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    if (item.Content != null)
-                    {
-                        CarRentalHistory rental = _db.CarRentalHistories.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (rental != null && !CarRentals.Contains(rental))
-                        {
-                            CarRentals.Add(rental);
-                        }
-                    }
-                })
-            );
         }
 
-        private void ClearSelection()
+        private void RefreshRentals()
         {
-            SelectedCarRental = null;
+
         }
 
-        private void DeleteRent(CarRentalHistory rent)
-        {
-            _db.CarRentalHistories.Remove(rent);
 
+        public void ClearRent()
+        {
+            SelectedRentClone.Id = 0;
+            SelectedRentClone.Car = 0;
+            SelectedRentClone.StartKm = 0;
+            SelectedRentClone.EndKm = 0;
+            SelectedRentClone.StartLocation = string.Empty;
+            SelectedRentClone.EndLocation = string.Empty;
+            SelectedRentClone.StartDate = 0;
+            SelectedRentClone.EndDate = 0;
+            SelectedRentClone.StartFuelLevel = 0;
+            SelectedRentClone.EndFuelLevel = 0;
+            SelectedRentClone.Notes = string.Empty;
+            SelectedRentClone.Car1 = new Car();
+
+        }
+
+        public void SaveRent(CarRentalHistory rc)
+        {
+            if (rc == null)
+            {
+                return;
+            }
+
+            _db.CarRentalHistories.AddOrUpdate(rc);
             if (_db.SaveChanges() > 0)
             {
-                CarRentals.Remove(rent);
-                SelectedCarRental = null;
+                SelectedRent?.NotifyCarRentalHistoryPropertiesChanged();
             }
         }
-
-        private void SaveRent(CarRentalHistory rent)
-        {
-            _db.CarRentalHistories.AddOrUpdate(rent);
-
-            if (_db.SaveChanges() > 0)
-            {
-                // check if already exist in the collection
-                CarRentalHistory itemRent = CarRentals.Where(f => f.Id == rent.Id).FirstOrDefault();
-
-                if (itemRent != null)
-                {
-                    CarRentals[CarRentals.IndexOf(itemRent)] = rent;
-                }
-                else
-                {
-                    CarRentals.Add(rent);
-                }
-
-                SelectedCarRental = rent;
-            }
-        }
-
     }
 }

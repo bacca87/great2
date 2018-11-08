@@ -211,6 +211,7 @@
     <Compile Include="Models\Database\Car.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
+    <Compile Include="Models\Database\CarRentalHistory.ext.cs" />
     <Compile Include="Models\Database\Currency.cs" />
     <Compile Include="Models\Database\Day.cs" />
     <Compile Include="Models\Database\DayType.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Utils\Migration\GreatMigration.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
+    <Compile Include="ViewModels\CarRentalViewModel.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\GreatImportWizardViewModel.cs" />
