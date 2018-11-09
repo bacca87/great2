@@ -98,7 +98,7 @@
                 <toolkit:AutoCompleteBox 
                     ItemsSource="{Binding Cars }" 
                     ValueMemberPath="LicensePlate"  
-                    SelectedItem="{Binding SelectedCarClone}"
+                    SelectedItem="{Binding SelectedCarClone, Mode=TwoWay}"
                     ItemTemplate="{StaticResource AutoCompleteLicensePlate}"/>
                 <TextBlock>Brand</TextBlock>
                 <TextBox Text="{Binding SelectedCarClone.Brand}" IsEnabled="{Binding IsInputEnabled}"/>
