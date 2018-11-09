@@ -48,6 +48,13 @@
             </Fluent:Ribbon.Menu>
             <!--Contextual Tab Groups-->
             <Fluent:Ribbon.ContextualGroups>
+                <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
+                                     Header="TOOLS" 
+                                     DataContext="{Binding CarRental, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="HOME"
@@ -284,33 +291,94 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="CAR" 
+            <Fluent:RibbonTabItem Header="RENTS" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="New" Command="{Binding NewCommand }"  CommandParameter="{Binding SelectedRentClone}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+
+                <Fluent:RibbonGroupBox Header="Actions">
+                         <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="New Rent" Text="Create a new Rent" />
+                            <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Delete Rent" Text="Delete Selected Rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                     
-                     <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Header="Filter">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height ="Auto"></RowDefinition>
+                            <RowDefinition Height ="Auto"></RowDefinition>
+
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Start Date"/>
+
+                        <DatePicker Grid.Row="0"
+                                    Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+
+                                   Text="End Date"/>
+
+                        <DatePicker Grid.Row="1"
+                                    Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="2"
+                                   Text="Brand"/>
+
+                        <TextBox Grid.Row="0"
+                                 Width="100"
+                                 Grid.Column="3"/>
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="2"
+                                   Text="Model"/>
+
+                        <TextBox Grid.Row="1"
+                                 Width="100"
+                                 Grid.Column="3"/>
+
+                        <Button Margin="2" Content="Apply Filter" Command="{Binding ApplyFilter}" Grid.Row="0" Grid.Column="4" />
+                        <Button Margin="2" Content="Clear Filter" Command="{Binding ClearFilter}" Grid.Row="1" Grid.Column="4" />
+
+                    </Grid>
+                </Fluent:RibbonGroupBox>
+
+            </Fluent:RibbonTabItem>
+
+            <Fluent:RibbonTabItem Header="Edit Rentals" 
+                                  DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
+                                  IsSelected="{Binding ShowContextualMenu}"                                   
+                                  Group="{Binding Source={x:Reference EditRentalGroup}}">
+
+                <Fluent:RibbonGroupBox Header="Edit" >
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save Selected Rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-                
-                <Fluent:RibbonGroupBox Header="Filter">
-                    
-                    
-                </Fluent:RibbonGroupBox>
+
+
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0" DataContext="{Binding Notifications, Source={StaticResource Locator}}">

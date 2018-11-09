@@ -13,14 +13,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Great.Wizards.Views
+namespace Great.Views.Dialogs
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for ExchangeLoginView.xaml
     /// </summary>
-    public partial class GreatImportWizardView : MetroWindow
+    public partial class ExchangeLoginView : MetroWindow
     {
-        public GreatImportWizardView()
+        public ExchangeLoginView()
         {
             InitializeComponent();
         }

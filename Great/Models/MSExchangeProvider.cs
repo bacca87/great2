@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using static Great.Models.ExchangeTraceListener;
 
 namespace Great.Models
 {
@@ -15,7 +16,6 @@ namespace Great.Models
         private ExchangeService exService = new ExchangeService();
 
         public event EventHandler<NewMessageEventArgs> OnNewMessage;
-        public event EventHandler<EExchangeStatus> OnNewConnectionStatus;
 
         private Thread mainThread;
         private Thread emailSenderThread;
@@ -41,7 +41,6 @@ namespace Great.Models
                 lock (this)
                 {
                     exchangeStatus = value;
-                    NotifyNewConnectionStatus(exchangeStatus);
                 }
             }
         }
@@ -54,13 +53,18 @@ namespace Great.Models
             mainThread.Start();
         }
 
+        #region Threads
         private void MainThread()
         {
+            ExchangeTraceListener trace = new ExchangeTraceListener();
+            exService.TraceListener = trace;
+            exService.TraceFlags = TraceFlags.AutodiscoverConfiguration;
+            exService.TraceEnabled = true;
+
             do
             {
                 try
-                {
-                    exService.TraceEnabled = true;
+                {   
                     exService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
                     //exService.UseDefaultCredentials = true;
                     exService.AutodiscoverUrl(UserSettings.Email.EmailAddress, (string redirectionUrl) => {
@@ -77,7 +81,16 @@ namespace Great.Models
                         return result;
                     });
                 }
-                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
+                catch
+                {
+                    if (trace.Result == ETraceResult.LoginError)
+                    {
+                        ExchangeStatus = EExchangeStatus.LoginError;
+                        WaitCredentialsChange();
+                    }   
+                    else
+                        Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                }
             } while (exService.Url == null);
 
             exServiceUri = exService.Url;
@@ -101,9 +114,15 @@ namespace Great.Models
         private void EmailSenderThread()
         {
             bool exit = false;
-            ExchangeService service = new ExchangeService();
-            service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-            service.Url = exServiceUri;           
+            ExchangeTraceListener trace = new ExchangeTraceListener();
+            ExchangeService service = new ExchangeService
+            {
+                TraceListener = trace,
+                TraceFlags = TraceFlags.AutodiscoverConfiguration,
+                TraceEnabled = true,
+                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
+                Url = exServiceUri
+            };
 
             while (!exit)
             {
@@ -134,7 +153,16 @@ namespace Great.Models
                             msg.SendAndSaveCopy();
                             IsSent = true;
                         }
-                        catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
+                        catch
+                        {
+                            if (trace.Result == ETraceResult.LoginError)
+                            {
+                                ExchangeStatus = EExchangeStatus.LoginError;
+                                WaitCredentialsChange();
+                            }
+                            else
+                                Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                        }
                     }
                     while (!IsSent);
                 }
@@ -145,9 +173,15 @@ namespace Great.Models
 
         private void SubscribeNotificationsThread()
         {
-            ExchangeService service = new ExchangeService();
-            service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-            service.Url = exServiceUri;
+            ExchangeTraceListener trace = new ExchangeTraceListener();
+            ExchangeService service = new ExchangeService
+            {
+                TraceListener = trace,
+                TraceFlags = TraceFlags.AutodiscoverConfiguration,
+                TraceEnabled = true,
+                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
+                Url = exServiceUri
+            };
 
             StreamingSubscriptionConnection connection = new StreamingSubscriptionConnection(service, 30);
 
@@ -158,14 +192,23 @@ namespace Great.Models
                 try
                 {
                     StreamingSubscription streamingSubscription = service.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
-                 
+                                        
                     connection.AddSubscription(streamingSubscription);
                     connection.OnNotificationEvent += Connection_OnNotificationEvent;
                     connection.OnSubscriptionError += Connection_OnSubscriptionError;
                     connection.OnDisconnect += Connection_OnDisconnect;
                     connection.Open();
                 }
-                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
+                catch
+                {
+                    if (trace.Result == ETraceResult.LoginError)
+                    {
+                        ExchangeStatus = EExchangeStatus.LoginError;
+                        WaitCredentialsChange();
+                    }
+                    else
+                        Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                }
             } while (connection == null || !connection.IsOpen);
 
             ExchangeStatus = EExchangeStatus.Online;
@@ -173,9 +216,15 @@ namespace Great.Models
 
         private void ExchangeSync()
         {
-            ExchangeService service = new ExchangeService();
-            service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-            service.Url = exServiceUri;
+            ExchangeTraceListener trace = new ExchangeTraceListener();
+            ExchangeService service = new ExchangeService
+            {
+                TraceListener = trace,
+                TraceFlags = TraceFlags.AutodiscoverConfiguration,
+                TraceEnabled = true,
+                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
+                Url = exServiceUri
+            };
 
             bool IsSynced = false;
 
@@ -188,7 +237,7 @@ namespace Great.Models
                     folderView.PropertySet.Add(FolderSchema.WellKnownFolderName);
 
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
-                    
+
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
                     {
                         if (!(item is EmailMessage))
@@ -200,10 +249,66 @@ namespace Great.Models
 
                     IsSynced = true;
                 }
-                catch { Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry); }
+                catch
+                {
+                    if (trace.Result == ETraceResult.LoginError)
+                    {
+                        ExchangeStatus = EExchangeStatus.LoginError;
+                        WaitCredentialsChange();
+                    }
+                    else
+                        Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                }
             } while (!IsSynced);
         }
+        #endregion
 
+        #region Subscription Events Handling
+        private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
+        {
+            foreach (NotificationEvent e in args.Events)
+            {
+                var itemEvent = (ItemEvent)e;
+                EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
+
+                switch (e.EventType)
+                {
+                    case EventType.NewMail:
+                        NotifyNewMessage(message);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
+        {
+            if (ExchangeStatus != EExchangeStatus.Error)
+                ExchangeStatus = EExchangeStatus.Offline;
+
+            Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+            ExchangeStatus = EExchangeStatus.Reconnecting;
+
+            try
+            {
+                (sender as StreamingSubscriptionConnection).Open();
+                ExchangeStatus = EExchangeStatus.Online;
+            }
+            catch { }
+
+            Debugger.Break();
+        }
+
+        private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
+        {
+            ExchangeStatus = EExchangeStatus.Error;
+            Debugger.Break();
+        }
+        #endregion
+
+        #region Private Methods
         private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
         {
             FindFoldersResults foldersResults;
@@ -262,6 +367,22 @@ namespace Great.Models
             } while (itemsResults.MoreAvailable);
         }
 
+        protected void NotifyNewMessage(EmailMessage e)
+        {
+            OnNewMessage?.Invoke(this, new NewMessageEventArgs(e));
+        }
+
+        private void WaitCredentialsChange()
+        {
+            string LastAddress = UserSettings.Email.EmailAddress;
+            string LastPassword = UserSettings.Email.EmailPassword;
+
+            while(LastAddress == UserSettings.Email.EmailAddress && LastPassword == UserSettings.Email.EmailPassword)
+                Thread.Sleep(ApplicationSettings.General.WaitForCredentialsCheck);
+        }
+        #endregion
+
+        #region Public Methods
         public NameResolutionCollection ResolveName(string filter)
         {
             if (exService.Url != null)
@@ -274,71 +395,42 @@ namespace Great.Models
         {
             emailQueue.Enqueue(message);
         }
-
-        protected void NotifyNewMessage(EmailMessage e)
-        {
-            OnNewMessage?.Invoke(this, new NewMessageEventArgs(e));
-        }
-
-        protected void NotifyNewConnectionStatus(EExchangeStatus e)
-        {
-            OnNewConnectionStatus?.Invoke(this, e);
-        }
-
-        #region Subscription Events Handling
-        private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
-        {
-            foreach (NotificationEvent e in args.Events)
-            {
-                var itemEvent = (ItemEvent)e;
-                EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
-
-                switch (e.EventType)
-                {
-                    case EventType.NewMail:
-                        NotifyNewMessage(message);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
-
-        private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
-        {
-            if (ExchangeStatus != EExchangeStatus.Error)
-                ExchangeStatus = EExchangeStatus.Offline;
-
-            Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
-            ExchangeStatus = EExchangeStatus.Reconnecting;
-
-            try
-            {
-                (sender as StreamingSubscriptionConnection).Open();
-                ExchangeStatus = EExchangeStatus.Online;
-            }
-            catch { }
-
-            Debugger.Break();
-        }
-
-        private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
-        {
-            ExchangeStatus = EExchangeStatus.Error;
-            Debugger.Break();
-        }
         #endregion
     }
 
     public class NewMessageEventArgs : EventArgs
     {
-        private EmailMessage _message;
-        public EmailMessage Message { get { return _message; } }
+        public EmailMessage Message { get; internal set; }
 
         public NewMessageEventArgs(EmailMessage message)
         {
-            _message = message;
+            Message = message;
+        }
+    }
+
+    public class ExchangeTraceListener : ITraceListener
+    {
+        public enum ETraceResult
+        {
+            Ok,
+            LoginError,
+            AutodiscoverError
+        }
+
+        public ETraceResult Result { get; internal set; }
+
+        public ExchangeTraceListener()
+        {
+            Result = ETraceResult.Ok;
+        }
+
+        public void Trace(string traceType, string traceMessage)
+        {
+            if(traceMessage.Contains("(401)"))
+                Result = ETraceResult.LoginError;
+
+            if (traceMessage.Contains("No matching Autodiscover DNS SRV records were found."))
+                Result = ETraceResult.AutodiscoverError;
         }
     }
 }

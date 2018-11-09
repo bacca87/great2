@@ -42,15 +42,23 @@
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
-                <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Left" />
                         <Setter Property="TextBlock.FontSize" Value="15" />
                         <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                         <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
-                </Style>                
+                </Style>
+                <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    </Style.Setters>
+                </Style>
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+                
                 <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
                 <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
             </DataGrid.Resources>
@@ -68,7 +76,7 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Status">
+                <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -86,11 +94,11 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL}" FontWeight="Bold"/>
-                <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}"/>
-                <DataGridTextColumn Header="CdC" Binding="{Binding CdC}"/>
-                <DataGridTextColumn Header="Week Nr" Binding="{Binding FDL1.WeekNr}"/>
-                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}"/>
+                <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="CdC" Binding="{Binding CdC}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Week Nr" Binding="{Binding FDL1.WeekNr}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" CellStyle="{StaticResource BaseCellStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
@@ -115,14 +123,23 @@
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
-                    <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                         <Style.Setters>
-                            <Setter Property="TextBlock.TextAlignment" Value="Left" />
-                            <Setter Property="TextBlock.FontSize" Value="15" />
-                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
-                            <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                         </Style.Setters>
+                    </Style>
+                    <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style.Setters>
+                    </Style>
+                    <Style x:Key="RightAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style.Setters>
+                    </Style>
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">                        
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                     <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
                     <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
@@ -141,7 +158,7 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Expense Type">
+                    <DataGridTemplateColumn Header="Expense Type" CellStyle="{StaticResource BaseCellStyle}">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox
@@ -158,14 +175,14 @@
                                 <TextBlock Text="{Binding ExpenseType.Description}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>                    
-                    <DataGridTextColumn Header="Monday" Binding="{Binding MondayAmount}"/>
-                    <DataGridTextColumn Header="Tuesday" Binding="{Binding TuesdayAmount}"/>
-                    <DataGridTextColumn Header="Wednesday" Binding="{Binding WednesdayAmount}"/>
-                    <DataGridTextColumn Header="Thursday" Binding="{Binding ThursdayAmount}"/>
-                    <DataGridTextColumn Header="Friday" Binding="{Binding FridayAmount}"/>
-                    <DataGridTextColumn Header="Saturday" Binding="{Binding SaturdayAmount}"/>
-                    <DataGridTextColumn Header="Sunday" Binding="{Binding SundayAmount}"/>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Monday" Binding="{Binding MondayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Tuesday" Binding="{Binding TuesdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Wednesday" Binding="{Binding WednesdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Thursday" Binding="{Binding ThursdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Friday" Binding="{Binding FridayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Saturday" Binding="{Binding SaturdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Sunday" Binding="{Binding SundayAmount}" CellStyle="{StaticResource CenterAligned}"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="1">

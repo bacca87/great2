@@ -1233,6 +1233,7 @@ namespace Great.Models
         Connecting,
         Online,
         Reconnecting,
+        LoginError,
         Error
     }
 

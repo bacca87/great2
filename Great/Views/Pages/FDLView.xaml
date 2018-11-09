@@ -42,15 +42,23 @@
                 VirtualizingPanel.VirtualizationMode="Standard"
                 Loaded="fdlDataGridView_Loaded">
             <DataGrid.Resources>
-                <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Left" />
                         <Setter Property="TextBlock.FontSize" Value="15" />
                         <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                         <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     </Style.Setters>
                 </Style>
+                <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    </Style.Setters>
+                </Style>               
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+                
                 <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
                 <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
             </DataGrid.Resources>
@@ -68,7 +76,7 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Status">                    
+                <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">                    
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">                                
@@ -86,8 +94,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold"/>
-                <DataGridTemplateColumn Header="Factory">
+                <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTemplateColumn Header="Factory" CellStyle="{StaticResource BaseCellStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock>
@@ -101,10 +109,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Order" Binding="{Binding Order}"/>
-                <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}"/>
-                <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}"/>
-                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}"/>
+                <DataGridTextColumn Header="Order" Binding="{Binding Order}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" CellStyle="{StaticResource BaseCellStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
@@ -163,10 +171,22 @@
                       IsReadOnly="True"
                       Height="160">
                 <DataGrid.Resources>
-                    <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
-                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                        <Style.Setters>                            
+                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style.Setters>
+                    </Style>
+                    <Style x:Key="RightAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style.Setters>
                     </Style>
                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
                         <Setter Property="ContentTemplate">
@@ -176,18 +196,19 @@
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='ddd dd MMM'}" Width="75" />
-                    <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                    <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='ddd dd MMM'}" Width="75" CellStyle="{StaticResource RightAligned}"/>
+                    <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="2" Margin="5">
@@ -230,7 +251,7 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="Performance description:" VerticalAlignment="Center"/>
@@ -238,7 +259,7 @@
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -249,7 +270,7 @@
                 </Grid>
                 <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center"/>
@@ -257,7 +278,7 @@
                 </Grid>
                 <Grid Grid.Row="3">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="Performance description details:" VerticalAlignment="Center"/>

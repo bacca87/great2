@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using Great.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using NLog;
 using System;
 using System.Windows;
 using System.Windows.Threading;
@@ -17,6 +18,7 @@ namespace Great.ViewModels
     public class GreatImportWizardViewModel : ViewModelBase
     {
         #region Properties
+        private readonly Logger log = LogManager.GetLogger("GreatImport");
 
         /// <summary>
         /// The <see cref="InstallationFolder" /> property's name.
@@ -84,7 +86,29 @@ namespace Great.ViewModels
             }
         }
 
-        private GreatMigration _greatMigra;
+        /// <summary>
+        /// The <see cref="LogText" /> property's name.
+        /// </summary>
+        private string _logText;
+
+        /// <summary>
+        /// Sets and gets the LogText property.
+        /// Changes to that property's value raise the PropertyChanged event.
+        /// </summary>
+        public string LogText
+        {
+            get
+            {
+                return _logText;
+            }
+            internal set
+            {
+                _logText = value;
+                RaisePropertyChanged(nameof(LogText));
+            }
+        }
+
+        private GreatImport _greatMigra;
         #endregion
 
         #region Commands Definitions
@@ -97,8 +121,10 @@ namespace Great.ViewModels
         /// </summary>
         public GreatImportWizardViewModel()
         {
-            _greatMigra = new GreatMigration();
-            _greatMigra.OnOperationCompleted += _greatMigra_OnOperationCompleted;
+            _greatMigra = new GreatImport();
+            _greatMigra.OnStatusChanged += _greatMigra_OnStatusChanged; ;
+            _greatMigra.OnMessage += _greatMigra_OnMessage;
+            _greatMigra.OnCompleted += _greatMigra_OnCompleted;
 
             StartMigrationCommand = new RelayCommand(StartMigration);
             SelectFolderCommand = new RelayCommand(SelectFolder);
@@ -106,13 +132,32 @@ namespace Great.ViewModels
             Reset();
         }
 
-        private void _greatMigra_OnOperationCompleted(object source, EventImportArgs args)
+        private void _greatMigra_OnStatusChanged(object source, GreatImportArgs args)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    Status = args.Result;
-                    Completed = _greatMigra.Completed;
+                    Status = args.Message;
+                })
+            );
+        }
+
+        private void _greatMigra_OnMessage(object source, GreatImportArgs args)
+        {
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    LogText += args.Message + Environment.NewLine;
+                })
+            );
+        }
+
+        private void _greatMigra_OnCompleted(object source)
+        {
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {   
+                    Completed = true;
                 })
             );
         }
@@ -120,7 +165,7 @@ namespace Great.ViewModels
         private void Reset()
         {
             Completed = false;
-            InstallationFolder = GreatMigration.sGreatDefaultInstallationFolder;
+            InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
         }
 
         private void SelectFolder()
@@ -133,7 +178,7 @@ namespace Great.ViewModels
 
             dialog.AddToMostRecentlyUsedList = false;
             dialog.AllowNonFileSystemItems = false;
-            dialog.DefaultDirectory = GreatMigration.sGreatDefaultInstallationFolder;
+            dialog.DefaultDirectory = GreatImport.sGreatDefaultInstallationFolder;
             dialog.EnsureFileExists = true;
             dialog.EnsurePathExists = true;
             dialog.EnsureReadOnly = false;

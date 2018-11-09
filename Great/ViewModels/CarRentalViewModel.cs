@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
 using Great.Utils;
 using System.Data.Entity.Migrations;
+using System.Linq;
 using System.Windows;
 
 namespace Great.ViewModels
@@ -47,29 +48,29 @@ namespace Great.ViewModels
         }
 
         /// <summary>
-        /// The <see cref="IsChanged" /> property's name.
+        /// The <see cref="ShowContextualMenu" /> property's name.
         /// </summary>
-        private bool _isChanged = false;
+        private bool _showContextualMenu = false;
 
         /// <summary>
         /// Sets and gets the IsChanged property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>
-        public bool IsChanged
+        public bool ShowContextualMenu
         {
-            get => _isChanged;
+            get => _showContextualMenu;
 
             set
             {
-                if (_isChanged == value)
+                if (_showContextualMenu == value)
                 {
                     return;
                 }
 
-                var oldValue = _isChanged;
-                _isChanged = value;
+                var oldValue = _showContextualMenu;
+                _showContextualMenu = value;
 
-                RaisePropertyChanged(nameof(IsChanged), oldValue, value);
+                RaisePropertyChanged(nameof(ShowContextualMenu), oldValue, value);
 
             }
         }
@@ -118,6 +119,8 @@ namespace Great.ViewModels
 
                 RaisePropertyChanged(nameof(SelectedRent), oldValue, value);
                 DeleteCommand.RaiseCanExecuteChanged();
+
+                ShowContextualMenu = false;
             }
         }
 
@@ -182,6 +185,7 @@ namespace Great.ViewModels
         public RelayCommand<CarRentalHistory> SaveCommand { get; set; }
         public RelayCommand<CarRentalHistory> DeleteCommand { get; set; }
         public RelayCommand<CarRentalHistory> NewCommand { get; set; }
+        public RelayCommand ShowContextualMenuCommand { get; set; }
 
         #endregion
 
@@ -197,11 +201,11 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<CarRentalHistory>(SaveRent);
             DeleteCommand = new RelayCommand<CarRentalHistory>(DeleteRent);
             NewCommand = new RelayCommand<CarRentalHistory>(NewRent);
+            ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
 
             Rentals = new ObservableCollectionEx<CarRentalHistory>(_db.CarRentalHistories);
             Cars = new ObservableCollectionEx<Car>(_db.Cars);
             RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(_db.CarRentalCompanies);
-
 
         }
 
@@ -214,6 +218,25 @@ namespace Great.ViewModels
 
         private void DeleteRent(CarRentalHistory cr)
         {
+            if (MessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
+            {
+                var rentalsWithSameCar = _db.CarRentalHistories.Where(c => c.Car == cr.Car);
+
+                if (rentalsWithSameCar.Count() == 0)
+                {
+                    var car = _db.Cars.Where(c => c.Id == cr.Car).FirstOrDefault();
+                    _db.Cars.Remove(car);
+                    Cars.Remove(car);
+                }
+
+                _db.CarRentalHistories.Remove(cr);
+                Rentals.Remove(cr);
+
+                if (_db.SaveChanges() > 0)
+                {
+                    SelectedRent?.NotifyCarRentalHistoryPropertiesChanged();
+                }
+            }
 
         }
 

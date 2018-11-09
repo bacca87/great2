@@ -2,11 +2,10 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-      xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
       xmlns:m="clr-namespace:Great.Models.Database"
-      xmlns:conv="clr-namespace:Great.Utils.Converters"
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
@@ -15,22 +14,14 @@
        Style="{DynamicResource MetroPage}">
 
     <Page.Resources>
-        <CollectionViewSource x:Key="CarRentalCollectionView" 
-                              Source="{Binding Rentals}" IsLiveSortingRequested="True" >
-        </CollectionViewSource>
+        <CollectionViewSource x:Key="CarRentalCollectionView" Source="{Binding Rentals}" IsLiveSortingRequested="True" />
 
         <DataTemplate x:Key="AutoCompleteLicensePlate">
             <StackPanel Orientation="Horizontal">
-                <Label
-            Content="{Binding LicensePlate}"
-            Width="100" />
-                <Label
-            Content="{Binding Model}"
-            FontStyle="Italic"
-            Foreground="DarkGray" />
+                <Label  Content="{Binding LicensePlate}" Width="100" />
+                <Label  Content="{Binding Model}" FontStyle="Italic" Foreground="DarkGray" />
             </StackPanel>
         </DataTemplate>
-
     </Page.Resources>
 
     <Grid Margin="10,0,10,0">
@@ -38,27 +29,12 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-
         <Grid Margin="10,0,10,0" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-
             </Grid.RowDefinitions>
-
-            <StackPanel Grid.Row="0" Orientation="Horizontal" >
-                <TextBlock>Rent Start Date:</TextBlock>
-                <DatePicker SelectedDate=""></DatePicker>
-                <TextBlock>Rent End Date</TextBlock>
-                <DatePicker SelectedDate=""></DatePicker>
-                <TextBlock>Car Plate</TextBlock>
-                <TextBox Width="100" Height="20"></TextBox>
-                <Button Margin="10" Content="Apply Filter" Command="{Binding ApplyFilter}" />
-                <Button Margin="10" Content="Clear Filter" Command="{Binding ClearFilter}"  />
-            </StackPanel>
-
             <DataGrid Name="CarRentalHistoryView"
-                Grid.Row="1"
+                Grid.Row="0"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
                 AutoGenerateColumns="False" 
@@ -84,7 +60,6 @@
                     </Style>
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
-
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
@@ -104,8 +79,6 @@
                     <DataGridTextColumn Header="Car Brand" Binding="{Binding Car1.LicensePlate}"/>
                 </DataGrid.Columns>
             </DataGrid>
-
-
         </Grid>
 
         <Grid Grid.Column="1">
@@ -115,13 +88,18 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Vertical">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
                 <TextBlock>Car Plate</TextBlock>
                 <toolkit:AutoCompleteBox 
                     ItemsSource="{Binding Cars }" 
                     ValueMemberPath="LicensePlate"  
                     SelectedItem="{Binding SelectedCarClone}"
                     ItemTemplate="{StaticResource AutoCompleteLicensePlate}"/>
-                <!--="{Binding SelectedCarClone.LicensePlate}" IsEnabled="{Binding IsInputEnabled}"/>-->
                 <TextBlock>Brand</TextBlock>
                 <TextBox Text="{Binding SelectedCarClone.Brand}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Model</TextBlock>
@@ -158,6 +136,11 @@
                 <TextBox Text="{Binding SelectedRentClone.StartLocation}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Location</TextBlock>
                 <TextBox Text="{Binding SelectedRentClone.EndLocation}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock>Start Fuel Level</TextBlock>
+                    <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.StartFuelLevel}" IsEnabled="{Binding IsInputEnabled}"/>
+                     <TextBlock>End Fuel Level</TextBlock>
+                    <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.EndFuelLevel}" IsEnabled="{Binding IsInputEnabled}"/>  
+                    
                 <TextBlock>Notes</TextBlock>
                 <TextBox Text="{Binding SelectedRentClone.Notes}" IsEnabled="{Binding IsInputEnabled}"/>
             </StackPanel>

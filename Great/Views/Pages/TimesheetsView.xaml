@@ -36,7 +36,8 @@
                   CanUserSortColumns="False" 
                   IsReadOnly="True"                  
                   SelectionMode="Single"
-                  HeadersVisibility="Column"                  
+                  HeadersVisibility="Column"           
+                  HorizontalContentAlignment="Center"
                   ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
@@ -61,9 +62,9 @@
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
                     </Style.Setters>
                 </Style>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="#64646464" />
-                </Style>               
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
             </DataGrid.Resources>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
@@ -100,7 +101,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <StackPanel>
+                                        <StackPanel Background="{StaticResource GrayBrush8}">
                                             <TextBlock Margin="10" FontSize="20" FontWeight="Bold">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0} {1}">

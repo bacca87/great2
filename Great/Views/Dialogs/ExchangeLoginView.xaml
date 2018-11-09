@@ -1,0 +1,28 @@
+﻿<mah:MetroWindow
+        x:Class="Great.Views.Dialogs.ExchangeLoginView"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Great.Views.Dialogs"
+        xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+        mc:Ignorable="d"
+        DataContext="{Binding Settings, Source={StaticResource Locator}}"
+        Title="Microsoft Exchange Account" Height="200" Width="400">
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
+        <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
+    </Grid>
+</mah:MetroWindow>

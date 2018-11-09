@@ -1,5 +1,6 @@
 ﻿using Great.Models;
 using Great.Models.Database;
+using NLog;
 using System;
 using System.Data.Entity;
 using System.IO;
@@ -14,12 +15,16 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
+            
             InitializeDirectoryTree();
             InitializeDatabase();
+
+            // TODO: Auto Updater (https://github.com/ravibpatel/AutoUpdater.NET)
         }
 
         private void InitializeDirectoryTree()
-        {   
+        {
             // Init the Data Directory
             Directory.CreateDirectory(ApplicationSettings.Directories.Data);
             AppDomain.CurrentDomain.SetData("DataDirectory", ApplicationSettings.Directories.Data);
