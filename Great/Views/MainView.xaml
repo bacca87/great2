@@ -289,17 +289,21 @@
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="New" Command="{Binding NewRent }"  CommandParameter="{Binding SelectedRentClone}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="New" Command="{Binding NewCommand }"  CommandParameter="{Binding SelectedRentClone}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="New Rent" Text="Create a new Rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-
-                    <Fluent:Button Header="Delete" Command="{Binding DeleteRent}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Delete Rent" Text="Delete Selected Rent" />
                         </Fluent:Button.ToolTip>
-
+                    </Fluent:Button>
+                    
+                     <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save Rent" Text="Save Selected Rent" />
+                        </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 

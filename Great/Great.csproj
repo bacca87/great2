@@ -209,6 +209,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Database\Car.cs" />
+    <Compile Include="Models\Database\Car.ext.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
     <Compile Include="Models\Database\CarRentalHistory.ext.cs" />

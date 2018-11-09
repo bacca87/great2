@@ -1,9 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
-using System;
-using System.Collections.ObjectModel;
+using Great.Utils;
 using System.Data.Entity.Migrations;
+using System.Windows;
 
 namespace Great.ViewModels
 {
@@ -47,15 +47,43 @@ namespace Great.ViewModels
         }
 
         /// <summary>
+        /// The <see cref="IsChanged" /> property's name.
+        /// </summary>
+        private bool _isChanged = false;
+
+        /// <summary>
+        /// Sets and gets the IsChanged property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public bool IsChanged
+        {
+            get => _isChanged;
+
+            set
+            {
+                if (_isChanged == value)
+                {
+                    return;
+                }
+
+                var oldValue = _isChanged;
+                _isChanged = value;
+
+                RaisePropertyChanged(nameof(IsChanged), oldValue, value);
+
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Rentals" /> property's name.
         /// </summary>
-        private ObservableCollection<CarRentalHistory> _rentals;
+        private ObservableCollectionEx<CarRentalHistory> _rentals;
 
         /// <summary>
         /// Sets and gets the Rentals property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>        
-        public ObservableCollection<CarRentalHistory> Rentals
+        public ObservableCollectionEx<CarRentalHistory> Rentals
         {
             get => _rentals;
             set
@@ -80,15 +108,16 @@ namespace Great.ViewModels
 
             set
             {
+
                 var oldValue = _selectedRent;
+
                 _selectedRent = value;
 
-                RefreshRentals();
                 SelectedRentClone = _selectedRent?.Clone();
-
-
+                SelectedCarClone = _selectedRent?.Car1.Clone();
 
                 RaisePropertyChanged(nameof(SelectedRent), oldValue, value);
+                DeleteCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -110,21 +139,49 @@ namespace Great.ViewModels
                 var oldValue = _selectedRentClone;
                 _selectedRentClone = value;
                 RaisePropertyChanged(nameof(SelectedRentClone), oldValue, value);
+                SaveCommand.RaiseCanExecuteChanged();
+
             }
         }
 
-  
+        /// <summary>
+        /// The <see cref="SelectedCarClone" /> property's name.
+        /// </summary>
+        private Car _selectedCarClone;
+
+        /// <summary>
+        /// Sets and gets the SelectedRentClone property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Car SelectedCarClone
+        {
+            get => _selectedCarClone;
+
+            set
+            {
+                var oldValue = _selectedCarClone;
+                _selectedCarClone = value;
+                RaisePropertyChanged(nameof(SelectedCarClone), oldValue, value);
+            }
+        }
+
         /// <summary>
         /// The <see cref="RentalCompanies" /> property's name.
         /// </summary>
-        public ObservableCollection<CarRentalCompany> RentalCompanies { get; set; }
+        public ObservableCollectionEx<CarRentalCompany> RentalCompanies { get; set; }
+
+
+        /// <summary>
+        /// The <see cref="Cars" /> property's name.
+        /// </summary>
+        public ObservableCollectionEx<Car> Cars { get; set; }
         #endregion
 
         #region Commands Definitions
         public RelayCommand ClearCommand { get; set; }
         public RelayCommand<CarRentalHistory> SaveCommand { get; set; }
         public RelayCommand<CarRentalHistory> DeleteCommand { get; set; }
-        public RelayCommand<CarRentalHistory> NewCommand {get;set; }
+        public RelayCommand<CarRentalHistory> NewCommand { get; set; }
 
         #endregion
 
@@ -135,23 +192,24 @@ namespace Great.ViewModels
         {
             _db = db;
 
-            IsInputEnabled =false;
+            IsInputEnabled = true;
 
-            ClearCommand = new RelayCommand(ClearRent);
             SaveCommand = new RelayCommand<CarRentalHistory>(SaveRent);
             DeleteCommand = new RelayCommand<CarRentalHistory>(DeleteRent);
             NewCommand = new RelayCommand<CarRentalHistory>(NewRent);
 
-            Rentals = new ObservableCollection<CarRentalHistory>(_db.CarRentalHistories);
-            RentalCompanies = new ObservableCollection<CarRentalCompany>(_db.CarRentalCompanies);
+            Rentals = new ObservableCollectionEx<CarRentalHistory>(_db.CarRentalHistories);
+            Cars = new ObservableCollectionEx<Car>(_db.Cars);
+            RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(_db.CarRentalCompanies);
+
 
         }
 
+
         private void NewRent(CarRentalHistory obj)
         {
-            ClearRent();
-            IsInputEnabled = true;
-
+            SelectedRentClone = new CarRentalHistory();
+            SelectedCarClone = new Car();
         }
 
         private void DeleteRent(CarRentalHistory cr)
@@ -159,40 +217,35 @@ namespace Great.ViewModels
 
         }
 
-        private void RefreshRentals()
-        {
-
-        }
-
-
-        public void ClearRent()
-        {
-            SelectedRentClone.Id = 0;
-            SelectedRentClone.Car = 0;
-            SelectedRentClone.StartKm = 0;
-            SelectedRentClone.EndKm = 0;
-            SelectedRentClone.StartLocation = string.Empty;
-            SelectedRentClone.EndLocation = string.Empty;
-            SelectedRentClone.StartDate = 0;
-            SelectedRentClone.EndDate = 0;
-            SelectedRentClone.StartFuelLevel = 0;
-            SelectedRentClone.EndFuelLevel = 0;
-            SelectedRentClone.Notes = string.Empty;
-            SelectedRentClone.Car1 = new Car();
-
-        }
-
         public void SaveRent(CarRentalHistory rc)
         {
-            if (rc == null)
+            if (rc == null || SelectedCarClone == null)
             {
                 return;
             }
+            if (!SelectedCarClone.IsValid)
+            {
+                MessageBox.Show("Car informations not valid", "Invalid Car informations", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
+            if (!rc.IsValid)
+            {
+                MessageBox.Show("Rent informations not valid", "Invalid Rent informations", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            _db.Cars.AddOrUpdate(SelectedCarClone);
+            _db.SaveChanges();
+
+            rc.Car = SelectedCarClone.Id;
             _db.CarRentalHistories.AddOrUpdate(rc);
+
+            Rentals.Add(rc);
+
             if (_db.SaveChanges() > 0)
             {
                 SelectedRent?.NotifyCarRentalHistoryPropertiesChanged();
+
             }
         }
     }
