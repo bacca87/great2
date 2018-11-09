@@ -30,7 +30,7 @@ namespace Great.Views.Pages
         {
             GreatImportWizardView wizard = new GreatImportWizardView();
             wizard.Owner = Window.GetWindow(this);
-            wizard.Show();
+            wizard.ShowDialog();
         }
     }
 }
