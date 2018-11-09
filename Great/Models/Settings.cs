@@ -229,6 +229,7 @@ namespace Great.Models
 
                 public const string PerformanceDescription = "data[0].#subform[0].Tabella4[1].Riga1[0].Cella1[0]";
                 public const string PerformanceDescriptionDetails = "data[0].#subform[12].Tabella4[3].#subformSet[0].Riga1[1].Cella1[0]";
+                public const string PerformanceDescriptionDetails_old = "data[0].#subform[10].Tabella4[3].#subformSet[0].Riga1[1].Cella1[0]";
                 public const string AssistantFinalTestResult = "data[0].#subform[0].Tabella4[2].Riga1[0].#field[0]";
                 public const string Result = "data[0].#subform[0].Elencoadiscesa1[0]";
                 public const string SoftwareVersionsOtherNotes = "data[0].#subform[0].Tabella16[0].Riga2[0].Cella1[0]";

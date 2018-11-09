@@ -21,20 +21,24 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="40" FontWeight="Bold"/>
             <TextBlock Grid.Row="1" Text="{Binding Version, StringFormat='Version {0}'}" FontSize="15" FontStyle="Italic"/>
             <TextBlock Grid.Row="2" Text="{Binding Copyright}" FontSize="15" FontStyle="Italic"/>
             <TextBlock Grid.Row="3" Text="This is a free software." FontSize="15" FontWeight="Bold"/>
+            <TextBlock Grid.Row="4" Margin="0,20,0,0" Text="[Description Here]"/>
         </Grid>
         
         <Grid Grid.Row="1" Margin="0,30,0,0" HorizontalAlignment="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Contributors:" FontSize="15"/>
-            <RichTextBox Grid.Row="1" IsReadOnly="True" IsDocumentEnabled="True" Width="500">
+            <TextBlock Grid.Row="0" Text="[github project here]"/>
+            <TextBlock Grid.Row="1" Text="Contributors:" FontSize="15"/>
+            <RichTextBox Grid.Row="2" IsReadOnly="True" IsDocumentEnabled="True" Width="500">
                 <FlowDocument>
                     <Paragraph>
                         Marco Baccarani (<Hyperlink NavigateUri="https://github.com/bacca87" RequestNavigate="Hyperlink_RequestNavigate">github.com/bacca87</Hyperlink>)

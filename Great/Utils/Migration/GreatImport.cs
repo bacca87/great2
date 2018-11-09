@@ -38,7 +38,9 @@ namespace Great.Utils
 
         #region Properties
         private readonly Logger log = LogManager.GetLogger("GreatImport");
-        
+
+        private FDLManager FDLManager = SimpleIoc.Default.GetInstance<FDLManager>();
+
         //Access database fields
         private OleDbConnection connection;
         private OleDbCommand command;
@@ -96,12 +98,15 @@ namespace Great.Utils
                         {
                             thrd = new Thread(new ThreadStart(MigrationThread));
                             thrd.Start();
+                            return;
                         }
                     }
                 }
                 else Error($"Database not found on path: {_sourceDatabase}");
             }
             else Error($"Wrong GREAT directory path: {greatPath}");
+
+            StatusChanged("Import failed!");
         }
 
         private void MigrationThread()
@@ -317,8 +322,6 @@ namespace Great.Utils
             {
                 using (DBArchive db = new DBArchive())
                 {
-                    Timesheet t = null;
-
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtHours.Rows.Cast<DataRow>();
 
@@ -341,79 +344,58 @@ namespace Great.Utils
 
                             db.Days.AddOrUpdate(d);
 
-                            t = new Timesheet();
-                            t.Timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
+                            //t = new Timesheet();
+                            long timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
 
-                            var duplicatedEntities = db.Timesheets.Where(x => x.Timestamp == t.Timestamp);
-
-                            if (duplicatedEntities.Count() > 0)
-                                continue;
-
-                            //Add office hourrs
+                            //Add office hours
                             if (
                                 r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_PM") != 0)
                             {
+                                Timesheet office = new Timesheet();
+                                office.Timestamp = timestamp;
 
-                                t.TravelStartTimeAM = null;
-                                t.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
-                                t.WorkEndTimeAM = r.Field<Int16>("Dbf_Uff_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_AM")).TotalSeconds : null;
-                                t.TravelEndTimeAM = null;
-                                t.TravelStartTimePM = null;
-                                t.WorkStartTimePM = r.Field<Int16>("Dbf_Uff_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_PM")).TotalSeconds : null;
-                                t.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
-                                t.TravelEndTimePM = null;
+                                office.TravelStartTimeAM = null;
+                                office.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
+                                office.WorkEndTimeAM = r.Field<Int16>("Dbf_Uff_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_AM")).TotalSeconds : null;
+                                office.TravelEndTimeAM = null;
+                                office.TravelStartTimePM = null;
+                                office.WorkStartTimePM = r.Field<Int16>("Dbf_Uff_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_PM")).TotalSeconds : null;
+                                office.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
+                                office.TravelEndTimePM = null;
 
-                                db.Timesheets.Add(t);
+                                if(db.Timesheets.Where(x => x.Timestamp == office.Timestamp && office.FDL == string.Empty).Count() == 0)
+                                    db.Timesheets.Add(office);
                             }
 
-                            //Add FDL hours
-                            if (
-                                r.Field<Int16>("Dbf_Partenza_AM") != 0 |
-                                r.Field<Int16>("Dbf_Trasf_Inizio_AM") != 0 |
-                                r.Field<Int16>("Dbf_Trasf_Fine_AM") != 0 |
-                                r.Field<Int16>("Dbf_Arrivo_AM") != 0 |
-                                r.Field<Int16>("Dbf_Partenza_PM") != 0 |
-                                r.Field<Int16>("Dbf_Trasf_Inizio_PM") != 0 |
-                                r.Field<Int16>("Dbf_Trasf_Fine_PM") != 0)
+                            // Factory association
+                            short? factoryId = r.Field<short?>("Dbf_Impianto");
+                            string fdlId = FormatFDL(r.Field<string>("Dbf_Foglio"));
+
+                            if (factoryId.HasValue && _factories.ContainsKey(factoryId.Value) && !string.IsNullOrEmpty(fdlId))
                             {
-                                //Compile FDL details
-                                t.TravelStartTimeAM = r.Field<Int16>("Dbf_Partenza_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_AM")).TotalSeconds : null;
-                                t.WorkStartTimeAM = r.Field<Int16>("Dbf_Trasf_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Inizio_AM")).TotalSeconds : null;
-                                t.WorkEndTimeAM = r.Field<Int16>("Dbf_Trasf_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Fine_AM")).TotalSeconds : null;
-                                t.TravelEndTimeAM = r.Field<Int16>("Dbf_Arrivo_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Arrivo_AM")).TotalSeconds : null;
-                                t.TravelStartTimePM = r.Field<Int16>("Dbf_Partenza_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Partenza_PM")).TotalSeconds : null;
-                                t.WorkStartTimePM = r.Field<Int16>("Dbf_Trasf_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Inizio_PM")).TotalSeconds : null;
-                                t.WorkEndTimePM = r.Field<Int16>("Dbf_Trasf_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Trasf_Fine_PM")).TotalSeconds : null;
-                                t.TravelEndTimePM = r.Field<Int16>("Dbf_Arrivo_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Arrivo_PM")).TotalSeconds : null;
+                                FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlId);
 
-                                //Add details for first FDL
-                                if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_Foglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_Foglio"))))
+                                if (!fdl.Factory.HasValue)
                                 {
-                                    t.FDL = FormatFDL(r.Field<string>("Dbf_Foglio"));
-                                    db.Timesheets.Add(t);
+                                    fdl.Factory = _factories[factoryId.Value];
+                                    db.FDLs.AddOrUpdate(fdl);
                                 }
+                            }
 
-                                //Add details for second FDL
-                                if (!(string.IsNullOrEmpty(r.Field<string>("Dbf_SecondoFoglio")) | string.IsNullOrWhiteSpace(r.Field<string>("Dbf_SecondoFoglio"))))
+                            short? factory2Id = r.Field<short?>("Dbf_SecondoImpianto");
+                            string fdl2Id = FormatFDL(r.Field<string>("Dbf_SecondoFoglio"));
+
+                            if (factory2Id.HasValue && _factories.ContainsKey(factory2Id.Value) && !string.IsNullOrEmpty(fdl2Id))
+                            {
+                                FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdl2Id);
+
+                                if (!fdl.Factory.HasValue)
                                 {
-                                    t.FDL = FormatFDL(r.Field<string>("Dbf_Foglio"));
-                                    db.Timesheets.Add(t);
-                                }
-
-                                // Factory association
-                                long factoryId = r.Field<short>("Dbf_Impianto");
-                                if (_factories.ContainsKey(factoryId))
-                                {
-                                    FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == t.FDL);
-
-                                    if (!fdl.Factory.HasValue)
-                                    {
-                                        fdl.Factory = _factories[factoryId];
-                                        db.FDLs.AddOrUpdate(fdl);
-                                    }
+                                    fdl.Factory = _factories[factory2Id.Value];
+                                    db.FDLs.AddOrUpdate(fdl);
                                 }
                             }
 
@@ -426,6 +408,7 @@ namespace Great.Utils
                     }
 
                     db.SaveChanges();
+                    result = true;
                 }
             }
             catch (Exception ex)
@@ -437,7 +420,10 @@ namespace Great.Utils
         }
 
         private string FormatFDL(string fdl_Id)
-        {   
+        {
+            if (string.IsNullOrEmpty(fdl_Id))
+                return string.Empty;
+
             string[] parts = fdl_Id.Split('/');
 
             for (int i = 0; i < parts.Length; i++)
@@ -456,15 +442,13 @@ namespace Great.Utils
 
                 using (DBArchive db = new DBArchive())
                 {
-                    FDLManager manager = SimpleIoc.Default.GetInstance<FDLManager>();
-
                     foreach (string fdlPath in GetFileList(_sourceFdlPath))
                     {
                         FDL fdl = null;
 
                         try
                         {
-                            fdl = manager.ImportFDLFromFile(fdlPath, false, false, true, true, true);
+                            fdl = FDLManager.ImportFDLFromFile(fdlPath, false, false, false, true, true);
 
                             if (fdl != null)
                             {
@@ -475,18 +459,25 @@ namespace Great.Utils
                                 if (sent != null)
                                 {
                                     // we must override recived fdl with the same of current dbcontext istance
-                                    fdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
+                                    FDL currentFdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
 
-                                    if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                        fdl.EStatus = EFDLStatus.Waiting;
-                                    else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
-                                        fdl.EStatus = EFDLStatus.Accepted;
+                                    if (currentFdl != null)
+                                    {
+                                        if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
+                                            currentFdl.EStatus = EFDLStatus.Waiting;
+                                        else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
+                                            currentFdl.EStatus = EFDLStatus.Accepted;
+                                        else
+                                            currentFdl.EStatus = EFDLStatus.Cancelled;
+
+                                        db.FDLs.AddOrUpdate(currentFdl);
+                                        Message($"FDL {fdl.Id} OK");
+                                    }
                                     else
-                                        fdl.EStatus = EFDLStatus.Cancelled;
+                                        Error("MERDAAAAAAAAAAAAAAAAAAAAAAA");
                                 }
-
-                                db.FDLs.AddOrUpdate(fdl);
-                                Message($"FDL {fdl.Id} OK");
+                                else
+                                    Error("Missing sent status!");
                             }
                             else
                                 Error($"Failed to import FDL from file: {fdlPath}");

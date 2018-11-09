@@ -262,21 +262,21 @@ namespace Great.Models
 
                                             TimeSpan time;
 
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimeAM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimeAM"]).Replace("24", "00"), out time))
                                                 timesheet.TravelStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimeAM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimeAM"]).Replace("24", "00"), out time))
                                                 timesheet.WorkStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimeAM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimeAM"]).Replace("24", "00"), out time))
                                                 timesheet.WorkEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimeAM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimeAM"]).Replace("24", "00"), out time))
                                                 timesheet.TravelEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimePM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimePM"]).Replace("24", "00"), out time))
                                                 timesheet.TravelStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimePM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimePM"]).Replace("24", "00"), out time))
                                                 timesheet.WorkStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimePM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimePM"]).Replace("24", "00"), out time))
                                                 timesheet.WorkEndTimePM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimePM"]), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimePM"]).Replace("24", "00"), out time))
                                                 timesheet.TravelEndTimePM_t = time;
 
                                             if (timesheet.TimePeriods != null)
@@ -301,7 +301,10 @@ namespace Great.Models
                                     Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
                                 }
                                 else
+                                {
                                     transaction.Rollback();
+                                    fdl = null;
+                                }   
                             }
                         }
                         catch (Exception ex)
@@ -338,7 +341,7 @@ namespace Great.Models
                 // only for testing purpose
                 //using (StreamWriter writetext = new StreamWriter("c:\\test.txt"))
                 //{
-                //    foreach(PdfFormField f in fields.Values)
+                //    foreach (PdfFormField f in fields.Values)
                 //    {
                 //        writetext.WriteLine($"Field: {f.GetFieldName()} Value: {f.GetValueAsString()}");
                 //    }
@@ -375,7 +378,15 @@ namespace Great.Models
                 value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString().Trim();
                 fdl.Notes = value != string.Empty ? value : null;
 
-                value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
+                try
+                {
+                    value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
+                }
+                catch
+                {
+                    // Some very old FDL have a different field name for performance description details
+                    value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old].GetValueAsString().Trim();
+                }                
                 fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
 
                 // Extract week number
@@ -472,22 +483,22 @@ namespace Great.Models
                                             timesheet.Date = DateTime.Parse(strDate);
 
                                             TimeSpan time;
-
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString(), out time))
+                                            
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.TravelStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.WorkStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.WorkEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.TravelEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.TravelStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.WorkStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.WorkEndTimePM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString(), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.TravelEndTimePM_t = time;
 
                                             if (timesheet.TimePeriods != null)
@@ -512,7 +523,10 @@ namespace Great.Models
                                     Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
                                 }
                                 else
+                                {
                                     transaction.Rollback();
+                                    fdl = null;
+                                }   
                             }
                         }
                         catch (Exception ex)

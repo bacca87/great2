@@ -14,7 +14,8 @@
         DataContext="{Binding GreatImportWizard, Source={StaticResource Locator}}"
         ResizeMode="NoResize"
         Width="640" 
-        Height="480">
+        Height="480"
+        WindowStartupLocation="CenterOwner">
     <Grid>
         <xctk:Wizard FinishButtonClosesWindow="True" HelpButtonVisibility="Hidden">
             <xctk:Wizard.Resources>
