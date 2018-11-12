@@ -9,7 +9,10 @@
         xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
         mc:Ignorable="d"
         DataContext="{Binding Settings, Source={StaticResource Locator}}"
-        Title="Microsoft Exchange Account" Height="200" Width="400">
+        Title="Microsoft Exchange Account" 
+        Height="150" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -18,11 +21,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
         <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
-        <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Name="txtEmailAddress" Text="{Binding EmailAddress, UpdateSourceTrigger=Explicit}"/>
+        <PasswordBox Grid.Row="1" Grid.Column="1"  Name="txtPassword" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Name="btnCancel" Content="Cancel" Click="btnCancel_Click"/>
+            <Button Name="btnSave" Content="Save" Click="btnSave_Click"/>
+        </StackPanel>
     </Grid>
 </mah:MetroWindow>

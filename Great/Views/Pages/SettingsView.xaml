@@ -27,8 +27,8 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
                 <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
-                <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"/>
+                <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Header="FDL" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
@@ -39,7 +39,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="Cancellation request email recipients (separated by &quot;;&quot;): "/>
-                    <TextBox Text="{Binding FDLCancelRequestRecipients}"/>
+                    <TextBox Text="{Binding FDLCancelRequestRecipients, UpdateSourceTrigger=LostFocus}"/>
                 </StackPanel>
                 <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
                     <StackPanel>

@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Microsoft.Exchange.WebServices.Data;
 using System;

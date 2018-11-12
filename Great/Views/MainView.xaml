@@ -54,12 +54,7 @@
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
                                   IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="Clipboard">
-                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Cut.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Cut" Text="Cut the selected day." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
+                <Fluent:RibbonGroupBox Header="Clipboard">                    
                     <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Copy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Copy" Text="Copy the selected day." />
@@ -68,6 +63,11 @@
                     <Fluent:Button Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Paste.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Today" Text="Paste on selected day." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Cut.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Cut" Text="Cut the selected day." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -307,10 +307,13 @@
                 <Frame Source="/Views/Pages/FactoriesView.xaml"/>
             </TabItem>
         </TabControl>
-        <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Timesheets, Source={StaticResource Locator}}">
-            <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
-                <TextBlock Text="EXCHANGE: CONNECTED" />
-            </Fluent:StatusBarItem>
+        <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
+        <Fluent:StatusBar.Resources>
+                <conv:StringToUpperCaseConverter x:Key="StringToUpperCaseConverter"/>
+        </Fluent:StatusBar.Resources>
+        <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
+                <TextBlock Margin="5,0,0,0" Text="{Binding ExchangeStatus, Converter={StaticResource StringToUpperCaseConverter}, StringFormat={}EXCHANGE: {0}}"/>
+        </Fluent:StatusBarItem>
         </Fluent:StatusBar>
     </Grid>
 </Fluent:RibbonWindow>
