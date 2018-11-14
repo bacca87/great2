@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mail;
 using System.Threading;
 using static Great.Models.ExchangeTraceListener;
 
@@ -398,6 +399,22 @@ namespace Great.Models
         public void SendEmail(EmailMessageDTO message)
         {
             emailQueue.Enqueue(message);
+        }
+
+        public static bool CheckEmailAddress(string address, out string error)
+        {
+            error = string.Empty;
+
+            try
+            {
+                MailAddress m = new MailAddress(address);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
         }
         #endregion
     }

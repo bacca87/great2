@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Great.Models.Database
 {
     [Table("OrderEmailRecipient")]
-    public partial class OrderEmailRecipient
+    public partial class OrderEmailRecipient : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         [Key, Column(Order = 1)]
         public long Order { get; set; }
         [Key, Column(Order = 2)]
-        public string Recipient { get; set; }
+        public string Address { get; set; }
     }
 }

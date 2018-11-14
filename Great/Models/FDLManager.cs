@@ -441,7 +441,7 @@ namespace Great.Models
 
                                     if (address != string.Empty && customer != string.Empty)
                                     {
-                                        //TODO: migliorare riconoscimento stabilimenti 
+                                        //TODO: migliorare riconoscimento stabilimenti usando anche i codici ORDINE
                                         factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
                                         if (factory == null && UserSettings.Advanced.AutoAddFactories)
@@ -756,7 +756,7 @@ namespace Great.Models
 
                 using (DBArchive db = new DBArchive())
                 {
-                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Recipient);
+                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
 
                     foreach(var r in recipients)
                         message.CcRecipients.Add(r);
@@ -765,6 +765,27 @@ namespace Great.Models
                 exchangeProvider.SendEmail(message);
 
                 fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                return true;
+            }
+        }
+
+        public bool SendTo(string address, FDL fdl)
+        {
+            if (fdl == null)
+                return false;
+
+            using (new WaitCursor())
+            {
+                string filePath = Path.GetTempPath() + fdl.FileName;
+
+                CompileFDL(fdl, filePath);
+
+                EmailMessageDTO message = new EmailMessageDTO();
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";                
+                message.ToRecipients.Add(address);
+                message.Attachments.Add(filePath);
+
+                exchangeProvider.SendEmail(message);
                 return true;
             }
         }

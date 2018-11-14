@@ -1,5 +1,7 @@
 ﻿using Fluent;
-using System;
+using GalaSoft.MvvmLight.Ioc;
+using Great.ViewModels;
+using Great.Views.Dialogs;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -25,6 +27,21 @@ namespace Great.Views
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void mEditRecipients_Click(object sender, RoutedEventArgs e)
+        {
+            OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
+            FDLViewModel FdlVM = SimpleIoc.Default.GetInstance<FDLViewModel>();
+
+            if (recipientsVM == null || FdlVM == null || FdlVM.SelectedFDL == null)
+                return;
+
+            recipientsVM.Order = FdlVM.SelectedFDL.Order;
+            
+            OrderRecipientsView view = new OrderRecipientsView();
+            view.Owner = this;
+            view.ShowDialog();
         }
     }
 }

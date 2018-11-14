@@ -50,7 +50,7 @@
             <Fluent:Ribbon.ContextualGroups>                
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
-            <Fluent:RibbonTabItem Header="HOME"
+            <Fluent:RibbonTabItem Header="TIMESHEETS"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
                                   IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
@@ -189,16 +189,62 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" 
+            <Fluent:RibbonTabItem Header="FDL" 
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="SAP">
-                    <Fluent:Button Header="Send" Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/cloud-up.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected FDL to the SAP system." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
+                <Fluent:RibbonGroupBox Header="Email">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
+                        <Fluent:DropDownButton.ToolTip>
+                            <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
+                        </Fluent:DropDownButton.ToolTip>
+                        <Fluent:Gallery GroupBy="Tag" Orientation="Horizontal" ItemWidth="32" ItemHeight="32">
+                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Message:">
+                                <Fluent:GalleryItem.ToolTip>
+                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected FDL to the SAP system." />
+                                </Fluent:GalleryItem.ToolTip>
+                                <Image Source="pack://application:,,,/Great;component/Images/24/cloud-up.png" Width="24" />
+                            </Fluent:GalleryItem>
+                            <Fluent:GalleryItem Tag="Message:">
+                                <Fluent:GalleryItem.ToolTip>
+                                    <Fluent:ScreenTip Title="New Message" Text="Send the selected FDL by email." />
+                                </Fluent:GalleryItem.ToolTip>
+                                <Image Source="pack://application:,,,/Great;component/Images/24/envelope.png" Width="24" />
+                            </Fluent:GalleryItem>
+                            <Fluent:GalleryItem Command="{Binding SendCancellationRequestCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Special:">
+                                <Fluent:GalleryItem.ToolTip>
+                                    <Fluent:ScreenTip Title="Cancel FDL" Text="Send cancellation request for the selected FDL." />
+                                </Fluent:GalleryItem.ToolTip>
+                                <Image Source="pack://application:,,,/Great;component/Images/24/sign-ban.png" Width="24" />
+                            </Fluent:GalleryItem>
+                        </Fluent:Gallery>
+                        <Fluent:MenuItem Header="Send...">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Fluent:TextBox Text="{Binding SendToEmailRecipient}" MinWidth="150" Margin="2" />
+                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/paper-plane.png">
+                                    <Fluent:Button.ToolTip>
+                                        <Fluent:ScreenTip Title="Send" Text="Send the selected FDL by email to the entered address." />
+                                    </Fluent:Button.ToolTip>
+                                </Fluent:Button>
+                            </StackPanel>
+                            <Separator/>
+                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding RecentEmailRecipients}">                               
+                                <Fluent:MenuItem.ItemContainerStyle>
+                                    <Style TargetType="{x:Type Fluent:MenuItem}">
+                                        <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding}" />
+                                    </Style>
+                                </Fluent:MenuItem.ItemContainerStyle>
+                            </Fluent:MenuItem>
+                        </Fluent:MenuItem>
+                        <Separator/>
+                        <Fluent:MenuItem Name="mEditRecipients" Header="Edit Recipients..." Icon="pack://application:,,,/Great;component/Images/24/user-id.png" Click="mEditRecipients_Click">
+                            <Fluent:MenuItem.ToolTip>                                
+                                <Fluent:ScreenTip Title="Edit Recipients" Text="Edit the selected FDL order's recipients." />
+                            </Fluent:MenuItem.ToolTip>
+                        </Fluent:MenuItem>
+                    </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
                     <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
@@ -206,44 +252,36 @@
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:DropDownButton Header="Cancel" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
-                        <Fluent:DropDownButton.ToolTip>
-                            <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
-                        </Fluent:DropDownButton.ToolTip>
-                        <Fluent:MenuItem Header="Mark as Cancelled" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}"/>
-                        <Fluent:MenuItem Header="Send cancellation request" Command="{Binding SendCancellationRequestCommand}" CommandParameter="{Binding SelectedFDL}"/>
-                    </Fluent:DropDownButton>
-                </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:DropDownButton Header="Email" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
-                        <Fluent:DropDownButton.ToolTip>
-                            <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
-                        </Fluent:DropDownButton.ToolTip>
-                        <Fluent:MenuItem Header="New Message" Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SelectedFDL}"/>
-                        <Separator/>
-                        <Fluent:MenuItem Header="Send To...">
-                            <Fluent:MenuItem Header="dio@me.can"/>
-                        </Fluent:MenuItem>                        
-                    </Fluent:DropDownButton>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
+                            <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Tools">
                     <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" 
+            <Fluent:RibbonTabItem Header="CAR RENTAL" 
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="HOME" 
+            <Fluent:RibbonTabItem Header="EXPENSE ACCOUNT" 
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="FACTORIES" 
+                                  Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
@@ -308,12 +346,12 @@
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
-        <Fluent:StatusBar.Resources>
+            <Fluent:StatusBar.Resources>
                 <conv:StringToUpperCaseConverter x:Key="StringToUpperCaseConverter"/>
-        </Fluent:StatusBar.Resources>
-        <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
+            </Fluent:StatusBar.Resources>
+            <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
                 <TextBlock Margin="5,0,0,0" Text="{Binding ExchangeStatus, Converter={StaticResource StringToUpperCaseConverter}, StringFormat={}EXCHANGE: {0}}"/>
-        </Fluent:StatusBarItem>
+            </Fluent:StatusBarItem>
         </Fluent:StatusBar>
     </Grid>
 </Fluent:RibbonWindow>

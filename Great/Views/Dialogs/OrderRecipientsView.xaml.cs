@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +18,12 @@ namespace Great.Views.Dialogs
     /// <summary>
     /// Interaction logic for OrderRecipientsView.xaml
     /// </summary>
-    public partial class OrderRecipientsView : Window
+    public partial class OrderRecipientsView : MetroWindow
     {
         public OrderRecipientsView()
         {
             InitializeComponent();
+            Owner = Application.Current.MainWindow;
         }
     }
 }

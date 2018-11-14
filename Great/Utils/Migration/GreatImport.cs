@@ -378,11 +378,13 @@ namespace Great.Utils
                             {
                                 FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlId);
 
-                                if (!fdl.Factory.HasValue)
+                                if (fdl != null && !fdl.Factory.HasValue)
                                 {
                                     fdl.Factory = _factories[factoryId.Value];
                                     db.FDLs.AddOrUpdate(fdl);
                                 }
+                                else
+                                    Warning($"The FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
                             }
 
                             short? factory2Id = r.Field<short?>("Dbf_SecondoImpianto");
@@ -392,11 +394,13 @@ namespace Great.Utils
                             {
                                 FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdl2Id);
 
-                                if (!fdl.Factory.HasValue)
+                                if (fdl != null && !fdl.Factory.HasValue)
                                 {
                                     fdl.Factory = _factories[factory2Id.Value];
                                     db.FDLs.AddOrUpdate(fdl);
                                 }
+                                else
+                                    Warning($"The second FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
                             }
 
                             Message($"Day {d.Date.ToShortDateString()} OK");
@@ -449,6 +453,10 @@ namespace Great.Utils
                         try
                         {
                             fdl = FDLManager.ImportFDLFromFile(fdlPath, false, false, false, true, true);
+
+                            // try with XFA format
+                            if(fdl == null)
+                                fdl = FDLManager.ImportFDLFromFile(fdlPath, true, false, false, true, true);
 
                             if (fdl != null)
                             {
@@ -544,6 +552,12 @@ namespace Great.Utils
             OnStatusChanged?.Invoke(this, new GreatImportArgs(status));
             OnMessage?.Invoke(this, new GreatImportArgs(status));
             log.Info(status);
+        }
+
+        protected void Warning(string message)
+        {
+            OnMessage?.Invoke(this, new GreatImportArgs($"WARNING: {message}"));
+            log.Warn(message);
         }
 
         protected void Error(string message, Exception ex = null)

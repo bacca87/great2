@@ -1,12 +1,59 @@
-﻿<Window x:Class="Great.Views.Dialogs.OrderRecipientsView"
+﻿<mah:MetroWindow
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        x:Class="Great.Views.Dialogs.OrderRecipientsView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:Great.Views.Dialogs"
         mc:Ignorable="d"
-        Title="OrderRecipientsView" Height="450" Width="800">
+        Title="Edit Recipients" 
+        Height="350" Width="300"
+        ResizeMode="NoResize"
+        DataContext="{Binding OrderRecipients, Source={StaticResource Locator}}"
+        WindowStartupLocation="CenterOwner">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding Order, StringFormat={}ORDER {0}}" HorizontalAlignment="Center" FontSize="15" FontWeight="Bold" Margin="5"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding InputAddress}" Grid.Column="0" FontSize="15"/>
+            <Button Grid.Column="1" Command="{Binding AddCommand}" CommandParameter="{Binding InputAddress}">
+                <Image Source="pack://application:,,,/Great;component/Images/24/sign-add.png" Width="16"/>
+            </Button>
+        </Grid>
+        <ListBox Grid.Row="2" ItemsSource="{Binding Recipients}" SelectedItem="{Binding SelectedRecipient}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Address}" FontSize="15" VerticalAlignment="Center"/>
+                        <xctk:IconButton Grid.Column="1" 
+                                         Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:MetroWindow}}, Path=DataContext.RemoveCommand}" 
+                                         CommandParameter="{Binding}"
+                                         Cursor="Hand"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         MouseOverBackground="Transparent"
+                                         MousePressedBackground="Transparent">
+                            <xctk:IconButton.Icon>
+                                <Image Source="pack://application:,,,/Great;component/Images/16/delete-square.png"/>
+                            </xctk:IconButton.Icon>
+                        </xctk:IconButton>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
-</Window>
+</mah:MetroWindow>

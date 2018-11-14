@@ -97,6 +97,8 @@ namespace Great.Models
         #region Email Recipients
         public static class EmailRecipients
         {
+            public const int MaxRecentRecipientsCount = 10;
+
             public const string FDLSystem = "fdl@elettric80.it";
             public const string HR = "hr@elettric80.it";
         }
@@ -837,6 +839,19 @@ namespace Great.Models
 
             public static class Recipients
             {
+                public static StringCollection RecentEmailRecipients
+                {
+                    get
+                    {
+                        return Settings.Default.RecentEmailRecipients;
+                    }
+                    set
+                    {
+                        Settings.Default.RecentEmailRecipients = value;
+                        Settings.Default.Save();
+                    }
+                }
+
                 public static StringCollection FDLCancelRequest
                 {
                     get

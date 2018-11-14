@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.IO;
@@ -198,6 +199,35 @@ namespace Great.ViewModels
         public ObservableCollection<FDLResult> FDLResults { get; set; }
 
         /// <summary>
+        /// The <see cref="RecentRecipients" /> property's name.
+        /// </summary>
+        public MRUCollection<string> RecentEmailRecipients { get; set; }
+
+        /// <summary>
+        /// The <see cref="SendToEmailRecipient" /> property's name.
+        /// </summary>
+        private string _sendToEmailRecipient;
+
+        /// <summary>
+        /// Sets and gets the SendToEmailRecipient property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public string SendToEmailRecipient
+        {
+            get
+            {
+                return _sendToEmailRecipient;
+            }
+
+            set
+            {
+                var oldValue = _sendToEmailRecipient;
+                _sendToEmailRecipient = value;
+                RaisePropertyChanged(nameof(SendToEmailRecipient), oldValue, value);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Factories" /> property's name.
         /// </summary>
         private ObservableCollectionEx<Factory> _factories;
@@ -230,14 +260,14 @@ namespace Great.ViewModels
         public RelayCommand<FDL> SaveCommand { get; set; }
 
         public RelayCommand<FDL> SendToSAPCommand { get; set; }
-        public RelayCommand<FDL> SendByEmailCommand { get; set; }
+        public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<FDL> SaveAsCommand { get; set; }
         public RelayCommand<FDL> OpenCommand { get; set; }
         public RelayCommand<FDL> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<FDL> MarkAsCancelledCommand { get; set; }
         public RelayCommand<FDL> SendCancellationRequestCommand { get; set; }
 
-        public RelayCommand FactoryLinkCommand { get; set; }        
+        public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -252,7 +282,7 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
-            SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
+            SendByEmailCommand = new RelayCommand<string>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDL>(SaveAs);
             OpenCommand = new RelayCommand<FDL>(Open);
             MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
@@ -270,7 +300,14 @@ namespace Great.ViewModels
             MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
             MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = p.NewValue; });
-        }        
+
+            List<string> recipients = UserSettings.Email.Recipients.RecentEmailRecipients?.Cast<string>().ToList();
+
+            if (recipients != null)
+                RecentEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MaxRecentRecipientsCount, new Collection<string>(recipients));
+            else
+                RecentEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MaxRecentRecipientsCount);
+        }
 
         private void FDLs_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
         {   
@@ -336,9 +373,27 @@ namespace Great.ViewModels
             _db.SaveChanges();
         }
         
-        public void SendByEmail(FDL fdl)
+        public void SendByEmail(string address)
         {
-            //TODO
+            string error;
+
+            if (!MSExchangeProvider.CheckEmailAddress(address, out error))
+            {
+                MessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // reset input box
+            SendToEmailRecipient = string.Empty;
+
+            RecentEmailRecipients.Add(address);
+
+            // save to user setting the MRU recipients
+            StringCollection collection = new StringCollection();
+            collection.AddRange(RecentEmailRecipients.ToArray());
+            UserSettings.Email.Recipients.RecentEmailRecipients = collection;
+
+            _fdlManager.SendTo(address, SelectedFDL);
         }
 
         public void SaveAs(FDL fdl)
