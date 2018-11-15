@@ -237,6 +237,7 @@
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
+    <Compile Include="Utils\Converters\NegateBoolConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
     <Compile Include="Utils\Converters\CompareIntConverter.cs" />

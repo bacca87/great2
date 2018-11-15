@@ -48,7 +48,7 @@ namespace Great.ViewModels
         private bool _completed;
 
         /// <summary>
-        /// Sets and gets the IsDone property.
+        /// Sets and gets the Completed property.
         /// Changes to that property's value raise the PropertyChanged event.
         /// </summary>
         public bool Completed
@@ -61,6 +61,28 @@ namespace Great.ViewModels
             {
                 _completed = value;
                 RaisePropertyChanged(nameof(Completed));
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="CanSelectPreviousPage" /> property's name.
+        /// </summary>
+        private bool _isRunning;
+
+        /// <summary>
+        /// Sets and gets the CanSelectPreviousPage property.
+        /// Changes to that property's value raise the PropertyChanged event.
+        /// </summary>
+        public bool CanSelectPreviousPage
+        {
+            get
+            {
+                return _isRunning;
+            }
+            internal set
+            {
+                _isRunning = value;
+                RaisePropertyChanged(nameof(CanSelectPreviousPage));
             }
         }
 
@@ -112,8 +134,9 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands Definitions
-        public RelayCommand StartMigrationCommand { get; set; }
+        public RelayCommand StartImportCommand { get; set; }
         public RelayCommand SelectFolderCommand { get; set; }
+        public RelayCommand CancelCommand { get; set; }
         #endregion
 
         #region Cache Properties
@@ -129,10 +152,11 @@ namespace Great.ViewModels
             _greatMigra = new GreatImport();
             _greatMigra.OnStatusChanged += _greatMigra_OnStatusChanged; ;
             _greatMigra.OnMessage += _greatMigra_OnMessage;
-            _greatMigra.OnCompleted += _greatMigra_OnCompleted;
+            _greatMigra.OnFinish += _greatMigra_OnFinished;
 
-            StartMigrationCommand = new RelayCommand(StartMigration);
+            StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
+            CancelCommand = new RelayCommand(Cancel);
 
             Reset();
         }
@@ -166,12 +190,14 @@ namespace Great.ViewModels
             }
         }
 
-        private void _greatMigra_OnCompleted(object source)
+        private void _greatMigra_OnFinished(object source, bool IsCompleted)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {   
-                    Completed = true;
+                    Completed = IsCompleted;
+                    CanSelectPreviousPage = !IsCompleted;
+                    LogText += CachedText;
                 })
             );
         }
@@ -182,9 +208,10 @@ namespace Great.ViewModels
             InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
             CachedText = string.Empty;
             LastTextUpdate = DateTime.UtcNow;
+            CanSelectPreviousPage = true;
         }
 
-        private void SelectFolder()
+        public void SelectFolder()
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
 
@@ -208,10 +235,16 @@ namespace Great.ViewModels
             }
         }
 
-        private void StartMigration()
+        public void StartImport()
         {
-            _greatMigra.StartMigration(InstallationFolder);
-            Status = "Migration Started!";
+            _greatMigra.StartImport(InstallationFolder);
+            CanSelectPreviousPage = false;
+        }
+
+        public void Cancel()
+        {
+            _greatMigra.CancelImport();
+            Reset();
         }
     }
 }

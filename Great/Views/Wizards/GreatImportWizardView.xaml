@@ -10,11 +10,13 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+        xmlns:conv="clr-namespace:Great.Utils.Converters"
         mc:Ignorable="d"
         DataContext="{Binding GreatImportWizard, Source={StaticResource Locator}}"
         ResizeMode="NoResize"
         Width="640" 
         Height="480"
+        IsCloseButtonEnabled="False"
         WindowStartupLocation="CenterOwner">
     <Grid>
         <xctk:Wizard FinishButtonClosesWindow="True" HelpButtonVisibility="Hidden">
@@ -31,34 +33,47 @@
                         <Setter Property="HeaderBackground" Value="{StaticResource ControlBackgroundBrush}" />
                     </Style.Setters>
                 </Style>
+                <conv:NegateBoolConverter x:Key="NegateBoolConverter"/>
             </xctk:Wizard.Resources>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Cancel">
+                    <mvvm:EventToCommand Command="{Binding CancelCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <xctk:WizardPage Title="Welcome to the GREAT data import Wizard"
-                             Description="This Wizard will walk you though how to import all the FDL, expense accounts and work hours from an old GREAT installation."/>
+                             Description="This Wizard will walk you though how to import all the work hours, FDLs, expense accounts, car rents and visited factories from an old GREAT installation."/>
             <xctk:WizardPage Title="Configuration"
                              Description="Configuration process."
-                             PageType="Interior">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Next">
-                        <mvvm:EventToCommand Command="{Binding StartMigrationCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                             PageType="Interior">                
                 <Grid>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <TextBlock Text="Installation Folder:" VerticalAlignment="Center"/>
                         <TextBox Margin="5" Text="{Binding InstallationFolder}" Width="300"/>
                         <Button Margin="0,5" Content="..." Command="{Binding SelectFolderCommand}"/>
                     </StackPanel>
+                    <TextBlock Grid.Row="1" Text="WARNING: Clicking on the 'Next' button will start the import process!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
                 </Grid>
             </xctk:WizardPage>
             <xctk:WizardPage Title="Import"
                              Description="Import process"
                              PageType="Interior"
-                             CanSelectPreviousPage="True"
+                             CanSelectPreviousPage="{Binding CanSelectPreviousPage}"
                              CanSelectNextPage="False"
-                             CanFinish="{Binding Completed}">
+                             NextButtonVisibility="Hidden"
+                             FinishButtonVisibility="Visible"
+                             CanFinish="{Binding Completed}"
+                             CanCancel="{Binding Completed, Converter={StaticResource NegateBoolConverter}}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Enter">
+                        <mvvm:EventToCommand Command="{Binding StartImportCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Grid>
                     <DockPanel>
-                        <Button Content="Start Import" DockPanel.Dock="Top" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top" Command="{Binding StartMigrationCommand}"/>
                         <TextBlock DockPanel.Dock="Top" Margin="5" Text="{Binding Status, StringFormat={}Status: {0}}"/>
                         <TextBox Text="{Binding LogText, Mode=OneWay}" TextWrapping="NoWrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ap:TextBoxHelper.AutoScrollToEnd="True"/>
                     </DockPanel>

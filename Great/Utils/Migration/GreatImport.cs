@@ -7,7 +7,6 @@ using Great.Models;
 using Great.Utils.Extensions;
 using System.IO;
 using System.Threading;
-using System.Diagnostics;
 using System.Data.Entity.Migrations;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models.Database;
@@ -18,10 +17,10 @@ namespace Great.Utils
     public class GreatImport
     {
         #region Events
-        public delegate void OperationCompletedHandler(object source);
+        public delegate void OperationFinishedHandler(object source, bool failed);
         public delegate void StatusChangedHandler(object source, GreatImportArgs args);
         public delegate void MessageHandler(object source, GreatImportArgs args);
-        public event OperationCompletedHandler OnCompleted;
+        public event OperationFinishedHandler OnFinish;
         public event StatusChangedHandler OnStatusChanged;
         public event MessageHandler OnMessage;
         #endregion
@@ -40,6 +39,7 @@ namespace Great.Utils
         private readonly Logger log = LogManager.GetLogger("GreatImport");
 
         private FDLManager FDLManager = SimpleIoc.Default.GetInstance<FDLManager>();
+        private volatile bool stopImport;
 
         //Access database fields
         private OleDbConnection connection;
@@ -65,9 +65,11 @@ namespace Great.Utils
         public string _destinationAccountPath { get; private set; }
         #endregion
 
-        public void StartMigration(string greatPath)
+        public void StartImport(string greatPath)
         {
-            StatusChanged("Migration Started...");
+            stopImport = false;
+
+            StatusChanged("Import Started...");
 
             if (Directory.Exists(greatPath))
             {
@@ -107,20 +109,42 @@ namespace Great.Utils
             else Error($"Wrong GREAT directory path: {greatPath}");
 
             StatusChanged("Import failed!");
+            Finished(false);
+        }
+
+        public void CancelImport()
+        {
+            stopImport = true;
         }
 
         private void MigrationThread()
         {
-            StatusChanged("Importing Factories...");
             CompileFactoriesTable();
-            StatusChanged("Importing PDF files...");
             CompileFdlTable();
-            StatusChanged("Importing Hours...");
             CompileHourTable();
-            StatusChanged("Importing Car Rents...");
             CompileCarRents();
-            StatusChanged("Operation Completed!");
-            Completed();
+
+            if (!stopImport)
+            {
+                StatusChanged("Operation Completed!");
+                Finished();
+            }
+            else
+            {
+                Message("Import stopped by user.");
+                Finished(false);
+            }
+        }
+
+        private void ClearCache()
+        {
+            dtConfiguration.Clear();
+            dtHours.Clear();
+            dtExpenseReview.Clear();
+            dtCars.Clear();
+            dtPlants.Clear();
+            dtSentFiles.Clear();
+            _factories.Clear();
         }
 
         private bool GetDataTables()
@@ -130,6 +154,8 @@ namespace Great.Utils
             try
             {
                 StatusChanged("Loading GREAT data...");
+
+                ClearCache();
 
                 Message("Open GREAT database");
                 connection = new OleDbConnection(string.Format(sAccessConnectionstring, _sourceDatabase));
@@ -182,8 +208,13 @@ namespace Great.Utils
 
         private bool CompileCarRents()
         {
-            IDictionary<string, long> _cars = new Dictionary<string, long>();
             bool result = false;
+            IDictionary<string, long> _cars = new Dictionary<string, long>();
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Car Rents...");
 
             try
             {
@@ -199,6 +230,9 @@ namespace Great.Utils
                     // Import Cars
                     foreach (DataRow r in cars)
                     {
+                        if (stopImport)
+                            break;
+
                         Car car = new Car();
 
                         try
@@ -224,6 +258,9 @@ namespace Great.Utils
                     // Import Rents
                     foreach (DataRow r in collection)
                     {
+                        if (stopImport)
+                            break;
+
                         string licensePlate = r.Field<string>("dbf_Targa");
                         if (_cars.ContainsKey(licensePlate))
                         {
@@ -268,6 +305,12 @@ namespace Great.Utils
         private bool CompileFactoriesTable()
         {
             bool result = false;
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Factories...");
+
             try
             {
                 using (DBArchive db = new DBArchive())
@@ -279,6 +322,9 @@ namespace Great.Utils
 
                     foreach (DataRow r in collection)
                     {
+                        if (stopImport)
+                            break;
+
                         Factory f = new Factory();
 
                         try
@@ -303,6 +349,8 @@ namespace Great.Utils
                             Error($"Failed to import factory {f.Name}. {ex}", ex);
                         }
                     }
+
+                    result = true;
                 }
             }
             catch (Exception ex)
@@ -318,6 +366,11 @@ namespace Great.Utils
         {
             bool result = false;
 
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Hours...");
+
             try
             {
                 using (DBArchive db = new DBArchive())
@@ -327,6 +380,9 @@ namespace Great.Utils
 
                     foreach (DataRow r in collection)
                     {
+                        if (stopImport)
+                            break;
+
                         Day d = new Day();
 
                         try
@@ -442,7 +498,12 @@ namespace Great.Utils
         private bool CompileFdlTable()
         {
             bool result = false;
-            
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing PDF files...");
+
             try
             {
                 IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
@@ -451,6 +512,9 @@ namespace Great.Utils
                 {
                     foreach (string fdlPath in GetFileList(_sourceFdlPath))
                     {
+                        if (stopImport)
+                            break;
+
                         FDL fdl = null;
 
                         try
@@ -579,9 +643,9 @@ namespace Great.Utils
             log.Debug(message);
         }
 
-        protected void Completed()
+        protected void Finished(bool isCompleted = true)
         {
-            OnCompleted?.Invoke(this);
+            OnFinish?.Invoke(this, isCompleted);
         }
         #endregion
     }
