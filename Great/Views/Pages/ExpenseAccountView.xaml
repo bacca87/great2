@@ -141,8 +141,6 @@
                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">                        
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
-                    <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
-                    <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
                 </DataGrid.Resources>
                 <!--<DataGrid.ContextMenu>
                 <ContextMenu>
@@ -163,16 +161,16 @@
                             <DataTemplate>
                                 <ComboBox
                                   ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypes}"
-                                  SelectedItem="{Binding ExpenseType}" 
-                                  SelectedValue="{Binding Type}"
-                                  DisplayMemberPath="Description" 
-                                  SelectedValuePath="Id" 
+                                  SelectedItem="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseType}"
+                                  SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.Type}"
+                                  DisplayMemberPath="Description"
+                                  SelectedValuePath="Id"
                                   SelectedIndex="0" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ExpenseType.Description}"/>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseType.Description}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

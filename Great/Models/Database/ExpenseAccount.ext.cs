@@ -28,5 +28,24 @@ namespace Great.Models.Database
                 Status = (long)value;
             }
         }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void NotifyFDLPropertiesChanged()
+        {
+            OnPropertyChanged(nameof(CdC));
+            OnPropertyChanged(nameof(Currency));
+            OnPropertyChanged(nameof(Status));
+            OnPropertyChanged(nameof(LastError));
+            OnPropertyChanged(nameof(FileName));
+            OnPropertyChanged(nameof(NotifyAsNew));
+            OnPropertyChanged(nameof(Currency1));
+            OnPropertyChanged(nameof(Expenses));
+            OnPropertyChanged(nameof(FDLStatus));
+            OnPropertyChanged(nameof(FDL1));
+        }
     }
 }

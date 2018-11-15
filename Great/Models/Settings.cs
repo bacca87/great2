@@ -118,9 +118,6 @@ namespace Great.Models
             public const string FDL_Rejected = "INVALID FDL";
             public const string FDL_Extra = "EXTRA";
 
-            public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
-            public const string EA_RejectedResubmission = "Reinvio nota spese";
-
             public const string Reminder = "REMINDER:";
 
             public const string Positive = "POSITIVO";
@@ -567,6 +564,10 @@ namespace Great.Models
         public static class ExpenseAccount
         {
             public const int NotesMaxLength = 352;
+
+            public const string EA_Accepted = "NOTA SPESE ACCETTATA";
+            public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
+            public const string EA_RejectedResubmission = "Reinvio nota spese";
 
             public static class FieldNames
             {

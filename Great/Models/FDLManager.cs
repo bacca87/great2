@@ -876,6 +876,19 @@ namespace Great.Models
                         }
                     }
                     break;
+                case EMessageType.EA_Accepted:
+                    using (DBArchive db = new DBArchive())
+                    {
+                        ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+                        if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
+                        {
+                            accepted.EStatus = EFDLStatus.Accepted;
+                            accepted.LastError = null;
+                            db.SaveChanges();
+                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, accepted));
+                        }
+                    }
+                    break;
                 case EMessageType.EA_Rejected:
                 case EMessageType.EA_RejectedResubmission:
                     using (DBArchive db = new DBArchive())
@@ -933,9 +946,11 @@ namespace Great.Models
                 return EMessageType.FDL_Accepted;
             else if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
                 return EMessageType.FDL_Rejected;
-            else if (subject.Contains(ApplicationSettings.FDL.EA_Rejected))
+            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
+                return EMessageType.EA_Accepted;
+            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
                 return EMessageType.EA_Rejected;
-            else if (subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
+            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
                 return EMessageType.EA_RejectedResubmission;
             else if (subject.Contains(ApplicationSettings.FDL.Reminder))
                 return EMessageType.Reminder;
@@ -987,7 +1002,7 @@ namespace Great.Models
                 {
                     foreach (Attachment attachment in message.Attachments)
                     {
-                        if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                        if (!(attachment is FileAttachment))
                             continue;
 
                         EAttachmentType attType = GetAttachmentType(attachment.Name);
@@ -1007,7 +1022,7 @@ namespace Great.Models
 
                 if (FDL == string.Empty)
                 {
-                    // NB In case of missing attachments, there might be an inconrrect result if you recive the message regarding an FDL of the previous year in the new year.
+                    // NB In case of missing attachments, there might be an incorrect result if you recive the message regarding an FDL of the previous year in the new year.
                     // there are no solutions for this kind of issue.                    
 
                     switch (type)
@@ -1020,7 +1035,10 @@ namespace Great.Models
                             if (match.Success || match.Groups.Count > 0)
                                 FDL = $"{message.DateTimeSent.Year}/{match.Groups[1].Value}";
                             break;
+                        case EMessageType.EA_Accepted:
                         case EMessageType.EA_Rejected:
+                            // FDL XXXXX NOTA SPESE ACCETTATA
+                            //  0    1    2     3       4
                             // FDL XXXXX NOTA SPESE RIFIUTATA
                             //  0    1    2     3       4
                             words = message.Subject.Split(' ');
@@ -1072,6 +1090,7 @@ namespace Great.Models
         Unknown,
         FDL_Accepted,
         FDL_Rejected,
+        EA_Accepted,
         EA_Rejected,
         EA_RejectedResubmission,
         FDL_EA_New,

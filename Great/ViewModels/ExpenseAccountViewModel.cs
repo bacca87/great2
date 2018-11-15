@@ -274,10 +274,10 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        //_db.ExpenseAccounts.AddOrUpdate(item.Content);
-                        //_db.SaveChanges();
+                        _db.ExpenseAccounts.AddOrUpdate(item.Content);
+                        _db.SaveChanges();
 
-                        //ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
+                        ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
                     }
                 })
             );
