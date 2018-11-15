@@ -262,7 +262,7 @@
     <Compile Include="Utils\Messages\ItemChangedMessage.cs" />
     <Compile Include="Utils\Messages\NewItemMessage.cs" />
     <Compile Include="Utils\Messages\StatusChangeMessage.cs" />
-    <Compile Include="Utils\Migration\GreatImport.cs" />
+    <Compile Include="Utils\ImpExp\GreatImport.cs" />
     <Compile Include="Utils\MRUQueue.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />

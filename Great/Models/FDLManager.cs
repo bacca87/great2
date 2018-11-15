@@ -65,8 +65,6 @@ namespace Great.Models
                 if (currency.Length > 4)
                     ea.Currency = currency.Substring(0, 4).Trim();
 
-                //TODO: importazione spese
-
                 using (DBArchive db = new DBArchive())
                 {
                     using (var transaction = db.Database.BeginTransaction())
@@ -86,6 +84,43 @@ namespace Great.Models
                             {
                                 db.ExpenseAccounts.Add(ea);
                                 db.SaveChanges();
+
+                                #region Expenses
+                                if(!ExcludeExpense)
+                                {
+                                    foreach (var entry in ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix)
+                                    {
+                                        if (!int.TryParse(fields[entry["Type"]].GetValueAsString(), out int typeId) && !db.ExpenseTypes.Any(t => t.Id == typeId))
+                                            continue;
+
+                                        Expense expense = new Expense()
+                                        {
+                                            ExpenseAccount = ea.Id,
+                                            Type = typeId
+                                        };
+
+                                        if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString(), out double amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString(), out amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString(), out amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString(), out amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString(), out amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString(), out amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString(), out amount))
+                                            expense.MondayAmount = amount;
+
+                                        db.Expenses.Add(expense);
+                                    }
+
+                                    db.SaveChanges();
+                                }
+                                #endregion
+
                                 transaction.Commit();
                                 Messenger.Default.Send(new NewItemMessage<ExpenseAccount>(this, ea));
                             }
