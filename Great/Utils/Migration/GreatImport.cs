@@ -378,10 +378,13 @@ namespace Great.Utils
                             {
                                 FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlId);
 
-                                if (fdl != null && !fdl.Factory.HasValue)
+                                if (fdl != null)
                                 {
-                                    fdl.Factory = _factories[factoryId.Value];
-                                    db.FDLs.AddOrUpdate(fdl);
+                                    if(!fdl.Factory.HasValue)
+                                    {
+                                        fdl.Factory = _factories[factoryId.Value];
+                                        db.FDLs.AddOrUpdate(fdl);
+                                    }
                                 }
                                 else
                                     Warning($"The FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
@@ -462,7 +465,11 @@ namespace Great.Utils
                             {
                                 File.Copy(fdlPath, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(fdlPath).Name), true);
 
-                                DataRow sent = sentFiles.Where(file => !string.IsNullOrEmpty(file.Field<string>("Dbf_Foglio")) && FormatFDL(file.Field<string>("Dbf_Foglio")) == fdl.Id && file.Field<int>("dbf_TipoInvio") == 2).Select(file => file).FirstOrDefault();
+                                DataRow sent = sentFiles.Where(file => !string.IsNullOrEmpty(file.Field<string>("Dbf_Foglio")) && FormatFDL(file.Field<string>("Dbf_Foglio")) == fdl.Id && (file.Field<int>("dbf_TipoInvio") == 2 || file.Field<int>("dbf_TipoInvio") == 4)).Select(file => file)
+                                                        .OrderBy(x => x.Field<int>("Dbf_NumeroInviiPrima") == 0)
+                                                        .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Impianto")))
+                                                        .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Commessa")))
+                                                        .FirstOrDefault();
 
                                 if (sent != null)
                                 {

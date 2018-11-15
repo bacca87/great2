@@ -116,6 +116,11 @@ namespace Great.ViewModels
         public RelayCommand SelectFolderCommand { get; set; }
         #endregion
 
+        #region Cache Properties
+        private DateTime LastTextUpdate;
+        private string CachedText;
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the GreatImportWizardViewModel class.
         /// </summary>
@@ -144,12 +149,21 @@ namespace Great.ViewModels
 
         private void _greatMigra_OnMessage(object source, GreatImportArgs args)
         {
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    LogText += args.Message + Environment.NewLine;
-                })
-            );
+            CachedText += args.Message + Environment.NewLine;
+
+            if(DateTime.UtcNow.Subtract(LastTextUpdate).TotalSeconds > 0.5)
+            {
+                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                    new Action<string>((text) =>
+                    {
+                        LogText += text;
+                    }), 
+                    CachedText
+                );
+
+                CachedText = string.Empty;
+                LastTextUpdate = DateTime.UtcNow;
+            }
         }
 
         private void _greatMigra_OnCompleted(object source)
@@ -166,6 +180,8 @@ namespace Great.ViewModels
         {
             Completed = false;
             InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
+            CachedText = string.Empty;
+            LastTextUpdate = DateTime.UtcNow;
         }
 
         private void SelectFolder()

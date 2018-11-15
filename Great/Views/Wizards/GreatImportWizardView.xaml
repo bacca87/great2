@@ -60,7 +60,7 @@
                     <DockPanel>
                         <Button Content="Start Import" DockPanel.Dock="Top" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top" Command="{Binding StartMigrationCommand}"/>
                         <TextBlock DockPanel.Dock="Top" Margin="5" Text="{Binding Status, StringFormat={}Status: {0}}"/>
-                        <TextBox Text="{Binding LogText, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ap:TextBoxHelper.AutoScrollToEnd="True"/>
+                        <TextBox Text="{Binding LogText, Mode=OneWay}" TextWrapping="NoWrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ap:TextBoxHelper.AutoScrollToEnd="True"/>
                     </DockPanel>
                 </Grid>
             </xctk:WizardPage>
