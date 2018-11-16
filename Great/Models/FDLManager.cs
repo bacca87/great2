@@ -38,7 +38,7 @@ namespace Great.Models
             ProcessMessage(e.Message);
 
             //TEST
-            //ImportEAFromFile("c:\\notaspese.pdf", false, false);
+            //ImportEAFromFile("c:\\test.pdf", false, false);
         }
 
         public ExpenseAccount ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
@@ -51,6 +51,15 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
+
+                // only for testing purpose
+                //using (StreamWriter writetext = new StreamWriter("c:\\test.txt"))
+                //{
+                //    foreach (PdfFormField f in fields.Values)
+                //    {
+                //        writetext.WriteLine($"Field: {f.GetFieldName()} Value: {f.GetValueAsString()}");
+                //    }
+                //}
 
                 //General Info
                 ea.FDL = fields[ApplicationSettings.ExpenseAccount.FieldNames.FDLNumber].GetValueAsString();
@@ -90,7 +99,14 @@ namespace Great.Models
                                 {
                                     foreach (var entry in ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix)
                                     {
-                                        if (!int.TryParse(fields[entry["Type"]].GetValueAsString(), out int typeId) && !db.ExpenseTypes.Any(t => t.Id == typeId))
+                                        string type = fields[entry["Type"]].GetValueAsString();
+
+                                        if (string.IsNullOrEmpty(type))
+                                            continue;
+
+                                        var typeId = db.ExpenseTypes.Where(t => t.Description == type).Select(t => t.Id).FirstOrDefault();
+
+                                        if (typeId == 0)
                                             continue;
 
                                         Expense expense = new Expense()
@@ -102,17 +118,17 @@ namespace Great.Models
                                         if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString(), out double amount))
                                             expense.MondayAmount = amount;
                                         if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString(), out amount))
-                                            expense.MondayAmount = amount;
+                                            expense.TuesdayAmount = amount;
                                         if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString(), out amount))
-                                            expense.MondayAmount = amount;
+                                            expense.WednesdayAmount = amount;
                                         if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString(), out amount))
-                                            expense.MondayAmount = amount;
+                                            expense.ThursdayAmount = amount;
                                         if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString(), out amount))
-                                            expense.MondayAmount = amount;
+                                            expense.FridayAmount = amount;
                                         if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString(), out amount))
-                                            expense.MondayAmount = amount;
+                                            expense.SaturdayAmount = amount;
                                         if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString(), out amount))
-                                            expense.MondayAmount = amount;
+                                            expense.SundayAmount = amount;
 
                                         db.Expenses.Add(expense);
                                     }

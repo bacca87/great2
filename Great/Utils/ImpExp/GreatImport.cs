@@ -509,34 +509,34 @@ namespace Great.Utils
             {
                 IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
 
-                using (DBArchive db = new DBArchive())
+                foreach (FileInfo file in new DirectoryInfo(_sourceFdlPath).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
-                    foreach (FileInfo file in new DirectoryInfo(_sourceFdlPath).GetFiles("*.pdf", SearchOption.AllDirectories))
+                    if (stopImport)
+                        break;
+
+                    FDL fdl = null;
+
+                    try
                     {
-                        if (stopImport)
-                            break;
+                        fdl = FDLManager.ImportFDLFromFile(file.FullName, false, false, false, true, true);
 
-                        FDL fdl = null;
+                        // try with XFA format
+                        if (fdl == null)
+                            fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, true, true);
 
-                        try
+                        if (fdl != null)
                         {
-                            fdl = FDLManager.ImportFDLFromFile(file.FullName, false, false, false, true, true);
+                            File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
 
-                            // try with XFA format
-                            if(fdl == null)
-                                fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, true, true);
+                            DataRow sent = sentFiles.Where(f => !string.IsNullOrEmpty(f.Field<string>("Dbf_Foglio")) && FormatFDL(f.Field<string>("Dbf_Foglio")) == fdl.Id && (f.Field<int>("dbf_TipoInvio") == 2 || f.Field<int>("dbf_TipoInvio") == 4)).Select(f => f)
+                                                    .OrderBy(x => x.Field<int>("Dbf_NumeroInviiPrima") == 0)
+                                                    .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Impianto")))
+                                                    .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Commessa")))
+                                                    .FirstOrDefault();
 
-                            if (fdl != null)
+                            if (sent != null)
                             {
-                                File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
-
-                                DataRow sent = sentFiles.Where(f => !string.IsNullOrEmpty(f.Field<string>("Dbf_Foglio")) && FormatFDL(f.Field<string>("Dbf_Foglio")) == fdl.Id && (f.Field<int>("dbf_TipoInvio") == 2 || f.Field<int>("dbf_TipoInvio") == 4)).Select(f => f)
-                                                        .OrderBy(x => x.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                                        .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Impianto")))
-                                                        .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Commessa")))
-                                                        .FirstOrDefault();
-
-                                if (sent != null)
+                                using (DBArchive db = new DBArchive())
                                 {
                                     // we must override recived fdl with the same of current dbcontext istance
                                     FDL currentFdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
@@ -551,24 +551,23 @@ namespace Great.Utils
                                             currentFdl.EStatus = EFDLStatus.Cancelled;
 
                                         db.FDLs.AddOrUpdate(currentFdl);
-                                        Message($"FDL {fdl.Id} OK");
+                                        db.SaveChanges();
+                                        Message($"FDL {currentFdl.Id} OK");
                                     }
                                     else
                                         Error("Missing FDL on database. Should never happen.");
                                 }
-                                else
-                                    Error("Missing FDL sent status!");
                             }
                             else
-                                Error($"Failed to import FDL from file: {file.FullName}");
+                                Error("Missing FDL sent status!");
                         }
-                        catch (Exception ex)
-                        {
-                            Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
-                        }
+                        else
+                            Error($"Failed to import FDL from file: {file.FullName}");
                     }
-
-                    db.SaveChanges();
+                    catch (Exception ex)
+                    {
+                        Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
+                    }
                 }
 
                 result = true;
@@ -594,64 +593,50 @@ namespace Great.Utils
             {
                 IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
 
-                using (DBArchive db = new DBArchive())
+                foreach (FileInfo file in new DirectoryInfo(_sourceEAPath).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
-                    foreach (FileInfo file in new DirectoryInfo(_sourceEAPath).GetFiles("*.pdf", SearchOption.AllDirectories))
+                    if (stopImport)
+                        break;
+
+                    ExpenseAccount ea = null;
+
+                    try
                     {
-                        if (stopImport)
-                            break;
+                        ea = FDLManager.ImportEAFromFile(file.FullName, false, false, true);
 
-                        ExpenseAccount ea = null;
-
-                        try
+                        if (ea != null)
                         {
-                            ea = FDLManager.ImportEAFromFile(file.FullName, false, false, true);
+                            File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
 
-                            if (ea != null)
+                            using (DBArchive db = new DBArchive())
                             {
-                                File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
-
-                                DataRow sent = sentFiles.Where(f => !string.IsNullOrEmpty(f.Field<string>("Dbf_Foglio")) && FormatFDL(f.Field<string>("Dbf_Foglio")) == ea.FDL && (f.Field<int>("dbf_TipoInvio") == 2 || f.Field<int>("dbf_TipoInvio") == 4)).Select(f => f)
-                                                        .OrderBy(x => x.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                                        .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Impianto")))
-                                                        .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Commessa")))
-                                                        .FirstOrDefault();
-
-                                //TODO: controllare se lo stato di invio delle NS è separato da quello dei FDL. in caso contrario copiare lo stato del FDL.
-
-                                if (sent != null)
+                                // we must override recived EA with the same of current dbcontext istance
+                                ExpenseAccount currentEA = db.ExpenseAccounts.SingleOrDefault(e => e.Id == ea.Id);
+                                    
+                                if (currentEA != null)
                                 {
-                                    // we must override recived EA with the same of current dbcontext istance
-                                    ExpenseAccount currentEA = db.ExpenseAccounts.SingleOrDefault(e => e.Id == ea.Id);
+                                    FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == currentEA.FDL);
 
-                                    if (currentEA != null)
-                                    {
-                                        if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                            currentEA.EStatus = EFDLStatus.Waiting;
-                                        else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
-                                            currentEA.EStatus = EFDLStatus.Accepted;
-                                        else
-                                            currentEA.EStatus = EFDLStatus.Cancelled;
-
-                                        db.ExpenseAccounts.AddOrUpdate(currentEA);
-                                        Message($"Expense Account {ea.FDL} OK");
-                                    }
+                                    if (fdl != null)
+                                        currentEA.Status = fdl.Status;
                                     else
-                                        Error("Missing EA on database. Should never happen.");
+                                        currentEA.EStatus = EFDLStatus.Accepted;
+
+                                    db.ExpenseAccounts.AddOrUpdate(currentEA);
+                                    db.SaveChanges();
+                                    Message($"Expense Account {currentEA.FDL} OK");
                                 }
                                 else
-                                    Error("Missing EA sent status!");
+                                    Error("Missing EA on database. Should never happen.");
                             }
-                            else
-                                Error($"Failed to import EA from file: {file.FullName}");
                         }
-                        catch (Exception ex)
-                        {
-                            Error($"Failed importing EA {ea?.FDL}. {ex}", ex);
-                        }
+                        else
+                            Error($"Failed to import EA from file: {file.FullName}");
                     }
-
-                    db.SaveChanges();
+                    catch (Exception ex)
+                    {
+                        Error($"Failed importing EA {ea?.FDL}. {ex}", ex);
+                    }
                 }
 
                 result = true;
