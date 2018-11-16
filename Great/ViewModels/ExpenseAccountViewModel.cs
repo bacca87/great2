@@ -105,7 +105,7 @@ namespace Great.ViewModels
 
                 RefreshExpenses();
 
-                //SelectedEAClone = _selectedEA?.Clone();
+                SelectedEAClone = _selectedEA?.Clone();
 
                 if (_selectedEA != null)
                 {
@@ -193,7 +193,12 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="ExpenseTypes" /> property's name.
         /// </summary>
-        public ObservableCollection<ExpenseType> ExpenseTypes { get; set; }        
+        public ObservableCollection<ExpenseType> ExpenseTypes { get; set; }
+
+        /// <summary>
+        /// The <see cref="Currencies" /> property's name.
+        /// </summary>
+        public ObservableCollection<Currency> Currencies { get; set; }
         #endregion
 
         #region Commands Definitions
@@ -228,6 +233,7 @@ namespace Great.ViewModels
 
             ExpenseTypes = new ObservableCollection<ExpenseType>(_db.ExpenseTypes);
             ExpenseAccounts = new ObservableCollectionEx<ExpenseAccount>(_db.ExpenseAccounts);
+            Currencies = new ObservableCollection<Currency>(_db.Currencies);
 
             ExpenseAccounts.ItemPropertyChanged += ExpenseAccounts_ItemPropertyChanged;
 
@@ -244,7 +250,7 @@ namespace Great.ViewModels
         private void RefreshExpenses()
         {
             if (SelectedEA != null && SelectedEA.Expenses != null)
-                Expenses = SelectedEA.Expenses.ToList();//.OrderBy(t => t.Date).ToList();
+                Expenses = SelectedEA.Expenses.Select(e => e.Clone()).Select(c => { c.ExpenseType = ExpenseTypes.SingleOrDefault(t => t.Id == c.Type); return c; }).ToList();
             else
                 Expenses = null;
         }

@@ -47,5 +47,20 @@ namespace Great.Models.Database
             OnPropertyChanged(nameof(FDLStatus));
             OnPropertyChanged(nameof(FDL1));
         }
+
+        public ExpenseAccount Clone()
+        {
+            return new ExpenseAccount()
+            {
+                Id = Id,
+                FDL = FDL,
+                CdC = CdC,
+                Currency = Currency,
+                Status = Status,
+                LastError = LastError,
+                FileName = FileName,
+                NotifyAsNew = NotifyAsNew
+            };
+        }
     }
 }

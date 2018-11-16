@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-      xmlns:m="clr-namespace:Great.Models" 
+      xmlns:m="clr-namespace:Great.Models.Database" 
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
@@ -103,12 +103,34 @@
         </DataGrid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="80*"/>
+                <RowDefinition Height="20*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
+                <TextBlock Text="CURRENCY:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="15"/>
+                <ComboBox
+                    SelectedItem="{Binding SelectedEAClone.Currency1}"
+                    SelectedValue="{Binding SelectedEAClone.Currency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                    DisplayMemberPath="Description"
+                    SelectedValuePath="Id"
+                    Width="250"
+                    FontSize="15"
+                    IsEditable="True">
+                    <ComboBox.Resources>
+                        <CollectionViewSource x:Key="Items" Source="{Binding Currencies}" />
+                    </ComboBox.Resources>
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <m:Currency />
+                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+            </StackPanel>
             <DataGrid 
-                Grid.Row="0"
+                Grid.Row="1"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
                 AutoGenerateColumns="False" 
@@ -121,10 +143,14 @@
                 ItemsSource="{Binding Expenses}"
                 SelectedItem="{Binding SelectedExpense, Converter={conv:DataGridItemConverter}}"
                 VirtualizingPanel.ScrollUnit ="Item" 
-                VirtualizingPanel.VirtualizationMode="Standard">
-                <DataGrid.Resources>
+                VirtualizingPanel.VirtualizationMode="Standard"
+                GridLinesVisibility="Horizontal"
+                ColumnWidth="*">
+                <DataGrid.Resources>                    
                     <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                         <Style.Setters>
+                            <Setter Property="TextBlock.FontSize" Value="20" />
+                            <Setter Property="BorderThickness" Value="5" />
                             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                         </Style.Setters>
                     </Style>
@@ -156,46 +182,43 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Expense Type" CellStyle="{StaticResource BaseCellStyle}">
+                    <DataGridTemplateColumn Header="Expense Type" CellStyle="{StaticResource BaseCellStyle}" Width="200">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox
-                                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypes}"
-                                  SelectedItem="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseType}"
-                                  SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.Type}"
-                                  DisplayMemberPath="Description"
-                                  SelectedValuePath="Id"
-                                  SelectedIndex="0" />
+                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypes}"
+                                    SelectedItem="{Binding ExpenseType}"
+                                    SelectedValue="{Binding Type}"
+                                    DisplayMemberPath="Description"
+                                    SelectedValuePath="Id"
+                                    FontSize="20"
+                                    IsEditable="True"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseType.Description}"/>
+                                <TextBlock Text="{Binding ExpenseType.Description}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Monday" Binding="{Binding MondayAmount}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Tuesday" Binding="{Binding TuesdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Wednesday" Binding="{Binding WednesdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Thursday" Binding="{Binding ThursdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Friday" Binding="{Binding FridayAmount}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Saturday" Binding="{Binding SaturdayAmount}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Sunday" Binding="{Binding SundayAmount}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Monday" Binding="{Binding MondayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Tuesday" Binding="{Binding TuesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Wednesday" Binding="{Binding WednesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Thursday" Binding="{Binding ThursdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Friday" Binding="{Binding FridayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Saturday" Binding="{Binding SaturdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Sunday" Binding="{Binding SundayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="23*"/>
-                </Grid.ColumnDefinitions>
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,5,0,4"/>
-                <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedEAClone.Notes}" MaxLength="{Binding NotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"/>
+                <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center" Margin="0,5,0,4"/>
+                <TextBox Grid.Row="1" Text="{Binding SelectedEAClone.Notes}" MaxLength="{Binding NotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsReturn="True"/>
             </Grid>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
                 <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" />
                 <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEAClone}" />
             </StackPanel>
