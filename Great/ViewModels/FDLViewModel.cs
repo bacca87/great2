@@ -199,9 +199,9 @@ namespace Great.ViewModels
         public ObservableCollection<FDLResult> FDLResults { get; set; }
 
         /// <summary>
-        /// The <see cref="RecentRecipients" /> property's name.
+        /// The <see cref="MRUEmailRecipients" /> property's name.
         /// </summary>
-        public MRUCollection<string> RecentEmailRecipients { get; set; }
+        public MRUCollection<string> MRUEmailRecipients { get; set; }
 
         /// <summary>
         /// The <see cref="SendToEmailRecipient" /> property's name.
@@ -301,12 +301,12 @@ namespace Great.ViewModels
             MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
             MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = p.NewValue; });
 
-            List<string> recipients = UserSettings.Email.Recipients.RecentEmailRecipients?.Cast<string>().ToList();
+            List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
             if (recipients != null)
-                RecentEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MaxRecentRecipientsCount, new Collection<string>(recipients));
+                MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
             else
-                RecentEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MaxRecentRecipientsCount);
+                MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
         private void FDLs_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
@@ -386,12 +386,12 @@ namespace Great.ViewModels
             // reset input box
             SendToEmailRecipient = string.Empty;
 
-            RecentEmailRecipients.Add(address);
+            MRUEmailRecipients.Add(address);
 
             // save to user setting the MRU recipients
             StringCollection collection = new StringCollection();
-            collection.AddRange(RecentEmailRecipients.ToArray());
-            UserSettings.Email.Recipients.RecentEmailRecipients = collection;
+            collection.AddRange(MRUEmailRecipients.ToArray());
+            UserSettings.Email.Recipients.MRU = collection;
 
             _fdlManager.SendTo(address, SelectedFDL);
         }

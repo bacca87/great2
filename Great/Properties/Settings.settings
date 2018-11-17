@@ -17,8 +17,11 @@
     <Setting Name="FDLCancelRequestRecipients" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="RecentEmailRecipients" Type="System.Collections.Specialized.StringCollection" Scope="User">
+    <Setting Name="MRUEmailRecipients" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CountryCode" Type="Nager.Date.CountryCode" Scope="User">
+      <Value Profile="(Default)">IT</Value>
     </Setting>
   </Settings>
 </SettingsFile>

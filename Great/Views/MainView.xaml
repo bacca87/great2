@@ -229,7 +229,7 @@
                                 </Fluent:Button>
                             </StackPanel>
                             <Separator/>
-                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding RecentEmailRecipients}">                               
+                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding MRUEmailRecipients}">                               
                                 <Fluent:MenuItem.ItemContainerStyle>
                                     <Style TargetType="{x:Type Fluent:MenuItem}">
                                         <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />

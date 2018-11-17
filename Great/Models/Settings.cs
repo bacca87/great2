@@ -1,5 +1,6 @@
 ﻿using Great.Properties;
 using Great.Utils.Extensions;
+using Nager.Date;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -97,7 +98,7 @@ namespace Great.Models
         #region Email Recipients
         public static class EmailRecipients
         {
-            public const int MaxRecentRecipientsCount = 10;
+            public const int MRUSize = 10;
 
             public const string FDLSystem = "fdl@elettric80.it";
             public const string HR = "hr@elettric80.it";
@@ -998,6 +999,24 @@ namespace Great.Models
         }
         #endregion
 
+        #region Localization
+        public static class Localization
+        {
+            public static CountryCode Country
+            {
+                get
+                {
+                    return Settings.Default.CountryCode;
+                }
+                set
+                {
+                    Settings.Default.CountryCode = value;
+                    Settings.Default.Save();
+                }
+            }
+        }
+        #endregion
+
         #region Email
         public static class Email
         {
@@ -1027,15 +1046,15 @@ namespace Great.Models
 
             public static class Recipients
             {
-                public static StringCollection RecentEmailRecipients
+                public static StringCollection MRU
                 {
                     get
                     {
-                        return Settings.Default.RecentEmailRecipients;
+                        return Settings.Default.MRUEmailRecipients;
                     }
                     set
                     {
-                        Settings.Default.RecentEmailRecipients = value;
+                        Settings.Default.MRUEmailRecipients = value;
                         Settings.Default.Save();
                     }
                 }

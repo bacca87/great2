@@ -24,13 +24,13 @@ namespace Great.Models.Database
         [NotMapped]
         public int WeekNr { get { return Date.WeekNr(); } }
         [NotMapped]
-        public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, CountryCode.IT); } }
+        public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country); } }
         [NotMapped]
         public string HolidayLocalName
         {
             get
             {
-                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(CountryCode.IT, Date, Date);
+                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(UserSettings.Localization.Country, Date, Date);
                 return holidays?.Count() > 0 ? holidays.FirstOrDefault().LocalName : string.Empty;
             }
         }

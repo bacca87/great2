@@ -84,12 +84,24 @@ namespace Great.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection RecentEmailRecipients {
+        public global::System.Collections.Specialized.StringCollection MRUEmailRecipients {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["RecentEmailRecipients"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["MRUEmailRecipients"]));
             }
             set {
-                this["RecentEmailRecipients"] = value;
+                this["MRUEmailRecipients"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("IT")]
+        public global::Nager.Date.CountryCode CountryCode {
+            get {
+                return ((global::Nager.Date.CountryCode)(this["CountryCode"]));
+            }
+            set {
+                this["CountryCode"] = value;
             }
         }
     }

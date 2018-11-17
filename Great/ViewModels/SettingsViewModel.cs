@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Microsoft.Exchange.WebServices.Data;
+using Nager.Date;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,6 +19,29 @@ namespace Great.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         #region Properties
+        /// <summary>
+        /// Sets and gets the Country property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public CountryCode Country
+        {
+            get
+            {
+                return UserSettings.Localization.Country;
+            }
+
+            set
+            {
+                if (UserSettings.Localization.Country == value)
+                    return;
+
+                var oldValue = UserSettings.Localization.Country;
+                UserSettings.Localization.Country = value;
+
+                RaisePropertyChanged(nameof(Country), oldValue, value);
+            }
+        }
+
         /// <summary>
         /// Sets and gets the EmailAddress property.
         /// Changes to that property's value raise the PropertyChanged event.         

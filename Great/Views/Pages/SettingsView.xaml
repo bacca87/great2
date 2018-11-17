@@ -3,7 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:System="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:date="clr-namespace:Nager.Date;assembly=Nager.Date"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"      
       xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
       mc:Ignorable="d" 
@@ -14,8 +16,28 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0" Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+        <GroupBox Grid.Row="0" Header="General" Margin="10" HorizontalAlignment="Left">
+            <GroupBox.Resources>
+                <ObjectDataProvider x:Key="enumCountries"
+                                    MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                    <ObjectDataProvider.MethodParameters>
+                        <x:Type TypeName="date:CountryCode"/>
+                    </ObjectDataProvider.MethodParameters>
+                </ObjectDataProvider>
+            </GroupBox.Resources>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBlock Text="Country:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox
+                    ItemsSource="{Binding Source={StaticResource enumCountries}}"
+                    SelectedValue="{Binding Country, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                    FontSize="15"
+                    IsEditable="True"
+                    Width="60"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -31,7 +53,7 @@
                 <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="FDL" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+        <GroupBox Grid.Row="2" Header="FDL" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
