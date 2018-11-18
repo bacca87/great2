@@ -58,6 +58,7 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<ImportExportViewModel>();
             SimpleIoc.Default.Register<GreatImportWizardViewModel>();
             SimpleIoc.Default.Register<OrderRecipientsViewModel>();
+            SimpleIoc.Default.Register<StatisticsViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -140,9 +141,17 @@ namespace Great.ViewModels
             }
         }
 
+        public StatisticsViewModel Statistics
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<StatisticsViewModel>();
+            }
+        }
+
         public static void Cleanup()
         {
-            // TODO Clear the ViewModels
+            // Clear the ViewModels
         }
     }
 }

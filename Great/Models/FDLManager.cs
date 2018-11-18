@@ -185,7 +185,8 @@ namespace Great.Models
                 fdl.Id = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber);
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType).Contains(ApplicationSettings.FDL.FDL_Extra);
-                // TODO: Not yet implemented fields
+                
+                // Not yet implemented fields
                 //fdl.EResult = GetFDLResultFromString(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Result));
                 //fdl.OutwardCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardCar) != null;
                 //fdl.OutwardTaxi = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardTaxi) != null;
@@ -205,7 +206,7 @@ namespace Great.Models
                 //GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Cars1)
                 //GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Cars2)
 
-                // TODO: Not yet implemented fields
+                // Not yet implemented fields
                 //string value = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.PerformanceDescription).Trim();
                 //fdl.PerformanceDescription = value != string.Empty ? value : null;
 

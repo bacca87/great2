@@ -356,6 +356,10 @@
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="STATISTICS" 
+                                  Visibility="{Binding ElementName=statsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=statsTab, Path=IsSelected, Mode=OneWay}">
+            </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
@@ -416,6 +420,9 @@
             </TabItem>
             <TabItem Name="factoriesTab" Header="Factories" ap:NotificationHelper.NotificationCount="{Binding NewFactoriesCount}">
                 <Frame Source="/Views/Pages/FactoriesView.xaml"/>
+            </TabItem>
+            <TabItem Name="statsTab" Header="Statistics" ap:NotificationHelper.NotificationCount="0">
+                <Frame Source="/Views/Pages/StatisticsView.xaml"/>
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
