@@ -16,6 +16,7 @@ namespace Great.Models.Database
         public string FDL { get; set; }
         public long? CdC { get; set; }
         public string Currency { get; set; }
+        public string Notes { get; set; }
         public long Status { get; set; }
         public string LastError { get; set; }
         public string FileName { get; set; }

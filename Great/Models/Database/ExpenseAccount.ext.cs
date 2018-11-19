@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Great.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace Great.Models.Database
 {
-    public partial class ExpenseAccount : INotifyPropertyChanged
+    public partial class ExpenseAccount : INotifyPropertyChanged, IFDLFile
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [NotMapped]
+        public string FilePath { get { return ApplicationSettings.Directories.ExpenseAccount + FileName; } }
         [NotMapped]
         public bool IsNew { get { return EStatus == EFDLStatus.New; } } // used for sorting purpose
 
@@ -38,6 +41,7 @@ namespace Great.Models.Database
         {
             OnPropertyChanged(nameof(CdC));
             OnPropertyChanged(nameof(Currency));
+            OnPropertyChanged(nameof(Notes));
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(LastError));
             OnPropertyChanged(nameof(FileName));
@@ -56,6 +60,7 @@ namespace Great.Models.Database
                 FDL = FDL,
                 CdC = CdC,
                 Currency = Currency,
+                Notes = Notes,
                 Status = Status,
                 LastError = LastError,
                 FileName = FileName,

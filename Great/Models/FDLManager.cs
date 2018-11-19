@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Great.Models.Database;
+using Great.Models.Interfaces;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
@@ -36,9 +37,6 @@ namespace Great.Models
         private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
             ProcessMessage(e.Message);
-
-            //TEST
-            //ImportEAFromFile("c:\\test.pdf", false, false);
         }
 
         public ExpenseAccount ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
@@ -73,6 +71,9 @@ namespace Great.Models
                 string currency = fields[ApplicationSettings.ExpenseAccount.FieldNames.Currency].GetValueAsString();
                 if (currency.Length > 4)
                     ea.Currency = currency.Substring(0, 4).Trim();
+
+                string value = fields[ApplicationSettings.ExpenseAccount.FieldNames.Notes].GetValueAsString().Trim();
+                ea.Notes = value != string.Empty ? value : null;
 
                 using (DBArchive db = new DBArchive())
                 {
@@ -645,14 +646,23 @@ namespace Great.Models
             return fields;
         }
 
+        private Dictionary<string, string> GetAcroFormFields(IFDLFile file)
+        {
+            if (file is FDL)
+                return GetAcroFormFields(file as FDL);
+            else if (file is ExpenseAccount)
+                return GetAcroFormFields(file as ExpenseAccount);
+            else
+                return null;
+        }
+
         private Dictionary<string, string> GetAcroFormFields(FDL fdl)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            Timesheet timesheet = null;
 
             foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
-                timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
+                Timesheet timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
                 if (timesheet != null)
                 {
@@ -703,32 +713,62 @@ namespace Great.Models
                     break;
             }
 
-            fields.Add(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty);
-            fields.Add(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes != null ? fdl.Notes : string.Empty);
+            fields.Add(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes ?? string.Empty);
+            fields.Add(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes ?? string.Empty);
 
             return fields;
         }
 
-        private void CompileFDL(FDL fdl, string fileName)
+        private Dictionary<string, string> GetAcroFormFields(ExpenseAccount ea)
         {
-            string source = ApplicationSettings.Directories.FDL + fdl.FileName;
+            Dictionary<string, string> fields = new Dictionary<string, string>();
+
+            var expenses = ea.Expenses.ToList();
+
+            for(int i = 0; i < expenses.Count() && i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
+            {
+                var entry = ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix[i];
+
+                fields.Add(entry["Type"], expenses[i].ExpenseType.Description);
+                fields.Add(entry["Mon_Amount"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Tue_Amount"], expenses[i].TuesdayAmount.HasValue ? expenses[i].TuesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Wed_Amount"], expenses[i].WednesdayAmount.HasValue ? expenses[i].WednesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Thu_Amount"], expenses[i].ThursdayAmount.HasValue ? expenses[i].ThursdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
+                //fields.Add(entry["Total"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+            }
+
+            if (ea.Currency1 != null)
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1.Description);
+
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Notes, ea.Notes ?? string.Empty);
+
+            return fields;
+        }
+
+        private void Compile(IFDLFile file, string destFileName)
+        {  
             PdfDocument pdfDoc = null;
 
             try
             {
-                pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
+                pdfDoc = new PdfDocument(new PdfReader(file.FilePath), new PdfWriter(destFileName));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                // this is an hack for display fixed fields on saved read only FDL
-                foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                
+                if(file is FDL)
                 {
-                    if (fields.ContainsKey(entry.Key))
-                        fields[entry.Key].SetValue(entry.Value);
+                    // this is an hack for display fixed fields on saved read only FDL
+                    foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                    {
+                        if (fields.ContainsKey(entry.Key))
+                            fields[entry.Key].SetValue(entry.Value);
+                    }
                 }
-                //
 
-                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
+                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file))
                 {
                     if(fields.ContainsKey(entry.Key))
                         fields[entry.Key].SetValue(entry.Value);
@@ -744,7 +784,7 @@ namespace Great.Models
             }
         }
 
-        private void CompileXFDF(FDL fdl, string FDLfileName, string FDFFileName)
+        private void CompileXFDF(IFDLFile file, string FDLfileName, string FDFFileName)
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -767,7 +807,7 @@ namespace Great.Models
             xfdfNode.AppendChild(fNode);
             xfdfNode.AppendChild(fieldsNode);
 
-            foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
+            foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file))
             {
                 if (entry.Value == string.Empty)
                     continue;
@@ -788,52 +828,78 @@ namespace Great.Models
             xmlDoc.Save(FDFFileName);
         }
 
-        public bool SendToSAP(FDL fdl)
+        public bool SendToSAP(IFDLFile file)
         {
-            if (fdl == null)
+            if (file == null)
                 return false;
 
             using (new WaitCursor())
             {
-                string filePath = Path.GetTempPath() + fdl.FileName;
+                string filePath = Path.GetTempPath() + file.FileName;
 
-                CompileFDL(fdl, filePath);
+                Compile(file, filePath);
 
                 EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
-                message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
                 message.Attachments.Add(filePath);
 
-                using (DBArchive db = new DBArchive())
+                if (file is FDL)
                 {
-                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
+                    FDL fdl = file as FDL;
 
-                    foreach(var r in recipients)
-                        message.CcRecipients.Add(r);
+                    message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+                    message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
+
+                    using (DBArchive db = new DBArchive())
+                    {
+                        var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
+
+                        foreach (var r in recipients)
+                            message.CcRecipients.Add(r);
+                    }
                 }
+                else if (file is ExpenseAccount)
+                {
+                    ExpenseAccount ea = file as ExpenseAccount;
+                    message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+                }
+                else
+                    return false; // should never happen
 
                 exchangeProvider.SendEmail(message);
 
-                fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                file.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
             }
         }
 
-        public bool SendTo(string address, FDL fdl)
+        public bool SendTo(string address, IFDLFile file)
         {
-            if (fdl == null)
+            if (file == null)
                 return false;
 
             using (new WaitCursor())
             {
-                string filePath = Path.GetTempPath() + fdl.FileName;
+                string filePath = Path.GetTempPath() + file.FileName;
 
-                CompileFDL(fdl, filePath);
+                Compile(file, filePath);
 
                 EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";                
+
+                if (file is FDL)
+                {
+                    FDL fdl = file as FDL;
+                    message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+                }
+                else if (file is ExpenseAccount)
+                {
+                    ExpenseAccount ea = file as ExpenseAccount;
+                    message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+                }
+                else
+                    return false; //should never happen
+
                 message.ToRecipients.Add(address);
                 message.Attachments.Add(filePath);
 
@@ -870,31 +936,31 @@ namespace Great.Models
             }
         }
 
-        public bool SaveFDL(FDL fdl, string filePath)
+        public bool SaveAs(IFDLFile file, string filePath)
         {
-            if (fdl == null || filePath == string.Empty)
+            if (file == null || filePath == string.Empty)
                 return false;
 
             using (new WaitCursor())
             {
-                CompileFDL(fdl, filePath);
+                Compile(file, filePath);
                 return true;
             }
         }
 
-        public bool SaveXFDF(FDL fdl, string filePath)
+        public bool SaveXFDF(IFDLFile file, string filePath)
         {
-            if (fdl == null || filePath == string.Empty)
+            if (file == null || filePath == string.Empty)
                 return false;
 
             using (new WaitCursor())
             {
-                File.Copy(ApplicationSettings.Directories.FDL + fdl.FileName, Path.GetDirectoryName(filePath) + "\\" + fdl.FileName, true);
-                CompileXFDF(fdl, Path.GetDirectoryName(filePath) + "\\" + fdl.FileName, filePath);
+                File.Copy(file.FilePath, Path.GetDirectoryName(filePath) + "\\" + file.FileName, true);
+                CompileXFDF(file, Path.GetDirectoryName(filePath) + "\\" + file.FileName, filePath);
                 return true;
             }
         }
-        
+
         private void ProcessMessage(EmailMessage message)
         {   
             EMessageType type = GetMessageType(message.Subject);

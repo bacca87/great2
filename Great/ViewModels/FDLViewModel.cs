@@ -410,7 +410,7 @@ namespace Great.ViewModels
             dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             
             if (dlg.ShowDialog() == true)
-                _fdlManager.SaveFDL(fdl, dlg.FileName);
+                _fdlManager.SaveAs(fdl, dlg.FileName);
         }
 
         public void Open(FDL fdl)

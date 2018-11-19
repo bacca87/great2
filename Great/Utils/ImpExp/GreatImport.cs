@@ -98,7 +98,7 @@ namespace Great.Utils
 
                         if (start)
                         {
-                            thrd = new Thread(new ThreadStart(MigrationThread));
+                            thrd = new Thread(new ThreadStart(ImportThread));
                             thrd.Start();
                             return;
                         }
@@ -117,7 +117,7 @@ namespace Great.Utils
             stopImport = true;
         }
 
-        private void MigrationThread()
+        private void ImportThread()
         {
             CompileFactoriesTable();
             CompileFdlTable();
@@ -606,7 +606,7 @@ namespace Great.Utils
 
                         if (ea != null)
                         {
-                            File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
+                            File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.ExpenseAccount, file.Name), true);
 
                             using (DBArchive db = new DBArchive())
                             {

@@ -4,10 +4,14 @@ using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Messages;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -199,6 +203,35 @@ namespace Great.ViewModels
         /// The <see cref="Currencies" /> property's name.
         /// </summary>
         public ObservableCollection<Currency> Currencies { get; set; }
+
+        /// <summary>
+        /// The <see cref="MRUEmailRecipients" /> property's name.
+        /// </summary>
+        public MRUCollection<string> MRUEmailRecipients { get; set; }
+
+        /// <summary>
+        /// The <see cref="SendToEmailRecipient" /> property's name.
+        /// </summary>
+        private string _sendToEmailRecipient;
+
+        /// <summary>
+        /// Sets and gets the SendToEmailRecipient property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public string SendToEmailRecipient
+        {
+            get
+            {
+                return _sendToEmailRecipient;
+            }
+
+            set
+            {
+                var oldValue = _sendToEmailRecipient;
+                _sendToEmailRecipient = value;
+                RaisePropertyChanged(nameof(SendToEmailRecipient), oldValue, value);
+            }
+        }
         #endregion
 
         #region Commands Definitions
@@ -206,7 +239,7 @@ namespace Great.ViewModels
         public RelayCommand<ExpenseAccount> SaveCommand { get; set; }
 
         public RelayCommand<ExpenseAccount> SendToSAPCommand { get; set; }
-        public RelayCommand<ExpenseAccount> SendByEmailCommand { get; set; }
+        public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccount> SaveAsCommand { get; set; }
         public RelayCommand<ExpenseAccount> OpenCommand { get; set; }
         public RelayCommand<ExpenseAccount> MarkAsAcceptedCommand { get; set; }
@@ -224,10 +257,10 @@ namespace Great.ViewModels
             ClearCommand = new RelayCommand(ClearEA, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<ExpenseAccount>(SaveEA, (ExpenseAccount ea) => { return IsInputEnabled; });
 
-            //SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
-            //SendByEmailCommand = new RelayCommand<FDL>(SendByEmail);
-            //SaveAsCommand = new RelayCommand<FDL>(SaveAs);
-            //OpenCommand = new RelayCommand<FDL>(Open);
+            SendToSAPCommand = new RelayCommand<ExpenseAccount>(SendToSAP);
+            SendByEmailCommand = new RelayCommand<string>(SendByEmail);
+            SaveAsCommand = new RelayCommand<ExpenseAccount>(SaveAs);
+            OpenCommand = new RelayCommand<ExpenseAccount>(Open);
             //MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
             //MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
 
@@ -296,7 +329,97 @@ namespace Great.ViewModels
 
         public void SaveEA(ExpenseAccount ea)
         {
+            if (ea == null)
+                return;
 
+            if (string.IsNullOrEmpty(ea.Currency))
+            {
+                MessageBox.Show("Please select the currency before continue. Operation cancelled.", "Invalid Expense Account", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            foreach (var expense in Expenses)
+            {
+                expense.ExpenseAccount = ea.Id;
+                _db.Expenses.AddOrUpdate(expense);
+            }
+
+            _db.ExpenseAccounts.AddOrUpdate(ea);
+
+            if (_db.SaveChanges() > 0)
+                SelectedEA?.NotifyFDLPropertiesChanged();
+        }
+
+        public void SendToSAP(ExpenseAccount ea)
+        {
+            if (ea.EStatus == EFDLStatus.Waiting &&
+                MessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            _fdlManager.SendToSAP(ea);
+            _db.SaveChanges();
+        }
+
+        public void SendByEmail(string address)
+        {
+            string error;
+
+            if (!MSExchangeProvider.CheckEmailAddress(address, out error))
+            {
+                MessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // reset input box
+            SendToEmailRecipient = string.Empty;
+
+            MRUEmailRecipients.Add(address);
+
+            // save to user setting the MRU recipients
+            StringCollection collection = new StringCollection();
+            collection.AddRange(MRUEmailRecipients.ToArray());
+            UserSettings.Email.Recipients.MRU = collection;
+
+            _fdlManager.SendTo(address, SelectedEA);
+        }
+
+        public void SaveAs(ExpenseAccount ea)
+        {
+            if (ea == null)
+                return;
+
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Title = "Save Expense Account As...";
+            dlg.FileName = ea.FileName;
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "EA (.pdf) | *.pdf";
+            dlg.AddExtension = true;
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            if (dlg.ShowDialog() == true)
+                _fdlManager.SaveAs(ea, dlg.FileName);
+        }
+
+        public void Open(ExpenseAccount ea)
+        {
+            if (ea == null)
+                return;
+
+            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(ea.FileName) + ".XFDF";
+
+            _fdlManager.SaveXFDF(ea, fileName);
+            Process.Start(fileName);
+        }
+
+        public void MarkAsAccepted(ExpenseAccount ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.EStatus = EFDLStatus.Accepted;
+            _db.SaveChanges();
+
+            ea.NotifyFDLPropertiesChanged();
         }
     }
 }

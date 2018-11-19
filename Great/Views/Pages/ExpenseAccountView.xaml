@@ -113,6 +113,7 @@
                 <ComboBox
                     SelectedItem="{Binding SelectedEAClone.Currency1}"
                     SelectedValue="{Binding SelectedEAClone.Currency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                    IsEnabled="{Binding IsInputEnabled}"
                     DisplayMemberPath="Description"
                     SelectedValuePath="Id"
                     Width="250"
@@ -142,6 +143,7 @@
                 HeadersVisibility="All"
                 ItemsSource="{Binding Expenses}"
                 SelectedItem="{Binding SelectedExpense, Converter={conv:DataGridItemConverter}}"
+                IsEnabled="{Binding IsInputEnabled}"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard"
                 GridLinesVisibility="Horizontal"

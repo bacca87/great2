@@ -285,7 +285,7 @@
                             <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
                         </Fluent:DropDownButton.ToolTip>
                         <Fluent:Gallery GroupBy="Tag" Orientation="Horizontal" ItemWidth="32" ItemHeight="32">
-                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Message:">
+                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedEA}" Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system." />
                                 </Fluent:GalleryItem.ToolTip>
@@ -296,12 +296,6 @@
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected expense account by email." />
                                 </Fluent:GalleryItem.ToolTip>
                                 <Image Source="pack://application:,,,/Great;component/Images/24/envelope.png" Width="24" />
-                            </Fluent:GalleryItem>
-                            <Fluent:GalleryItem Command="{Binding SendCancellationRequestCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Special:">
-                                <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="Cancel EA" Text="Send cancellation request for the selected expense account." />
-                                </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great;component/Images/24/sign-ban.png" Width="24" />
                             </Fluent:GalleryItem>
                         </Fluent:Gallery>
                         <Fluent:MenuItem Header="Send...">
@@ -324,7 +318,6 @@
                                 </Fluent:MenuItem.ItemContainerStyle>
                             </Fluent:MenuItem>
                         </Fluent:MenuItem>
-                        <Separator/>
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
@@ -340,12 +333,12 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
