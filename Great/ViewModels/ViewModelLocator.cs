@@ -55,29 +55,110 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<NotificationsViewModel>();
             SimpleIoc.Default.Register<ImportExportViewModel>();
             SimpleIoc.Default.Register<GreatImportWizardViewModel>();
+            SimpleIoc.Default.Register<OrderRecipientsViewModel>();
+            SimpleIoc.Default.Register<StatisticsViewModel>();
             SimpleIoc.Default.Register<CarRentalViewModel>();
         }
 
-        public TimesheetsViewModel Timesheets => SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
+        public TimesheetsViewModel Timesheets
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
+            }
+        }
 
-        public FactoriesViewModel Factories => SimpleIoc.Default.GetInstance<FactoriesViewModel>();
+        public FactoriesViewModel Factories
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<FactoriesViewModel>();
+            }
+        }
 
-        public InformationsViewModel Informations => SimpleIoc.Default.GetInstance<InformationsViewModel>();
-        public FDLViewModel FDL => SimpleIoc.Default.GetInstance<FDLViewModel>();
+        public InformationsViewModel Informations
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<InformationsViewModel>();
+            }
+        }
 
-        public ExpenseAccountViewModel ExpenseAccount => SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
-        public SettingsViewModel Settings => SimpleIoc.Default.GetInstance<SettingsViewModel>();
-        public NotificationsViewModel Notifications => SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+        public FDLViewModel FDL
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<FDLViewModel>();
+            }
+        }
 
-        public ImportExportViewModel ImportExport => SimpleIoc.Default.GetInstance<ImportExportViewModel>();
+        public ExpenseAccountViewModel ExpenseAccount
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
+            }
+        }
 
-        public GreatImportWizardViewModel GreatImportWizard => SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
+        public SettingsViewModel Settings
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            }
+        }
 
-        public CarRentalViewModel CarRental => SimpleIoc.Default.GetInstance<CarRentalViewModel>();
+        public NotificationsViewModel Notifications
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+            }
+        }
+
+        public ImportExportViewModel ImportExport
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<ImportExportViewModel>();
+            }
+        }
+
+        public GreatImportWizardViewModel GreatImportWizard
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
+            }
+        }
+
+        public OrderRecipientsViewModel OrderRecipients
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
+            }
+        }
+
+        public StatisticsViewModel Statistics
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<StatisticsViewModel>();
+            }
+        }
+
+        public CarRentalViewModel CarRental
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<CarRentalViewModel>();
+            }
+        }
 
         public static void Cleanup()
         {
-            // TODO Clear the ViewModels
+            // Clear the ViewModels
         }
     }
 }

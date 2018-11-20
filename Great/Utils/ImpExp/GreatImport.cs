@@ -7,7 +7,6 @@ using Great.Models;
 using Great.Utils.Extensions;
 using System.IO;
 using System.Threading;
-using System.Diagnostics;
 using System.Data.Entity.Migrations;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models.Database;
@@ -18,10 +17,10 @@ namespace Great.Utils
     public class GreatImport
     {
         #region Events
-        public delegate void OperationCompletedHandler(object source);
+        public delegate void OperationFinishedHandler(object source, bool failed);
         public delegate void StatusChangedHandler(object source, GreatImportArgs args);
         public delegate void MessageHandler(object source, GreatImportArgs args);
-        public event OperationCompletedHandler OnCompleted;
+        public event OperationFinishedHandler OnFinish;
         public event StatusChangedHandler OnStatusChanged;
         public event MessageHandler OnMessage;
         #endregion
@@ -40,6 +39,7 @@ namespace Great.Utils
         private readonly Logger log = LogManager.GetLogger("GreatImport");
 
         private FDLManager FDLManager = SimpleIoc.Default.GetInstance<FDLManager>();
+        private volatile bool stopImport;
 
         //Access database fields
         private OleDbConnection connection;
@@ -60,14 +60,16 @@ namespace Great.Utils
 
         public string _sourceDatabase { get; private set; }
         public string _sourceFdlPath { get; private set; }
-        public string _sourceAccountPath { get; private set; }
+        public string _sourceEAPath { get; private set; }
         public string _destinationFdlPath { get; private set; }
-        public string _destinationAccountPath { get; private set; }
+        public string _destinationEAPath { get; private set; }
         #endregion
 
-        public void StartMigration(string greatPath)
+        public void StartImport(string greatPath)
         {
-            StatusChanged("Migration Started...");
+            stopImport = false;
+
+            StatusChanged("Import Started...");
 
             if (Directory.Exists(greatPath))
             {
@@ -80,7 +82,7 @@ namespace Great.Utils
                         bool start = true;
 
                         _sourceFdlPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 5).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
-                        _sourceAccountPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 8).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
+                        _sourceEAPath = dtConfiguration.AsEnumerable().Where(x => x.Field<byte>("Dbf_File") == 8).Select(x => x.Field<string>("Dbf_Path")).FirstOrDefault();
 
                         if (!Directory.Exists(_sourceFdlPath))
                         {
@@ -88,15 +90,15 @@ namespace Great.Utils
                             Error($"FDLs folder not found: {_sourceFdlPath}");
                         }
 
-                        if (!Directory.Exists(_sourceAccountPath))
+                        if (!Directory.Exists(_sourceEAPath))
                         {
                             start = false;
-                            Error($"Expense accounts folder not found: {_sourceAccountPath}");
+                            Error($"Expense accounts folder not found: {_sourceEAPath}");
                         }
 
                         if (start)
                         {
-                            thrd = new Thread(new ThreadStart(MigrationThread));
+                            thrd = new Thread(new ThreadStart(ImportThread));
                             thrd.Start();
                             return;
                         }
@@ -107,20 +109,43 @@ namespace Great.Utils
             else Error($"Wrong GREAT directory path: {greatPath}");
 
             StatusChanged("Import failed!");
+            Finished(false);
         }
 
-        private void MigrationThread()
+        public void CancelImport()
         {
-            StatusChanged("Importing Factories...");
+            stopImport = true;
+        }
+
+        private void ImportThread()
+        {
             CompileFactoriesTable();
-            StatusChanged("Importing PDF files...");
             CompileFdlTable();
-            StatusChanged("Importing Hours...");
+            CompileEATable();
             CompileHourTable();
-            StatusChanged("Importing Car Rents...");
             CompileCarRents();
-            StatusChanged("Operation Completed!");
-            Completed();
+
+            if (!stopImport)
+            {
+                StatusChanged("Operation Completed!");
+                Finished();
+            }
+            else
+            {
+                Message("Import stopped by user.");
+                Finished(false);
+            }
+        }
+
+        private void ClearCache()
+        {
+            dtConfiguration.Clear();
+            dtHours.Clear();
+            dtExpenseReview.Clear();
+            dtCars.Clear();
+            dtPlants.Clear();
+            dtSentFiles.Clear();
+            _factories.Clear();
         }
 
         private bool GetDataTables()
@@ -130,6 +155,8 @@ namespace Great.Utils
             try
             {
                 StatusChanged("Loading GREAT data...");
+
+                ClearCache();
 
                 Message("Open GREAT database");
                 connection = new OleDbConnection(string.Format(sAccessConnectionstring, _sourceDatabase));
@@ -182,8 +209,13 @@ namespace Great.Utils
 
         private bool CompileCarRents()
         {
-            IDictionary<string, long> _cars = new Dictionary<string, long>();
             bool result = false;
+            IDictionary<string, long> _cars = new Dictionary<string, long>();
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Car Rents...");
 
             try
             {
@@ -199,6 +231,9 @@ namespace Great.Utils
                     // Import Cars
                     foreach (DataRow r in cars)
                     {
+                        if (stopImport)
+                            break;
+
                         Car car = new Car();
 
                         try
@@ -224,6 +259,9 @@ namespace Great.Utils
                     // Import Rents
                     foreach (DataRow r in collection)
                     {
+                        if (stopImport)
+                            break;
+
                         string licensePlate = r.Field<string>("dbf_Targa");
                         if (_cars.ContainsKey(licensePlate))
                         {
@@ -268,6 +306,12 @@ namespace Great.Utils
         private bool CompileFactoriesTable()
         {
             bool result = false;
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Factories...");
+
             try
             {
                 using (DBArchive db = new DBArchive())
@@ -279,6 +323,9 @@ namespace Great.Utils
 
                     foreach (DataRow r in collection)
                     {
+                        if (stopImport)
+                            break;
+
                         Factory f = new Factory();
 
                         try
@@ -303,6 +350,8 @@ namespace Great.Utils
                             Error($"Failed to import factory {f.Name}. {ex}", ex);
                         }
                     }
+
+                    result = true;
                 }
             }
             catch (Exception ex)
@@ -318,6 +367,11 @@ namespace Great.Utils
         {
             bool result = false;
 
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Hours...");
+
             try
             {
                 using (DBArchive db = new DBArchive())
@@ -327,6 +381,9 @@ namespace Great.Utils
 
                     foreach (DataRow r in collection)
                     {
+                        if (stopImport)
+                            break;
+
                         Day d = new Day();
 
                         try
@@ -378,11 +435,16 @@ namespace Great.Utils
                             {
                                 FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdlId);
 
-                                if (!fdl.Factory.HasValue)
+                                if (fdl != null)
                                 {
-                                    fdl.Factory = _factories[factoryId.Value];
-                                    db.FDLs.AddOrUpdate(fdl);
+                                    if(!fdl.Factory.HasValue)
+                                    {
+                                        fdl.Factory = _factories[factoryId.Value];
+                                        db.FDLs.AddOrUpdate(fdl);
+                                    }
                                 }
+                                else
+                                    Warning($"The FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
                             }
 
                             short? factory2Id = r.Field<short?>("Dbf_SecondoImpianto");
@@ -392,11 +454,13 @@ namespace Great.Utils
                             {
                                 FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == fdl2Id);
 
-                                if (!fdl.Factory.HasValue)
+                                if (fdl != null && !fdl.Factory.HasValue)
                                 {
                                     fdl.Factory = _factories[factory2Id.Value];
                                     db.FDLs.AddOrUpdate(fdl);
                                 }
+                                else
+                                    Warning($"The second FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
                             }
 
                             Message($"Day {d.Date.ToShortDateString()} OK");
@@ -435,28 +499,44 @@ namespace Great.Utils
         private bool CompileFdlTable()
         {
             bool result = false;
-            
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing PDF files...");
+
             try
             {
                 IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
 
-                using (DBArchive db = new DBArchive())
+                foreach (FileInfo file in new DirectoryInfo(_sourceFdlPath).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
-                    foreach (string fdlPath in GetFileList(_sourceFdlPath))
+                    if (stopImport)
+                        break;
+
+                    FDL fdl = null;
+
+                    try
                     {
-                        FDL fdl = null;
+                        fdl = FDLManager.ImportFDLFromFile(file.FullName, false, false, false, true, true);
 
-                        try
+                        // try with XFA format
+                        if (fdl == null)
+                            fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, true, true);
+
+                        if (fdl != null)
                         {
-                            fdl = FDLManager.ImportFDLFromFile(fdlPath, false, false, false, true, true);
+                            File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
 
-                            if (fdl != null)
+                            DataRow sent = sentFiles.Where(f => !string.IsNullOrEmpty(f.Field<string>("Dbf_Foglio")) && FormatFDL(f.Field<string>("Dbf_Foglio")) == fdl.Id && (f.Field<int>("dbf_TipoInvio") == 2 || f.Field<int>("dbf_TipoInvio") == 4)).Select(f => f)
+                                                    .OrderBy(x => x.Field<int>("Dbf_NumeroInviiPrima") == 0)
+                                                    .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Impianto")))
+                                                    .ThenBy(x => string.IsNullOrEmpty(x.Field<string>("Dbf_Commessa")))
+                                                    .FirstOrDefault();
+
+                            if (sent != null)
                             {
-                                File.Copy(fdlPath, Path.Combine(ApplicationSettings.Directories.FDL, new FileInfo(fdlPath).Name), true);
-
-                                DataRow sent = sentFiles.Where(file => !string.IsNullOrEmpty(file.Field<string>("Dbf_Foglio")) && FormatFDL(file.Field<string>("Dbf_Foglio")) == fdl.Id && file.Field<int>("dbf_TipoInvio") == 2).Select(file => file).FirstOrDefault();
-
-                                if (sent != null)
+                                using (DBArchive db = new DBArchive())
                                 {
                                     // we must override recived fdl with the same of current dbcontext istance
                                     FDL currentFdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
@@ -471,24 +551,23 @@ namespace Great.Utils
                                             currentFdl.EStatus = EFDLStatus.Cancelled;
 
                                         db.FDLs.AddOrUpdate(currentFdl);
-                                        Message($"FDL {fdl.Id} OK");
+                                        db.SaveChanges();
+                                        Message($"FDL {currentFdl.Id} OK");
                                     }
                                     else
-                                        Error("MERDAAAAAAAAAAAAAAAAAAAAAAA");
+                                        Error("Missing FDL on database. Should never happen.");
                                 }
-                                else
-                                    Error("Missing sent status!");
                             }
                             else
-                                Error($"Failed to import FDL from file: {fdlPath}");
+                                Error("Missing FDL sent status!");
                         }
-                        catch (Exception ex)
-                        {
-                            Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
-                        }
+                        else
+                            Error($"Failed to import FDL from file: {file.FullName}");
                     }
-
-                    db.SaveChanges();
+                    catch (Exception ex)
+                    {
+                        Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
+                    }
                 }
 
                 result = true;
@@ -496,6 +575,75 @@ namespace Great.Utils
             catch (Exception ex)
             {
                 Error($"Failed importing FDLs. {ex}", ex);
+            }
+
+            return result;
+        }
+
+        private bool CompileEATable()
+        {
+            bool result = false;
+
+            if (stopImport)
+                return result;
+
+            StatusChanged("Importing Expense Account files...");
+
+            try
+            {
+                IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
+
+                foreach (FileInfo file in new DirectoryInfo(_sourceEAPath).GetFiles("*.pdf", SearchOption.AllDirectories))
+                {
+                    if (stopImport)
+                        break;
+
+                    ExpenseAccount ea = null;
+
+                    try
+                    {
+                        ea = FDLManager.ImportEAFromFile(file.FullName, false, false, true);
+
+                        if (ea != null)
+                        {
+                            File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.ExpenseAccount, file.Name), true);
+
+                            using (DBArchive db = new DBArchive())
+                            {
+                                // we must override recived EA with the same of current dbcontext istance
+                                ExpenseAccount currentEA = db.ExpenseAccounts.SingleOrDefault(e => e.Id == ea.Id);
+                                    
+                                if (currentEA != null)
+                                {
+                                    FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == currentEA.FDL);
+
+                                    if (fdl != null)
+                                        currentEA.Status = fdl.Status;
+                                    else
+                                        currentEA.EStatus = EFDLStatus.Accepted;
+
+                                    db.ExpenseAccounts.AddOrUpdate(currentEA);
+                                    db.SaveChanges();
+                                    Message($"Expense Account {currentEA.FDL} OK");
+                                }
+                                else
+                                    Error("Missing EA on database. Should never happen.");
+                            }
+                        }
+                        else
+                            Error($"Failed to import EA from file: {file.FullName}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Error($"Failed importing EA {ea?.FDL}. {ex}", ex);
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                Error($"Failed importing expense accounts. {ex}", ex);
             }
 
             return result;
@@ -513,25 +661,6 @@ namespace Great.Utils
                 return (Path.Combine(folder, "DB\\Archivio.mdb"));
         }
 
-        private string[] GetFileList(string sDir)
-        {
-            List<string> temp = new List<string>();
-            try
-            {
-                foreach (string d in Directory.GetDirectories(sDir))
-                {
-                    foreach (string f in Directory.GetFiles(d, "*.pdf"))
-                    {
-                        temp.Add(f);
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-            }
-            return temp.ToArray();
-        }
-
         public void Close()
         {
             connection.Dispose();
@@ -546,6 +675,12 @@ namespace Great.Utils
             log.Info(status);
         }
 
+        protected void Warning(string message)
+        {
+            OnMessage?.Invoke(this, new GreatImportArgs($"WARNING: {message}"));
+            log.Warn(message);
+        }
+
         protected void Error(string message, Exception ex = null)
         {
             OnMessage?.Invoke(this, new GreatImportArgs($"ERROR: {message}"));
@@ -558,9 +693,9 @@ namespace Great.Utils
             log.Debug(message);
         }
 
-        protected void Completed()
+        protected void Finished(bool isCompleted = true)
         {
-            OnCompleted?.Invoke(this);
+            OnFinish?.Invoke(this, isCompleted);
         }
         #endregion
     }

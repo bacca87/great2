@@ -1,14 +1,17 @@
-﻿using System;
+﻿using Great.Models.Interfaces;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Great.Models.Database
 {
-    public partial class FDL : INotifyPropertyChanged
+    public partial class FDL : INotifyPropertyChanged, IFDLFile
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [NotMapped]
+        public string FilePath { get { return ApplicationSettings.Directories.FDL + FileName; } }
         [NotMapped]
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
         [NotMapped]

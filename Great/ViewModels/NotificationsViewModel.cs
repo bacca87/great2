@@ -2,6 +2,7 @@
 using Great.Models;
 using Great.Models.Database;
 using Great.Utils.Messages;
+using Great.Views.Dialogs;
 using System;
 using System.Linq;
 using System.Windows;
@@ -93,6 +94,31 @@ namespace Great.ViewModels
             }
         }
 
+        /// <summary>
+        /// The <see cref="ExchangeStatus" /> property's name.
+        /// </summary>
+        private EExchangeStatus _exchangeStatus = 0;
+
+        /// <summary>
+        /// Sets and gets the ExchangeStatus property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public EExchangeStatus ExchangeStatus
+        {
+            get
+            {
+                return _exchangeStatus;
+            }
+
+            set
+            {
+                var oldValue = _exchangeStatus;
+                _exchangeStatus = value;
+
+                RaisePropertyChanged(nameof(ExchangeStatus), oldValue, value);
+            }
+        }
+
         private DBArchive _db;
         #endregion
 
@@ -118,6 +144,22 @@ namespace Great.ViewModels
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccount> x) => {
                 Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); }));
             });
+
+            MessengerInstance.Register<StatusChangeMessage<EExchangeStatus>>(this, OnExchangeStatusChange);
+        }
+
+        private void OnExchangeStatusChange(StatusChangeMessage<EExchangeStatus> x)
+        {
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => 
+            {
+                ExchangeStatus = x.Content;
+
+                if (ExchangeStatus == EExchangeStatus.LoginError)
+                {
+                    ExchangeLoginView loginView = new ExchangeLoginView();
+                    loginView.ShowDialog();
+                }
+            }));
         }
 
         //TODO: aggiungere le notifiche baloon

@@ -102,7 +102,8 @@
                     ItemsSource="{Binding Cars }" 
                     ItemTemplate="{StaticResource AutoCompleteLicensePlate}"
                     ValueMemberPath="LicensePlate"
-                    SelectedItem="{Binding SelectedCarClone, Mode=TwoWay}"/>
+                    SelectedItem="{Binding SelectedCarClone, Mode=TwoWay}"
+                    Text="{Binding SelectedCarClone.LicensePlate, Mode=TwoWay}"/>
 
 
                 <TextBlock>Brand</TextBlock>

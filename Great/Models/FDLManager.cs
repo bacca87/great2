@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Great.Models.Database;
+using Great.Models.Interfaces;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using iText.Forms;
@@ -36,9 +37,6 @@ namespace Great.Models
         private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
             ProcessMessage(e.Message);
-
-            //TEST
-            //ImportEAFromFile("c:\\notaspese.pdf", false, false);
         }
 
         public ExpenseAccount ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
@@ -51,6 +49,15 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
+
+                // only for testing purpose
+                //using (StreamWriter writetext = new StreamWriter("c:\\test.txt"))
+                //{
+                //    foreach (PdfFormField f in fields.Values)
+                //    {
+                //        writetext.WriteLine($"Field: {f.GetFieldName()} Value: {f.GetValueAsString()}");
+                //    }
+                //}
 
                 //General Info
                 ea.FDL = fields[ApplicationSettings.ExpenseAccount.FieldNames.FDLNumber].GetValueAsString();
@@ -65,7 +72,8 @@ namespace Great.Models
                 if (currency.Length > 4)
                     ea.Currency = currency.Substring(0, 4).Trim();
 
-                //TODO: importazione spese
+                string value = fields[ApplicationSettings.ExpenseAccount.FieldNames.Notes].GetValueAsString().Trim();
+                ea.Notes = value != string.Empty ? value : null;
 
                 using (DBArchive db = new DBArchive())
                 {
@@ -86,6 +94,50 @@ namespace Great.Models
                             {
                                 db.ExpenseAccounts.Add(ea);
                                 db.SaveChanges();
+
+                                #region Expenses
+                                if(!ExcludeExpense)
+                                {
+                                    foreach (var entry in ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix)
+                                    {
+                                        string type = fields[entry["Type"]].GetValueAsString();
+
+                                        if (string.IsNullOrEmpty(type))
+                                            continue;
+
+                                        var typeId = db.ExpenseTypes.Where(t => t.Description == type).Select(t => t.Id).FirstOrDefault();
+
+                                        if (typeId == 0)
+                                            continue;
+
+                                        Expense expense = new Expense()
+                                        {
+                                            ExpenseAccount = ea.Id,
+                                            Type = typeId
+                                        };
+
+                                        if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString(), out double amount))
+                                            expense.MondayAmount = amount;
+                                        if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString(), out amount))
+                                            expense.TuesdayAmount = amount;
+                                        if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString(), out amount))
+                                            expense.WednesdayAmount = amount;
+                                        if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString(), out amount))
+                                            expense.ThursdayAmount = amount;
+                                        if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString(), out amount))
+                                            expense.FridayAmount = amount;
+                                        if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString(), out amount))
+                                            expense.SaturdayAmount = amount;
+                                        if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString(), out amount))
+                                            expense.SundayAmount = amount;
+
+                                        db.Expenses.Add(expense);
+                                    }
+
+                                    db.SaveChanges();
+                                }
+                                #endregion
+
                                 transaction.Commit();
                                 Messenger.Default.Send(new NewItemMessage<ExpenseAccount>(this, ea));
                             }
@@ -134,7 +186,8 @@ namespace Great.Models
                 fdl.Id = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber);
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType).Contains(ApplicationSettings.FDL.FDL_Extra);
-                // TODO: Not yet implemented fields
+                
+                // Not yet implemented fields
                 //fdl.EResult = GetFDLResultFromString(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Result));
                 //fdl.OutwardCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardCar) != null;
                 //fdl.OutwardTaxi = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardTaxi) != null;
@@ -154,7 +207,7 @@ namespace Great.Models
                 //GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Cars1)
                 //GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Cars2)
 
-                // TODO: Not yet implemented fields
+                // Not yet implemented fields
                 //string value = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.PerformanceDescription).Trim();
                 //fdl.PerformanceDescription = value != string.Empty ? value : null;
 
@@ -441,7 +494,7 @@ namespace Great.Models
 
                                     if (address != string.Empty && customer != string.Empty)
                                     {
-                                        //TODO: migliorare riconoscimento stabilimenti 
+                                        //TODO: migliorare riconoscimento stabilimenti usando anche i codici ORDINE
                                         factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
                                         if (factory == null && UserSettings.Advanced.AutoAddFactories)
@@ -593,14 +646,23 @@ namespace Great.Models
             return fields;
         }
 
+        private Dictionary<string, string> GetAcroFormFields(IFDLFile file)
+        {
+            if (file is FDL)
+                return GetAcroFormFields(file as FDL);
+            else if (file is ExpenseAccount)
+                return GetAcroFormFields(file as ExpenseAccount);
+            else
+                return null;
+        }
+
         private Dictionary<string, string> GetAcroFormFields(FDL fdl)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            Timesheet timesheet = null;
 
             foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
-                timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
+                Timesheet timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
                 if (timesheet != null)
                 {
@@ -651,8 +713,8 @@ namespace Great.Models
                     break;
             }
 
-            fields.Add(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty);
-            fields.Add(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes != null ? fdl.Notes : string.Empty);
+            fields.Add(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes ?? string.Empty);
+            fields.Add(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes ?? string.Empty);
 
             return fields;
         }
@@ -660,87 +722,53 @@ namespace Great.Models
         private Dictionary<string, string> GetAcroFormFields(ExpenseAccount ea)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            ExpenseAccount expense = null;
 
-            //foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.ExpenseAccount.FieldNames.)
-            //{
-            //    timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
+            var expenses = ea.Expenses.ToList();
 
-            //    if (timesheet != null)
-            //    {
-            //        fields.Add(entry.Value["TravelStartTimeAM"], timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["WorkStartTimeAM"], timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["WorkEndTimeAM"], timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["TravelEndTimeAM"], timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["TravelStartTimePM"], timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["WorkStartTimePM"], timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["WorkEndTimePM"], timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //        fields.Add(entry.Value["TravelEndTimePM"], timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-            //    }
-            //}
+            for(int i = 0; i < expenses.Count() && i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
+            {
+                var entry = ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix[i];
 
-            ////TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
-            ////fields.Add(ApplicationSettings.FDL.FieldNames.Cars1,
-            ////fields.Add(ApplicationSettings.FDL.FieldNames.Cars2,
+                fields.Add(entry["Type"], expenses[i].ExpenseType.Description);
+                fields.Add(entry["Mon_Amount"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Tue_Amount"], expenses[i].TuesdayAmount.HasValue ? expenses[i].TuesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Wed_Amount"], expenses[i].WednesdayAmount.HasValue ? expenses[i].WednesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Thu_Amount"], expenses[i].ThursdayAmount.HasValue ? expenses[i].ThursdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
+                //fields.Add(entry["Total"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+            }
 
-            //if (fdl.OutwardCar)
-            //    fields.Add(ApplicationSettings.FDL.FieldNames.OutwardCar, "1");
-            //if (fdl.OutwardTaxi)
-            //    fields.Add(ApplicationSettings.FDL.FieldNames.OutwardTaxi, "1");
-            //if (fdl.OutwardAircraft)
-            //    fields.Add(ApplicationSettings.FDL.FieldNames.OutwardAircraft, "1");
+            if (ea.Currency1 != null)
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1.Description);
 
-            //if (fdl.ReturnCar)
-            //    fields.Add(ApplicationSettings.FDL.FieldNames.ReturnCar, "1");
-            //if (fdl.ReturnTaxi)
-            //    fields.Add(ApplicationSettings.FDL.FieldNames.ReturnTaxi, "1");
-            //if (fdl.ReturnAircraft)
-            //    fields.Add(ApplicationSettings.FDL.FieldNames.ReturnAircraft, "1");
-
-            //fields.Add(ApplicationSettings.FDL.FieldNames.PerformanceDescription, fdl.PerformanceDescription != null ? fdl.PerformanceDescription : string.Empty);
-            //fields.Add(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails, fdl.PerformanceDescriptionDetails != null ? fdl.PerformanceDescriptionDetails : string.Empty);
-
-            //switch (fdl.Result)
-            //{
-            //    case 1:
-            //        fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.Positive);
-            //        break;
-            //    case 2:
-            //        fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.Negative);
-            //        break;
-            //    case 3:
-            //        fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.WithReserve);
-            //        break;
-            //    default:
-            //        break;
-            //}
-
-            //fields.Add(ApplicationSettings.FDL.FieldNames.AssistantFinalTestResult, fdl.ResultNotes != null ? fdl.ResultNotes : string.Empty);
-            //fields.Add(ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes, fdl.Notes != null ? fdl.Notes : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Notes, ea.Notes ?? string.Empty);
 
             return fields;
         }
 
-        private void CompileFDL(FDL fdl, string fileName)
-        {
-            string source = ApplicationSettings.Directories.FDL + fdl.FileName;
+        private void Compile(IFDLFile file, string destFileName)
+        {  
             PdfDocument pdfDoc = null;
 
             try
             {
-                pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
+                pdfDoc = new PdfDocument(new PdfReader(file.FilePath), new PdfWriter(destFileName));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                // this is an hack for display fixed fields on saved read only FDL
-                foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                
+                if(file is FDL)
                 {
-                    if (fields.ContainsKey(entry.Key))
-                        fields[entry.Key].SetValue(entry.Value);
+                    // this is an hack for display fixed fields on saved read only FDL
+                    foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                    {
+                        if (fields.ContainsKey(entry.Key))
+                            fields[entry.Key].SetValue(entry.Value);
+                    }
                 }
-                //
 
-                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
+                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file))
                 {
                     if(fields.ContainsKey(entry.Key))
                         fields[entry.Key].SetValue(entry.Value);
@@ -756,34 +784,7 @@ namespace Great.Models
             }
         }
 
-        private void CompileEA(ExpenseAccount ea, string fileName)
-        {
-            string source = ApplicationSettings.Directories.ExpenseAccount + ea.FileName;
-            PdfDocument pdfDoc = null;
-
-            try
-            {
-                pdfDoc = new PdfDocument(new PdfReader(source), new PdfWriter(fileName));
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-                IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(ea))
-                {
-                    if (fields.ContainsKey(entry.Key))
-                        fields[entry.Key].SetValue(entry.Value);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debugger.Break();
-            }
-            finally
-            {
-                pdfDoc?.Close();
-            }
-        }
-
-        private void CompileXFDF(FDL fdl, string FDLfileName, string FDFFileName)
+        private void CompileXFDF(IFDLFile file, string FDLfileName, string FDFFileName)
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -806,7 +807,7 @@ namespace Great.Models
             xfdfNode.AppendChild(fNode);
             xfdfNode.AppendChild(fieldsNode);
 
-            foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
+            foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file))
             {
                 if (entry.Value == string.Empty)
                     continue;
@@ -826,104 +827,83 @@ namespace Great.Models
             
             xmlDoc.Save(FDFFileName);
         }
-        private void CompileXEA(ExpenseAccount ea, string FDLfileName, string FDFFileName)
+
+        public bool SendToSAP(IFDLFile file)
         {
-            //XmlDocument xmlDoc = new XmlDocument();
-
-            //XmlNode docNode = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
-            //XmlNode xfdfNode = xmlDoc.CreateElement("xfdf", "http://ns.adobe.com/xfdf/");
-            //XmlNode fNode = xmlDoc.CreateElement("f", xfdfNode.NamespaceURI);
-            //XmlNode fieldsNode = xmlDoc.CreateElement("fields", xfdfNode.NamespaceURI);
-
-            //XmlAttribute space = xmlDoc.CreateAttribute("xml:space");
-            //XmlAttribute href = xmlDoc.CreateAttribute("href");
-
-            //space.Value = "preserve";
-            //href.Value = FDLfileName;
-
-            //xfdfNode.Attributes.Append(space);
-            //fNode.Attributes.Append(href);
-
-            //xmlDoc.AppendChild(docNode);
-            //xmlDoc.AppendChild(xfdfNode);
-            //xfdfNode.AppendChild(fNode);
-            //xfdfNode.AppendChild(fieldsNode);
-
-            //foreach (KeyValuePair<string, string> entry in GetAcroFormFields(fdl))
-            //{
-            //    if (entry.Value == string.Empty)
-            //        continue;
-
-            //    XmlNode fieldNode = xmlDoc.CreateElement("field", xfdfNode.NamespaceURI);
-            //    XmlNode valueNode = xmlDoc.CreateElement("value", xfdfNode.NamespaceURI);
-
-            //    XmlAttribute name = xmlDoc.CreateAttribute("name");
-            //    name.Value = entry.Key;
-
-            //    fieldNode.Attributes.Append(name);
-            //    valueNode.InnerText = entry.Value;
-
-            //    fieldNode.AppendChild(valueNode);
-            //    fieldsNode.AppendChild(fieldNode);
-            //}
-
-            //xmlDoc.Save(FDFFileName);
-        }
-
-        public bool SendToSAP(FDL fdl)
-        {
-            if (fdl == null)
+            if (file == null)
                 return false;
 
             using (new WaitCursor())
             {
-                string filePath = Path.GetTempPath() + fdl.FileName;
+                string filePath = Path.GetTempPath() + file.FileName;
 
-                CompileFDL(fdl, filePath);
+                Compile(file, filePath);
 
                 EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
-                message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
                 message.Attachments.Add(filePath);
 
-                using (DBArchive db = new DBArchive())
+                if (file is FDL)
                 {
-                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Recipient);
+                    FDL fdl = file as FDL;
 
-                    foreach(var r in recipients)
-                        message.CcRecipients.Add(r);
+                    message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+                    message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
+
+                    using (DBArchive db = new DBArchive())
+                    {
+                        var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
+
+                        foreach (var r in recipients)
+                            message.CcRecipients.Add(r);
+                    }
                 }
+                else if (file is ExpenseAccount)
+                {
+                    ExpenseAccount ea = file as ExpenseAccount;
+                    message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+                }
+                else
+                    return false; // should never happen
 
                 exchangeProvider.SendEmail(message);
 
-                fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                file.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
             }
         }
 
-        public bool SendToSAP(ExpenseAccount ea)
+        public bool SendTo(string address, IFDLFile file)
         {
-            if (ea == null)
-            return false;
+            if (file == null)
+                return false;
 
             using (new WaitCursor())
             {
-                string filePath = Path.GetTempPath() + ea.FileName;
+                string filePath = Path.GetTempPath() + file.FileName;
 
-                CompileEA(ea, filePath);
+                Compile(file, filePath);
 
                 EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"Expense Account {ea.Id}";
-                message.Importance = Importance.High;
-                message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
-               // message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
+
+                if (file is FDL)
+                {
+                    FDL fdl = file as FDL;
+                    message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+                }
+                else if (file is ExpenseAccount)
+                {
+                    ExpenseAccount ea = file as ExpenseAccount;
+                    message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+                }
+                else
+                    return false; //should never happen
+
+                message.ToRecipients.Add(address);
                 message.Attachments.Add(filePath);
 
                 exchangeProvider.SendEmail(message);
-
-                ea.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
             }
         }
@@ -956,52 +936,27 @@ namespace Great.Models
             }
         }
 
-        public bool SaveFDL(FDL fdl, string filePath)
+        public bool SaveAs(IFDLFile file, string filePath)
         {
-            if (fdl == null || filePath == string.Empty)
+            if (file == null || filePath == string.Empty)
                 return false;
 
             using (new WaitCursor())
             {
-                CompileFDL(fdl, filePath);
+                Compile(file, filePath);
                 return true;
             }
         }
 
-        public bool SaveEA(ExpenseAccount ea, string filePath)
+        public bool SaveXFDF(IFDLFile file, string filePath)
         {
-            if (ea == null || filePath == string.Empty)
+            if (file == null || filePath == string.Empty)
                 return false;
 
             using (new WaitCursor())
             {
-                CompileEA(ea, filePath);
-                return true;
-            }
-        }
-
-        public bool SaveXFDF(FDL fdl, string filePath)
-        {
-            if (fdl == null || filePath == string.Empty)
-                return false;
-
-            using (new WaitCursor())
-            {
-                File.Copy(ApplicationSettings.Directories.FDL + fdl.FileName, Path.GetDirectoryName(filePath) + "\\" + fdl.FileName, true);
-                CompileXFDF(fdl, Path.GetDirectoryName(filePath) + "\\" + fdl.FileName, filePath);
-                return true;
-            }
-        }
-
-        public bool SaveXEA(ExpenseAccount ea, string filePath)
-        {
-            if (ea == null || filePath == string.Empty)
-                return false;
-
-            using (new WaitCursor())
-            {
-                File.Copy(ApplicationSettings.Directories.ExpenseAccount + ea.FileName, Path.GetDirectoryName(filePath) + "\\" + ea.FileName, true);
-                CompileXEA(ea, Path.GetDirectoryName(filePath) + "\\" + ea.FileName, filePath);
+                File.Copy(file.FilePath, Path.GetDirectoryName(filePath) + "\\" + file.FileName, true);
+                CompileXFDF(file, Path.GetDirectoryName(filePath) + "\\" + file.FileName, filePath);
                 return true;
             }
         }
@@ -1036,6 +991,19 @@ namespace Great.Models
                             rejected.LastError = message.Body?.Text;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDL>(this, rejected));
+                        }
+                    }
+                    break;
+                case EMessageType.EA_Accepted:
+                    using (DBArchive db = new DBArchive())
+                    {
+                        ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+                        if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
+                        {
+                            accepted.EStatus = EFDLStatus.Accepted;
+                            accepted.LastError = null;
+                            db.SaveChanges();
+                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, accepted));
                         }
                     }
                     break;
@@ -1096,9 +1064,11 @@ namespace Great.Models
                 return EMessageType.FDL_Accepted;
             else if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
                 return EMessageType.FDL_Rejected;
-            else if (subject.Contains(ApplicationSettings.FDL.EA_Rejected))
+            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
+                return EMessageType.EA_Accepted;
+            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
                 return EMessageType.EA_Rejected;
-            else if (subject.Contains(ApplicationSettings.FDL.EA_RejectedResubmission))
+            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
                 return EMessageType.EA_RejectedResubmission;
             else if (subject.Contains(ApplicationSettings.FDL.Reminder))
                 return EMessageType.Reminder;
@@ -1150,7 +1120,7 @@ namespace Great.Models
                 {
                     foreach (Attachment attachment in message.Attachments)
                     {
-                        if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                        if (!(attachment is FileAttachment))
                             continue;
 
                         EAttachmentType attType = GetAttachmentType(attachment.Name);
@@ -1170,7 +1140,7 @@ namespace Great.Models
 
                 if (FDL == string.Empty)
                 {
-                    // NB In case of missing attachments, there might be an inconrrect result if you recive the message regarding an FDL of the previous year in the new year.
+                    // NB In case of missing attachments, there might be an incorrect result if you recive the message regarding an FDL of the previous year in the new year.
                     // there are no solutions for this kind of issue.                    
 
                     switch (type)
@@ -1183,7 +1153,10 @@ namespace Great.Models
                             if (match.Success || match.Groups.Count > 0)
                                 FDL = $"{message.DateTimeSent.Year}/{match.Groups[1].Value}";
                             break;
+                        case EMessageType.EA_Accepted:
                         case EMessageType.EA_Rejected:
+                            // FDL XXXXX NOTA SPESE ACCETTATA
+                            //  0    1    2     3       4
                             // FDL XXXXX NOTA SPESE RIFIUTATA
                             //  0    1    2     3       4
                             words = message.Subject.Split(' ');
@@ -1235,6 +1208,7 @@ namespace Great.Models
         Unknown,
         FDL_Accepted,
         FDL_Rejected,
+        EA_Accepted,
         EA_Rejected,
         EA_RejectedResubmission,
         FDL_EA_New,

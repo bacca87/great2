@@ -1,0 +1,32 @@
+﻿<Page x:Class="Great.Views.Pages.StatisticsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      xmlns:local="clr-namespace:Great.Views.Pages"
+      mc:Ignorable="d"
+      DataContext="{Binding Statistics, Source={StaticResource Locator}}"
+      Style="{DynamicResource MetroPage}"
+      Title="Statistics">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <lvc:PieChart Grid.Row="0" Grid.Column="0" LegendLocation="Right" Hoverable="False">
+            <!--<lvc:PieChart.Series>
+                <lvc:PieSeries Title="Maria" Values="3" DataLabels="True"
+                               LabelPoint="{Binding PointLabel}"/>
+                <lvc:PieSeries Title="Charles" Values="4" DataLabels="True" 
+                               LabelPoint="{Binding PointLabel}"/>
+                <lvc:PieSeries Title="Frida" Values="6" DataLabels="True" 
+                               LabelPoint="{Binding PointLabel}"/>
+                <lvc:PieSeries Title="Frederic" Values="2" DataLabels="True" 
+                               LabelPoint="{Binding PointLabel}"/>
+            </lvc:PieChart.Series>-->
+        </lvc:PieChart>
+    </Grid>
+</Page>

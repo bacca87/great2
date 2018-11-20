@@ -1,8 +1,11 @@
-﻿using Microsoft.Exchange.WebServices.Data;
+﻿using GalaSoft.MvvmLight.Messaging;
+using Great.Utils.Messages;
+using Microsoft.Exchange.WebServices.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mail;
 using System.Threading;
 using static Great.Models.ExchangeTraceListener;
 
@@ -27,6 +30,7 @@ namespace Great.Models
         private ConcurrentQueue<EmailMessageDTO> emailQueue = new ConcurrentQueue<EmailMessageDTO>();
 
         private EExchangeStatus exchangeStatus = EExchangeStatus.Offline;
+
         public EExchangeStatus ExchangeStatus
         {
             get
@@ -41,6 +45,7 @@ namespace Great.Models
                 lock (this)
                 {
                     exchangeStatus = value;
+                    Messenger.Default.Send(new StatusChangeMessage<EExchangeStatus>(this, exchangeStatus));
                 }
             }
         }
@@ -394,6 +399,22 @@ namespace Great.Models
         public void SendEmail(EmailMessageDTO message)
         {
             emailQueue.Enqueue(message);
+        }
+
+        public static bool CheckEmailAddress(string address, out string error)
+        {
+            error = string.Empty;
+
+            try
+            {
+                MailAddress m = new MailAddress(address);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
         }
         #endregion
     }

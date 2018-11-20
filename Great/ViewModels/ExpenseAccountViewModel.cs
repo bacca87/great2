@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.IO;
@@ -108,7 +109,7 @@ namespace Great.ViewModels
 
                 RefreshExpenses();
 
-                //SelectedEAClone = _selectedEA?.Clone();
+                SelectedEAClone = _selectedEA?.Clone();
 
                 if (_selectedEA != null)
                 {
@@ -196,7 +197,41 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="ExpenseTypes" /> property's name.
         /// </summary>
-        public ObservableCollection<ExpenseType> ExpenseTypes { get; set; }        
+        public ObservableCollection<ExpenseType> ExpenseTypes { get; set; }
+
+        /// <summary>
+        /// The <see cref="Currencies" /> property's name.
+        /// </summary>
+        public ObservableCollection<Currency> Currencies { get; set; }
+
+        /// <summary>
+        /// The <see cref="MRUEmailRecipients" /> property's name.
+        /// </summary>
+        public MRUCollection<string> MRUEmailRecipients { get; set; }
+
+        /// <summary>
+        /// The <see cref="SendToEmailRecipient" /> property's name.
+        /// </summary>
+        private string _sendToEmailRecipient;
+
+        /// <summary>
+        /// Sets and gets the SendToEmailRecipient property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public string SendToEmailRecipient
+        {
+            get
+            {
+                return _sendToEmailRecipient;
+            }
+
+            set
+            {
+                var oldValue = _sendToEmailRecipient;
+                _sendToEmailRecipient = value;
+                RaisePropertyChanged(nameof(SendToEmailRecipient), oldValue, value);
+            }
+        }
         #endregion
 
         #region Commands Definitions
@@ -204,7 +239,7 @@ namespace Great.ViewModels
         public RelayCommand<ExpenseAccount> SaveCommand { get; set; }
 
         public RelayCommand<ExpenseAccount> SendToSAPCommand { get; set; }
-        public RelayCommand<ExpenseAccount> SendByEmailCommand { get; set; }
+        public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccount> SaveAsCommand { get; set; }
         public RelayCommand<ExpenseAccount> OpenCommand { get; set; }
         public RelayCommand<ExpenseAccount> MarkAsAcceptedCommand { get; set; }
@@ -223,18 +258,19 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<ExpenseAccount>(SaveEA, (ExpenseAccount ea) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<ExpenseAccount>(SendToSAP);
-            SendByEmailCommand = new RelayCommand<ExpenseAccount>(SendByEmail);
+            SendByEmailCommand = new RelayCommand<string>(SendByEmail);
             SaveAsCommand = new RelayCommand<ExpenseAccount>(SaveAs);
             OpenCommand = new RelayCommand<ExpenseAccount>(Open);
-            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccount>(MarkAsAccepted);
-            MarkAsCancelledCommand = new RelayCommand<ExpenseAccount>(MarkAsCancelled);
+            //MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
+            //MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
 
             ExpenseTypes = new ObservableCollection<ExpenseType>(_db.ExpenseTypes);
             ExpenseAccounts = new ObservableCollectionEx<ExpenseAccount>(_db.ExpenseAccounts);
+            Currencies = new ObservableCollection<Currency>(_db.Currencies);
 
             ExpenseAccounts.ItemPropertyChanged += ExpenseAccounts_ItemPropertyChanged;
 
-            MessengerInstance.Register<NewItemMessage<Expense>>(this, NewEA);
+            MessengerInstance.Register<NewItemMessage<ExpenseAccount>>(this, NewEA);
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccount>>(this, EAChanged);
         }
 
@@ -247,12 +283,12 @@ namespace Great.ViewModels
         private void RefreshExpenses()
         {
             if (SelectedEA != null && SelectedEA.Expenses != null)
-                Expenses = SelectedEA.Expenses.ToList();//.OrderBy(t => t.Date).ToList();
+                Expenses = SelectedEA.Expenses.Select(e => e.Clone()).Select(c => { c.ExpenseType = ExpenseTypes.SingleOrDefault(t => t.Id == c.Type); return c; }).ToList();
             else
                 Expenses = null;
         }
 
-        public void NewEA(NewItemMessage<Expense> item)
+        public void NewEA(NewItemMessage<ExpenseAccount> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -277,76 +313,13 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        //_db.ExpenseAccounts.AddOrUpdate(item.Content);
-                        //_db.SaveChanges();
+                        _db.ExpenseAccounts.AddOrUpdate(item.Content);
+                        _db.SaveChanges();
 
-                        //ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
+                        ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
                     }
                 })
             );
-        }
-
-        public void SendToSAP(ExpenseAccount ea)
-        {
-            if (ea.EStatus == EFDLStatus.Waiting &&
-                MessageBox.Show("The selected Expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                return;
-
-            _fdlManager.SendToSAP(ea);
-            _db.SaveChanges();
-        }
-
-        public void SendByEmail(ExpenseAccount ea)
-        {
-            //TODO
-        }
-
-        public void SaveAs(ExpenseAccount ea)
-        {
-            if (ea == null)
-                return;
-
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Title = "Save Expense account As...";
-            dlg.FileName = ea.FileName;
-            dlg.DefaultExt = ".pdf";
-            dlg.Filter = "ExpenseAccount (.pdf) | *.pdf";
-            dlg.AddExtension = true;
-            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            if (dlg.ShowDialog() == true)
-                _fdlManager.SaveEA(ea, dlg.FileName);
-        }
-
-        public void Open(ExpenseAccount ea)
-        {
-            if (ea == null)
-                return;
-
-            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(ea.FileName) + ".XFDF";
-
-            _fdlManager.SaveXEA(ea, fileName);
-            Process.Start(fileName);
-        }
-
-        public void MarkAsAccepted(ExpenseAccount ea)
-        {
-            if (MessageBox.Show("Are you sure to mark as accepted the selected Expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                return;
-
-            ea.EStatus = EFDLStatus.Accepted;
-            _db.SaveChanges();
-        }
-
-        public void MarkAsCancelled(ExpenseAccount ea)
-        {
-            if (MessageBox.Show("Are you sure to mark as Cancelled the selected Expense account ?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                return;
-
-            ea.EStatus = EFDLStatus.Cancelled;
-            _db.SaveChanges();
-
-
         }
 
         public void ClearEA()
@@ -359,8 +332,94 @@ namespace Great.ViewModels
             if (ea == null)
                 return;
 
+            if (string.IsNullOrEmpty(ea.Currency))
+            {
+                MessageBox.Show("Please select the currency before continue. Operation cancelled.", "Invalid Expense Account", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            foreach (var expense in Expenses)
+            {
+                expense.ExpenseAccount = ea.Id;
+                _db.Expenses.AddOrUpdate(expense);
+            }
+
             _db.ExpenseAccounts.AddOrUpdate(ea);
+
+            if (_db.SaveChanges() > 0)
+                SelectedEA?.NotifyFDLPropertiesChanged();
+        }
+
+        public void SendToSAP(ExpenseAccount ea)
+        {
+            if (ea.EStatus == EFDLStatus.Waiting &&
+                MessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            _fdlManager.SendToSAP(ea);
             _db.SaveChanges();
+        }
+
+        public void SendByEmail(string address)
+        {
+            string error;
+
+            if (!MSExchangeProvider.CheckEmailAddress(address, out error))
+            {
+                MessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // reset input box
+            SendToEmailRecipient = string.Empty;
+
+            MRUEmailRecipients.Add(address);
+
+            // save to user setting the MRU recipients
+            StringCollection collection = new StringCollection();
+            collection.AddRange(MRUEmailRecipients.ToArray());
+            UserSettings.Email.Recipients.MRU = collection;
+
+            _fdlManager.SendTo(address, SelectedEA);
+        }
+
+        public void SaveAs(ExpenseAccount ea)
+        {
+            if (ea == null)
+                return;
+
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Title = "Save Expense Account As...";
+            dlg.FileName = ea.FileName;
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "EA (.pdf) | *.pdf";
+            dlg.AddExtension = true;
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            if (dlg.ShowDialog() == true)
+                _fdlManager.SaveAs(ea, dlg.FileName);
+        }
+
+        public void Open(ExpenseAccount ea)
+        {
+            if (ea == null)
+                return;
+
+            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(ea.FileName) + ".XFDF";
+
+            _fdlManager.SaveXFDF(ea, fileName);
+            Process.Start(fileName);
+        }
+
+        public void MarkAsAccepted(ExpenseAccount ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.EStatus = EFDLStatus.Accepted;
+            _db.SaveChanges();
+
+            ea.NotifyFDLPropertiesChanged();
         }
     }
 }

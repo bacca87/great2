@@ -1,5 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Great.Views.Dialogs
+namespace Great.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for OrderRecipientsView.xaml
+    /// Interaction logic for Statistics.xaml
     /// </summary>
-    public partial class OrderRecipientsView : MetroWindow
+    public partial class StatisticsView : Page
     {
-        public OrderRecipientsView()
+        public StatisticsView()
         {
             InitializeComponent();
-            Owner = Application.Current.MainWindow;
         }
     }
 }

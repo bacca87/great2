@@ -24,13 +24,13 @@ namespace Great.Models.Database
         [NotMapped]
         public int WeekNr { get { return Date.WeekNr(); } }
         [NotMapped]
-        public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, CountryCode.IT); } }
+        public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country); } }
         [NotMapped]
         public string HolidayLocalName
         {
             get
             {
-                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(CountryCode.IT, Date, Date);
+                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(UserSettings.Localization.Country, Date, Date);
                 return holidays?.Count() > 0 ? holidays.FirstOrDefault().LocalName : string.Empty;
             }
         }
@@ -188,21 +188,24 @@ namespace Great.Models.Database
             {
                 float? overtime34 = null;
 
-                if (Date.DayOfWeek == DayOfWeek.Saturday)
+                if (!IsHoliday)
                 {
-                    if (TotalTime.HasValue && TotalTime.Value > 4)
-                        overtime34 = 4;
-                    else
-                        overtime34 = TotalTime;
-                }
-                else
-                {
-                    if (TotalTime.HasValue && TotalTime.Value > 8)
+                    if (Date.DayOfWeek == DayOfWeek.Saturday)
                     {
-                        if (TotalTime.Value >= 10)
-                            overtime34 = 2;
+                        if (TotalTime.HasValue && TotalTime.Value > 4)
+                            overtime34 = 4;
                         else
-                            overtime34 = TotalTime.Value - 8;
+                            overtime34 = TotalTime;
+                    }
+                    else
+                    {
+                        if (TotalTime.HasValue && TotalTime.Value > 8)
+                        {
+                            if (TotalTime.Value >= 10)
+                                overtime34 = 2;
+                            else
+                                overtime34 = TotalTime.Value - 8;
+                        }
                     }
                 }
 
@@ -216,17 +219,21 @@ namespace Great.Models.Database
             get
             {
                 float? overtime35 = null;
-                TimePeriodSubtractor<TimeRange> subtractor = new TimePeriodSubtractor<TimeRange>();
 
-                TimePeriodCollection overtime35period = new TimePeriodCollection() {
-                    new TimeRange(Date, Date + new TimeSpan(6, 0, 0)),
-                    new TimeRange(Date + new TimeSpan(22, 0, 0), Date.AddDays(1) + new TimeSpan(6, 0, 0))
-                };
-
-                if (TimePeriods != null)
+                if (!IsHoliday)
                 {
-                    ITimePeriodCollection difference = subtractor.SubtractPeriods(overtime35period, TimePeriods);
-                    overtime35 = subtractor.SubtractPeriods(overtime35period, difference).GetRoundedTotalDuration();
+                    TimePeriodSubtractor<TimeRange> subtractor = new TimePeriodSubtractor<TimeRange>();
+
+                    TimePeriodCollection overtime35period = new TimePeriodCollection() {
+                        new TimeRange(Date, Date + new TimeSpan(6, 0, 0)),
+                        new TimeRange(Date + new TimeSpan(22, 0, 0), Date.AddDays(1) + new TimeSpan(6, 0, 0))
+                    };
+
+                    if (TimePeriods != null)
+                    {
+                        ITimePeriodCollection difference = subtractor.SubtractPeriods(overtime35period, TimePeriods);
+                        overtime35 = subtractor.SubtractPeriods(overtime35period, difference).GetRoundedTotalDuration();
+                    }
                 }
 
                 return overtime35;
@@ -240,15 +247,18 @@ namespace Great.Models.Database
             {
                 float? overtime50 = null;
 
-                if (Date.DayOfWeek == DayOfWeek.Saturday && TotalTime.HasValue && TotalTime.Value > 4)
+                if(!IsHoliday)
                 {
-                    overtime50 = TotalTime - 4;
-                }
-                else
-                {
-                    if (TotalTime.HasValue && TotalTime.Value > 10)
+                    if (Date.DayOfWeek == DayOfWeek.Saturday && TotalTime.HasValue && TotalTime.Value > 4)
                     {
-                        overtime50 = TotalTime.Value - 10;
+                        overtime50 = TotalTime - 4;
+                    }
+                    else
+                    {
+                        if (TotalTime.HasValue && TotalTime.Value > 10)
+                        {
+                            overtime50 = TotalTime.Value - 10;
+                        }
                     }
                 }
 
@@ -263,7 +273,7 @@ namespace Great.Models.Database
             {
                 float? overtime100 = null;
 
-                if (Date.DayOfWeek == DayOfWeek.Sunday) //TODO: aggiungere festivi
+                if (Date.DayOfWeek == DayOfWeek.Sunday || IsHoliday)
                     overtime100 = TotalTime;
 
                 return overtime100;
