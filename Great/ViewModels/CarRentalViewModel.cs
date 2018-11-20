@@ -131,7 +131,6 @@ namespace Great.ViewModels
             {
 
                 var oldValue = _selectedRent;
-
                 _selectedRent = value;
 
                 SelectedRentClone = _selectedRent?.Clone();
@@ -140,6 +139,7 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(SelectedRent), oldValue, value);
 
                 ShowContextualMenu = false;
+
             }
         }
 
@@ -165,7 +165,6 @@ namespace Great.ViewModels
                     SelectedCarClone = value.Car1;
                     RaisePropertyChanged(nameof(SelectedRentClone), oldValue, value);
                 }
-
             }
         }
 
@@ -190,10 +189,7 @@ namespace Great.ViewModels
                     _selectedCarClone = value;
                     RaisePropertyChanged(nameof(SelectedCarClone), oldValue, value);
                 }
-                //else
-                //{
-                //    SelectedCarClone = new Car();
-                //}
+
             }
         }
 
@@ -203,6 +199,7 @@ namespace Great.ViewModels
         /// </summary>
         public ObservableCollectionEx<CarRentalCompany> RentalCompanies { get; set; }
 
+        #region Filter properties
         /// <summary>
         /// The <see cref="RentStartDateFilter" /> property's name.
         /// </summary>
@@ -275,6 +272,7 @@ namespace Great.ViewModels
             set => _licensePlateFilter = value;
         }
 
+        #endregion
 
         /// <summary>
         /// The <see cref="Cars" /> property's name.
@@ -314,12 +312,19 @@ namespace Great.ViewModels
             Cars = new ObservableCollectionEx<Car>(_db.Cars);
             RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(_db.CarRentalCompanies);
             SelectedCarClone = new Car();
+            SelectedRentClone = new CarRentalHistory();
 
         }
 
         private void RemoveFiltersCommand()
         {
-            throw new NotImplementedException();
+            FilteredRentals = Rentals;
+            LicencePlateFilter = null;
+            ModelBrandFilter =null;
+            ModelBrandFilter =null;
+            RentStartDateFilter =null;
+            RentEndDateFilter= null;
+
         }
 
         private void ApplyFiltersCommand()
@@ -334,14 +339,14 @@ namespace Great.ViewModels
                 FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.RentEndDate >= RentEndDateFilter.Value));
             }
 
-            if (ModelBrandFilter != string.Empty)
+            if (ModelBrandFilter!= null && ModelBrandFilter != string.Empty)
             {
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Model.Contains(ModelBrandFilter)));
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Brand.Contains(ModelBrandFilter)));
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Model.ToUpper().Contains(ModelBrandFilter.ToUpper())));
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Brand.ToUpper().Contains(ModelBrandFilter.ToUpper())));
             }
-            if (LicencePlateFilter != string.Empty)
+            if (LicencePlateFilter != null && LicencePlateFilter != string.Empty)
             {
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.LicensePlate.Contains(_licensePlateFilter)));
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.LicensePlate.ToUpper().Contains(_licensePlateFilter.ToUpper())));
             }
         }
 
@@ -355,20 +360,21 @@ namespace Great.ViewModels
         {
             if (MessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
-                var rentalsWithSameCar = _db.CarRentalHistories.Where(c => c.Car == cr.Car);
+                var rentalsWithSameCar = _db.CarRentalHistories.Where(c => c.Car == cr.Car && c.Id!= cr.Id).ToList();
 
                 if (rentalsWithSameCar.Count() == 0)
                 {
                     var car = _db.Cars.Where(c => c.Id == cr.Car).FirstOrDefault();
                     _db.Cars.Remove(car);
                     Cars.Remove(car);
+
                 }
 
                 _db.CarRentalHistories.Remove(cr);
-                Rentals.Remove(cr);
 
                 if (_db.SaveChanges() > 0)
                 {
+                    Rentals.Remove(cr);
                     SelectedRent?.NotifyCarRentalHistoryPropertiesChanged();
                 }
             }
@@ -377,6 +383,7 @@ namespace Great.ViewModels
 
         public void SaveRent(CarRentalHistory rc)
         {
+
             if (rc == null || SelectedCarClone == null)
             {
                 return;
@@ -398,10 +405,8 @@ namespace Great.ViewModels
             rc.Car = SelectedCarClone.Id;
             _db.CarRentalHistories.AddOrUpdate(rc);
 
-
-            Rentals.Add(rc);
-            FilteredRentals.Add(rc);
-
+            if (Rentals.Where(x => x.Id == rc.Id).Count() == 0)
+                Rentals.Add(rc);
 
             if (_db.SaveChanges() > 0)
             {

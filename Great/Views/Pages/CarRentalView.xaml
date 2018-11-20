@@ -148,7 +148,7 @@
                 <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
 
                 <TextBlock>Notes</TextBlock>
-                <TextBox Text="{Binding Path=SelectedRentClone, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedRentClone.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
             </StackPanel>
 
 
