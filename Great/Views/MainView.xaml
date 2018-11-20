@@ -297,17 +297,17 @@
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
-                         <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-add.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Delete Rent" Text="Delete Selected Rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    
+
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Filter">
@@ -323,42 +323,19 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height ="Auto"></RowDefinition>
                             <RowDefinition Height ="Auto"></RowDefinition>
-
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Text="Start Date"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Date"/>
+                            <DatePicker Grid.Row="0" Grid.Column="1" DisplayDate="{Binding RentStartDateFilter}" SelectedDate="{Binding RentStartDateFilter}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="End Date"/>
+                            <DatePicker Grid.Row="1" Grid.Column="1" DisplayDate="{Binding RentEndDateFilter}" SelectedDate="{Binding RentEndDateFilter}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Brand"/>
+                            <TextBox Grid.Row="0" Width="100" Grid.Column="3" Text="{Binding ModelBrandFilter}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="License Plate"/>
+                            <TextBox Grid.Row="1" Width="100" Grid.Column="3" Text="{Binding LicencePlateFilter}"/>
 
-                        <DatePicker Grid.Row="0"
-                                    Grid.Column="1"/>
-
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="0"
-
-                                   Text="End Date"/>
-
-                        <DatePicker Grid.Row="1"
-                                    Grid.Column="1"/>
-
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="2"
-                                   Text="Brand"/>
-
-                        <TextBox Grid.Row="0"
-                                 Width="100"
-                                 Grid.Column="3"/>
-
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="2"
-                                   Text="Model"/>
-
-                        <TextBox Grid.Row="1"
-                                 Width="100"
-                                 Grid.Column="3"/>
-
-                        <Button Margin="2" Content="Apply Filter" Command="{Binding ApplyFilter}" Grid.Row="0" Grid.Column="4" />
-                        <Button Margin="2" Content="Clear Filter" Command="{Binding ClearFilter}" Grid.Row="1" Grid.Column="4" />
+                            <Button Margin="2" Content="Apply Filter" Command="{Binding ApplyFilters}" Grid.Row="0" Grid.Column="4" />
+                            <Button Margin="2" Content="Clear Filter" Command="{Binding ClearFilters}" Grid.Row="1" Grid.Column="4" />
 
                     </Grid>
                 </Fluent:RibbonGroupBox>
