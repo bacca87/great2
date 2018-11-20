@@ -296,34 +296,32 @@
                     </Fluent:Button>
 
                 </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Filter">
+                <Fluent:RibbonGroupBox Header="Filters">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height ="Auto"></RowDefinition>
-                            <RowDefinition Height ="Auto"></RowDefinition>
+                            <RowDefinition Height ="Auto"/>
+                            <RowDefinition Height ="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Date"/>
-                        <DatePicker Grid.Row="0" Grid.Column="1" DisplayDate="{Binding RentStartDateFilter}" SelectedDate="{Binding RentStartDateFilter}"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="End Date"/>
-                        <DatePicker Grid.Row="1" Grid.Column="1" DisplayDate="{Binding RentEndDateFilter}" SelectedDate="{Binding RentEndDateFilter}"/>
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Brand"/>
-                        <TextBox Grid.Row="0" Width="100" Grid.Column="3" Text="{Binding ModelBrandFilter}"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="License Plate"/>
-                        <TextBox Grid.Row="1" Width="100" Grid.Column="3" Text="{Binding LicencePlateFilter}"/>
-
-                        <Button Margin="2" Content="Apply Filter" Command="{Binding ApplyFilters}" Grid.Row="0" Grid.Column="4" />
-                        <Button Margin="2" Content="Clear Filter" Command="{Binding RemoveFilters}" Grid.Row="1" Grid.Column="4" />
-
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                        <DatePicker Grid.Row="0" Grid.Column="1" DisplayDate="{Binding RentStartDateFilter}" SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="End Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                        <DatePicker Grid.Row="1" Grid.Column="1" DisplayDate="{Binding RentEndDateFilter}" SelectedDate="{Binding RentEndDateFilter}" Margin="5,3,5,5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Brand:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                        <Fluent:TextBox Grid.Row="0" Grid.Column="3" Width="100" Text="{Binding ModelBrandFilter}" Margin="0,3,3,5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="License Plate:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                        <Fluent:TextBox Grid.Row="1" Grid.Column="3" Width="100"  Text="{Binding LicencePlateFilter}" Margin="0,3,3,5"/>
                     </Grid>
+                    <Fluent:Button Header="Apply Filter" Command="{Binding ApplyFilters}" SizeDefinition="Middle"/>
+                    <Fluent:Button Header="Clear Filter" Command="{Binding RemoveFilters}" SizeDefinition="Middle"/>
                 </Fluent:RibbonGroupBox>
 
             </Fluent:RibbonTabItem>
@@ -361,7 +359,7 @@
                                 </Fluent:Button>
                             </StackPanel>
                             <Separator/>
-                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding RecentEmailRecipients}">
+                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding MRUEmailRecipients}">
                                 <Fluent:MenuItem.ItemContainerStyle>
                                     <Style TargetType="{x:Type Fluent:MenuItem}">
                                         <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
@@ -373,12 +371,12 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
                         </Fluent:Button.ToolTip>

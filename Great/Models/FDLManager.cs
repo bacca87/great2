@@ -737,7 +737,7 @@ namespace Great.Models
                 fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
                 fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
                 fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
-                //fields.Add(entry["Total"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Total"], expenses[i].TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
             }
 
             if (ea.Currency1 != null)

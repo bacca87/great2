@@ -32,6 +32,25 @@ namespace Great.Models.Database
             }
         }
 
+        #region Totals
+        [NotMapped]
+        public double? MondayAmount => Expenses?.Sum(x => x.MondayAmount);
+        [NotMapped]
+        public double? TuesdayAmount => Expenses?.Sum(x => x.TuesdayAmount);
+        [NotMapped]
+        public double? WednesdayAmount => Expenses?.Sum(x => x.WednesdayAmount);
+        [NotMapped]
+        public double? ThursdayAmount => Expenses?.Sum(x => x.ThursdayAmount);
+        [NotMapped]
+        public double? FridayAmount => Expenses?.Sum(x => x.FridayAmount);
+        [NotMapped]
+        public double? SaturdayAmount => Expenses?.Sum(x => x.SaturdayAmount);
+        [NotMapped]
+        public double? SundayAmount => Expenses?.Sum(x => x.SundayAmount);
+        [NotMapped]
+        public double? TotalAmount => Expenses?.Sum(x => x.TotalAmount);
+        #endregion
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

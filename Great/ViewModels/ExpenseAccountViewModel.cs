@@ -272,6 +272,13 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<NewItemMessage<ExpenseAccount>>(this, NewEA);
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccount>>(this, EAChanged);
+
+            List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
+
+            if (recipients != null)
+                MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
+            else
+                MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
         private void ExpenseAccounts_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
