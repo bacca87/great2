@@ -218,8 +218,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Database\Car.cs" />
+    <Compile Include="Models\Database\Car.ext.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
+    <Compile Include="Models\Database\CarRentalHistory.ext.cs" />
     <Compile Include="Models\Database\Currency.cs" />
     <Compile Include="Models\Database\Day.cs" />
     <Compile Include="Models\Database\DayType.cs" />
@@ -273,6 +275,7 @@
     <Compile Include="Utils\MRUQueue.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
+    <Compile Include="ViewModels\CarRentalViewModel.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\GreatImportWizardViewModel.cs" />
@@ -534,7 +537,9 @@
   <ItemGroup>
     <Resource Include="Images\16\delete-square.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\32\sign-add.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

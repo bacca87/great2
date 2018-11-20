@@ -22,7 +22,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Fluent:Ribbon Grid.Row="0">            
+        <Fluent:Ribbon Grid.Row="0">
             <Fluent:Ribbon.Resources>
                 <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
                 <conv:CompareIntConverter x:Key="CompareIntConverter"/>
@@ -47,14 +47,21 @@
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
             <!--Contextual Tab Groups-->
-            <Fluent:Ribbon.ContextualGroups>                
+            <Fluent:Ribbon.ContextualGroups>
+                <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
+                                     Header="TOOLS" 
+                                     DataContext="{Binding CarRental, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="TIMESHEETS"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
                                   IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="Clipboard">                    
+                <Fluent:RibbonGroupBox Header="Clipboard">
                     <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Copy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Copy" Text="Copy the selected day." />
@@ -71,7 +78,7 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Day">                    
+                <Fluent:RibbonGroupBox Header="Day">
                     <Fluent:RadioButton Header="Day of Work" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Day of Work" Text="Set the selected day as day of work." />
@@ -229,7 +236,7 @@
                                 </Fluent:Button>
                             </StackPanel>
                             <Separator/>
-                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding MRUEmailRecipients}">                               
+                            <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding MRUEmailRecipients}">
                                 <Fluent:MenuItem.ItemContainerStyle>
                                     <Style TargetType="{x:Type Fluent:MenuItem}">
                                         <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
@@ -240,7 +247,7 @@
                         </Fluent:MenuItem>
                         <Separator/>
                         <Fluent:MenuItem Name="mEditRecipients" Header="Edit Recipients..." Icon="pack://application:,,,/Great;component/Images/24/user-id.png" Click="mEditRecipients_Click">
-                            <Fluent:MenuItem.ToolTip>                                
+                            <Fluent:MenuItem.ToolTip>
                                 <Fluent:ScreenTip Title="Edit Recipients" Text="Edit the selected FDL order's recipients." />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
@@ -272,8 +279,53 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="CAR RENTAL" 
+                                  DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
+
+                <Fluent:RibbonGroupBox Header="Actions">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/bus.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Delete Rent" Text="Delete Selected Rent" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Filter">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height ="Auto"></RowDefinition>
+                            <RowDefinition Height ="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Date"/>
+                        <DatePicker Grid.Row="0" Grid.Column="1" DisplayDate="{Binding RentStartDateFilter}" SelectedDate="{Binding RentStartDateFilter}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="End Date"/>
+                        <DatePicker Grid.Row="1" Grid.Column="1" DisplayDate="{Binding RentEndDateFilter}" SelectedDate="{Binding RentEndDateFilter}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Brand"/>
+                        <TextBox Grid.Row="0" Width="100" Grid.Column="3" Text="{Binding ModelBrandFilter}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="License Plate"/>
+                        <TextBox Grid.Row="1" Width="100" Grid.Column="3" Text="{Binding LicencePlateFilter}"/>
+
+                        <Button Margin="2" Content="Apply Filter" Command="{Binding ApplyFilters}" Grid.Row="0" Grid.Column="4" />
+                        <Button Margin="2" Content="Clear Filter" Command="{Binding RemoveFilters}" Grid.Row="1" Grid.Column="4" />
+
+                    </Grid>
+                </Fluent:RibbonGroupBox>
+
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="EXPENSE ACCOUNT" 
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
@@ -353,6 +405,21 @@
                                   Visibility="{Binding ElementName=statsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=statsTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
+                                  IsSelected="{Binding ShowContextualMenu}"                                   
+                                  Group="{Binding Source={x:Reference EditRentalGroup}}">
+
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save Rent" Text="Save Selected Rent" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+
+
+            </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
@@ -368,7 +435,7 @@
                                 </DockPanel>
                             </ControlTemplate>
                         </Setter.Value>
-                    </Setter>                    
+                    </Setter>
                 </Style>
                 <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
                     <Setter Property="Template">

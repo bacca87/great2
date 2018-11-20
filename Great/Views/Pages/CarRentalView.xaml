@@ -2,14 +2,156 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+      xmlns:m="clr-namespace:Great.Models.Database"
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
+      DataContext="{Binding CarRental, Source={StaticResource Locator}}"
       Title="CarRental"
-      Style="{DynamicResource MetroPage}">
+       Style="{DynamicResource MetroPage}">
 
-    <Grid>
-        
+    <Page.Resources>
+        <CollectionViewSource x:Key="CarRentalCollectionView" Source="{Binding FilteredRentals}" IsLiveSortingRequested="True" />
+
+        <DataTemplate x:Key="AutoCompleteLicensePlate">
+            <StackPanel Orientation="Horizontal">
+                <Label  Content="{Binding LicensePlate}" Width="100" />
+                <Label  Content="{Binding Model}" FontStyle="Italic" Foreground="DarkGray" />
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Margin="10,0,10,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Margin="10,0,10,0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <DataGrid Name="CarRentalHistoryView"
+                Grid.Row="0"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
+                AutoGenerateColumns="False" 
+                CanUserReorderColumns="False" 
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False" 
+                CanUserSortColumns="False" 
+                IsReadOnly="True"                  
+                SelectionMode="Single"
+                HeadersVisibility="Column"
+                ItemsSource="{Binding Source={StaticResource CarRentalCollectionView}}"
+                SelectedItem="{Binding SelectedRent}"
+                VirtualizingPanel.ScrollUnit ="Item" 
+                VirtualizingPanel.VirtualizationMode="Standard">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Rent Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy' }" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="Rent End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy'}"/>
+                    <DataGridTextColumn Header="Car Brand" Binding="{Binding Car1.Brand}"/>
+                    <DataGridTextColumn Header="Car Model" Binding="{Binding Car1.Model}"/>
+                    <DataGridTextColumn Header="Car Brand" Binding="{Binding Car1.LicensePlate}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Vertical">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+
+                <!--<ComboBox VerticalContentAlignment="Center" 
+                      HorizontalContentAlignment="Center" 
+                      TextSearch.TextPath="" Width="200" Height="100" 
+                      ItemsSource="{Binding Cars}" 
+                      SelectedValue="LicensePlate"
+                      SelectedItem="LicensePlate"
+                      IsSynchronizedWithCurrentItem="True" 
+                      Text="{Binding SelectedCarClone.LicensePlate}"
+                      IsEditable="True">
+            </ComboBox>-->
+
+                <toolkit:AutoCompleteBox
+                    IsTextCompletionEnabled="False"
+                    ItemsSource="{Binding Cars }" 
+                    ItemTemplate="{StaticResource AutoCompleteLicensePlate}"
+                    ValueMemberPath="LicensePlate"
+                    SelectedItem="{Binding SelectedCarClone, Mode=TwoWay}"
+                    Text="{Binding SelectedCarClone.LicensePlate, Mode=TwoWay}"/>
+
+
+                <TextBlock>Brand</TextBlock>
+                <TextBox Text="{Binding SelectedCarClone.Brand, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Model</TextBlock>
+                <TextBox Text="{Binding SelectedCarClone.Model, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent Company</TextBlock>
+                <ComboBox 
+                                  SelectedItem="{Binding SelectedCarClone.CarRentalCompany1}" 
+                                  SelectedValue="{Binding SelectedCarClone.CarRentalCompany, Mode=TwoWay}" 
+                                  IsEnabled="{Binding IsInputEnabled}" 
+                                  DisplayMemberPath="Name" 
+                                  SelectedValuePath="Id" 
+                                  SelectedIndex="0">
+                    <ComboBox.Resources>
+                        <CollectionViewSource x:Key="Items" Source="{Binding RentalCompanies}" />
+                    </ComboBox.Resources>
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <m:CarRentalCompany/>
+                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+                <TextBlock>Initial Km</TextBlock>
+                <TextBox
+                    Text="{Binding SelectedRentClone.StartKm, Mode=TwoWay}" 
+                    IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Ending Km</TextBlock>
+                <TextBox Text="{Binding SelectedRentClone.EndKm, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent Start Date:</TextBlock>
+                <DatePicker DisplayDate="{Binding SelectedRentClone.RentStartDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRentClone.RentStartDate}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent End Date</TextBlock>
+                <DatePicker  DisplayDate="{Binding SelectedRentClone.RentEndDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRentClone.RentEndDate}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent Start Location</TextBlock>
+                <TextBox Text="{Binding SelectedRentClone.StartLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Rent End Location</TextBlock>
+                <TextBox Text="{Binding SelectedRentClone.EndLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>Start Fuel Level</TextBlock>
+                <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock>End Fuel Level</TextBlock>
+                <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+
+                <TextBlock>Notes</TextBlock>
+                <TextBox Text="{Binding SelectedRentClone.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+            </StackPanel>
+
+
+        </Grid>
     </Grid>
 </Page>

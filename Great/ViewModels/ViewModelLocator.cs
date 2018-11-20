@@ -12,8 +12,6 @@
   See http://www.galasoft.ch/mvvm
 */
 
-using CommonServiceLocator;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
 using Great.Models.Database;
@@ -43,7 +41,7 @@ namespace Great.ViewModels
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
-            
+
             SimpleIoc.Default.Register<MSExchangeProvider>();
             SimpleIoc.Default.Register<FDLManager>();
             SimpleIoc.Default.Register<DBArchive>();
@@ -52,13 +50,14 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<FactoriesViewModel>();
             SimpleIoc.Default.Register<InformationsViewModel>();
             SimpleIoc.Default.Register<FDLViewModel>();
-            SimpleIoc.Default.Register<ExpenseAccountViewModel>();            
+            SimpleIoc.Default.Register<ExpenseAccountViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<NotificationsViewModel>();
             SimpleIoc.Default.Register<ImportExportViewModel>();
             SimpleIoc.Default.Register<GreatImportWizardViewModel>();
             SimpleIoc.Default.Register<OrderRecipientsViewModel>();
             SimpleIoc.Default.Register<StatisticsViewModel>();
+            SimpleIoc.Default.Register<CarRentalViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -146,6 +145,14 @@ namespace Great.ViewModels
             get
             {
                 return SimpleIoc.Default.GetInstance<StatisticsViewModel>();
+            }
+        }
+
+        public CarRentalViewModel CarRental
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<CarRentalViewModel>();
             }
         }
 
