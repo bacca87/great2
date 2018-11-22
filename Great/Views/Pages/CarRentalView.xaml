@@ -97,6 +97,7 @@
                       IsEditable="True">
             </ComboBox>-->
 
+                <TextBlock>Car Plate</TextBlock>
                 <toolkit:AutoCompleteBox
                     IsTextCompletionEnabled="False"
                     ItemsSource="{Binding Cars }" 
@@ -113,7 +114,7 @@
                 <TextBlock>Rent Company</TextBlock>
                 <ComboBox 
                                   SelectedItem="{Binding SelectedCarClone.CarRentalCompany1}" 
-                                  SelectedValue="{Binding SelectedCarClone.CarRentalCompany, Mode=TwoWay}" 
+                                  SelectedValue="{Binding SelectedCarClone.CarRentalCompany}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
                                   SelectedValuePath="Id" 

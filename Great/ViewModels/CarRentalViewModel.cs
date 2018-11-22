@@ -329,25 +329,19 @@ namespace Great.ViewModels
 
         private void ApplyFiltersCommand()
         {
-            if (RentStartDateFilter != null)
-            {
+            if (RentStartDateFilter != null)        
                 FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.RentStartDate >= RentStartDateFilter.Value));
-            }
-
-            if (RentEndDateFilter != null)
-            {
+            
+            if (RentEndDateFilter != null)         
                 FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.RentEndDate >= RentEndDateFilter.Value));
-            }
+            
+            if (ModelBrandFilter!= null && ModelBrandFilter != string.Empty)           
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Model.ToUpper().Contains(ModelBrandFilter.ToUpper()) || 
+                                                                                                  r.Car1.Brand.ToUpper().Contains(ModelBrandFilter.ToUpper())));
 
-            if (ModelBrandFilter!= null && ModelBrandFilter != string.Empty)
-            {
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Model.ToUpper().Contains(ModelBrandFilter.ToUpper())));
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Brand.ToUpper().Contains(ModelBrandFilter.ToUpper())));
-            }
-            if (LicencePlateFilter != null && LicencePlateFilter != string.Empty)
-            {
+            if (LicencePlateFilter != null && LicencePlateFilter != string.Empty)       
                 FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.LicensePlate.ToUpper().Contains(_licensePlateFilter.ToUpper())));
-            }
+          
         }
 
         private void NewRent(CarRentalHistory obj)
