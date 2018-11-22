@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +25,7 @@ namespace Great.ViewModels
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class ExpenseAccountViewModel : ViewModelBase
+    public class ExpenseAccountViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Properties
         public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
@@ -242,10 +243,42 @@ namespace Great.ViewModels
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccount> SaveAsCommand { get; set; }
         public RelayCommand<ExpenseAccount> OpenCommand { get; set; }
+        public RelayCommand<ExpenseAccount> MarkAsRefundedCommand { get; set; }
         public RelayCommand<ExpenseAccount> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<ExpenseAccount> MarkAsCancelledCommand { get; set; }
         #endregion
-        
+
+        #region Errors Validation
+        public string CurrencyText { get; set; }
+        public string ExpenseTypeText { get; set; }        
+
+        public string Error => throw new NotImplementedException();
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch(columnName)
+                {
+                    case "CurrencyText":
+                        if (!string.IsNullOrEmpty(CurrencyText) && !Currencies.Any(c => c.Description == CurrencyText))
+                            return "Select a valid currency from the combo list!";
+                        break;
+
+                    case "ExpenseTypeText":
+                        if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
+                            return "Select a valid expense type from the combo list!";
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return null;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ExpenseAccountViewModel class.
         /// </summary>
@@ -261,8 +294,9 @@ namespace Great.ViewModels
             SendByEmailCommand = new RelayCommand<string>(SendByEmail);
             SaveAsCommand = new RelayCommand<ExpenseAccount>(SaveAs);
             OpenCommand = new RelayCommand<ExpenseAccount>(Open);
-            //MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
-            //MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
+            MarkAsRefundedCommand = new RelayCommand<ExpenseAccount>(MarkAsRefunded);
+            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccount>(MarkAsAccepted);
+            MarkAsCancelledCommand = new RelayCommand<ExpenseAccount>(MarkAsCancelled);
 
             ExpenseTypes = new ObservableCollection<ExpenseType>(_db.ExpenseTypes);
             ExpenseAccounts = new ObservableCollectionEx<ExpenseAccount>(_db.ExpenseAccounts);
@@ -418,12 +452,34 @@ namespace Great.ViewModels
             Process.Start(fileName);
         }
 
+        public void MarkAsRefunded(ExpenseAccount ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as refunded the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.IsRefunded = true;
+            _db.SaveChanges();
+
+            ea.NotifyFDLPropertiesChanged();
+        }
+
         public void MarkAsAccepted(ExpenseAccount ea)
         {
-            if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as accepted the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
+            _db.SaveChanges();
+
+            ea.NotifyFDLPropertiesChanged();
+        }
+
+        public void MarkAsCancelled(ExpenseAccount ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as Cancelled the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.EStatus = EFDLStatus.Cancelled;
             _db.SaveChanges();
 
             ea.NotifyFDLPropertiesChanged();

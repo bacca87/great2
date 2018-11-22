@@ -20,6 +20,7 @@ namespace Great.Models.Database
         public long Status { get; set; }
         public string LastError { get; set; }
         public string FileName { get; set; }
+        public bool IsRefunded { get; set; }
         public bool NotifyAsNew { get; set; }
 
         [ForeignKey("Currency")]

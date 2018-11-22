@@ -371,6 +371,11 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/money-bag.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Mark as Refunded" Text="Mark the selected EA as refunded." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                     <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
