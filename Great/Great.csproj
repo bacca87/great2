@@ -217,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteEntry.cs" />
+    <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.xaml.cs">
+      <DependentUpon>AutoCompleteTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\Database\Car.cs" />
     <Compile Include="Models\Database\Car.ext.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
@@ -330,6 +334,10 @@
     <Compile Include="Views\Wizards\GreatImportWizardView.xaml.cs">
       <DependentUpon>GreatImportWizardView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
