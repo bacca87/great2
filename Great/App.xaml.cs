@@ -1,5 +1,6 @@
 ﻿using Great.Models;
 using Great.Models.Database;
+using Great.Utils;
 using NLog;
 using System;
 using System.Data.Entity;
@@ -19,6 +20,8 @@ namespace Great
             
             InitializeDirectoryTree();
             InitializeDatabase();
+
+            AutomapperConfiguration.RegisterMappings();
 
             // TODO: Auto Updater (https://github.com/ravibpatel/AutoUpdater.NET)
         }

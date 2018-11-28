@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Great.Models.DTO;
 using Great.Utils.Messages;
 using Microsoft.Exchange.WebServices.Data;
 using System;
