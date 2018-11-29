@@ -9,6 +9,8 @@ namespace Great.Models.DTO
         public long WeekNr { get; set; }
         public long Order { get; set; }
 
+        public FDLDTO() { }
+
         public FDLDTO(FDL fdl)
         {
             Mapper.Map(fdl, this);

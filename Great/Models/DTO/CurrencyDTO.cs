@@ -8,6 +8,8 @@ namespace Great.Models.DTO
         public string Id { get; set; }
         public string Description { get; set; }
 
+        public CurrencyDTO() { }
+
         public CurrencyDTO(Currency currency)
         {
             Mapper.Map(currency, this);

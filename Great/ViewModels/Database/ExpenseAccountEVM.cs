@@ -142,12 +142,13 @@ namespace Great.ViewModels.Database
         public ExpenseAccountEVM(ExpenseAccount ea)
         {
             Expenses = new ObservableCollectionEx<ExpenseEVM>();
-            Expenses.CollectionChanged += Expenses_CollectionChanged;
+            Expenses.CollectionChanged += (sender, e) => UpdateTotals();
+            Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             Mapper.Map(ea, this);
         }
 
-        private void Expenses_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void UpdateTotals()
         {
             RaisePropertyChanged(nameof(MondayAmount));
             RaisePropertyChanged(nameof(TuesdayAmount));

@@ -111,6 +111,8 @@ namespace Great.ViewModels.Database
         }
         #endregion
 
+        public ExpenseEVM() { }
+
         public ExpenseEVM(Expense expense)
         {
             Mapper.Map(expense, this);

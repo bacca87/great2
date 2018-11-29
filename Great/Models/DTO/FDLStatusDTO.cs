@@ -8,6 +8,8 @@ namespace Great.Models.DTO
         public long Id { get; set; }
         public string Name { get; set; }
 
+        public FDLStatusDTO() { }
+
         public FDLStatusDTO(FDLStatus status)
         {
             Mapper.Map(status, this);

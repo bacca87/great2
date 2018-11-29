@@ -13,6 +13,7 @@ namespace Great.Utils
             {
                 cfg.CreateMap<Expense, ExpenseEVM>();
                 cfg.CreateMap<ExpenseAccount, ExpenseAccountEVM>();
+                   //.ForMember(s => s.Expenses, c => c.MapFrom(m => m.Expenses));
 
                 cfg.CreateMap<FDL, FDLDTO>();
                 cfg.CreateMap<FDLStatus, FDLStatusDTO>();
