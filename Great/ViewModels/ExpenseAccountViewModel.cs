@@ -4,6 +4,7 @@ using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
+using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using Microsoft.Win32;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -31,7 +31,6 @@ namespace Great.ViewModels
     {
         #region Properties
         private FDLManager _fdlManager;
-        private DBArchive _db;
 
         public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
                 
@@ -43,7 +42,6 @@ namespace Great.ViewModels
             {
                 Set(ref _isInputEnabled, value);
                 SaveCommand.RaiseCanExecuteChanged();
-                ClearCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -61,6 +59,7 @@ namespace Great.ViewModels
                 {
                     SelectedExpense = null;
                     IsInputEnabled = true;
+                    UpdateDaysOfWeek();
                 }
                 else
                     IsInputEnabled = false;
@@ -85,10 +84,17 @@ namespace Great.ViewModels
             get => _sendToEmailRecipient;
             set => Set(ref _sendToEmailRecipient, value);
         }
+
+        private string[] _DaysOfWeek;
+        public string[] DaysOfWeek
+        {
+            get => _DaysOfWeek;
+            set => Set(ref _DaysOfWeek, value);
+        }
+        
         #endregion
 
         #region Commands Definitions
-        public RelayCommand ClearCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
 
         public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
@@ -134,12 +140,10 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the ExpenseAccountViewModel class.
         /// </summary>
-        public ExpenseAccountViewModel(FDLManager manager, DBArchive db)
+        public ExpenseAccountViewModel(FDLManager manager)
         {
-            _db = db;
             _fdlManager = manager;
 
-            ClearCommand = new RelayCommand(ClearEA, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP);
@@ -150,14 +154,15 @@ namespace Great.ViewModels
             MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
 
-            ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(_db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
-            ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(_db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
-            Currencies = new ObservableCollection<CurrencyDTO>(_db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
+            using (DBArchive db = new DBArchive())
+            {
+                ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
+                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
+                Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
+            }
 
-            //ExpenseAccounts.ItemPropertyChanged += ExpenseAccounts_ItemPropertyChanged;
-
-            MessengerInstance.Register<NewItemMessage<ExpenseAccount>>(this, NewEA);
-            MessengerInstance.Register<ItemChangedMessage<ExpenseAccount>>(this, EAChanged);
+            MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, NewEA);
+            MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -167,66 +172,78 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        public void NewEA(NewItemMessage<ExpenseAccount> item)
+        public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
-            //Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-            //    new Action(() =>
-            //    {
-            //        if (item.Content != null)
-            //        {
-            //            ExpenseAccount ea = _db.ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id);
-
-            //            if (ea != null && !ExpenseAccounts.Contains(ea))
-            //                ExpenseAccounts.Add(ea);
-            //        }
-            //    })
-            //);
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null && ExpenseAccounts.SingleOrDefault(ea => ea.Id == (item.Content as ExpenseAccountEVM).Id) == null)
+                        ExpenseAccounts.Add(item.Content);
+                })
+            );
         }
 
-        public void EAChanged(ItemChangedMessage<ExpenseAccount> item)
+        public void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
-            //Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-            //    new Action(() =>
-            //    {
-            //        if (item.Content != null)
-            //        {
-            //            _db.ExpenseAccounts.AddOrUpdate(item.Content);
-            //            _db.SaveChanges();
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == (item.Content as ExpenseAccountEVM).Id);
 
-            //            ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
-            //        }
-            //    })
-            //);
+                        if (ea != null)
+                            ea.Status = (item.Content as ExpenseAccountEVM).Status;
+                    }
+                })
+            );
         }
 
-        public void ClearEA()
+        private void UpdateDaysOfWeek()
         {
+            if (SelectedEA == null)
+                return;
 
+            DateTime StartDay = DateTime.Now.FromUnixTimestamp(SelectedEA.FDL1.StartDay);
+            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
+            var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
+
+            string[] tmpDays = new string[7];
+
+            for(int i = 0; i < 7; i++)
+                tmpDays[i] = Days[i].Day >= StartDay.Day ? Days[i].ToShortDateString() : string.Empty;
+
+            DaysOfWeek = tmpDays;
         }
 
         public void SaveEA(ExpenseAccountEVM ea)
         {
-            //if (ea == null)
-            //    return;
+            if (ea == null)
+                return;
 
-            //if (string.IsNullOrEmpty(ea.Currency))
-            //{
-            //    MessageBox.Show("Please select the currency before continue. Operation cancelled.", "Invalid Expense Account", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
+            if (string.IsNullOrEmpty(ea.Currency))
+            {
+                MessageBox.Show("Please select the currency before continue. Operation cancelled.", "Invalid Expense Account", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            //foreach (var expense in Expenses)
-            //{
-            //    expense.ExpenseAccount = ea.Id;
-            //    _db.Expenses.AddOrUpdate(expense);
-            //}
+            using (DBArchive db = new DBArchive())
+            {
+                ea.Save(db);
 
-            //_db.ExpenseAccounts.AddOrUpdate(ea);
+                if (ea.Id == 0)
+                    db.SaveChanges();
 
-            //if (_db.SaveChanges() > 0)
-            //    SelectedEA?.NotifyFDLPropertiesChanged();
+                foreach (var expense in ea.Expenses)
+                {
+                    expense.ExpenseAccount = ea.Id;
+                    expense.Save(db);
+                }
+
+                db.SaveChanges();
+            }
         }
 
         public void SendToSAP(ExpenseAccountEVM ea)
@@ -236,7 +253,6 @@ namespace Great.ViewModels
                 return;
 
             _fdlManager.SendToSAP(ea);
-            _db.SaveChanges();
         }
 
         public void SendByEmail(string address)
@@ -296,7 +312,7 @@ namespace Great.ViewModels
                 return;
 
             ea.IsRefunded = true;
-            _db.SaveChanges();
+            ea.Save();
         }
 
         public void MarkAsAccepted(ExpenseAccountEVM ea)
@@ -305,7 +321,7 @@ namespace Great.ViewModels
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
-            _db.SaveChanges();
+            ea.Save();
         }
 
         public void MarkAsCancelled(ExpenseAccountEVM ea)
@@ -314,7 +330,7 @@ namespace Great.ViewModels
                 return;
 
             ea.EStatus = EFDLStatus.Cancelled;
-            _db.SaveChanges();
+            ea.Save();
         }
     }
 }

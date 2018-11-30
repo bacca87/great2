@@ -7,7 +7,11 @@ namespace Great.Models.DTO
     {
         public string Id { get; set; }
         public long WeekNr { get; set; }
+        public long StartDay { get; set; }
         public long Order { get; set; }
+        public long? Factory { get; set; }
+
+        public virtual FactoryDTO Factory1 { get; set; }
 
         public FDLDTO() { }
 

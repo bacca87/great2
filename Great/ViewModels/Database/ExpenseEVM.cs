@@ -4,13 +4,14 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseEVM : ViewModelBase
+    public class ExpenseEVM : EntityViewModelBase
     {
         #region Properties
         public long Id { get; set; }
@@ -116,6 +117,16 @@ namespace Great.ViewModels.Database
         public ExpenseEVM(Expense expense)
         {
             Mapper.Map(expense, this);
+        }
+
+        public override bool Save(DBArchive db)
+        {
+            Expense e = new Expense();
+
+            Mapper.Map(this, e);
+            db.Expenses.AddOrUpdate(e);
+
+            return true;
         }
     }
 }

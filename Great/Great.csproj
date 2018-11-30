@@ -247,8 +247,10 @@
     <Compile Include="Models\Database\Expense.ext.cs" />
     <Compile Include="Models\Database\ExpenseAccount.ext.cs" />
     <Compile Include="Models\DTO\ExpenseTypeDTO.cs" />
+    <Compile Include="Models\DTO\FactoryDTO.cs" />
     <Compile Include="Models\DTO\FDLDTO.cs" />
     <Compile Include="Models\DTO\FDLStatusDTO.cs" />
+    <Compile Include="Models\DTO\TransferTypeDTO.cs" />
     <Compile Include="Models\Interfaces\IFDLFile.cs" />
     <Compile Include="Models\MSExchangeProvider.cs" />
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
@@ -288,6 +290,7 @@
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\CarRentalViewModel.cs" />
+    <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />
     <Compile Include="ViewModels\Database\FDLEVM.cs" />

@@ -215,13 +215,55 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Monday" Binding="{Binding MondayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Tuesday" Binding="{Binding TuesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Wednesday" Binding="{Binding WednesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Thursday" Binding="{Binding ThursdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Friday" Binding="{Binding FridayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Saturday" Binding="{Binding SaturdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Sunday" Binding="{Binding SundayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Binding="{Binding MondayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[0], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding TuesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[1], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding WednesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[2], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding ThursdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[3], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding FridayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[4], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding SaturdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[5], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding SundayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[6], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Total" Binding="{Binding TotalAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>

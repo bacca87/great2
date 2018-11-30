@@ -8,13 +8,14 @@ using Great.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseAccountEVM : ViewModelBase, IFDLFile
+    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
         public long Id { get; set; }
@@ -158,6 +159,16 @@ namespace Great.ViewModels.Database
             RaisePropertyChanged(nameof(SaturdayAmount));
             RaisePropertyChanged(nameof(SundayAmount));
             RaisePropertyChanged(nameof(TotalAmount));
+        }
+
+        public override bool Save(DBArchive db)
+        {
+            ExpenseAccount ea = new ExpenseAccount();
+
+            Mapper.Map(this, ea);
+            db.ExpenseAccounts.AddOrUpdate(ea);
+
+            return true;
         }
     }
 }

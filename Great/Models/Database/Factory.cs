@@ -6,12 +6,7 @@ namespace Great.Models.Database
 {
     [Table("Factory")]
     public partial class Factory
-    {
-        public Factory()
-        {
-            this.FDLs = new HashSet<FDL>();
-        }
-    
+    {    
         public long Id { get; set; }
         public string Name { get; set; }
         public string CompanyName { get; set; }
@@ -24,6 +19,5 @@ namespace Great.Models.Database
 
         [ForeignKey("TransferType")]
         public virtual TransferType TransferType1 { get; set; }
-        public virtual ICollection<FDL> FDLs { get; set; }
     }
 }

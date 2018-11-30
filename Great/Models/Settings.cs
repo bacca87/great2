@@ -234,7 +234,8 @@ namespace Great.Models
                 public const string Result = "data[0].#subform[0].Elencoadiscesa1[0]";
                 public const string SoftwareVersionsOtherNotes = "data[0].#subform[0].Tabella16[0].Riga2[0].Cella1[0]";
 
-                // Helpers
+                #region Helpers
+
                 #region TimesMatrix
                 public static readonly Dictionary<DayOfWeek, Dictionary<string, string>> TimesMatrix = new Dictionary<DayOfWeek, Dictionary<string, string>>()
                 {
@@ -343,6 +344,18 @@ namespace Great.Models
                             { "TravelEndTimePM",   Sun_TravelEndTimePM }
                         }
                     }
+                };
+                #endregion
+
+                public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
+                {
+                    { DayOfWeek.Monday, Mon_Date },
+                    { DayOfWeek.Tuesday, Tue_Date },
+                    { DayOfWeek.Wednesday, Wed_Date },
+                    { DayOfWeek.Thursday, Thu_Date },
+                    { DayOfWeek.Friday, Fri_Date },
+                    { DayOfWeek.Saturday, Sat_Date },
+                    { DayOfWeek.Sunday, Sun_Date }
                 };
                 #endregion
             }
@@ -445,7 +458,8 @@ namespace Great.Models
                 public const string Result = "not implemented";
                 public const string SoftwareVersionsOtherNotes = "not implemented";
 
-                // Helpers
+                #region Helpers
+
                 #region TimesMatrix
                 public static readonly Dictionary<DayOfWeek, Dictionary<string, string>> TimesMatrix = new Dictionary<DayOfWeek, Dictionary<string, string>>()
                 {
@@ -556,8 +570,19 @@ namespace Great.Models
                     }
                 };
                 #endregion
-            }
 
+                public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
+                {
+                    { DayOfWeek.Monday, Mon_Date },
+                    { DayOfWeek.Tuesday, Tue_Date },
+                    { DayOfWeek.Wednesday, Wed_Date },
+                    { DayOfWeek.Thursday, Thu_Date },
+                    { DayOfWeek.Friday, Fri_Date },
+                    { DayOfWeek.Saturday, Sat_Date },
+                    { DayOfWeek.Sunday, Sun_Date }
+                };
+                #endregion
+            }
         }
         #endregion
 
@@ -756,7 +781,8 @@ namespace Great.Models
                 public const string EX15_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day7[0]";
                 public const string EX15_Total = "data[0].#subform[0].Tabella6[0].Riga15[0].r15totale[0]";
 
-                // Helpers
+                #region Helpers
+
                 #region ExpenseMatrix
                 public static readonly Dictionary<string, string>[] ExpenseMatrix = new Dictionary<string, string>[]
                 {   
@@ -940,6 +966,18 @@ namespace Great.Models
                         { "Sun_Amount", EX15_Sun_Amount},
                         { "Total",      EX15_Total}
                     }
+                };
+                #endregion
+
+                public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
+                {
+                    { DayOfWeek.Monday, Mon_Date },
+                    { DayOfWeek.Tuesday, Tue_Date },
+                    { DayOfWeek.Wednesday, Wed_Date },
+                    { DayOfWeek.Thursday, Thu_Date },
+                    { DayOfWeek.Friday, Fri_Date },
+                    { DayOfWeek.Saturday, Sat_Date },
+                    { DayOfWeek.Sunday, Sun_Date }
                 };
                 #endregion
             }
