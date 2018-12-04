@@ -591,7 +591,7 @@ namespace Great.Utils
 
             try
             {
-                IEnumerable<DataRow> sentFiles = dtSentFiles.Rows.Cast<DataRow>();
+                IEnumerable<DataRow> expenses = dtExpenseReview.Rows.Cast<DataRow>();
 
                 foreach (FileInfo file in new DirectoryInfo(_sourceEAPath).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
@@ -621,6 +621,9 @@ namespace Great.Utils
                                         currentEA.Status = fdl.Status;
                                     else
                                         currentEA.EStatus = EFDLStatus.Accepted;
+                                    
+                                    var expense = expenses.SingleOrDefault(e => !string.IsNullOrEmpty(e.Field<string>("Dbf_Foglio")) && FormatFDL(e.Field<string>("Dbf_Foglio")) == fdl.Id);
+                                    currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
                                     db.SaveChanges();
