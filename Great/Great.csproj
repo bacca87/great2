@@ -257,6 +257,7 @@
     <Compile Include="Utils\AttachedProperties\TextBoxHelper.cs" />
     <Compile Include="Utils\AutomapperConfiguration.cs" />
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
+    <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\NegateBoolConverter.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Utils\ClipboardX.cs" />
     <Compile Include="Utils\Converters\StringToUpperCaseConverter.cs" />
+    <Compile Include="Utils\Converters\ZeroDoubleToNullConverter.cs" />
     <Compile Include="Utils\CurrencyCodeMapper.cs" />
     <Compile Include="Utils\Extensions\DateTimeExtensions.cs" />
     <Compile Include="Utils\AttachedProperties\PasswordHelper.cs" />
