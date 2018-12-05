@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Great.Models.Database
 {
-    [Table("Currency")]
-    public partial class Currency
+    [Table("FDLStatus")]
+    public partial class FDLStatus
     {
-        public string Id { get; set; }
-        public string Description { get; set; }
+        public long Id { get; set; }
+        public string Name { get; set; }
     }
 }

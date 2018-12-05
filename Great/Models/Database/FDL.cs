@@ -18,6 +18,7 @@ namespace Great.Models.Database
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
         public long WeekNr { get; set; }
+        public long StartDay { get; set; }
         public bool IsExtra { get; set; }
         public long? Factory { get; set; }
         public long Order { get; set; }

@@ -2,6 +2,7 @@
 using Great.Models;
 using Great.Models.Database;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
 using Great.Views.Dialogs;
 using System;
 using System.Linq;
@@ -118,33 +119,23 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(ExchangeStatus), oldValue, value);
             }
         }
-
-        private DBArchive _db;
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the NotificationsViewModel class.
         /// </summary>
-        public NotificationsViewModel(DBArchive db)
+        public NotificationsViewModel()
         {
-            _db = db;
-            
-            NewFactoriesCount = _db.Factories.Count(factory => factory.NotifyAsNew);
-            NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew);
-            NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
-            
-            MessengerInstance.Register(this, (NewItemMessage<FDL> x) => {
-                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewFDLCount = _db.FDLs.Count(fdl => fdl.NotifyAsNew); }));
-            });
+            using (DBArchive db = new DBArchive())
+            {
+                NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew);
+                NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew);
+                NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
+            }
 
-            MessengerInstance.Register(this, (NewItemMessage<Factory> x) => {
-                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewFactoriesCount = _db.Factories.Count(factory => factory.NotifyAsNew); }));
-            });
-
-            MessengerInstance.Register(this, (NewItemMessage<ExpenseAccount> x) => {
-                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => { NewExpenseAccountsCount = _db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); }));
-            });
-
+            MessengerInstance.Register(this, (NewItemMessage<FDL> x) => NewFDLCount++);
+            MessengerInstance.Register(this, (NewItemMessage<Factory> x) => NewFactoriesCount++);
+            MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => NewExpenseAccountsCount++);
             MessengerInstance.Register<StatusChangeMessage<EExchangeStatus>>(this, OnExchangeStatusChange);
         }
 

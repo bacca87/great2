@@ -85,9 +85,9 @@
                                         <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
                                     </Image.ToolTip>
                                 </Image>
-                                <Image Source="pack://application:,,,/Great;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding FDL1.IsExtra}">
+                                <Image Source="pack://application:,,,/Great;component/Images/16/money-bag.png" Stretch="None" Width="16" Height="16" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsRefunded}">
                                     <Image.ToolTip>
-                                        <TextBlock Text="Extra"/>
+                                        <TextBlock Text="Cash Back"/>
                                     </Image.ToolTip>
                                 </Image>
                             </StackPanel>
@@ -95,6 +95,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Amount" CellStyle="{StaticResource CenterAligned}">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0}{1}">
+                            <Binding Path="TotalAmount" />
+                            <Binding Path="CurrencyCode" />
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Currency" Binding="{Binding Currency1.Id}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="CdC" Binding="{Binding CdC}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Week Nr" Binding="{Binding FDL1.WeekNr}" CellStyle="{StaticResource CenterAligned}"/>
@@ -112,9 +121,10 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
                 <TextBlock Text="CURRENCY:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="15"/>
                 <ComboBox
-                    SelectedItem="{Binding SelectedEAClone.Currency1}"
-                    SelectedValue="{Binding SelectedEAClone.Currency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                    SelectedItem="{Binding SelectedEA.Currency1}"
+                    SelectedValue="{Binding SelectedEA.Currency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                     IsEnabled="{Binding IsInputEnabled}"
+                    Text="{Binding CurrencyText, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                     DisplayMemberPath="Description"
                     SelectedValuePath="Id"
                     Width="250"
@@ -142,7 +152,7 @@
                 CanUserSortColumns="False" 
                 SelectionMode="Single"
                 HeadersVisibility="All"
-                ItemsSource="{Binding Expenses}"
+                ItemsSource="{Binding SelectedEA.Expenses}"
                 SelectedItem="{Binding SelectedExpense, Converter={conv:DataGridItemConverter}}"
                 IsEnabled="{Binding IsInputEnabled}"
                 VirtualizingPanel.ScrollUnit ="Item" 
@@ -192,6 +202,7 @@
                                     ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypes}"
                                     SelectedItem="{Binding ExpenseType}"
                                     SelectedValue="{Binding Type}"
+                                    Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypeText, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                                     DisplayMemberPath="Description"
                                     SelectedValuePath="Id"
                                     FontSize="20"
@@ -204,28 +215,77 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Monday" Binding="{Binding MondayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Tuesday" Binding="{Binding TuesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Wednesday" Binding="{Binding WednesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Thursday" Binding="{Binding ThursdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Friday" Binding="{Binding FridayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Saturday" Binding="{Binding SaturdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Sunday" Binding="{Binding SundayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Binding="{Binding MondayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[0], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding TuesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[1], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding WednesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[2], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding ThursdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[3], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding FridayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[4], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding SaturdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[5], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding SundayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[6], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Total" Binding="{Binding TotalAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <TextBlock Grid.Row="2" Text="{Binding SelectedEAClone.TotalAmount, StringFormat={}Total: {0}}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="20"/>            
+            <TextBlock Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="20">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Total Amount: {0}{1}">
+                        <Binding Path="SelectedEA.TotalAmount" />
+                        <Binding Path="SelectedEA.CurrencyCode" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center" Margin="0,5,0,4"/>
-                <TextBox Grid.Row="1" Text="{Binding SelectedEAClone.Notes}" MaxLength="{Binding NotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsReturn="True"/>
+                <TextBox Grid.Row="1" Text="{Binding SelectedEA.Notes}" MaxLength="{Binding NotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsReturn="True"/>
             </Grid>
             <StackPanel Grid.Row="4" Orientation="Horizontal">
                 <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" />
-                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEAClone}" />
+                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEA}" />
             </StackPanel>
         </Grid>
     </Grid>

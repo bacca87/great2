@@ -1,4 +1,5 @@
 ﻿using Great.Models.Interfaces;
+using Great.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,9 @@ namespace Great.Models.Database
         public string FilePath { get { return ApplicationSettings.Directories.ExpenseAccount + FileName; } }
         [NotMapped]
         public bool IsNew { get { return EStatus == EFDLStatus.New; } } // used for sorting purpose
+
+        [NotMapped]
+        public string CurrencyCode { get { return CurrencyCodeMapper.GetSymbol(Currency1?.Id); } }
 
         [NotMapped]
         public EFDLStatus EStatus
@@ -69,6 +73,17 @@ namespace Great.Models.Database
             OnPropertyChanged(nameof(Expenses));
             OnPropertyChanged(nameof(FDLStatus));
             OnPropertyChanged(nameof(FDL1));
+            OnPropertyChanged(nameof(IsRefunded));
+            OnPropertyChanged(nameof(CurrencyCode));
+
+            OnPropertyChanged(nameof(MondayAmount));
+            OnPropertyChanged(nameof(TuesdayAmount));
+            OnPropertyChanged(nameof(WednesdayAmount));
+            OnPropertyChanged(nameof(ThursdayAmount));
+            OnPropertyChanged(nameof(FridayAmount));
+            OnPropertyChanged(nameof(SaturdayAmount));
+            OnPropertyChanged(nameof(SundayAmount));
+            OnPropertyChanged(nameof(TotalAmount));
         }
 
         public ExpenseAccount Clone()

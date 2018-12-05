@@ -2,14 +2,17 @@
 using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
+using Great.Utils.Extensions;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data.Entity.Migrations;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,254 +27,142 @@ namespace Great.ViewModels
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class ExpenseAccountViewModel : ViewModelBase
+    public class ExpenseAccountViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Properties
-        public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
-
         private FDLManager _fdlManager;
-        private DBArchive _db;
 
-        /// <summary>
-        /// The <see cref="IsInputEnabled" /> property's name.
-        /// </summary>
+        public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
+                
         private bool _isInputEnabled = false;
-
-        /// <summary>
-        /// Sets and gets the IsInputEnabled property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public bool IsInputEnabled
         {
-            get
-            {
-                return _isInputEnabled;
-            }
-
+            get => _isInputEnabled;
             set
             {
-                if (_isInputEnabled == value)
-                {
-                    return;
-                }
-
-                var oldValue = _isInputEnabled;
-                _isInputEnabled = value;
-
-                RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
+                Set(ref _isInputEnabled, value);
                 SaveCommand.RaiseCanExecuteChanged();
-                ClearCommand.RaiseCanExecuteChanged();
             }
         }
 
-        /// <summary>
-        /// The <see cref="ExpenseAccounts" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<ExpenseAccount> _expenseAccounts;
+        public ObservableCollectionEx<ExpenseAccountEVM> ExpenseAccounts { get; set; }
 
-        /// <summary>
-        /// Sets and gets the ExpenseAccounts property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
-        public ObservableCollectionEx<ExpenseAccount> ExpenseAccounts
+        private ExpenseAccountEVM _selectedEA;
+        public ExpenseAccountEVM SelectedEA
         {
-            get
-            {
-                return _expenseAccounts;
-            }
+            get => _selectedEA;
             set
             {
-                _expenseAccounts = value;
-                RaisePropertyChanged(nameof(ExpenseAccounts), true);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="SelectedEA" /> property's name.
-        /// </summary>
-        private ExpenseAccount _selectedEA;
-
-        /// <summary>
-        /// Sets and gets the SelectedEA property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public ExpenseAccount SelectedEA
-        {
-            get
-            {
-                return _selectedEA;
-            }
-
-            set
-            {
-                var oldValue = _selectedEA;
-                _selectedEA = value;
-
-                RefreshExpenses();
-
-                SelectedEAClone = _selectedEA?.Clone();
+                Set(ref _selectedEA, value);
 
                 if (_selectedEA != null)
                 {
                     SelectedExpense = null;
                     IsInputEnabled = true;
+                    UpdateDaysOfWeek();
                 }
                 else
                     IsInputEnabled = false;
-
-                RaisePropertyChanged(nameof(SelectedEA), oldValue, value);
             }
         }
 
-        /// <summary>
-        /// The <see cref="SelectedEAClone" /> property's name.
-        /// </summary>
-        private ExpenseAccount _selectedEAClone;
-
-        /// <summary>
-        /// Sets and gets the SelectedEAClone property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public ExpenseAccount SelectedEAClone
+        private ExpenseEVM _selectedExpense;
+        public ExpenseEVM SelectedExpense
         {
-            get
-            {
-                return _selectedEAClone;
-            }
-
-            set
-            {
-                var oldValue = _selectedEAClone;
-                _selectedEAClone = value;
-                RaisePropertyChanged(nameof(SelectedEAClone), oldValue, value);
-            }
+            get => _selectedExpense;
+            set => Set(ref _selectedExpense, value);
         }
 
-        /// <summary>
-        /// The <see cref="SelectedExpense" /> property's name.
-        /// </summary>
-        private Expense _selectedExpense;
+        public ObservableCollection<ExpenseTypeDTO> ExpenseTypes { get; internal set; }
+        public ObservableCollection<CurrencyDTO> Currencies { get; internal set; }
 
-        /// <summary>
-        /// Sets and gets the SelectedExpense property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public Expense SelectedExpense
-        {
-            get
-            {
-                return _selectedExpense;
-            }
-
-            set
-            {
-                var oldValue = _selectedExpense;
-                _selectedExpense = value;
-
-                RaisePropertyChanged(nameof(SelectedExpense), oldValue, value);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="Expenses" /> property's name.
-        /// </summary>
-        private IList<Expense> _expenses;
-
-        /// <summary>
-        /// Sets and gets the Timesheets property.
-        /// Changes to that property's value raise the PropertyChanged event.
-        /// </summary>
-        public IList<Expense> Expenses
-        {
-            get
-            {
-                return _expenses;
-            }
-            internal set
-            {
-                _expenses = value;
-                RaisePropertyChanged(nameof(Expenses));
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="ExpenseTypes" /> property's name.
-        /// </summary>
-        public ObservableCollection<ExpenseType> ExpenseTypes { get; set; }
-
-        /// <summary>
-        /// The <see cref="Currencies" /> property's name.
-        /// </summary>
-        public ObservableCollection<Currency> Currencies { get; set; }
-
-        /// <summary>
-        /// The <see cref="MRUEmailRecipients" /> property's name.
-        /// </summary>
         public MRUCollection<string> MRUEmailRecipients { get; set; }
 
-        /// <summary>
-        /// The <see cref="SendToEmailRecipient" /> property's name.
-        /// </summary>
         private string _sendToEmailRecipient;
-
-        /// <summary>
-        /// Sets and gets the SendToEmailRecipient property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public string SendToEmailRecipient
         {
-            get
-            {
-                return _sendToEmailRecipient;
-            }
-
-            set
-            {
-                var oldValue = _sendToEmailRecipient;
-                _sendToEmailRecipient = value;
-                RaisePropertyChanged(nameof(SendToEmailRecipient), oldValue, value);
-            }
+            get => _sendToEmailRecipient;
+            set => Set(ref _sendToEmailRecipient, value);
         }
+
+        private string[] _DaysOfWeek;
+        public string[] DaysOfWeek
+        {
+            get => _DaysOfWeek;
+            set => Set(ref _DaysOfWeek, value);
+        }
+        
         #endregion
 
         #region Commands Definitions
-        public RelayCommand ClearCommand { get; set; }
-        public RelayCommand<ExpenseAccount> SaveCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
 
-        public RelayCommand<ExpenseAccount> SendToSAPCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
-        public RelayCommand<ExpenseAccount> SaveAsCommand { get; set; }
-        public RelayCommand<ExpenseAccount> OpenCommand { get; set; }
-        public RelayCommand<ExpenseAccount> MarkAsAcceptedCommand { get; set; }
-        public RelayCommand<ExpenseAccount> MarkAsCancelledCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> SaveAsCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> OpenCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> MarkAsRefundedCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> MarkAsAcceptedCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> MarkAsCancelledCommand { get; set; }
         #endregion
-        
+
+        #region Errors Validation
+        public string CurrencyText { get; set; }
+        public string ExpenseTypeText { get; set; }        
+
+        public string Error => throw new NotImplementedException();
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch(columnName)
+                {
+                    case "CurrencyText":
+                        if (!string.IsNullOrEmpty(CurrencyText) && !Currencies.Any(c => c.Description == CurrencyText))
+                            return "Select a valid currency from the combo list!";
+                        break;
+
+                    case "ExpenseTypeText":
+                        if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
+                            return "Select a valid expense type from the combo list!";
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return null;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ExpenseAccountViewModel class.
         /// </summary>
-        public ExpenseAccountViewModel(FDLManager manager, DBArchive db)
+        public ExpenseAccountViewModel(FDLManager manager)
         {
-            _db = db;
             _fdlManager = manager;
 
-            ClearCommand = new RelayCommand(ClearEA, () => { return IsInputEnabled; });
-            SaveCommand = new RelayCommand<ExpenseAccount>(SaveEA, (ExpenseAccount ea) => { return IsInputEnabled; });
+            SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
-            SendToSAPCommand = new RelayCommand<ExpenseAccount>(SendToSAP);
+            SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP);
             SendByEmailCommand = new RelayCommand<string>(SendByEmail);
-            SaveAsCommand = new RelayCommand<ExpenseAccount>(SaveAs);
-            OpenCommand = new RelayCommand<ExpenseAccount>(Open);
-            //MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
-            //MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
+            SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs);
+            OpenCommand = new RelayCommand<ExpenseAccountEVM>(Open);
+            MarkAsRefundedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsRefunded);
+            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
+            MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
 
-            ExpenseTypes = new ObservableCollection<ExpenseType>(_db.ExpenseTypes);
-            ExpenseAccounts = new ObservableCollectionEx<ExpenseAccount>(_db.ExpenseAccounts);
-            Currencies = new ObservableCollection<Currency>(_db.Currencies);
+            using (DBArchive db = new DBArchive())
+            {
+                ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
+                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
+                Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
+            }
 
-            ExpenseAccounts.ItemPropertyChanged += ExpenseAccounts_ItemPropertyChanged;
-
-            MessengerInstance.Register<NewItemMessage<ExpenseAccount>>(this, NewEA);
-            MessengerInstance.Register<ItemChangedMessage<ExpenseAccount>>(this, EAChanged);
+            MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, NewEA);
+            MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -281,21 +172,19 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        private void ExpenseAccounts_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
+        public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {
-            if (SelectedEA != null && SelectedEA.Id == ExpenseAccounts[e.CollectionIndex].Id)
-                RefreshExpenses();
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null && ExpenseAccounts.SingleOrDefault(ea => ea.Id == (item.Content as ExpenseAccountEVM).Id) == null)
+                        ExpenseAccounts.Add(item.Content);
+                })
+            );
         }
 
-        private void RefreshExpenses()
-        {
-            if (SelectedEA != null && SelectedEA.Expenses != null)
-                Expenses = SelectedEA.Expenses.Select(e => e.Clone()).Select(c => { c.ExpenseType = ExpenseTypes.SingleOrDefault(t => t.Id == c.Type); return c; }).ToList();
-            else
-                Expenses = null;
-        }
-
-        public void NewEA(NewItemMessage<ExpenseAccount> item)
+        public void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -303,38 +192,33 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        ExpenseAccount ea = _db.ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id);
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == (item.Content as ExpenseAccountEVM).Id);
 
-                        if (ea != null && !ExpenseAccounts.Contains(ea))
-                            ExpenseAccounts.Add(ea);
+                        if (ea != null)
+                            ea.Status = (item.Content as ExpenseAccountEVM).Status;
                     }
                 })
             );
         }
 
-        public void EAChanged(ItemChangedMessage<ExpenseAccount> item)
+        private void UpdateDaysOfWeek()
         {
-            // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    if (item.Content != null)
-                    {
-                        _db.ExpenseAccounts.AddOrUpdate(item.Content);
-                        _db.SaveChanges();
+            if (SelectedEA == null)
+                return;
 
-                        ExpenseAccounts.SingleOrDefault(e => e.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
-                    }
-                })
-            );
+            DateTime StartDay = DateTime.Now.FromUnixTimestamp(SelectedEA.FDL1.StartDay);
+            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
+            var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
+
+            string[] tmpDays = new string[7];
+
+            for(int i = 0; i < 7; i++)
+                tmpDays[i] = Days[i].Day >= StartDay.Day ? Days[i].ToShortDateString() : string.Empty;
+
+            DaysOfWeek = tmpDays;
         }
 
-        public void ClearEA()
-        {
-
-        }
-
-        public void SaveEA(ExpenseAccount ea)
+        public void SaveEA(ExpenseAccountEVM ea)
         {
             if (ea == null)
                 return;
@@ -345,26 +229,30 @@ namespace Great.ViewModels
                 return;
             }
 
-            foreach (var expense in Expenses)
+            using (DBArchive db = new DBArchive())
             {
-                expense.ExpenseAccount = ea.Id;
-                _db.Expenses.AddOrUpdate(expense);
+                ea.Save(db);
+
+                if (ea.Id == 0)
+                    db.SaveChanges();
+
+                foreach (var expense in ea.Expenses)
+                {
+                    expense.ExpenseAccount = ea.Id;
+                    expense.Save(db);
+                }
+
+                db.SaveChanges();
             }
-
-            _db.ExpenseAccounts.AddOrUpdate(ea);
-
-            if (_db.SaveChanges() > 0)
-                SelectedEA?.NotifyFDLPropertiesChanged();
         }
 
-        public void SendToSAP(ExpenseAccount ea)
+        public void SendToSAP(ExpenseAccountEVM ea)
         {
             if (ea.EStatus == EFDLStatus.Waiting &&
                 MessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             _fdlManager.SendToSAP(ea);
-            _db.SaveChanges();
         }
 
         public void SendByEmail(string address)
@@ -390,7 +278,7 @@ namespace Great.ViewModels
             _fdlManager.SendTo(address, SelectedEA);
         }
 
-        public void SaveAs(ExpenseAccount ea)
+        public void SaveAs(ExpenseAccountEVM ea)
         {
             if (ea == null)
                 return;
@@ -407,7 +295,7 @@ namespace Great.ViewModels
                 _fdlManager.SaveAs(ea, dlg.FileName);
         }
 
-        public void Open(ExpenseAccount ea)
+        public void Open(ExpenseAccountEVM ea)
         {
             if (ea == null)
                 return;
@@ -418,15 +306,31 @@ namespace Great.ViewModels
             Process.Start(fileName);
         }
 
-        public void MarkAsAccepted(ExpenseAccount ea)
+        public void MarkAsRefunded(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as refunded the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.IsRefunded = true;
+            ea.Save();
+        }
+
+        public void MarkAsAccepted(ExpenseAccountEVM ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as accepted the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
-            _db.SaveChanges();
+            ea.Save();
+        }
 
-            ea.NotifyFDLPropertiesChanged();
+        public void MarkAsCancelled(ExpenseAccountEVM ea)
+        {
+            if (MessageBox.Show("Are you sure to mark as Cancelled the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            ea.EStatus = EFDLStatus.Cancelled;
+            ea.Save();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Forms.Xfa;
@@ -139,7 +141,7 @@ namespace Great.Models
                                 #endregion
 
                                 transaction.Commit();
-                                Messenger.Default.Send(new NewItemMessage<ExpenseAccount>(this, ea));
+                                Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(ea)));
                             }
                         }
                         catch (Exception ex)
@@ -221,22 +223,15 @@ namespace Great.Models
                 //fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
 
                 // Extract week number
-                string[] week = new string[]
+                foreach (var entry in ApplicationSettings.FDL.XFAFieldNames.Days)
                 {
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Mon_Date),
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Tue_Date),
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Wed_Date),
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Thu_Date),
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Fri_Date),
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Sat_Date),
-                    GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Sun_Date)
-                };
+                    string day = GetFieldValue(entry.Value);
 
-                foreach (string day in week)
-                {
                     if (day != string.Empty)
                     {
-                        fdl.WeekNr = DateTime.Parse(day).WeekNr();
+                        DateTime date = DateTime.Parse(day);
+                        fdl.WeekNr = date.WeekNr();
+                        fdl.StartDay = date.ToUnixTimestamp();
                         break;
                     }
                 }
@@ -431,34 +426,24 @@ namespace Great.Models
                 value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString().Trim();
                 fdl.Notes = value != string.Empty ? value : null;
 
-                try
-                {
+
+                if(fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails))
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
-                }
-                catch
-                {
-                    // Some very old FDL have a different field name for performance description details
+                else if(fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old)) // Some very old FDL have a different field name for performance description details
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old].GetValueAsString().Trim();
-                }                
+
                 fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
 
                 // Extract week number
-                string[] week = new string[]
+                foreach (var entry in ApplicationSettings.FDL.FieldNames.Days)
                 {
-                    fields[ApplicationSettings.FDL.FieldNames.Mon_Date].GetValueAsString(),
-                    fields[ApplicationSettings.FDL.FieldNames.Tue_Date].GetValueAsString(),
-                    fields[ApplicationSettings.FDL.FieldNames.Wed_Date].GetValueAsString(),
-                    fields[ApplicationSettings.FDL.FieldNames.Thu_Date].GetValueAsString(),
-                    fields[ApplicationSettings.FDL.FieldNames.Fri_Date].GetValueAsString(),
-                    fields[ApplicationSettings.FDL.FieldNames.Sat_Date].GetValueAsString(),
-                    fields[ApplicationSettings.FDL.FieldNames.Sun_Date].GetValueAsString()
-                };
+                    string day = fields[entry.Value].GetValueAsString();
 
-                foreach(string day in week)
-                {
                     if (day != string.Empty)
                     {
-                        fdl.WeekNr = DateTime.Parse(day).WeekNr();
+                        DateTime date = DateTime.Parse(day);
+                        fdl.WeekNr = date.WeekNr();
+                        fdl.StartDay = date.ToUnixTimestamp();
                         break;
                     }
                 }
@@ -650,8 +635,8 @@ namespace Great.Models
         {
             if (file is FDL)
                 return GetAcroFormFields(file as FDL);
-            else if (file is ExpenseAccount)
-                return GetAcroFormFields(file as ExpenseAccount);
+            else if (file is ExpenseAccountEVM)
+                return GetAcroFormFields(file as ExpenseAccountEVM);
             else
                 return null;
         }
@@ -719,13 +704,13 @@ namespace Great.Models
             return fields;
         }
 
-        private Dictionary<string, string> GetAcroFormFields(ExpenseAccount ea)
+        private Dictionary<string, string> GetAcroFormFields(ExpenseAccountEVM ea)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
             var expenses = ea.Expenses.ToList();
 
-            for(int i = 0; i < expenses.Count() && i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
+            for (int i = 0; i < expenses.Count() && i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
             {
                 var entry = ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix[i];
 
@@ -744,6 +729,16 @@ namespace Great.Models
                 fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1.Description);
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Notes, ea.Notes ?? string.Empty);
+
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Mon, ea.MondayAmount > 0 ? ea.MondayAmount.ToString() : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Tue, ea.TuesdayAmount > 0 ? ea.TuesdayAmount.ToString() : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Wed, ea.WednesdayAmount > 0 ? ea.WednesdayAmount.ToString() : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Thu, ea.ThursdayAmount > 0 ? ea.ThursdayAmount.ToString() : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Fri, ea.FridayAmount > 0 ? ea.FridayAmount.ToString() : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Sat, ea.SaturdayAmount > 0 ? ea.SaturdayAmount.ToString() : string.Empty);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Sun, ea.SundayAmount > 0 ? ea.SundayAmount.ToString() : string.Empty);
+
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total, ea.TotalAmount > 0 ? ea.TotalAmount.ToString() : string.Empty);
 
             return fields;
         }
@@ -835,20 +830,13 @@ namespace Great.Models
 
             using (new WaitCursor())
             {
-                string filePath = Path.GetTempPath() + file.FileName;
-
-                Compile(file, filePath);
-
                 EmailMessageDTO message = new EmailMessageDTO();
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
-                message.Attachments.Add(filePath);
 
                 if (file is FDL)
                 {
                     FDL fdl = file as FDL;
-
-                    message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
                     message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
 
                     using (DBArchive db = new DBArchive())
@@ -859,18 +847,12 @@ namespace Great.Models
                             message.CcRecipients.Add(r);
                     }
                 }
-                else if (file is ExpenseAccount)
-                {
-                    ExpenseAccount ea = file as ExpenseAccount;
-                    message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
-                }
-                else
-                    return false; // should never happen
 
-                exchangeProvider.SendEmail(message);
+                bool result = SendMessage(message, file);
 
                 file.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
-                return true;
+
+                return result;
             }
         }
 
@@ -880,32 +862,41 @@ namespace Great.Models
                 return false;
 
             using (new WaitCursor())
-            {
-                string filePath = Path.GetTempPath() + file.FileName;
-
-                Compile(file, filePath);
-
+            {   
                 EmailMessageDTO message = new EmailMessageDTO();
-
-                if (file is FDL)
-                {
-                    FDL fdl = file as FDL;
-                    message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
-                }
-                else if (file is ExpenseAccount)
-                {
-                    ExpenseAccount ea = file as ExpenseAccount;
-                    message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
-                }
-                else
-                    return false; //should never happen
-
                 message.ToRecipients.Add(address);
-                message.Attachments.Add(filePath);
-
-                exchangeProvider.SendEmail(message);
-                return true;
+                
+                return SendMessage(message, file);
             }
+        }
+
+        private bool SendMessage(EmailMessageDTO message, IFDLFile file)
+        {
+            if (file == null)
+                return false;
+
+            string filePath = Path.GetTempPath() + file.FileName;
+
+            Compile(file, filePath);
+
+            message.Attachments.Clear();
+            message.Attachments.Add(filePath);
+
+            if (file is FDL)
+            {
+                FDL fdl = file as FDL;
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            }
+            else if (file is ExpenseAccountEVM)
+            {
+                ExpenseAccountEVM ea = file as ExpenseAccountEVM;
+                message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+            }
+            else
+                return false;
+
+            exchangeProvider.SendEmail(message);
+            return true;
         }
 
         public bool SendCancellationRequest(FDL fdl)
@@ -1003,7 +994,7 @@ namespace Great.Models
                             accepted.EStatus = EFDLStatus.Accepted;
                             accepted.LastError = null;
                             db.SaveChanges();
-                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, accepted));
+                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(accepted)));
                         }
                     }
                     break;
@@ -1018,7 +1009,7 @@ namespace Great.Models
                             expenseAccount.EStatus = EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text;
                             db.SaveChanges();
-                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccount>(this, expenseAccount));
+                            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(expenseAccount)));
                         }
                     }
                     break;
