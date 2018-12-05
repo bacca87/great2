@@ -83,7 +83,7 @@ namespace Great.Models
                     {
                         try
                         {
-                            ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(e => e.FDL == ea.FDL);
+                            ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(e => e.FileName == ea.FileName);
                             
                             if (tmpEA != null && OverrideIfExist)
                             {
@@ -118,19 +118,19 @@ namespace Great.Models
                                             Type = typeId
                                         };
 
-                                        if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString(), out double amount))
+                                        if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString().Replace(",","."), NumberStyles.Any, CultureInfo.InvariantCulture, out double amount))
                                             expense.MondayAmount = amount;
-                                        if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString(), out amount))
+                                        if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.TuesdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString(), out amount))
+                                        if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.WednesdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString(), out amount))
+                                        if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.ThursdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString(), out amount))
+                                        if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.FridayAmount = amount;
-                                        if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString(), out amount))
+                                        if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.SaturdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString(), out amount))
+                                        if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.SundayAmount = amount;
 
                                         db.Expenses.Add(expense);
@@ -631,12 +631,12 @@ namespace Great.Models
             return fields;
         }
 
-        private Dictionary<string, string> GetAcroFormFields(IFDLFile file)
+        private Dictionary<string, string> GetAcroFormFields(IFDLFile file, bool IsReadonly = false)
         {
             if (file is FDL)
                 return GetAcroFormFields(file as FDL);
             else if (file is ExpenseAccountEVM)
-                return GetAcroFormFields(file as ExpenseAccountEVM);
+                return GetAcroFormFields(file as ExpenseAccountEVM, IsReadonly);
             else
                 return null;
         }
@@ -704,7 +704,7 @@ namespace Great.Models
             return fields;
         }
 
-        private Dictionary<string, string> GetAcroFormFields(ExpenseAccountEVM ea)
+        private Dictionary<string, string> GetAcroFormFields(ExpenseAccountEVM ea, bool IsReadonly = false)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
@@ -722,7 +722,9 @@ namespace Great.Models
                 fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
                 fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
                 fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Total"], expenses[i].TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
+
+                if (IsReadonly)
+                    fields.Add(entry["Total"], expenses[i].TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
             }
 
             if (ea.Currency1 != null)
@@ -730,15 +732,19 @@ namespace Great.Models
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Notes, ea.Notes ?? string.Empty);
 
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Mon, ea.MondayAmount > 0 ? ea.MondayAmount.ToString() : string.Empty);
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Tue, ea.TuesdayAmount > 0 ? ea.TuesdayAmount.ToString() : string.Empty);
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Wed, ea.WednesdayAmount > 0 ? ea.WednesdayAmount.ToString() : string.Empty);
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Thu, ea.ThursdayAmount > 0 ? ea.ThursdayAmount.ToString() : string.Empty);
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Fri, ea.FridayAmount > 0 ? ea.FridayAmount.ToString() : string.Empty);
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Sat, ea.SaturdayAmount > 0 ? ea.SaturdayAmount.ToString() : string.Empty);
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Sun, ea.SundayAmount > 0 ? ea.SundayAmount.ToString() : string.Empty);
+            if (IsReadonly)
+            {
+                //used to display totals on readonly file generation
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Mon, ea.MondayAmount > 0 ? ea.MondayAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Tue, ea.TuesdayAmount > 0 ? ea.TuesdayAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Wed, ea.WednesdayAmount > 0 ? ea.WednesdayAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Thu, ea.ThursdayAmount > 0 ? ea.ThursdayAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Fri, ea.FridayAmount > 0 ? ea.FridayAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Sat, ea.SaturdayAmount > 0 ? ea.SaturdayAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total_Sun, ea.SundayAmount > 0 ? ea.SundayAmount.ToString() : string.Empty);
 
-            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total, ea.TotalAmount > 0 ? ea.TotalAmount.ToString() : string.Empty);
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Total, ea.TotalAmount > 0 ? ea.TotalAmount.ToString() : string.Empty);
+            }
 
             return fields;
         }
@@ -763,7 +769,7 @@ namespace Great.Models
                     }
                 }
 
-                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file))
+                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
                 {
                     if(fields.ContainsKey(entry.Key))
                         fields[entry.Key].SetValue(entry.Value);

@@ -213,7 +213,7 @@ namespace Great.ViewModels
             string[] tmpDays = new string[7];
 
             for(int i = 0; i < 7; i++)
-                tmpDays[i] = Days[i].Day >= StartDay.Day ? Days[i].ToShortDateString() : string.Empty;
+                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i].ToShortDateString() : string.Empty;
 
             DaysOfWeek = tmpDays;
         }
