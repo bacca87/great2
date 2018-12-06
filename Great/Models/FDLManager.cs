@@ -102,15 +102,26 @@ namespace Great.Models
                                 {
                                     foreach (var entry in ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix)
                                     {
-                                        string type = fields[entry["Type"]].GetValueAsString();
+                                        string type = fields[entry["Type"]].GetValueAsString().ToLower();
 
                                         if (string.IsNullOrEmpty(type))
                                             continue;
 
-                                        var typeId = db.ExpenseTypes.Where(t => t.Description == type).Select(t => t.Id).FirstOrDefault();
+                                        var typeId = db.ExpenseTypes.Where(t => t.Description.ToLower() == type).Select(t => t.Id).FirstOrDefault();
 
                                         if (typeId == 0)
-                                            continue;
+                                        {
+                                            // EA from GREAT have wrong expense type description for hotels and fuels, so we need to find the correct match
+                                            db.Entry(ea).Reference(p => p.FDL1).Load(); // explicit loading
+                                            bool IsItaly = ea.FDL1?.Factory1?.TransferType == 0 || ea.FDL1?.Factory1?.TransferType == 1;
+                                            typeId = db.ExpenseTypes.Where(t => t.Description.ToLower().Contains(type) && t.Description.ToLower().Contains(IsItaly ? "italia" : "estero")).Select(t => t.Id).FirstOrDefault();
+
+                                            if(typeId == 0) // try last time with less filters as possible
+                                                typeId = db.ExpenseTypes.Where(t => t.Description.ToLower().Contains(type)).Select(t => t.Id).FirstOrDefault();
+
+                                            if (typeId == 0) // unknown expense type
+                                                continue;
+                                        }
 
                                         Expense expense = new Expense()
                                         {

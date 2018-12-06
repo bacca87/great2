@@ -63,11 +63,11 @@
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Rent Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy' }" FontWeight="Bold"/>
-                    <DataGridTextColumn Header="Rent End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy'}"/>
-                    <DataGridTextColumn Header="Car Brand" Binding="{Binding Car1.Brand}"/>
-                    <DataGridTextColumn Header="Car Model" Binding="{Binding Car1.Model}"/>
-                    <DataGridTextColumn Header="Car Brand" Binding="{Binding Car1.LicensePlate}"/>
+                    <DataGridTextColumn Header="Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy' }" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy'}"/>
+                    <DataGridTextColumn Header="Brand" Binding="{Binding Car1.Brand}"/>
+                    <DataGridTextColumn Header="Model" Binding="{Binding Car1.Model}"/>
+                    <DataGridTextColumn Header="License Plate" Binding="{Binding Car1.LicensePlate}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

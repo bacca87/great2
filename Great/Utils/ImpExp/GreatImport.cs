@@ -121,8 +121,8 @@ namespace Great.Utils
         {
             CompileFactoriesTable();
             CompileFdlTable();
-            CompileEATable();
             CompileHourTable();
+            CompileEATable();
             CompileCarRents();
 
             if (!stopImport)

@@ -19,6 +19,8 @@
                 <scm:SortDescription PropertyName="Id" Direction="Descending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+
+        <conv:ZeroDoubleToNullConverter x:Key="ZeroDoubleToNullConverter"/>
     </Page.Resources>
     <Grid Margin="10,0,10,0">
         <Grid.ColumnDefinitions>
@@ -95,10 +97,11 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                 <DataGridTextColumn Header="Amount" CellStyle="{StaticResource CenterAligned}">
                     <DataGridTextColumn.Binding>
                         <MultiBinding StringFormat="{}{0}{1}">
-                            <Binding Path="TotalAmount" />
+                            <Binding Path="TotalAmount" Converter="{StaticResource ZeroDoubleToNullConverter}"/>
                             <Binding Path="CurrencyCode" />
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
@@ -182,8 +185,7 @@
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
-                    <conv:EmptyStringToTrueConverter x:Key="EmptyStringToTrueConverter"/>
-                    <conv:ZeroDoubleToNullConverter x:Key="ZeroDoubleToNullConverter"/>                    
+                    <conv:EmptyStringToTrueConverter x:Key="EmptyStringToTrueConverter"/>                  
                 </DataGrid.Resources>
                 <!--<DataGrid.ContextMenu>
                 <ContextMenu>
@@ -222,49 +224,49 @@
                     <DataGridTextColumn Binding="{Binding MondayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[0], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[0], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[0], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding TuesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[1], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[1], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[1], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding WednesdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[2], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[2], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[2], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding ThursdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[3], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[3], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[3], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding FridayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[4], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[4], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[4], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding SaturdayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[5], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[5], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[5], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding SundayAmount, TargetNullValue=''}" CellStyle="{StaticResource CenterAligned}" IsReadOnly="{Binding DataContext.DaysOfWeek[6], Source={x:Reference dummyElement}, Converter={StaticResource EmptyStringToTrueConverter}}">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding DataContext.DaysOfWeek[6], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                <TextBlock Text="{Binding DataContext.DaysOfWeek[6], RelativeSource={RelativeSource AncestorType=DataGrid}, StringFormat='ddd dd MMM'}"/>
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
