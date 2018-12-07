@@ -167,6 +167,7 @@ namespace Great.ViewModels
                     case "LicensePlate":
                         if (!string.IsNullOrEmpty(SelectedCar.LicensePlate))
                             return "Select a valid currency from the combo list!";
+
                         break;
 
                     //case "ExpenseTypeText":
