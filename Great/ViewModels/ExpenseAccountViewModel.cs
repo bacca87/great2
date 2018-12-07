@@ -85,8 +85,8 @@ namespace Great.ViewModels
             set => Set(ref _sendToEmailRecipient, value);
         }
 
-        private string[] _DaysOfWeek;
-        public string[] DaysOfWeek
+        private DateTime?[] _DaysOfWeek;
+        public DateTime?[] DaysOfWeek
         {
             get => _DaysOfWeek;
             set => Set(ref _DaysOfWeek, value);
@@ -210,10 +210,10 @@ namespace Great.ViewModels
             DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
             var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
 
-            string[] tmpDays = new string[7];
+            DateTime?[] tmpDays = new DateTime?[7];
 
             for(int i = 0; i < 7; i++)
-                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i].ToShortDateString() : string.Empty;
+                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
 
             DaysOfWeek = tmpDays;
         }
