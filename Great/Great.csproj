@@ -223,10 +223,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteEntry.cs" />
-    <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.xaml.cs">
-      <DependentUpon>AutoCompleteTextBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Models\Database\Car.cs" />
     <Compile Include="Models\Database\Car.ext.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
@@ -246,6 +242,8 @@
     <Compile Include="Models\Database\OrderEmailRecipient.cs" />
     <Compile Include="Models\Database\Timesheet.cs" />
     <Compile Include="Models\Database\TransferType.cs" />
+    <Compile Include="Models\DTO\CarDTO.cs" />
+    <Compile Include="Models\DTO\CarRentalCompanyDTO.cs" />
     <Compile Include="Models\DTO\CurrencyDTO.cs" />
     <Compile Include="Models\DTO\EmailMessageDTO.cs" />
     <Compile Include="Models\Database\Expense.ext.cs" />
@@ -296,6 +294,8 @@
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\CarRentalViewModel.cs" />
+    <Compile Include="ViewModels\Database\CarEVM.cs" />
+    <Compile Include="ViewModels\Database\CarRentalEVM.cs" />
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />
@@ -354,10 +354,6 @@
     <Compile Include="Views\Wizards\GreatImportWizardView.xaml.cs">
       <DependentUpon>GreatImportWizardView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

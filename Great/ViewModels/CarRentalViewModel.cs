@@ -2,8 +2,9 @@
 using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
 using Great.Utils;
+using Great.ViewModels.Database;
 using System;
-using System.Data.Entity.Migrations;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
@@ -15,20 +16,11 @@ namespace Great.ViewModels
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class CarRentalViewModel : ViewModelBase
+    public class CarRentalViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Properties
-        private DBArchive _db;
 
-        /// <summary>
-        /// The <see cref="IsInputEnabled" /> property's name.
-        /// </summary>
         private bool _isInputEnabled = false;
-
-        /// <summary>
-        /// Sets and gets the IsInputEnabled property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
@@ -48,15 +40,7 @@ namespace Great.ViewModels
             }
         }
 
-        /// <summary>
-        /// The <see cref="ShowContextualMenu" /> property's name.
-        /// </summary>
         private bool _showContextualMenu = false;
-
-        /// <summary>
-        /// Sets and gets the IsChanged property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public bool ShowContextualMenu
         {
             get => _showContextualMenu;
@@ -76,139 +60,43 @@ namespace Great.ViewModels
             }
         }
 
-        /// <summary>
-        /// The <see cref="Rentals" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<CarRentalHistory> _rentals;
+        public ObservableCollectionEx<CarRentalHistoryEVM> Rentals { get; set; }
+        public ObservableCollectionEx<CarRentalHistoryEVM> FilteredRentals { get; set; }
+        public ObservableCollectionEx<CarEVM> Cars { get; set; }
+        public ObservableCollectionEx<CarRentalCompany> RentalCompanies { get; set; }
 
-        /// <summary>
-        /// Sets and gets the Rentals property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
-        public ObservableCollectionEx<CarRentalHistory> Rentals
-        {
-            get => _rentals;
-            set
-            {
-                _rentals = value;
-                RaisePropertyChanged(nameof(Rentals), true);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="FilteredRentals" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<CarRentalHistory> _filteredRentals;
-
-        /// <summary>
-        /// Sets and gets the FilteredRentals property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
-        public ObservableCollectionEx<CarRentalHistory> FilteredRentals
-        {
-            get => _filteredRentals;
-            set
-            {
-                _filteredRentals = value;
-                RaisePropertyChanged(nameof(FilteredRentals), true);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="SelectedRent" /> property's name.
-        /// </summary>
-        private CarRentalHistory _selectedRent;
-
-        /// <summary>
-        /// Sets and gets the SelectedRent property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public CarRentalHistory SelectedRent
+        private CarRentalHistoryEVM _selectedRent;
+        public CarRentalHistoryEVM SelectedRent
         {
             get => _selectedRent;
 
             set
             {
-
-                var oldValue = _selectedRent;
-                _selectedRent = value;
-
-                SelectedRentClone = _selectedRent?.Clone();
-                SelectedCarClone = _selectedRent?.Car1.Clone();
-
-                RaisePropertyChanged(nameof(SelectedRent), oldValue, value);
-
+                Set(ref _selectedRent, value);
+                SelectedCar = _selectedRent?.Car1;
                 ShowContextualMenu = false;
-
             }
         }
 
-        /// <summary>
-        /// The <see cref="SelectedRentClone" /> property's name.
-        /// </summary>
-        private CarRentalHistory _selectedRentClone;
 
-        /// <summary>
-        /// Sets and gets the SelectedRentClone property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public CarRentalHistory SelectedRentClone
+        private CarEVM _selectedCar;
+        public CarEVM SelectedCar
         {
-            get => _selectedRentClone;
+            get => _selectedCar;
 
             set
             {
                 if (value != null)
-                {
-                    var oldValue = _selectedRentClone;
-                    _selectedRentClone = value;
-                    SelectedCarClone = value.Car1;
-                    RaisePropertyChanged(nameof(SelectedRentClone), oldValue, value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="SelectedCarClone" /> property's name.
-        /// </summary>
-        private Car _selectedCarClone;
-
-        /// <summary>
-        /// Sets and gets the SelectedRentClone property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public Car SelectedCarClone
-        {
-            get => _selectedCarClone;
-
-            set
-            {
-                if (value != null)
-                {
-                    var oldValue = _selectedCarClone;
-                    _selectedCarClone = value;
-                    RaisePropertyChanged(nameof(SelectedCarClone), oldValue, value);
-                }
-
+                    Set(ref _selectedCar, value);
             }
         }
 
 
-        /// <summary>
-        /// The <see cref="RentalCompanies" /> property's name.
-        /// </summary>
-        public ObservableCollectionEx<CarRentalCompany> RentalCompanies { get; set; }
+        #endregion
 
         #region Filter properties
-        /// <summary>
-        /// The <see cref="RentStartDateFilter" /> property's name.
-        /// </summary>
-        private DateTime? _rentStartDateFilter;
 
-        /// <summary>
-        /// Sets and gets the RentStartDateFilter property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private DateTime? _rentStartDateFilter;
         public DateTime? RentStartDateFilter
         {
             get => _rentStartDateFilter;
@@ -220,15 +108,8 @@ namespace Great.ViewModels
             }
         }
 
-        /// <summary>
-        /// The <see cref="RentEndDateFilter" /> property's name.
-        /// </summary>
-        private DateTime? _rentEndDateFilter;
 
-        /// <summary>
-        /// Sets and gets the RentEndDateFilter property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private DateTime? _rentEndDateFilter;
         public DateTime? RentEndDateFilter
         {
             get => _rentEndDateFilter;
@@ -240,15 +121,8 @@ namespace Great.ViewModels
             }
         }
 
-        /// <summary>
-        /// The <see cref="ModelBrandFilter" /> property's name.
-        /// </summary>
-        private string _modelBrandFilter;
 
-        /// <summary>
-        /// Sets and gets the ModelFilter property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private string _modelBrandFilter;
         public string ModelBrandFilter
         {
             get => _modelBrandFilter;
@@ -256,15 +130,8 @@ namespace Great.ViewModels
             set => _modelBrandFilter = value;
         }
 
-        /// <summary>
-        /// The <see cref="LicencePlateFilter" /> property's name.
-        /// </summary>
-        private string _licensePlateFilter;
 
-        /// <summary>
-        /// Sets and gets the ModelFilter property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private string _licensePlateFilter;
         public string LicencePlateFilter
         {
             get => _licensePlateFilter;
@@ -274,45 +141,72 @@ namespace Great.ViewModels
 
         #endregion
 
-        /// <summary>
-        /// The <see cref="Cars" /> property's name.
-        /// </summary>
-        public ObservableCollectionEx<Car> Cars { get; set; }
-        #endregion
-
         #region Commands Definitions
         public RelayCommand ClearCommand { get; set; }
-        public RelayCommand<CarRentalHistory> SaveCommand { get; set; }
-        public RelayCommand<CarRentalHistory> DeleteCommand { get; set; }
-        public RelayCommand<CarRentalHistory> NewCommand { get; set; }
+        public RelayCommand<CarRentalHistoryEVM> SaveCommand { get; set; }
+        public RelayCommand<CarRentalHistoryEVM> DeleteCommand { get; set; }
+        public RelayCommand<CarRentalHistoryEVM> NewCommand { get; set; }
         public RelayCommand ShowContextualMenuCommand { get; set; }
         public RelayCommand ApplyFilters { get; set; }
         public RelayCommand RemoveFilters { get; set; }
 
         #endregion
 
+        #region Errors Validation
+        public string CurrencyText { get; set; }
+        public string ExpenseTypeText { get; set; }
+
+        public string Error => throw new NotImplementedException();
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case "LicensePlate":
+                        if (!string.IsNullOrEmpty(SelectedCar.LicensePlate))
+                            return "Select a valid currency from the combo list!";
+                        break;
+
+                    //case "ExpenseTypeText":
+                    //    if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
+                    //        return "Select a valid expense type from the combo list!";
+                    //    break;
+
+                    default:
+                        break;
+                }
+
+                return null;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the ExpenseAccountViewModel class.
         /// </summary>
-        public CarRentalViewModel(DBArchive db)
+        public CarRentalViewModel()
         {
-            _db = db;
-
             IsInputEnabled = true;
 
-            SaveCommand = new RelayCommand<CarRentalHistory>(SaveRent);
-            DeleteCommand = new RelayCommand<CarRentalHistory>(DeleteRent);
-            NewCommand = new RelayCommand<CarRentalHistory>(NewRent);
+            SaveCommand = new RelayCommand<CarRentalHistoryEVM>(SaveRent);
+            DeleteCommand = new RelayCommand<CarRentalHistoryEVM>(DeleteRent);
+            NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
             ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
 
-            Rentals = new ObservableCollectionEx<CarRentalHistory>(_db.CarRentalHistories);
+            using (DBArchive db = new DBArchive())
+            {
+                Rentals = new ObservableCollectionEx<CarRentalHistoryEVM>(db.CarRentalHistories.ToList().Select(cr => new CarRentalHistoryEVM(cr)));
+                Cars = new ObservableCollectionEx<CarEVM>(db.Cars.ToList().Select(c => new CarEVM(c)));
+                RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(db.CarRentalCompanies);
+            }
+
             FilteredRentals = Rentals;
-            Cars = new ObservableCollectionEx<Car>(_db.Cars);
-            RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(_db.CarRentalCompanies);
-            SelectedCarClone = new Car();
-            SelectedRentClone = new CarRentalHistory();
+            SelectedCar = new CarEVM();
+            SelectedRent = new CarRentalHistoryEVM();
 
         }
 
@@ -320,93 +214,98 @@ namespace Great.ViewModels
         {
             FilteredRentals = Rentals;
             LicencePlateFilter = null;
-            ModelBrandFilter =null;
-            ModelBrandFilter =null;
-            RentStartDateFilter =null;
-            RentEndDateFilter= null;
+            ModelBrandFilter = null;
+            ModelBrandFilter = null;
+            RentStartDateFilter = null;
+            RentEndDateFilter = null;
 
         }
 
         private void ApplyFiltersCommand()
         {
-            if (RentStartDateFilter != null)        
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.RentStartDate >= RentStartDateFilter.Value));
-            
-            if (RentEndDateFilter != null)         
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.RentEndDate >= RentEndDateFilter.Value));
-            
-            if (ModelBrandFilter!= null && ModelBrandFilter != string.Empty)           
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.Model.ToUpper().Contains(ModelBrandFilter.ToUpper()) || 
+            if (RentStartDateFilter != null)
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.RentStartDate >= RentStartDateFilter.Value));
+
+            if (RentEndDateFilter != null)
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.RentEndDate >= RentEndDateFilter.Value));
+
+            if (ModelBrandFilter != null && ModelBrandFilter != string.Empty)
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.Car1.Model.ToUpper().Contains(ModelBrandFilter.ToUpper()) ||
                                                                                                   r.Car1.Brand.ToUpper().Contains(ModelBrandFilter.ToUpper())));
 
-            if (LicencePlateFilter != null && LicencePlateFilter != string.Empty)       
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistory>(Rentals.Where(r => r.Car1.LicensePlate.ToUpper().Contains(_licensePlateFilter.ToUpper())));
-          
+            if (LicencePlateFilter != null && LicencePlateFilter != string.Empty)
+                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.Car1.LicensePlate.ToUpper().Contains(_licensePlateFilter.ToUpper())));
+
         }
 
-        private void NewRent(CarRentalHistory obj)
+        private void NewRent(CarRentalHistoryEVM obj)
         {
-            SelectedRentClone = new CarRentalHistory();
-            SelectedCarClone = new Car();
+            SelectedRent = new CarRentalHistoryEVM();
+            SelectedCar = new CarEVM();
         }
 
-        private void DeleteRent(CarRentalHistory cr)
+        private void DeleteRent(CarRentalHistoryEVM cr)
         {
             if (MessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
-                var rentalsWithSameCar = _db.CarRentalHistories.Where(c => c.Car == cr.Car && c.Id!= cr.Id).ToList();
-
-                if (rentalsWithSameCar.Count() == 0)
+                using (DBArchive db = new DBArchive())
                 {
-                    var car = _db.Cars.Where(c => c.Id == cr.Car).FirstOrDefault();
-                    _db.Cars.Remove(car);
-                    Cars.Remove(car);
+                    var rentalsWithSameCar = db.CarRentalHistories.Where(c => c.Car == cr.Car && c.Id != cr.Id).ToList();
+                    if (rentalsWithSameCar.Count() == 0)
+                    {
+                        var car = db.Cars.Where(c => c.Id == cr.Car).FirstOrDefault();
+                        db.Cars.Remove(car);
+                        Cars.Remove(new CarEVM(car));
 
-                }
+                    }
 
-                _db.CarRentalHistories.Remove(cr);
+                    var rent = db.CarRentalHistories.Where(c => c.Id == cr.Id).FirstOrDefault();
+                    db.CarRentalHistories.Remove(rent);
 
-                if (_db.SaveChanges() > 0)
-                {
                     Rentals.Remove(cr);
-                    SelectedRent?.NotifyCarRentalHistoryPropertiesChanged();
+                    FilteredRentals.Remove(cr);
+                    db.SaveChanges();
+
                 }
             }
 
         }
 
-        public void SaveRent(CarRentalHistory rc)
+        public void SaveRent(CarRentalHistoryEVM rc)
         {
 
-            if (rc == null || SelectedCarClone == null)
+            if (rc == null || SelectedCar == null)
             {
                 return;
             }
-            if (!SelectedCarClone.IsValid)
+
+            var existingCar = Cars.Where(c => c.Id == SelectedCar.Id).FirstOrDefault();
+
+            //avoid update existing car
+            if (existingCar?.Model != SelectedCar.Model
+                || existingCar?.Brand != SelectedCar.Brand
+                || existingCar?.LicensePlate != SelectedCar.LicensePlate
+                || existingCar?.CarRentalCompany != SelectedCar.CarRentalCompany)
             {
-                MessageBox.Show("Car informations not valid", "Invalid Car informations", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                var SelectedCarClone = new CarEVM();
+                SelectedCarClone.Brand = SelectedCar.Brand;
+                SelectedCarClone.Model = SelectedCar.Model;
+                SelectedCarClone.LicensePlate = SelectedCar.LicensePlate;
+                SelectedCarClone.CarRentalCompany = SelectedCar.CarRentalCompany;
+                SelectedCar = SelectedCarClone;
             }
 
-            if (!rc.IsValid)
+            using (DBArchive db = new DBArchive())
             {
-                MessageBox.Show("Rent informations not valid", "Invalid Rent informations", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                SelectedCar.Save(db);
+
+                rc.Car = SelectedCar.Id;
+                rc.Save(db);
+                db.SaveChanges();
             }
-            _db.Cars.AddOrUpdate(SelectedCarClone);
-            _db.SaveChanges();
 
-            rc.Car = SelectedCarClone.Id;
-            _db.CarRentalHistories.AddOrUpdate(rc);
-
-            if (Rentals.Where(x => x.Id == rc.Id).Count() == 0)
-                Rentals.Add(rc);
-
-            if (_db.SaveChanges() > 0)
-            {
-                SelectedRent?.NotifyCarRentalHistoryPropertiesChanged();
-
-            }
+            if (!FilteredRentals.Any(r => r.Id == rc.Id))
+                FilteredRentals.Add(rc);
         }
     }
 }

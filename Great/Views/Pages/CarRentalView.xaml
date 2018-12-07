@@ -103,18 +103,18 @@
                     ItemsSource="{Binding Cars }" 
                     ItemTemplate="{StaticResource AutoCompleteLicensePlate}"
                     ValueMemberPath="LicensePlate"
-                    SelectedItem="{Binding SelectedCarClone, Mode=TwoWay}"
-                    Text="{Binding SelectedCarClone.LicensePlate, Mode=TwoWay}"/>
+                    SelectedItem="{Binding SelectedCar, Mode=TwoWay}"
+                    Text="{Binding SelectedCar.LicensePlate, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
 
 
                 <TextBlock>Brand</TextBlock>
-                <TextBox Text="{Binding SelectedCarClone.Brand, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedCar.Brand, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Model</TextBlock>
-                <TextBox Text="{Binding SelectedCarClone.Model, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedCar.Model, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Company</TextBlock>
                 <ComboBox 
-                                  SelectedItem="{Binding SelectedCarClone.CarRentalCompany1}" 
-                                  SelectedValue="{Binding SelectedCarClone.CarRentalCompany}" 
+                                  SelectedItem="{Binding SelectedCar.CarRentalCompany1}" 
+                                  SelectedValue="{Binding SelectedCar.CarRentalCompany}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
                                   SelectedValuePath="Id" 
@@ -131,25 +131,25 @@
                 </ComboBox>
                 <TextBlock>Initial Km</TextBlock>
                 <TextBox
-                    Text="{Binding SelectedRentClone.StartKm, Mode=TwoWay}" 
+                    Text="{Binding SelectedRent.StartKm, Mode=TwoWay}" 
                     IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Ending Km</TextBlock>
-                <TextBox Text="{Binding SelectedRentClone.EndKm, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedRent.EndKm, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Start Date:</TextBlock>
-                <DatePicker DisplayDate="{Binding SelectedRentClone.RentStartDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRentClone.RentStartDate}" IsEnabled="{Binding IsInputEnabled}"/>
+                <DatePicker DisplayDate="{Binding SelectedRent.RentStartDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRent.RentStartDate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Date</TextBlock>
-                <DatePicker  DisplayDate="{Binding SelectedRentClone.RentEndDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRentClone.RentEndDate}" IsEnabled="{Binding IsInputEnabled}"/>
+                <DatePicker  DisplayDate="{Binding SelectedRent.RentEndDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRent.RentEndDate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Start Location</TextBlock>
-                <TextBox Text="{Binding SelectedRentClone.StartLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedRent.StartLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Location</TextBlock>
-                <TextBox Text="{Binding SelectedRentClone.EndLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedRent.EndLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Start Fuel Level</TextBlock>
-                <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>End Fuel Level</TextBlock>
-                <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRentClone.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <Slider Minimum="0" Maximum="8" Value="{Binding SelectedRent.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
 
                 <TextBlock>Notes</TextBlock>
-                <TextBox Text="{Binding SelectedRentClone.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox Text="{Binding SelectedRent.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
             </StackPanel>
 
 
