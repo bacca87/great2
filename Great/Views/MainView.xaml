@@ -49,9 +49,16 @@
             <!--Contextual Tab Groups-->
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
-                                     Header="TOOLS" 
+                                     Header="RENT" 
                                      DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                      Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
+                <Fluent:RibbonContextualTabGroup x:Name="EditEAGroup"
+                                     Header="EA" 
+                                     DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
@@ -266,7 +273,7 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/pdf-file.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
@@ -388,7 +395,7 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/pdf-file.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
@@ -412,16 +419,25 @@
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
                                   IsSelected="{Binding ShowContextualMenu}"                                   
                                   Group="{Binding Source={x:Reference EditRentalGroup}}">
-
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Save Rent" Text="Save Selected Rent" />
+                            <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-
-
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
+                                  IsSelected="{Binding ShowEditMenu}"
+                                  Group="{Binding Source={x:Reference EditEAGroup}}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save Expense Account" Text="Save the current expense account." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     

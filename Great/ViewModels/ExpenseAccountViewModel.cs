@@ -91,12 +91,19 @@ namespace Great.ViewModels
             get => _DaysOfWeek;
             set => Set(ref _DaysOfWeek, value);
         }
-        
+
+
+        private bool _showEditMenu;
+        public bool ShowEditMenu
+        {
+            get => _showEditMenu;
+            set => Set(ref _showEditMenu, value);
+        }
+
         #endregion
 
         #region Commands Definitions
         public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
-
         public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SaveAsCommand { get; set; }
@@ -104,6 +111,8 @@ namespace Great.ViewModels
         public RelayCommand<ExpenseAccountEVM> MarkAsRefundedCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> MarkAsCancelledCommand { get; set; }
+        public RelayCommand GotFocusCommand { get; set; }
+        public RelayCommand LostFocusCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -153,6 +162,10 @@ namespace Great.ViewModels
             MarkAsRefundedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsRefunded);
             MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
+            GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
+            LostFocusCommand = new RelayCommand(() => {
+                //vedere se serve
+            });
 
             using (DBArchive db = new DBArchive())
             {
