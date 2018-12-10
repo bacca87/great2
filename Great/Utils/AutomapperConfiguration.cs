@@ -29,6 +29,13 @@ namespace Great.Utils
                 cfg.CreateMap<ExpenseType, ExpenseTypeDTO>();
                 cfg.CreateMap<Factory, FactoryDTO>();
                 cfg.CreateMap<TransferType, TransferTypeDTO>();
+
+                cfg.CreateMap<CarRentalHistory, CarRentalHistoryEVM>();
+                cfg.CreateMap<CarRentalHistoryEVM, CarRentalHistory>();
+                cfg.CreateMap<Car, CarEVM>();
+                cfg.CreateMap<CarEVM, Car>();
+                cfg.CreateMap<Car, CarDTO>();
+                cfg.CreateMap<CarRentalCompany, CarRentalCompanyDTO>();
             });
         }
     }
