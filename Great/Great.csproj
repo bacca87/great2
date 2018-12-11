@@ -242,6 +242,8 @@
     <Compile Include="Models\Database\OrderEmailRecipient.cs" />
     <Compile Include="Models\Database\Timesheet.cs" />
     <Compile Include="Models\Database\TransferType.cs" />
+    <Compile Include="Models\DTO\CarDTO.cs" />
+    <Compile Include="Models\DTO\CarRentalCompanyDTO.cs" />
     <Compile Include="Models\DTO\CurrencyDTO.cs" />
     <Compile Include="Models\DTO\EmailMessageDTO.cs" />
     <Compile Include="Models\Database\Expense.ext.cs" />
@@ -292,6 +294,8 @@
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\WPFTools.cs" />
     <Compile Include="ViewModels\CarRentalViewModel.cs" />
+    <Compile Include="ViewModels\Database\CarEVM.cs" />
+    <Compile Include="ViewModels\Database\CarRentalEVM.cs" />
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using GalaSoft.MvvmLight;
 using Great.Models.Database;
 using Great.Models.DTO;
