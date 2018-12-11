@@ -36,6 +36,7 @@ namespace Great.Utils
                 cfg.CreateMap<CarEVM, Car>();
                 cfg.CreateMap<Car, CarDTO>();
                 cfg.CreateMap<CarRentalCompany, CarRentalCompanyDTO>();
+
             });
         }
     }
