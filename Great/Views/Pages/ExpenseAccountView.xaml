@@ -163,6 +163,7 @@
                 CanUserResizeColumns="False" 
                 CanUserResizeRows="False" 
                 CanUserSortColumns="False" 
+                CanUserAddRows="{Binding SelectedEA.InsertExpenseEnabled}"
                 SelectionMode="Single"
                 HeadersVisibility="All"
                 ItemsSource="{Binding SelectedEA.Expenses}"

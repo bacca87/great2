@@ -589,6 +589,7 @@ namespace Great.Models
         #region Expense Account
         public static class ExpenseAccount
         {
+            public const int MaxExpenseCount = 15;
             public const int NotesMaxLength = 352;
 
             public const string EA_Accepted = "NOTA SPESE ACCETTATA";

@@ -248,6 +248,8 @@ namespace Great.ViewModels
 
                 if (ea.Id == 0)
                     db.SaveChanges();
+                else
+                    db.Expenses.RemoveRange(db.Expenses.Where(e => e.ExpenseAccount == ea.Id));
 
                 foreach (var expense in ea.Expenses)
                 {
