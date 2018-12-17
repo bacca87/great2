@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Models.Database;
@@ -365,7 +366,10 @@ namespace Great.ViewModels
 
             if (_db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
             {
+                OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
                 OrderRecipientsView recipientsView = new OrderRecipientsView();
+
+                recipientsVM.Order = fdl.Order;                
                 recipientsView.ShowDialog();
             }
 

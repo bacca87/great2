@@ -40,7 +40,6 @@ namespace Great.Views
             recipientsVM.Order = FdlVM.SelectedFDL.Order;
             
             OrderRecipientsView view = new OrderRecipientsView();
-            view.Owner = this;
             view.ShowDialog();
         }
     }
