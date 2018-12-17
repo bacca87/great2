@@ -420,7 +420,7 @@
                                   IsSelected="{Binding ShowContextualMenu}"                                   
                                   Group="{Binding Source={x:Reference EditRentalGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRentClone}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>

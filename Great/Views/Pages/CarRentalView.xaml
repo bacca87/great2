@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
-      xmlns:m="clr-namespace:Great.Models.Database"
+      xmlns:m="clr-namespace:Great.Models.DTO"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
       mc:Ignorable="d" 
@@ -124,7 +124,7 @@
                     </ComboBox.Resources>
                     <ComboBox.ItemsSource>
                         <CompositeCollection>
-                            <m:CarRentalCompany/>
+                            <m:CarRentalCompanyDTO/>
                             <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
                         </CompositeCollection>
                     </ComboBox.ItemsSource>

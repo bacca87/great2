@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
 using Great.ViewModels.Database;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -63,7 +65,7 @@ namespace Great.ViewModels
         public ObservableCollectionEx<CarRentalHistoryEVM> Rentals { get; set; }
         public ObservableCollectionEx<CarRentalHistoryEVM> FilteredRentals { get; set; }
         public ObservableCollectionEx<CarEVM> Cars { get; set; }
-        public ObservableCollectionEx<CarRentalCompany> RentalCompanies { get; set; }
+        public ObservableCollection<CarRentalCompanyDTO> RentalCompanies { get; set; }
 
         private CarRentalHistoryEVM _selectedRent;
         public CarRentalHistoryEVM SelectedRent
@@ -202,7 +204,7 @@ namespace Great.ViewModels
             {
                 Rentals = new ObservableCollectionEx<CarRentalHistoryEVM>(db.CarRentalHistories.ToList().Select(cr => new CarRentalHistoryEVM(cr)));
                 Cars = new ObservableCollectionEx<CarEVM>(db.Cars.ToList().Select(c => new CarEVM(c)));
-                RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(db.CarRentalCompanies);
+                RentalCompanies = new ObservableCollection<CarRentalCompanyDTO>(db.CarRentalCompanies.ToList().Select(c => new CarRentalCompanyDTO(c)));
             }
 
             FilteredRentals = Rentals;
