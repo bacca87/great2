@@ -120,6 +120,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _EStatus, value);
+                Status = (long)value;
                 IsNew = _EStatus == EFDLStatus.New;
             }
         }

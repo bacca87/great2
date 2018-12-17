@@ -323,7 +323,7 @@ namespace Great.ViewModels
 
         public void MarkAsRefunded(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as refunded the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.IsRefunded = true;
@@ -332,7 +332,7 @@ namespace Great.ViewModels
 
         public void MarkAsAccepted(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as accepted the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as \"Accepted\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
@@ -341,7 +341,7 @@ namespace Great.ViewModels
 
         public void MarkAsCancelled(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as Cancelled the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as \"Cancelled\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Cancelled;
