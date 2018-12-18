@@ -3,16 +3,16 @@ using Great.Models.Database;
 
 namespace Great.Models.DTO
 {
-    public class FactoryDTO
+    public class FDLResultDTO
     {
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public FactoryDTO() { }
+        public FDLResultDTO() { }
 
-        public FactoryDTO(Factory factory)
+        public FDLResultDTO(FDLResult result)
         {
-            Mapper.Map(factory, this);
+            Mapper.Map(result, this);
         }
     }
 }

@@ -113,15 +113,14 @@ namespace Great.ViewModels.Database
             set => Set(ref _CurrencyCode, value);
         }
 
-        private EFDLStatus _EStatus;
         public EFDLStatus EStatus
         {
-            get => _EStatus;
+            get => (EFDLStatus)Status;
             set
             {
-                Set(ref _EStatus, value);
+                RaisePropertyChanged();
                 Status = (long)value;
-                IsNew = _EStatus == EFDLStatus.New;
+                IsNew = value == EFDLStatus.New;
             }
         }
 

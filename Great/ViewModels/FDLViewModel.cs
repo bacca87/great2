@@ -4,8 +4,10 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
 using Great.Views.Dialogs;
 using Microsoft.Win32;
 using System;
@@ -24,92 +26,39 @@ namespace Great.ViewModels
     public class FDLViewModel : ViewModelBase
     {
         #region Properties
-        public int PerfDescMaxLength { get { return ApplicationSettings.FDL.PerformanceDescriptionMaxLength; } }
-        public int FinalTestResultMaxLength { get { return ApplicationSettings.FDL.FinalTestResultMaxLength; } }
-        public int OtherNotesMaxLength { get { return ApplicationSettings.FDL.OtherNotesMaxLength; } }
-        public int PerfDescDetMaxLength { get { return ApplicationSettings.FDL.PerformanceDescriptionDetailsMaxLength; } }
+        public int PerfDescMaxLength => ApplicationSettings.FDL.PerformanceDescriptionMaxLength;
+        public int FinalTestResultMaxLength => ApplicationSettings.FDL.FinalTestResultMaxLength;
+        public int OtherNotesMaxLength => ApplicationSettings.FDL.OtherNotesMaxLength;
+        public int PerfDescDetMaxLength => ApplicationSettings.FDL.PerformanceDescriptionDetailsMaxLength;
 
         private FDLManager _fdlManager;
-        private DBArchive _db;
 
-        /// <summary>
-        /// The <see cref="IsInputEnabled" /> property's name.
-        /// </summary>
         private bool _isInputEnabled = false;
-
-        /// <summary>
-        /// Sets and gets the IsInputEnabled property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public bool IsInputEnabled
         {
-            get
-            {
-                return _isInputEnabled;
-            }
-
+            get => _isInputEnabled;
             set
             {
-                if (_isInputEnabled == value)
-                {
-                    return;
-                }
-
-                var oldValue = _isInputEnabled;
-                _isInputEnabled = value;
-
-                RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
+                Set(ref _isInputEnabled, value);
                 SaveCommand.RaiseCanExecuteChanged();
                 ClearCommand.RaiseCanExecuteChanged();
             }
         }
 
-        /// <summary>
-        /// The <see cref="FDLs" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<FDL> _FDLs;
-
-        /// <summary>
-        /// Sets and gets the FDLs property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
-        public ObservableCollectionEx<FDL> FDLs
+        private ObservableCollectionEx<FDLEVM> _FDLs;
+        public ObservableCollectionEx<FDLEVM> FDLs
         {
-            get
-            {
-                return _FDLs;
-            }
-            set
-            {
-                _FDLs = value;
-                RaisePropertyChanged(nameof(FDLs), true);
-            }
+            get => _FDLs;
+            set => Set(ref _FDLs, value);
         }
 
-        /// <summary>
-        /// The <see cref="SelectedFDL" /> property's name.
-        /// </summary>
-        private FDL _selectedFDL;
-
-        /// <summary>
-        /// Sets and gets the SelectedFDL property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public FDL SelectedFDL
+        private FDLEVM _selectedFDL;
+        public FDLEVM SelectedFDL
         {
-            get
-            {
-                return _selectedFDL;
-            }
-
+            get => _selectedFDL;
             set
             {
-                var oldValue = _selectedFDL;
-                _selectedFDL = value;
-
-                RefreshTimesheets();
-
-                SelectedFDLClone = _selectedFDL?.Clone();
+                Set(ref _selectedFDL, value);
 
                 if (_selectedFDL != null)
                 {   
@@ -117,156 +66,48 @@ namespace Great.ViewModels
                     IsInputEnabled = true;
                 }
                 else
-                    IsInputEnabled = false;                    
-                
-                RaisePropertyChanged(nameof(SelectedFDL), oldValue, value);
+                    IsInputEnabled = false;
             }
         }
 
-        /// <summary>
-        /// The <see cref="SelectedFDLClone" /> property's name.
-        /// </summary>
-        private FDL _selectedFDLClone;
-
-        /// <summary>
-        /// Sets and gets the SelectedFDLClone property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public FDL SelectedFDLClone
+        private TimesheetDTO _selectedTimesheet;
+        public TimesheetDTO SelectedTimesheet
         {
-            get
-            {
-                return _selectedFDLClone;
-            }
-
-            set
-            {
-                var oldValue = _selectedFDLClone;
-                _selectedFDLClone = value;
-                RaisePropertyChanged(nameof(SelectedFDLClone), oldValue, value);                
-            }
+            get => _selectedTimesheet;
+            set => Set(ref _selectedTimesheet, value);
         }
 
-        /// <summary>
-        /// The <see cref="SelectedTimesheet" /> property's name.
-        /// </summary>
-        private Timesheet _selectedTimesheet;
-
-        /// <summary>
-        /// Sets and gets the SelectedTimesheet property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public Timesheet SelectedTimesheet
-        {
-            get
-            {
-                return _selectedTimesheet;
-            }
-
-            set
-            {
-                var oldValue = _selectedTimesheet;
-                _selectedTimesheet = value;
-                
-                RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="Timesheets" /> property's name.
-        /// </summary>
-        private IList<Timesheet> _timesheets;
-
-        /// <summary>
-        /// Sets and gets the Timesheets property.
-        /// Changes to that property's value raise the PropertyChanged event.
-        /// </summary>
-        public IList<Timesheet> Timesheets
-        {
-            get
-            {
-                return _timesheets;
-            }
-            internal set
-            {
-                _timesheets = value;
-                RaisePropertyChanged(nameof(Timesheets));
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="FDLResults" /> property's name.
-        /// </summary>
-        public ObservableCollection<FDLResult> FDLResults { get; set; }
-
-        /// <summary>
-        /// The <see cref="MRUEmailRecipients" /> property's name.
-        /// </summary>
+        public ObservableCollection<FDLResultDTO> FDLResults { get; set; }
         public MRUCollection<string> MRUEmailRecipients { get; set; }
 
-        /// <summary>
-        /// The <see cref="SendToEmailRecipient" /> property's name.
-        /// </summary>
         private string _sendToEmailRecipient;
-
-        /// <summary>
-        /// Sets and gets the SendToEmailRecipient property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public string SendToEmailRecipient
         {
-            get
-            {
-                return _sendToEmailRecipient;
-            }
-
-            set
-            {
-                var oldValue = _sendToEmailRecipient;
-                _sendToEmailRecipient = value;
-                RaisePropertyChanged(nameof(SendToEmailRecipient), oldValue, value);
-            }
+            get => _sendToEmailRecipient;
+            set => Set(ref _sendToEmailRecipient, value);
         }
-
-        /// <summary>
-        /// The <see cref="Factories" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<Factory> _factories;
-
-        /// <summary>
-        /// Sets and gets the Factories property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public ObservableCollectionEx<Factory> Factories
+        
+        private ObservableCollection<FactoryDTO> _factories;
+        public ObservableCollection<FactoryDTO> Factories
         {
-            get
-            {
-                return _factories;
-            }
-            set
-            {
-                _factories = value;
-                RaisePropertyChanged(nameof(Factories));
-            }
+            get => _factories;
+            set => Set(ref _factories, value);
         }
 
-        /// <summary>
-        /// Sets and gets the OnFactoryLink Action.
-        /// </summary>
-        public Action<long> OnFactoryLink;
+        public Action<long> OnFactoryLink { get; set; }
         #endregion
 
         #region Commands Definitions
         public RelayCommand ClearCommand { get; set; }
-        public RelayCommand<FDL> SaveCommand { get; set; }
+        public RelayCommand<FDLEVM> SaveCommand { get; set; }
 
-        public RelayCommand<FDL> SendToSAPCommand { get; set; }
+        public RelayCommand<FDLEVM> SendToSAPCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
-        public RelayCommand<FDL> SaveAsCommand { get; set; }
-        public RelayCommand<FDL> OpenCommand { get; set; }
-        public RelayCommand<FDL> MarkAsAcceptedCommand { get; set; }
-        public RelayCommand<FDL> MarkAsCancelledCommand { get; set; }
-        public RelayCommand<FDL> SendCancellationRequestCommand { get; set; }
+        public RelayCommand<FDLEVM> SaveAsCommand { get; set; }
+        public RelayCommand<FDLEVM> OpenCommand { get; set; }
+        public RelayCommand<FDLEVM> MarkAsAcceptedCommand { get; set; }
+        public RelayCommand<FDLEVM> MarkAsCancelledCommand { get; set; }
+        public RelayCommand<FDLEVM> SendCancellationRequestCommand { get; set; }
 
         public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
@@ -274,33 +115,33 @@ namespace Great.ViewModels
         /// <summary>
         /// Initializes a new instance of the EmailViewModel class.
         /// </summary>
-        public FDLViewModel(FDLManager manager, DBArchive db)
+        public FDLViewModel(FDLManager manager)
         {
-            _db = db;
             _fdlManager = manager;
 
             ClearCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
-            SaveCommand = new RelayCommand<FDL>(SaveFDL, (FDL fdl) => { return IsInputEnabled; });
+            SaveCommand = new RelayCommand<FDLEVM>(SaveFDL, (FDLEVM fdl) => { return IsInputEnabled; });
 
-            SendToSAPCommand = new RelayCommand<FDL>(SendToSAP);
+            SendToSAPCommand = new RelayCommand<FDLEVM>(SendToSAP);
             SendByEmailCommand = new RelayCommand<string>(SendByEmail);
-            SaveAsCommand = new RelayCommand<FDL>(SaveAs);
-            OpenCommand = new RelayCommand<FDL>(Open);
-            MarkAsAcceptedCommand = new RelayCommand<FDL>(MarkAsAccepted);
-            MarkAsCancelledCommand = new RelayCommand<FDL>(MarkAsCancelled);
-            SendCancellationRequestCommand = new RelayCommand<FDL>(CancellationRequest);
+            SaveAsCommand = new RelayCommand<FDLEVM>(SaveAs);
+            OpenCommand = new RelayCommand<FDLEVM>(Open);
+            MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted);
+            MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled);
+            SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest);
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
-                        
-            Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
-            FDLResults = new ObservableCollection<FDLResult>(_db.FDLResults);
-            FDLs = new ObservableCollectionEx<FDL>(_db.FDLs);            
 
-            FDLs.ItemPropertyChanged += FDLs_ItemPropertyChanged;
-            
-            MessengerInstance.Register<NewItemMessage<FDL>>(this, NewFDL);
-            MessengerInstance.Register<ItemChangedMessage<FDL>>(this, FDLChanged);
-            MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = p.NewValue; });
+            using (DBArchive db = new DBArchive())
+            {
+                Factories = new ObservableCollection<FactoryDTO>(db.Factories.ToList().Select(f => new FactoryDTO(f)));
+                FDLResults = new ObservableCollection<FDLResultDTO>(db.FDLResults.ToList().Select(r => new FDLResultDTO(r)));
+                FDLs = new ObservableCollectionEx<FDLEVM>(db.FDLs.ToList().Select(fdl => new FDLEVM(fdl)));
+            }
+                        
+            MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
+            MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = new ObservableCollection<FactoryDTO>(p.NewValue.Select(f => new FactoryDTO(f))); });
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -309,22 +150,20 @@ namespace Great.ViewModels
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
-
-        private void FDLs_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
-        {   
-            if (SelectedFDL != null && SelectedFDL.Id == FDLs[e.CollectionIndex].Id)
-                RefreshTimesheets();
-        }
-
-        private void RefreshTimesheets()
-        {
-            if (SelectedFDL != null && SelectedFDL.Timesheets != null)
-                Timesheets = SelectedFDL.Timesheets.OrderBy(t => t.Date).ToList();
-            else
-                Timesheets = null;
-        }
         
-        public void NewFDL(NewItemMessage<FDL> item)
+        public void NewFDL(NewItemMessage<FDLEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
+                new Action(() => 
+                {
+                    if (item.Content != null && !FDLs.Any(f => f.Id == item.Content.Id))
+                        FDLs.Add(item.Content);
+                })
+            );
+        }
+
+        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
@@ -332,49 +171,38 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        FDL fdl = _db.FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
+                        FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                        if (fdl != null && !FDLs.Contains(fdl))
-                            FDLs.Add(fdl);
+                        if (fdl != null)
+                        {
+                            fdl.Status = item.Content.Status;
+                            fdl.LastError = item.Content.LastError;
+                        }
                     }
                 })
             );
         }
 
-        public void FDLChanged(ItemChangedMessage<FDL> item)
-        {
-            // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
-                new Action(() => 
-                {
-                    if (item.Content != null)
-                    {
-                        _db.FDLs.AddOrUpdate(item.Content);
-                        _db.SaveChanges();
-
-                        FDLs.SingleOrDefault(f => f.Id == item.Content.Id)?.NotifyFDLPropertiesChanged();
-                    }
-                })
-            );
-        }
-
-        public void SendToSAP(FDL fdl)
+        public void SendToSAP(FDLEVM fdl)
         {
             if (fdl.EStatus == EFDLStatus.Waiting && 
                 MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            if (_db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+            using (DBArchive db = new DBArchive())
             {
-                OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
-                OrderRecipientsView recipientsView = new OrderRecipientsView();
+                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+                {
+                    OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
+                    OrderRecipientsView recipientsView = new OrderRecipientsView();
 
-                recipientsVM.Order = fdl.Order;                
-                recipientsView.ShowDialog();
+                    recipientsVM.Order = fdl.Order;
+                    recipientsView.ShowDialog();
+                }
             }
 
             _fdlManager.SendToSAP(fdl);
-            _db.SaveChanges();
+            fdl.Save();
         }
         
         public void SendByEmail(string address)
@@ -400,7 +228,7 @@ namespace Great.ViewModels
             _fdlManager.SendTo(address, SelectedFDL);
         }
 
-        public void SaveAs(FDL fdl)
+        public void SaveAs(FDLEVM fdl)
         {
             if (fdl == null)
                 return;
@@ -417,7 +245,7 @@ namespace Great.ViewModels
                 _fdlManager.SaveAs(fdl, dlg.FileName);
         }
 
-        public void Open(FDL fdl)
+        public void Open(FDLEVM fdl)
         {            
             if (fdl == null)
                 return;
@@ -428,37 +256,31 @@ namespace Great.ViewModels
             Process.Start(fileName);
         }
 
-        public void MarkAsAccepted(FDL fdl)
+        public void MarkAsAccepted(FDLEVM fdl)
         {
             if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             fdl.EStatus = EFDLStatus.Accepted;
-            _db.SaveChanges();
-
-            fdl.NotifyFDLPropertiesChanged();
+            fdl.Save();
         }
 
-        public void MarkAsCancelled(FDL fdl)
+        public void MarkAsCancelled(FDLEVM fdl)
         {
             if (MessageBox.Show("Are you sure to mark as Cancelled the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             fdl.EStatus = EFDLStatus.Cancelled;
-            _db.SaveChanges();
-
-            fdl.NotifyFDLPropertiesChanged();
+            fdl.Save();
         }
 
-        public void CancellationRequest(FDL fdl)
+        public void CancellationRequest(FDLEVM fdl)
         {
             if (MessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             _fdlManager.SendCancellationRequest(fdl);
-            _db.SaveChanges();
-
-            fdl.NotifyFDLPropertiesChanged();
+            fdl.Save();
         }
 
         private void FactoryLink()
@@ -469,22 +291,21 @@ namespace Great.ViewModels
 
         public void ClearFDL()
         {
-            SelectedFDLClone.Factory = -1;
-            SelectedFDLClone.OutwardCar = false;
-            SelectedFDLClone.OutwardTaxi = false;
-            SelectedFDLClone.OutwardAircraft = false;
-            SelectedFDLClone.ReturnCar = false;
-            SelectedFDLClone.ReturnTaxi = false;
-            SelectedFDLClone.ReturnAircraft = false;
-            SelectedFDLClone.PerformanceDescription = string.Empty;
-            SelectedFDLClone.Result = 0;
-            SelectedFDLClone.ResultNotes = string.Empty;
-            SelectedFDLClone.Notes = string.Empty;
-            SelectedFDLClone.PerformanceDescriptionDetails = string.Empty;
-            SelectedFDLClone = SelectedFDLClone; // Raise PropertyChanged
+            SelectedFDL.Factory = -1;
+            SelectedFDL.OutwardCar = false;
+            SelectedFDL.OutwardTaxi = false;
+            SelectedFDL.OutwardAircraft = false;
+            SelectedFDL.ReturnCar = false;
+            SelectedFDL.ReturnTaxi = false;
+            SelectedFDL.ReturnAircraft = false;
+            SelectedFDL.PerformanceDescription = string.Empty;
+            SelectedFDL.Result = 0;
+            SelectedFDL.ResultNotes = string.Empty;
+            SelectedFDL.Notes = string.Empty;
+            SelectedFDL.PerformanceDescriptionDetails = string.Empty;
         }
 
-        public void SaveFDL(FDL fdl)
+        public void SaveFDL(FDLEVM fdl)
         {
             if (fdl == null)
                 return;
@@ -494,11 +315,8 @@ namespace Great.ViewModels
                 MessageBox.Show("Please select a factory before continue. Operation cancelled.", "Invalid FDL", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            
-            _db.FDLs.AddOrUpdate(fdl);
 
-            if (_db.SaveChanges() > 0)
-                SelectedFDL?.NotifyFDLPropertiesChanged();
+            fdl.Save();
         }
     }
 }

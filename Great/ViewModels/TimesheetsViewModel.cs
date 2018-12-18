@@ -495,8 +495,8 @@ namespace Great.ViewModels
                 destinationDay.NotifyDayPropertiesChanged();
                 SelectedWorkingDay = destinationDay;
                 
-                foreach (Timesheet timesheet in destinationDay.Timesheets)
-                    timesheet.FDL1?.NotifyFDLPropertiesChanged();
+                //foreach (Timesheet timesheet in destinationDay.Timesheets)
+                //    timesheet.FDL1?.NotifyFDLPropertiesChanged();
             }
         }
 
@@ -521,8 +521,8 @@ namespace Great.ViewModels
                 day.NotifyDayPropertiesChanged();
                 Timesheets = null;
 
-                foreach (FDL fdl in dayFDLs)
-                    fdl.NotifyFDLPropertiesChanged();
+                //foreach (FDL fdl in dayFDLs)
+                //    fdl.NotifyFDLPropertiesChanged();
             }
         }
 
@@ -544,7 +544,7 @@ namespace Great.ViewModels
                 Timesheets = SelectedWorkingDay.Timesheets.ToList();
                 SelectedTimesheet = null;
                 
-                fdl?.NotifyFDLPropertiesChanged();
+                //fdl?.NotifyFDLPropertiesChanged();
             }
         }
 
@@ -577,7 +577,7 @@ namespace Great.ViewModels
                 Timesheets = SelectedWorkingDay.Timesheets.ToList();
                 SelectedTimesheet = null;
 
-                timesheet.FDL1?.NotifyFDLPropertiesChanged();
+                //timesheet.FDL1?.NotifyFDLPropertiesChanged();
             }
         }
     }

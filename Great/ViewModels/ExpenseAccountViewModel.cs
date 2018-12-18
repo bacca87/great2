@@ -32,7 +32,7 @@ namespace Great.ViewModels
         #region Properties
         private FDLManager _fdlManager;
 
-        public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
+        public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
                 
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
@@ -164,7 +164,7 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => {
-                //vedere se serve
+                //TODO: vedere se serve
             });
 
             using (DBArchive db = new DBArchive())
@@ -191,7 +191,7 @@ namespace Great.ViewModels
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null && ExpenseAccounts.SingleOrDefault(ea => ea.Id == (item.Content as ExpenseAccountEVM).Id) == null)
+                    if (item.Content != null && !ExpenseAccounts.Any(ea => ea.Id == item.Content.Id))
                         ExpenseAccounts.Add(item.Content);
                 })
             );
@@ -205,10 +205,13 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == (item.Content as ExpenseAccountEVM).Id);
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == item.Content.Id);
 
                         if (ea != null)
-                            ea.Status = (item.Content as ExpenseAccountEVM).Status;
+                        {
+                            ea.Status = item.Content.Status;
+                            ea.LastError = item.Content.LastError;
+                        }   
                     }
                 })
             );
