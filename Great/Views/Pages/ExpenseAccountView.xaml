@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-      xmlns:m="clr-namespace:Great.Models.Database" 
+      xmlns:m="clr-namespace:Great.Models.DTO" 
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
@@ -147,7 +147,7 @@
                     </ComboBox.Resources>
                     <ComboBox.ItemsSource>
                         <CompositeCollection>
-                            <m:Currency />
+                            <m:CurrencyDTO />
                             <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
                         </CompositeCollection>
                     </ComboBox.ItemsSource>
