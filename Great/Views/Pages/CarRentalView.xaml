@@ -112,8 +112,8 @@
                 <TextBlock>Model</TextBlock>
                 <TextBox Text="{Binding SelectedCar.Model, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Company</TextBlock>
-                <ComboBox 
-                                  SelectedItem="{Binding SelectedCar.CarRentalCompany1}" 
+                <ComboBox  Name="PorcoDio"
+                                  SelectedItem="{Binding SelectedCar.CarRentalCompany1,TargetNullValue=''}" 
                                   SelectedValue="{Binding SelectedCar.CarRentalCompany}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 

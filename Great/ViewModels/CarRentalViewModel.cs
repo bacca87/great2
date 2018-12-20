@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
 using Great.ViewModels.Database;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -63,7 +65,7 @@ namespace Great.ViewModels
         public ObservableCollectionEx<CarRentalHistoryEVM> Rentals { get; set; }
         public ObservableCollectionEx<CarRentalHistoryEVM> FilteredRentals { get; set; }
         public ObservableCollectionEx<CarEVM> Cars { get; set; }
-        public ObservableCollectionEx<CarRentalCompany> RentalCompanies { get; set; }
+        public ObservableCollection<CarRentalCompanyDTO> RentalCompanies { get; set; }
 
         private CarRentalHistoryEVM _selectedRent;
         public CarRentalHistoryEVM SelectedRent
@@ -170,6 +172,19 @@ namespace Great.ViewModels
 
                         break;
 
+                    case "Brand":
+                        if (!string.IsNullOrEmpty(SelectedCar.LicensePlate))
+                            return "Select a valid currency from the combo list!";
+
+                        break;
+
+
+                    case "Model":
+                        if (!string.IsNullOrEmpty(SelectedCar.LicensePlate))
+                            return "Select a valid currency from the combo list!";
+
+                        break;
+
                     //case "ExpenseTypeText":
                     //    if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
                     //        return "Select a valid expense type from the combo list!";
@@ -202,7 +217,7 @@ namespace Great.ViewModels
             {
                 Rentals = new ObservableCollectionEx<CarRentalHistoryEVM>(db.CarRentalHistories.ToList().Select(cr => new CarRentalHistoryEVM(cr)));
                 Cars = new ObservableCollectionEx<CarEVM>(db.Cars.ToList().Select(c => new CarEVM(c)));
-                RentalCompanies = new ObservableCollectionEx<CarRentalCompany>(db.CarRentalCompanies);
+                RentalCompanies = new ObservableCollection<CarRentalCompanyDTO>(db.CarRentalCompanies.ToList().Select(cr => new CarRentalCompanyDTO(cr)));
             }
 
             FilteredRentals = Rentals;
