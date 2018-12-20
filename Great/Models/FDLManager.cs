@@ -175,7 +175,7 @@ namespace Great.Models
             return ea;
         }
 
-        public FDL ImportFDLFromFile(string filePath, bool IsXfaPdf, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
+        public FDLEVM ImportFDLFromFile(string filePath, bool IsXfaPdf, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {
             if (IsXfaPdf)
                 return ImportFDL_XFAForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
@@ -183,9 +183,10 @@ namespace Great.Models
                 return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
         }
 
-        public FDL ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
+        public FDLEVM ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {
             FDL fdl = new FDL();
+            FDLEVM fdlEVM = null;
             PdfDocument pdfDoc = null;
 
             try
@@ -351,44 +352,51 @@ namespace Great.Models
                                 db.FDLs.Add(fdl);
                                 db.SaveChanges();
 
+                                // sUpdate all navigation properties
+                                db.Entry(fdl).Reference(p => p.FDLResult).Load();
+                                db.Entry(fdl).Reference(p => p.FDLStatus).Load();
+                                db.Entry(fdl).Collection(p => p.Timesheets).Load();
+
                                 // TODO: gestione segnalazione in caso di errori
-                                if (fdl.IsValid)
+                                fdlEVM = new FDLEVM(fdl);
+                                if (fdlEVM.IsValid)
                                 {
                                     transaction.Commit();
 
                                     if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
-                                    Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
+                                    Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, fdlEVM));
                                 }
                                 else
                                 {
                                     transaction.Rollback();
-                                    fdl = null;
+                                    fdlEVM = null;
                                 }   
                             }
                         }
                         catch (Exception ex)
                         {
                             transaction.Rollback();
-                            fdl = null;
+                            fdlEVM = null;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                fdl = null;
+                fdlEVM = null;
             }
             finally
             {
                 pdfDoc?.Close();
             }
 
-            return fdl;
+            return fdlEVM;
         }
 
-        public FDL ImportFDL_AcroForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
-        {   
+        public FDLEVM ImportFDL_AcroForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
+        {
             FDL fdl = new FDL();
+            FDLEVM fdlEVM = null;
             PdfDocument pdfDoc = null;
 
             try
@@ -410,7 +418,7 @@ namespace Great.Models
                 fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                                
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
-                fdl.EResult = GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
+                fdl.Result = (long)GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
                 fdl.OutwardCar = fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue() != null;
                 fdl.OutwardTaxi = fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue() != null;
                 fdl.OutwardAircraft = fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue() != null;
@@ -419,9 +427,7 @@ namespace Great.Models
                 fdl.ReturnAircraft = fields[ApplicationSettings.FDL.FieldNames.ReturnAircraft].GetValue() != null;
                 fdl.NotifyAsNew = NotifyAsNew;
 
-                long longResult;
-
-                if (long.TryParse(fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString(), out longResult))
+                if (long.TryParse(fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString(), out long longResult))
                     fdl.Order = longResult;
 
                 // TODO: gestire automobili
@@ -436,7 +442,6 @@ namespace Great.Models
 
                 value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString().Trim();
                 fdl.Notes = value != string.Empty ? value : null;
-
 
                 if(fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails))
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
@@ -559,43 +564,49 @@ namespace Great.Models
                                     }
                                 }
                                 #endregion
-                                
+
                                 db.FDLs.Add(fdl);
                                 db.SaveChanges();
 
+                                // sUpdate all navigation properties
+                                db.Entry(fdl).Reference(p => p.FDLResult).Load();
+                                db.Entry(fdl).Reference(p => p.FDLStatus).Load();
+                                db.Entry(fdl).Collection(p => p.Timesheets).Load();
+
                                 // TODO: gestione segnalazione in caso di errori
-                                if (fdl.IsValid)
+                                fdlEVM = new FDLEVM(fdl);
+                                if (fdlEVM.IsValid)
                                 {
                                     transaction.Commit();
 
                                     if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
-                                    Messenger.Default.Send(new NewItemMessage<FDL>(this, fdl));
+                                    Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, fdlEVM));
                                 }
                                 else
                                 {
                                     transaction.Rollback();
-                                    fdl = null;
-                                }   
+                                    fdlEVM = null;
+                                }
                             }
                         }
                         catch (Exception ex)
                         {
                             transaction.Rollback();
-                            fdl = null;
+                            fdlEVM = null;
                         }
                     }
                 }
             }
             catch(Exception ex)
             {
-                fdl = null;
+                fdlEVM = null;
             }
             finally
             {
                 pdfDoc?.Close();
             }
 
-            return fdl;
+            return fdlEVM;
         }
 
         private Dictionary<string, string> GetXFAFormFields(XfaForm form)
@@ -644,21 +655,21 @@ namespace Great.Models
 
         private Dictionary<string, string> GetAcroFormFields(IFDLFile file, bool IsReadonly = false)
         {
-            if (file is FDL)
-                return GetAcroFormFields(file as FDL);
+            if (file is FDLEVM)
+                return GetAcroFormFields(file as FDLEVM);
             else if (file is ExpenseAccountEVM)
                 return GetAcroFormFields(file as ExpenseAccountEVM, IsReadonly);
             else
                 return null;
         }
 
-        private Dictionary<string, string> GetAcroFormFields(FDL fdl)
+        private Dictionary<string, string> GetAcroFormFields(FDLEVM fdl)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
             foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
-                Timesheet timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
+                TimesheetDTO timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
                 if (timesheet != null)
                 {
@@ -770,7 +781,7 @@ namespace Great.Models
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
                 
-                if(file is FDL)
+                if(file is FDLEVM)
                 {
                     // this is an hack for display fixed fields on saved read only FDL
                     foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
@@ -851,9 +862,9 @@ namespace Great.Models
                 message.Importance = Importance.High;
                 message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
 
-                if (file is FDL)
+                if (file is FDLEVM)
                 {
-                    FDL fdl = file as FDL;
+                    FDLEVM fdl = file as FDLEVM;
                     message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
 
                     using (DBArchive db = new DBArchive())
@@ -899,9 +910,9 @@ namespace Great.Models
             message.Attachments.Clear();
             message.Attachments.Add(filePath);
 
-            if (file is FDL)
+            if (file is FDLEVM)
             {
-                FDL fdl = file as FDL;
+                FDLEVM fdl = file as FDLEVM;
                 message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
             }
             else if (file is ExpenseAccountEVM)
@@ -916,7 +927,7 @@ namespace Great.Models
             return true;
         }
 
-        public bool SendCancellationRequest(FDL fdl)
+        public bool SendCancellationRequest(FDLEVM fdl)
         {
             if (fdl == null)
                 return false;
@@ -980,12 +991,12 @@ namespace Great.Models
                     using (DBArchive db = new DBArchive())
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
-                        if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
+                        if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
-                            accepted.EStatus = EFDLStatus.Accepted;
+                            accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
                             db.SaveChanges();
-                            Messenger.Default.Send(new ItemChangedMessage<FDL>(this, accepted));
+                            Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, new FDLEVM(accepted)));
                         }
                     }
                     break;
@@ -993,12 +1004,12 @@ namespace Great.Models
                     using (DBArchive db = new DBArchive())
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
-                        if (rejected != null && rejected.EStatus != EFDLStatus.Rejected && rejected.EStatus != EFDLStatus.Accepted)
+                        if (rejected != null && rejected.Status != (long)EFDLStatus.Rejected && rejected.Status != (long)EFDLStatus.Accepted)
                         {
-                            rejected.EStatus = EFDLStatus.Rejected;
+                            rejected.Status = (long)EFDLStatus.Rejected;
                             rejected.LastError = message.Body?.Text;
                             db.SaveChanges();
-                            Messenger.Default.Send(new ItemChangedMessage<FDL>(this, rejected));
+                            Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, new FDLEVM(rejected)));
                         }
                     }
                     break;
@@ -1006,9 +1017,9 @@ namespace Great.Models
                     using (DBArchive db = new DBArchive())
                     {
                         ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
-                        if (accepted != null && accepted.EStatus != EFDLStatus.Accepted)
+                        if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
-                            accepted.EStatus = EFDLStatus.Accepted;
+                            accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(accepted)));
@@ -1021,9 +1032,9 @@ namespace Great.Models
                     {
                         //TODO: differenziare la nota spese R da R1
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
-                        if (expenseAccount != null && expenseAccount.EStatus != EFDLStatus.Rejected && expenseAccount.EStatus != EFDLStatus.Accepted)
+                        if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
                         {
-                            expenseAccount.EStatus = EFDLStatus.Rejected;
+                            expenseAccount.Status = (long)EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(expenseAccount)));

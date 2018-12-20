@@ -32,7 +32,7 @@ namespace Great.ViewModels
         #region Properties
         private FDLManager _fdlManager;
 
-        public int NotesMaxLength { get { return ApplicationSettings.ExpenseAccount.NotesMaxLength; } }
+        public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
                 
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
@@ -164,7 +164,7 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => {
-                //vedere se serve
+                //TODO: vedere se serve
             });
 
             using (DBArchive db = new DBArchive())
@@ -191,7 +191,7 @@ namespace Great.ViewModels
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null && ExpenseAccounts.SingleOrDefault(ea => ea.Id == (item.Content as ExpenseAccountEVM).Id) == null)
+                    if (item.Content != null && !ExpenseAccounts.Any(ea => ea.Id == item.Content.Id))
                         ExpenseAccounts.Add(item.Content);
                 })
             );
@@ -205,10 +205,13 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == (item.Content as ExpenseAccountEVM).Id);
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == item.Content.Id);
 
                         if (ea != null)
-                            ea.Status = (item.Content as ExpenseAccountEVM).Status;
+                        {
+                            ea.Status = item.Content.Status;
+                            ea.LastError = item.Content.LastError;
+                        }   
                     }
                 })
             );
@@ -248,6 +251,8 @@ namespace Great.ViewModels
 
                 if (ea.Id == 0)
                     db.SaveChanges();
+                else
+                    db.Expenses.RemoveRange(db.Expenses.Where(e => e.ExpenseAccount == ea.Id));
 
                 foreach (var expense in ea.Expenses)
                 {
@@ -321,7 +326,7 @@ namespace Great.ViewModels
 
         public void MarkAsRefunded(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as refunded the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.IsRefunded = true;
@@ -330,7 +335,7 @@ namespace Great.ViewModels
 
         public void MarkAsAccepted(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as accepted the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as \"Accepted\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
@@ -339,7 +344,7 @@ namespace Great.ViewModels
 
         public void MarkAsCancelled(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as Cancelled the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MessageBox.Show("Are you sure to mark as \"Cancelled\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Cancelled;

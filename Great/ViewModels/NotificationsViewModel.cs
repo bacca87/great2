@@ -133,7 +133,7 @@ namespace Great.ViewModels
                 NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
             }
 
-            MessengerInstance.Register(this, (NewItemMessage<FDL> x) => NewFDLCount++);
+            MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => NewFDLCount++);
             MessengerInstance.Register(this, (NewItemMessage<Factory> x) => NewFactoriesCount++);
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => NewExpenseAccountsCount++);
             MessengerInstance.Register<StatusChangeMessage<EExchangeStatus>>(this, OnExchangeStatusChange);

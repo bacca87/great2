@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
-using GalaSoft.MvvmLight;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.ViewModels.Database
 {
@@ -119,14 +113,14 @@ namespace Great.ViewModels.Database
             set => Set(ref _CurrencyCode, value);
         }
 
-        private EFDLStatus _EStatus;
         public EFDLStatus EStatus
         {
-            get => _EStatus;
+            get => (EFDLStatus)Status;
             set
             {
-                Set(ref _EStatus, value);
-                IsNew = _EStatus == EFDLStatus.New;
+                RaisePropertyChanged();
+                Status = (long)value;
+                IsNew = value == EFDLStatus.New;
             }
         }
 
@@ -138,12 +132,20 @@ namespace Great.ViewModels.Database
         public double? SaturdayAmount => Expenses?.Sum(x => x.SaturdayAmount);
         public double? SundayAmount => Expenses?.Sum(x => x.SundayAmount);
         public double? TotalAmount => Expenses?.Sum(x => x.TotalAmount);
+
+        private bool _InsertExpenseEnabled;
+        public bool InsertExpenseEnabled
+        {
+            get => _InsertExpenseEnabled;
+            set => Set(ref _InsertExpenseEnabled, value);
+        }
         #endregion;
 
         public ExpenseAccountEVM(ExpenseAccount ea)
         {
             Expenses = new ObservableCollectionEx<ExpenseEVM>();
             Expenses.CollectionChanged += (sender, e) => UpdateTotals();
+            Expenses.CollectionChanged += (sender, e) => InsertExpenseEnabled = Expenses.Count < ApplicationSettings.ExpenseAccount.MaxExpenseCount;
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             Mapper.Map(ea, this);

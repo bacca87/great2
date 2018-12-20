@@ -42,12 +42,6 @@ namespace Great.Views.Pages
                 fdlDataGridView.SelectedIndex = 0;
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(_viewModel?.SelectedFDLClone != null)
-                _viewModel.SelectedFDLClone.NotifyFDLPropertiesChanged();
-        }
-
         private void FactoryHyperlink_OnNavigate(object sender, RequestNavigateEventArgs e)
         {
             e.Handled = true;

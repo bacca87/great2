@@ -1,14 +1,8 @@
 ﻿
 using AutoMapper;
-using GalaSoft.MvvmLight;
 using Great.Models.Database;
 using Great.Models.DTO;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.ViewModels.Database
 {

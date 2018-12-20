@@ -172,19 +172,6 @@ namespace Great.ViewModels
 
                         break;
 
-                    case "Brand":
-                        if (!string.IsNullOrEmpty(SelectedCar.LicensePlate))
-                            return "Select a valid currency from the combo list!";
-
-                        break;
-
-
-                    case "Model":
-                        if (!string.IsNullOrEmpty(SelectedCar.LicensePlate))
-                            return "Select a valid currency from the combo list!";
-
-                        break;
-
                     //case "ExpenseTypeText":
                     //    if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
                     //        return "Select a valid expense type from the combo list!";
@@ -217,7 +204,7 @@ namespace Great.ViewModels
             {
                 Rentals = new ObservableCollectionEx<CarRentalHistoryEVM>(db.CarRentalHistories.ToList().Select(cr => new CarRentalHistoryEVM(cr)));
                 Cars = new ObservableCollectionEx<CarEVM>(db.Cars.ToList().Select(c => new CarEVM(c)));
-                RentalCompanies = new ObservableCollection<CarRentalCompanyDTO>(db.CarRentalCompanies.ToList().Select(cr => new CarRentalCompanyDTO(cr)));
+                RentalCompanies = new ObservableCollection<CarRentalCompanyDTO>(db.CarRentalCompanies.ToList().Select(c => new CarRentalCompanyDTO(c)));
             }
 
             FilteredRentals = Rentals;

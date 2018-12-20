@@ -11,6 +11,7 @@ using System.Data.Entity.Migrations;
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models.Database;
 using NLog;
+using Great.ViewModels.Database;
 
 namespace Great.Utils
 {
@@ -514,7 +515,7 @@ namespace Great.Utils
                     if (stopImport)
                         break;
 
-                    FDL fdl = null;
+                    FDLEVM fdl = null;
 
                     try
                     {
@@ -544,11 +545,11 @@ namespace Great.Utils
                                     if (currentFdl != null)
                                     {
                                         if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                            currentFdl.EStatus = EFDLStatus.Waiting;
+                                            currentFdl.Status = (long)EFDLStatus.Waiting;
                                         else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
-                                            currentFdl.EStatus = EFDLStatus.Accepted;
+                                            currentFdl.Status = (long)EFDLStatus.Accepted;
                                         else
-                                            currentFdl.EStatus = EFDLStatus.Cancelled;
+                                            currentFdl.Status = (long)EFDLStatus.Cancelled;
 
                                         db.FDLs.AddOrUpdate(currentFdl);
                                         db.SaveChanges();
@@ -620,7 +621,7 @@ namespace Great.Utils
                                     if (fdl != null)
                                         currentEA.Status = fdl.Status;
                                     else
-                                        currentEA.EStatus = EFDLStatus.Accepted;
+                                        currentEA.Status = (long)EFDLStatus.Accepted;
                                     
                                     var expense = expenses.SingleOrDefault(e => !string.IsNullOrEmpty(e.Field<string>("Dbf_Foglio")) && FormatFDL(e.Field<string>("Dbf_Foglio")) == fdl.Id);
                                     currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");

@@ -247,11 +247,12 @@
     <Compile Include="Models\DTO\CurrencyDTO.cs" />
     <Compile Include="Models\DTO\EmailMessageDTO.cs" />
     <Compile Include="Models\Database\Expense.ext.cs" />
-    <Compile Include="Models\Database\ExpenseAccount.ext.cs" />
     <Compile Include="Models\DTO\ExpenseTypeDTO.cs" />
     <Compile Include="Models\DTO\FactoryDTO.cs" />
     <Compile Include="Models\DTO\FDLDTO.cs" />
+    <Compile Include="Models\DTO\FDLResultDTO.cs" />
     <Compile Include="Models\DTO\FDLStatusDTO.cs" />
+    <Compile Include="Models\DTO\TimesheetDTO.cs" />
     <Compile Include="Models\DTO\TransferTypeDTO.cs" />
     <Compile Include="Models\Interfaces\IFDLFile.cs" />
     <Compile Include="Models\MSExchangeProvider.cs" />
@@ -267,7 +268,6 @@
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
     <Compile Include="Utils\Converters\CompareIntConverter.cs" />
     <Compile Include="Models\Database\Day.ext.cs" />
-    <Compile Include="Models\Database\FDL.ext.cs" />
     <Compile Include="Models\FDLManager.cs" />
     <Compile Include="Models\Database\Factory.ext.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
