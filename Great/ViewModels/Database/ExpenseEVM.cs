@@ -9,9 +9,19 @@ namespace Great.ViewModels.Database
     public class ExpenseEVM : EntityViewModelBase
     {
         #region Properties
-        public long Id { get; set; }
+        public long _Id;
+        public long Id
+        {
+            get => _Id;
+            set => Set(ref _Id, value);
+        }
 
-        public long ExpenseAccount { get; set; }
+        public long _ExpenseAccount;
+        public long ExpenseAccount
+        {
+            get => _ExpenseAccount;
+            set => Set(ref _ExpenseAccount, value);
+        }
 
         private long _Type;
         public long Type
@@ -107,11 +117,10 @@ namespace Great.ViewModels.Database
         }
         #endregion
 
-        public ExpenseEVM() { }
-
-        public ExpenseEVM(Expense expense)
+        public ExpenseEVM(Expense expense = null)
         {
-            Mapper.Map(expense, this);
+            if (expense != null)
+                Mapper.Map(expense, this);
         }
 
         public override bool Save(DBArchive db)
@@ -122,6 +131,11 @@ namespace Great.ViewModels.Database
             db.Expenses.AddOrUpdate(e);
 
             return true;
+        }
+
+        public override bool Delete(DBArchive db)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

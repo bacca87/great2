@@ -39,6 +39,16 @@ namespace Great.Utils
                     .ForMember(x => x.FDLResult, opt => opt.Ignore())
                     .ForMember(x => x.Timesheets, opt => opt.Ignore());
 
+                cfg.CreateMap<Day, DayEVM>();
+                cfg.CreateMap<DayEVM, Day>()
+                    .ForMember(x => x.DayType, opt => opt.Ignore())
+                    .ForMember(x => x.Timesheets, opt => opt.Ignore());
+
+                cfg.CreateMap<Timesheet, TimesheetEVM>();
+                    cfg.CreateMap<TimesheetEVM, Timesheet>()
+                    .ForMember(x => x.Day, opt => opt.Ignore())
+                    .ForMember(x => x.FDL1, opt => opt.Ignore());
+
                 cfg.CreateMap<FDL, FDLDTO>();
                 cfg.CreateMap<FDLStatus, FDLStatusDTO>();
                 cfg.CreateMap<Currency, CurrencyDTO>();
@@ -49,6 +59,8 @@ namespace Great.Utils
                 cfg.CreateMap<Timesheet, TimesheetDTO>();
                 cfg.CreateMap<Car, CarDTO>();
                 cfg.CreateMap<CarRentalCompany, CarRentalCompanyDTO>();
+                cfg.CreateMap<Day, DayDTO>();
+                cfg.CreateMap<DayType, DayTypeDTO>();
             });
         }
     }

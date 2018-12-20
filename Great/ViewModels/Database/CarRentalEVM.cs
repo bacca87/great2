@@ -159,23 +159,25 @@ namespace Great.ViewModels.Database
 
         #endregion
 
-        public CarRentalHistoryEVM() { }
-
-        public CarRentalHistoryEVM(CarRentalHistory rent)
+        public CarRentalHistoryEVM(CarRentalHistory rent = null)
         {
-            Mapper.Map(rent, this);
+            if(rent != null)
+                Mapper.Map(rent, this);
         }
 
         public override bool Save(DBArchive db)
         {
+            CarRentalHistory rent = new CarRentalHistory();
 
-            CarRentalHistory cr = new CarRentalHistory();
-
-            Mapper.Map(this, cr);
-            db.CarRentalHistories.AddOrUpdate(cr);
+            Mapper.Map(this, rent);
+            db.CarRentalHistories.AddOrUpdate(rent);
 
             return true;
         }
 
+        public override bool Delete(DBArchive db)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

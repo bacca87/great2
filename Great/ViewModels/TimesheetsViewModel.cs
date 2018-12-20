@@ -1,81 +1,47 @@
+using AutoMapper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
 
 namespace Great.ViewModels
-{   
+{
     public class TimesheetsViewModel : ViewModelBase
     {
         #region Properties
-        /// <summary>
-        /// The <see cref="IsInputEnabled" /> property's name.
-        /// </summary>
         private bool _isInputEnabled = false;
-
-        /// <summary>
-        /// Sets and gets the IsInputEnabled property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public bool IsInputEnabled
         {
-            get
-            {
-                return _isInputEnabled;
-            }
-
+            get => _isInputEnabled;
             set
             {
-                if (_isInputEnabled == value)
-                {
-                    return;
-                }
+                Set(ref _isInputEnabled, value);
 
-                var oldValue = _isInputEnabled;
-                _isInputEnabled = value;
-
-                RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
                 SaveTimesheetCommand.RaiseCanExecuteChanged();
                 ClearTimesheetCommand.RaiseCanExecuteChanged();
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
 
-        /// <summary>
-        /// The <see cref="CurrentYear" /> property's name.
-        /// </summary>
         private int _currentYear = DateTime.Now.Year;
-
-        /// <summary>
-        /// Sets and gets the CurrentYear property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public int CurrentYear
         {
-            get
-            {
-                return _currentYear;
-            }
-
+            get => _currentYear;
             set
             {
-                if (_currentYear == value)
-                {
-                    return;
-                }
-                
-                var oldValue = _currentYear;
-
                 if (value < ApplicationSettings.Timesheets.MinYear)
                     _currentYear = ApplicationSettings.Timesheets.MinYear;
                 else if (value > ApplicationSettings.Timesheets.MaxYear)
@@ -83,208 +49,67 @@ namespace Great.ViewModels
                 else
                     _currentYear = value;
 
-                RaisePropertyChanged(nameof(CurrentYear), oldValue, value);
+                Set(ref _currentYear, value);
 
                 UpdateWorkingDays();
             }
         }
 
-        /// <summary>
-        /// The <see cref="CurrentMonth" /> property's name.
-        /// </summary>
         private int _currentMonth = DateTime.Now.Month;
-
-        /// <summary>
-        /// Sets and gets the CurrentMonth property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public int CurrentMonth
         {
-            get
-            {
-                return _currentMonth;
-            }
+            get => _currentMonth;
+            set => Set(ref _currentMonth, value);
+        }
 
+        public ObservableCollectionEx<DayEVM> WorkingDays { get; set; }
+
+        private DayEVM _selectedWorkingDay;
+        public DayEVM SelectedWorkingDay
+        {
+            get => _selectedWorkingDay;
             set
             {
-                if (_currentMonth == value)
-                {
-                    return;
-                }
-
-                var oldValue = _currentMonth;
-                _currentMonth = value;
-
-                RaisePropertyChanged(nameof(CurrentMonth), oldValue, value);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="WorkingDays" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<Day> _workingDays;
-
-        /// <summary>
-        /// Sets and gets the WorkingDays property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
-        public ObservableCollectionEx<Day> WorkingDays
-        {
-            get
-            {
-                return _workingDays;
-            }
-            internal set
-            {
-                _workingDays = value;
-                RaisePropertyChanged(nameof(WorkingDays));
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="Timesheets" /> property's name.
-        /// </summary>
-        private IList<Timesheet> _timesheets;
-
-        /// <summary>
-        /// Sets and gets the Timesheets property.
-        /// Changes to that property's value raise the PropertyChanged event.
-        /// </summary>
-        public IList<Timesheet> Timesheets
-        {
-            get
-            {
-                return _timesheets;
-            }
-            internal set
-            {
-                _timesheets = value;
-                RaisePropertyChanged(nameof(Timesheets));
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="SelectedWorkingDay" /> property's name.
-        /// </summary>
-        private Day _selectedWorkingDay;
-
-        /// <summary>
-        /// Sets and gets the SelectedWorkingDay property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public Day SelectedWorkingDay
-        {
-            get
-            {
-                return _selectedWorkingDay;
-            }
-
-            set
-            {
-                var oldValue = _selectedWorkingDay;
-                _selectedWorkingDay = value;
+                Set(ref _selectedWorkingDay, value);
 
                 if (_selectedWorkingDay != null)
                 {
-                    CurrentMonth = _selectedWorkingDay.Date.Month;
-                    
-                    Timesheets = _db.Timesheets.Where(t => t.Timestamp == _selectedWorkingDay.Timestamp).ToList();
                     SelectedTimesheet = null;
-                    if (_selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay)
-                        IsInputEnabled = true;
-                    else
-                        IsInputEnabled = false;
+                    CurrentMonth = _selectedWorkingDay.Date.Month;                    
+                    IsInputEnabled = _selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay;
+
+                    using (DBArchive db = new DBArchive())
+                    {
+                        string year = CurrentYear.ToString(); // hack for query
+                        FDLs = new ObservableCollection<FDLEVM>(db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList().Select(fdl => new FDLEVM(fdl)));
+                    }
+                    RaisePropertyChanged(nameof(FDLs));
                 }
                 else
                 {
-                    Timesheets = null;
                     IsInputEnabled = false;
-                }                    
-
-                RaisePropertyChanged(nameof(SelectedWorkingDay), oldValue, value);
-                RaisePropertyChanged(nameof(FDLs));
+                }
             }
         }
 
-        /// <summary>
-        /// The <see cref="SelectedTimesheet" /> property's name.
-        /// </summary>
-        private Timesheet _selectedTimesheet;
-
-        /// <summary>
-        /// Sets and gets the SelectedTimesheet property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public Timesheet SelectedTimesheet
+        private TimesheetEVM _selectedTimesheet;
+        public TimesheetEVM SelectedTimesheet
         {
-            get
-            {
-                return _selectedTimesheet;
-            }
-
+            get => _selectedTimesheet;
             set
             {
-                var oldValue = _selectedTimesheet;
-                _selectedTimesheet = value;
+                if (value == null)
+                    _selectedTimesheet = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
 
-                SelectedTimesheetClone = _selectedTimesheet != null ? _selectedTimesheet.Clone() : (SelectedWorkingDay != null ? new Timesheet() { Timestamp = SelectedWorkingDay.Timestamp } : null);
-
-                RaisePropertyChanged(nameof(SelectedTimesheet), oldValue, value);
+                Set(ref _selectedTimesheet, value);
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
 
-        /// <summary>
-        /// The <see cref="SelectedTimesheetClone" /> property's name.
-        /// </summary>
-        private Timesheet _timesheetInfo;
-
-        /// <summary>
-        /// Sets and gets the SelectedTimesheetClone property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public Timesheet SelectedTimesheetClone
-        {
-            get
-            {
-                return _timesheetInfo;
-            }
-
-            set
-            {
-                var oldValue = _timesheetInfo;
-                _timesheetInfo = value;
-                RaisePropertyChanged(nameof(SelectedTimesheetClone), oldValue, value);
-                SaveTimesheetCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        /// <summary>
-        /// Sets and gets the FDLs property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
-        public IList<FDL> FDLs
-        {
-            get
-            {
-                if (SelectedWorkingDay != null)
-                {
-                    string year = CurrentYear.ToString(); // hack for query
-                    return _db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList();
-                }   
-                else
-                    return null;
-            }
-        }
+        public ObservableCollection<FDLEVM> FDLs { get; set; }
         
-        /// <summary>
-        /// Sets and gets the OnSelectFirstDayInMonth Action.
-        /// </summary>
-        public Action<Day> OnSelectFirstDayInMonth;
-
-        public Action<Day> OnSelectToday;
-
-        private DBArchive _db { get; set; }
+        public Action<DayEVM> OnSelectFirstDayInMonth;
+        public Action<DayEVM> OnSelectToday;
         #endregion
 
         #region Commands Definitions
@@ -293,63 +118,64 @@ namespace Great.ViewModels
         public RelayCommand<int> SelectFirstDayInMonthCommand { get; set; }
         public RelayCommand SelectTodayCommand { get; set; }
 
-        public RelayCommand<Day> SetVacationDayCommand { get; set; }
-        public RelayCommand<Day> SetSickLeaveCommand { get; set; }
-        public RelayCommand<Day> SetWorkDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetVacationDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetSickLeaveCommand { get; set; }
+        public RelayCommand<DayEVM> SetWorkDayCommand { get; set; }
 
-        public RelayCommand<Day> ResetDayCommand { get; set; }
-        public RelayCommand<Day> CopyDayCommand { get; set; }
-        public RelayCommand<Day> CutDayCommand { get; set; }
-        public RelayCommand<Day> PasteDayCommand { get; set; }
+        public RelayCommand<DayEVM> ResetDayCommand { get; set; }
+        public RelayCommand<DayEVM> CopyDayCommand { get; set; }
+        public RelayCommand<DayEVM> CutDayCommand { get; set; }
+        public RelayCommand<DayEVM> PasteDayCommand { get; set; }
 
         public RelayCommand ClearTimesheetCommand { get; set; }
-        public RelayCommand<Timesheet> SaveTimesheetCommand { get; set; }
-        public RelayCommand<Timesheet> DeleteTimesheetCommand { get; set; }        
+        public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
+        public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }        
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public TimesheetsViewModel(DBArchive db)
+        public TimesheetsViewModel()
         {
-            _db = db;
-
             NextYearCommand = new RelayCommand(SetNextYear);
             PreviousYearCommand = new RelayCommand(SetPreviousYear);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
             SelectTodayCommand = new RelayCommand(SelectToday);
 
-            SetVacationDayCommand = new RelayCommand<Day>(SetVacationDay);
-            SetSickLeaveCommand = new RelayCommand<Day>(SetSickLeave);
-            SetWorkDayCommand = new RelayCommand<Day>(SetWorkDay);
+            SetVacationDayCommand = new RelayCommand<DayEVM>(SetVacationDay);
+            SetSickLeaveCommand = new RelayCommand<DayEVM>(SetSickLeave);
+            SetWorkDayCommand = new RelayCommand<DayEVM>(SetWorkDay);
 
-            ResetDayCommand = new RelayCommand<Day>(ResetDay);
-            CopyDayCommand = new RelayCommand<Day>(CopyDay);
-            CutDayCommand = new RelayCommand<Day>(CutDay);
-            PasteDayCommand = new RelayCommand<Day>(PasteDay);
+            ResetDayCommand = new RelayCommand<DayEVM>(ResetDay);
+            CopyDayCommand = new RelayCommand<DayEVM>(CopyDay);
+            CutDayCommand = new RelayCommand<DayEVM>(CutDay);
+            PasteDayCommand = new RelayCommand<DayEVM>(PasteDay);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
-            SaveTimesheetCommand = new RelayCommand<Timesheet>(SaveTimesheet, (Timesheet timesheet) => { return IsInputEnabled; });
-            DeleteTimesheetCommand = new RelayCommand<Timesheet>(DeleteTimesheet, (Timesheet timesheet) => { return IsInputEnabled; });
+            SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
+            DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
             UpdateWorkingDays();
         }
         
         private void UpdateWorkingDays()
         {
-            ObservableCollectionEx<Day> days = new ObservableCollectionEx<Day>();
+            ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
 
-            for (int month = 1; month <= 12; month++)
+            using (DBArchive db = new DBArchive())
             {
-                foreach (DateTime day in AllDatesInMonth(CurrentYear, month))
+                for (int month = 1; month <= 12; month++)
                 {
-                    long timestamp = day.ToUnixTimestamp();
-                    Day currentDay = _db.Days.Where(d => d.Timestamp == timestamp).FirstOrDefault();
+                    foreach (DateTime day in AllDatesInMonth(CurrentYear, month))
+                    {
+                        long timestamp = day.ToUnixTimestamp();
+                        Day currentDay = db.Days.SingleOrDefault(d => d.Timestamp == timestamp);
 
-                    if (currentDay != null)
-                        days.Add(currentDay);
-                    else
-                        days.Add(new Day { Date = day });
+                        if (currentDay != null)
+                            days.Add(new DayEVM(currentDay));
+                        else
+                            days.Add(new DayEVM { Date = day });
+                    }
                 }
             }
 
@@ -365,15 +191,8 @@ namespace Great.ViewModels
             }
         }
         
-        private void SetNextYear()
-        {
-            CurrentYear++;
-        }
-
-        private void SetPreviousYear()
-        {
-            CurrentYear--;
-        }
+        private void SetNextYear() => CurrentYear++;
+        private void SetPreviousYear() => CurrentYear--;
 
         public void SelectFirstDayInMonth(int month)
         {
@@ -392,27 +211,12 @@ namespace Great.ViewModels
             OnSelectToday?.Invoke(SelectedWorkingDay);
         }
 
-        public void ClearTimesheet()
-        {
-            SelectedTimesheet = null;
-        }
+        public void ClearTimesheet() => SelectedTimesheet = null;
+        public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
+        public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
+        public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
 
-        public void SetVacationDay(Day day)
-        {
-            SetDayType(day, EDayType.VacationDay);
-        }
-
-        public void SetSickLeave(Day day)
-        {
-            SetDayType(day, EDayType.SickLeave);
-        }
-
-        public void SetWorkDay(Day day)
-        {
-            SetDayType(day, EDayType.WorkDay);
-        }
-
-        private void SetDayType(Day day, EDayType type)
+        private void SetDayType(DayEVM day, EDayType type)
         {
             bool cancel = false;
 
@@ -422,9 +226,13 @@ namespace Great.ViewModels
             if (!cancel && type != EDayType.WorkDay && day.Timesheets.Count() > 0)
             {
                 if (MessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                { 
-                    _db.Timesheets.RemoveRange(day.Timesheets);
-                    Timesheets = null;
+                {
+                    using (DBArchive db = new DBArchive())
+                    {
+                        db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == day.Timestamp));
+                    }
+                        
+                    day.Timesheets.Clear();
                 }
                 else
                     cancel = true;
@@ -433,122 +241,78 @@ namespace Great.ViewModels
             if(!cancel)
             {
                 day.EType = type;
-                _db.Days.AddOrUpdate(day);
-                _db.SaveChanges();
+                day.Save();
             }
-
-            if (day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay)
-                IsInputEnabled = true;
-            else
-                IsInputEnabled = false;
-
-            day.NotifyDayPropertiesChanged();
+            
+            IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay;
         }
         
-        public void CopyDay(Day day)
+        public void CopyDay(DayEVM day)
         {
-            IList<Timesheet> timesheets = new List<Timesheet>();
-
             if (day == null)
                 return;
 
+            DayEVM dayClone = null;
+            Mapper.Map(day, dayClone);
+
             ClipboardX.Clear();
-            ClipboardX.AddItem("Day", day.Clone());
-
-            foreach (Timesheet timesheet in day.Timesheets)
-                timesheets.Add(timesheet.Clone());
-
-            ClipboardX.AddItem("Timesheets", timesheets);
+            ClipboardX.AddItem("Day", dayClone);
         }
 
-        public void CutDay(Day day)
+        public void CutDay(DayEVM day)
         {
             CopyDay(day);
             ResetDay(day);
         }
 
-        public void PasteDay(Day destinationDay)
+        public void PasteDay(DayEVM destinationDay)
         {
             if (destinationDay == null || !ClipboardX.Contains("Day") || !ClipboardX.Contains("Timesheets"))
                 return;
             
-            Day sourceDay = ClipboardX.GetItem<Day>("Day");
-            IList<Timesheet> sourceTimesheets = ClipboardX.GetItem<IList<Timesheet>>("Timesheets");
+            DayEVM sourceDay = ClipboardX.GetItem<DayEVM>("Day");
 
-            if (sourceDay == null || sourceTimesheets == null)
+            if (sourceDay == null)
                 return;
 
             destinationDay.Type = sourceDay.Type;
-            _db.Timesheets.RemoveRange(_db.Timesheets.Where(t => t.Timestamp == destinationDay.Timestamp));
 
-            foreach (Timesheet timesheet in sourceTimesheets)
+            using (DBArchive db = new DBArchive())
             {
-                timesheet.Timestamp = destinationDay.Timestamp;
-                _db.Timesheets.Add(timesheet);
-            }
-            
-            _db.Days.AddOrUpdate(destinationDay);
+                foreach (var timesheet in destinationDay.Timesheets)
+                    timesheet.Delete(db);
 
-            if(_db.SaveChanges() > 0)
-            {
-                sourceDay.NotifyDayPropertiesChanged();
-                destinationDay.NotifyDayPropertiesChanged();
-                SelectedWorkingDay = destinationDay;
-                
-                //foreach (Timesheet timesheet in destinationDay.Timesheets)
-                //    timesheet.FDL1?.NotifyFDLPropertiesChanged();
+                destinationDay.Timesheets.Clear();
+
+                foreach (var timesheet in sourceDay.Timesheets)
+                {
+                    timesheet.Id = 0;
+                    timesheet.Timestamp = destinationDay.Timestamp;
+                    destinationDay.Timesheets.Add(timesheet);
+                    timesheet.Save(db);
+                }
+
+                if (destinationDay.Save(db))
+                    SelectedWorkingDay = destinationDay;
             }
         }
 
-        public void ResetDay(Day day)
+        public void ResetDay(DayEVM day)
         {
-            IList<FDL> dayFDLs = new List<FDL>();
-
-            if (!_db.Days.Any(d => d.Timestamp == day.Timestamp))
-                return;
-
-            foreach (Timesheet timesheet in day.Timesheets)
-            {
-                if (timesheet.FDL1 != null)
-                    dayFDLs.Add(timesheet.FDL1);
-            }
-
-            _db.Days.Remove(day);
-
-            if (_db.SaveChanges() > 0)
-            {
+            if (day.Delete())
                 day.EType = EDayType.WorkDay;
-                day.NotifyDayPropertiesChanged();
-                Timesheets = null;
-
-                //foreach (FDL fdl in dayFDLs)
-                //    fdl.NotifyFDLPropertiesChanged();
-            }
         }
 
-        public void DeleteTimesheet(Timesheet timesheet)
+        public void DeleteTimesheet(TimesheetEVM timesheet)
         {
-            FDL fdl = null;
-
             if (timesheet == null)
                 return;
 
-            if (timesheet.FDL != null)
-                fdl = _db.FDLs.SingleOrDefault(f => f.Id == timesheet.FDL);
-
-            _db.Timesheets.Remove(timesheet);
-
-            if (_db.SaveChanges() > 0)
-            {
-                SelectedWorkingDay.NotifyDayPropertiesChanged();
-                Timesheets = SelectedWorkingDay.Timesheets.ToList();
+            if (timesheet.Delete())
                 SelectedTimesheet = null;
-                
-                //fdl?.NotifyFDLPropertiesChanged();
-            }
         }
 
-        public void SaveTimesheet(Timesheet timesheet)
+        public void SaveTimesheet(TimesheetEVM timesheet)
         {
             if (timesheet == null)
                 return;
@@ -567,18 +331,11 @@ namespace Great.ViewModels
             // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
             if (timesheet.FDL == null)
                 timesheet.FDL1 = null;
-            
-            _db.Days.AddOrUpdate(SelectedWorkingDay);
-            _db.Timesheets.AddOrUpdate(timesheet);
 
-            if (_db.SaveChanges() > 0)
-            {
-                SelectedWorkingDay.NotifyDayPropertiesChanged();
-                Timesheets = SelectedWorkingDay.Timesheets.ToList();
+            SelectedWorkingDay.Save();
+
+            if (timesheet.Save())
                 SelectedTimesheet = null;
-
-                //timesheet.FDL1?.NotifyFDLPropertiesChanged();
-            }
         }
     }
 }

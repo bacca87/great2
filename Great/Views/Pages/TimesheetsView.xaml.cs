@@ -1,7 +1,6 @@
-﻿using Great.Models;
-using Great.Models.Database;
-using Great.Utils;
+﻿using Great.Utils;
 using Great.ViewModels;
+using Great.ViewModels.Database;
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -39,7 +38,7 @@ namespace Great.Views.Pages
             }
         }
 
-        private void scrollToFirstDayInMonth(Day day)
+        private void scrollToFirstDayInMonth(DayEVM day)
         {
             // hack for scrolling to the first day in month displaying the group header 
             scrollViewer.ScrollToBottom();
@@ -51,7 +50,7 @@ namespace Great.Views.Pages
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 1);
         }
 
-        private void scrollToSelectedDay(Day day)
+        private void scrollToSelectedDay(DayEVM day)
         {
             // hack for scrolling to the selected day 
             scrollViewer.ScrollToHome();

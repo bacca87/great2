@@ -11,7 +11,7 @@ namespace Great.Models.DTO
         public long Order { get; set; }
         public long? Factory { get; set; }
 
-        public virtual FactoryDTO Factory1 { get; set; }
+        public FactoryDTO Factory1 { get; set; }
 
         public FDLDTO() { }
 

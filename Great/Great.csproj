@@ -245,8 +245,9 @@
     <Compile Include="Models\DTO\CarDTO.cs" />
     <Compile Include="Models\DTO\CarRentalCompanyDTO.cs" />
     <Compile Include="Models\DTO\CurrencyDTO.cs" />
+    <Compile Include="Models\DTO\DayTypeDTO.cs" />
+    <Compile Include="Models\DTO\DayDTO.cs" />
     <Compile Include="Models\DTO\EmailMessageDTO.cs" />
-    <Compile Include="Models\Database\Expense.ext.cs" />
     <Compile Include="Models\DTO\ExpenseTypeDTO.cs" />
     <Compile Include="Models\DTO\FactoryDTO.cs" />
     <Compile Include="Models\DTO\FDLDTO.cs" />
@@ -267,7 +268,6 @@
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
     <Compile Include="Utils\Converters\CompareIntConverter.cs" />
-    <Compile Include="Models\Database\Day.ext.cs" />
     <Compile Include="Models\FDLManager.cs" />
     <Compile Include="Models\Database\Factory.ext.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -296,10 +296,12 @@
     <Compile Include="ViewModels\CarRentalViewModel.cs" />
     <Compile Include="ViewModels\Database\CarEVM.cs" />
     <Compile Include="ViewModels\Database\CarRentalEVM.cs" />
+    <Compile Include="ViewModels\Database\DayEVM.cs" />
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />
     <Compile Include="ViewModels\Database\FDLEVM.cs" />
+    <Compile Include="ViewModels\Database\TimesheetEVM.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\GreatImportWizardViewModel.cs" />

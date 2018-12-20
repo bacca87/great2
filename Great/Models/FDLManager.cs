@@ -41,9 +41,10 @@ namespace Great.Models
             ProcessMessage(e.Message);
         }
 
-        public ExpenseAccount ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
+        public ExpenseAccountEVM ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
         {
             ExpenseAccount ea = new ExpenseAccount();
+            ExpenseAccountEVM eaEVM = null;
             PdfDocument pdfDoc = null;
 
             try
@@ -66,8 +67,7 @@ namespace Great.Models
                 ea.FileName = Path.GetFileName(filePath);
                 ea.NotifyAsNew = NotifyAsNew;
 
-                int cdc;
-                if (int.TryParse(fields[ApplicationSettings.ExpenseAccount.FieldNames.CdC].GetValueAsString(), out cdc))
+                if (int.TryParse(fields[ApplicationSettings.ExpenseAccount.FieldNames.CdC].GetValueAsString(), out int cdc))
                     ea.CdC = cdc;
 
                 string currency = fields[ApplicationSettings.ExpenseAccount.FieldNames.Currency].GetValueAsString();
@@ -152,27 +152,36 @@ namespace Great.Models
                                 #endregion
 
                                 transaction.Commit();
-                                Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(ea)));
+
+                                // Update all navigation properties
+                                db.Entry(ea).Reference(p => p.FDL1).Load();
+                                db.Entry(ea).Reference(p => p.FDLStatus).Load();
+                                db.Entry(ea).Reference(p => p.Currency1).Load();                                
+                                db.Entry(ea).Collection(p => p.Expenses).Load();
+
+                                eaEVM = new ExpenseAccountEVM(ea);
+
+                                Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, eaEVM));
                             }
                         }
                         catch (Exception ex)
                         {
                             transaction.Rollback();
-                            ea = null;
+                            eaEVM = null;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                ea = null;
+                eaEVM = null;
             }
             finally
             {
                 pdfDoc?.Close();
             }
 
-            return ea;
+            return eaEVM;
         }
 
         public FDLEVM ImportFDLFromFile(string filePath, bool IsXfaPdf, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
@@ -312,11 +321,11 @@ namespace Great.Models
 
                                         if (strDate != string.Empty)
                                         {
-                                            Day day = new Day();
+                                            DayEVM day = new DayEVM();
                                             day.Date = DateTime.Parse(strDate);
                                             day.EType = EDayType.WorkDay;
 
-                                            Timesheet timesheet = new Timesheet();
+                                            TimesheetEVM timesheet = new TimesheetEVM();
                                             timesheet.FDL = fdl.Id;
                                             timesheet.Date = DateTime.Parse(strDate);
 
@@ -341,8 +350,8 @@ namespace Great.Models
 
                                             if (timesheet.TimePeriods != null)
                                             {
-                                                db.Days.AddOrUpdate(day);
-                                                db.Timesheets.Add(timesheet);
+                                                day.Save(db);
+                                                timesheet.Save(db);
                                             }
                                         }
                                     }
@@ -528,11 +537,11 @@ namespace Great.Models
 
                                         if (strDate != string.Empty)
                                         {
-                                            Day day = new Day();
+                                            DayEVM day = new DayEVM();
                                             day.Date = DateTime.Parse(strDate);
                                             day.EType = EDayType.WorkDay;
 
-                                            Timesheet timesheet = new Timesheet();
+                                            TimesheetEVM timesheet = new TimesheetEVM();
                                             timesheet.FDL = fdl.Id;
                                             timesheet.Date = DateTime.Parse(strDate);
 
@@ -557,8 +566,8 @@ namespace Great.Models
 
                                             if (timesheet.TimePeriods != null)
                                             {
-                                                db.Days.AddOrUpdate(day);
-                                                db.Timesheets.Add(timesheet);
+                                                day.Save(db);
+                                                timesheet.Save(db);
                                             }
                                         }
                                     }

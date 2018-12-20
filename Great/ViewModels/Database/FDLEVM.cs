@@ -13,139 +13,176 @@ namespace Great.ViewModels.Database
     public class FDLEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
-        public string Id { get; set; }
-        public long WeekNr { get; set; }
-        public long StartDay { get; set; }
-        public bool IsExtra { get; set; }
-        public long Order { get; set; }
+        private string _Id;
+        public string Id
+        {
+            get => _Id;
+            set => Set(ref _Id, value);
+        }
 
-        public long? _Factory;
+        private long _WeekNr;
+        public long WeekNr
+        {
+            get => _WeekNr;
+            set => Set(ref _WeekNr, value);
+        }
+
+        private long _StartDay;
+        public long StartDay
+        {
+            get => _StartDay;
+            set => Set(ref _StartDay, value);
+        }
+
+        private bool _IsExtra;
+        public bool IsExtra
+        {
+            get => _IsExtra;
+            set => Set(ref _IsExtra, value);
+        }
+
+        private long _Order;
+        public long Order
+        {
+            get => _Order;
+            set => Set(ref _Order, value);
+        }
+
+        private long? _Factory;
         public long? Factory
         {
             get => _Factory;
             set => Set(ref _Factory, value);
         }
 
-        public bool _OutwardCar;
+        private bool _OutwardCar;
         public bool OutwardCar
         {
             get => _OutwardCar;
             set => Set(ref _OutwardCar, value);
         }
 
-        public bool _ReturnCar;
+        private bool _ReturnCar;
         public bool ReturnCar
         {
             get => _ReturnCar;
             set => Set(ref _ReturnCar, value);
         }
 
-        public bool _OutwardTaxi;
+        private bool _OutwardTaxi;
         public bool OutwardTaxi
         {
             get => _OutwardTaxi;
             set => Set(ref _OutwardTaxi, value);
         }
 
-        public bool _ReturnTaxi;
+        private bool _ReturnTaxi;
         public bool ReturnTaxi
         {
             get => _ReturnTaxi;
             set => Set(ref _ReturnTaxi, value);
         }
 
-        public bool _OutwardAircraft;
+        private bool _OutwardAircraft;
         public bool OutwardAircraft
         {
             get => _OutwardAircraft;
             set => Set(ref _OutwardAircraft, value);
         }
 
-        public bool _ReturnAircraft;
+        private bool _ReturnAircraft;
         public bool ReturnAircraft
         {
             get => _ReturnAircraft;
             set => Set(ref _ReturnAircraft, value);
         }
 
-        public string _PerformanceDescription;
+        private string _PerformanceDescription;
         public string PerformanceDescription
         {
             get => _PerformanceDescription;
             set => Set(ref _PerformanceDescription, value);
         }
 
-        public long _Result;
+        private long _Result;
         public long Result
         {
             get => _Result;
-            set => Set(ref _Result, value);
+            set
+            {
+                Set(ref _Result, value);
+                RaisePropertyChanged(nameof(EResult));
+            }
         }
 
-        public string _ResultNotes;
+        private string _ResultNotes;
         public string ResultNotes
         {
             get => _ResultNotes;
             set => Set(ref _ResultNotes, value);
         }
 
-        public string _Notes;
+        private string _Notes;
         public string Notes
         {
             get => _Notes;
             set => Set(ref _Notes, value);
         }
 
-        public string _PerformanceDescriptionDetails;
+        private string _PerformanceDescriptionDetails;
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
             set => Set(ref _PerformanceDescriptionDetails, value);
         }
 
-        public long _Status;
+        private long _Status;
         public long Status
         {
             get => _Status;
-            set => Set(ref _Status, value);
+            set
+            {
+                Set(ref _Status, value);
+                RaisePropertyChanged(nameof(EStatus));
+            }
         }
 
-        public string _LastError;
+        private string _LastError;
         public string LastError
         {
             get => _LastError;
             set => Set(ref _LastError, value);
         }
 
-        public string _FileName;
+        private string _FileName;
         public string FileName
         {
             get => _FileName;
             set => Set(ref _FileName, value);
         }
 
-        public bool _NotifyAsNew;
+        private bool _NotifyAsNew;
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
             set => Set(ref _NotifyAsNew, value);
         }
 
-        public FactoryDTO _Factory1;
+        private FactoryDTO _Factory1;
         public FactoryDTO Factory1
         {
             get => _Factory1;
             set => Set(ref _Factory1, value);
         }
 
-        public FDLStatusDTO _FDLStatus;
+        private FDLStatusDTO _FDLStatus;
         public FDLStatusDTO FDLStatus
         {
             get => _FDLStatus;
             set => Set(ref _FDLStatus, value);
         }
 
-        public FDLResultDTO _FDLResult;
+        private FDLResultDTO _FDLResult;
         public FDLResultDTO FDLResult
         {
             get => _FDLResult;
@@ -158,7 +195,7 @@ namespace Great.ViewModels.Database
 
         public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
 
-        public bool _IsNew;
+        private bool _IsNew;
         public bool IsNew // used for sorting purpose
         {
             get => _IsNew;
@@ -172,9 +209,9 @@ namespace Great.ViewModels.Database
             get => (EFDLStatus)Status;
             set
             {
-                RaisePropertyChanged();
                 Status = (long)value;
                 IsNew = value == EFDLStatus.New;
+                RaisePropertyChanged();
             }
         }
 
@@ -183,8 +220,8 @@ namespace Great.ViewModels.Database
             get => (EFDLResult)Result;
             set
             {
-                RaisePropertyChanged();
                 Result = (long)value;
+                RaisePropertyChanged();
             }
         }
         #endregion
@@ -194,17 +231,16 @@ namespace Great.ViewModels.Database
 
         public string FDL_Factory_Display => $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}";
         #endregion
+        
+        // hack because XAML didnt support default parameters
+        public FDLEVM() => Timesheets = new ObservableCollection<TimesheetDTO>();
 
-        public FDLEVM()
-        {
-            Timesheets = new ObservableCollection<TimesheetDTO>();
-        }
-
-        public FDLEVM(FDL fdl)
+        public FDLEVM(FDL fdl = null)
         {
             Timesheets = new ObservableCollection<TimesheetDTO>();
             
-            Mapper.Map(fdl, this);
+            if(fdl != null)
+                Mapper.Map(fdl, this);
         }
 
         public override bool Save(DBArchive db)
@@ -215,6 +251,11 @@ namespace Great.ViewModels.Database
             db.FDLs.AddOrUpdate(fdl);
 
             return true;
+        }
+
+        public override bool Delete(DBArchive db)
+        {
+            throw new NotImplementedException();
         }
     }
 }
