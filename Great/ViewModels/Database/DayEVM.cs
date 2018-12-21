@@ -319,7 +319,9 @@ namespace Great.ViewModels.Database
 
         public DayEVM(Day day = null)
         {
-            if(day != null)
+            Timesheets = new ObservableCollectionEx<TimesheetEVM>();
+
+            if (day != null)
                 Mapper.Map(day, this);
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
@@ -351,13 +353,34 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
+            db.SaveChanges();
 
             return true;
         }
 
         public override bool Delete(DBArchive db)
         {
-            throw new NotImplementedException();
+            db.Days.Remove(db.Days.SingleOrDefault(d => d.Timestamp == Timestamp));
+            db.SaveChanges();
+            Timesheets.Clear();
+            return true;
+        }
+
+        public override bool Refresh(DBArchive db)
+        {
+            Day day = db.Days.SingleOrDefault(d => d.Timestamp == Timestamp);
+
+            if (day != null)
+            {
+                Mapper.Map(day, this);
+
+                foreach (TimesheetEVM timesheet in Timesheets)
+                    timesheet.Refresh(db);
+
+                return true;
+            }
+
+            return false;
         }
     }
 

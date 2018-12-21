@@ -171,11 +171,18 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, rent);
             db.CarRentalHistories.AddOrUpdate(rent);
+            db.SaveChanges();
+            Id = rent.Id;
 
             return true;
         }
 
         public override bool Delete(DBArchive db)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Refresh(DBArchive db)
         {
             throw new NotImplementedException();
         }

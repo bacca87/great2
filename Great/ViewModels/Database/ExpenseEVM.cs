@@ -129,11 +129,18 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, e);
             db.Expenses.AddOrUpdate(e);
+            db.SaveChanges();
+            Id = e.Id;
 
             return true;
         }
 
         public override bool Delete(DBArchive db)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Refresh(DBArchive db)
         {
             throw new System.NotImplementedException();
         }

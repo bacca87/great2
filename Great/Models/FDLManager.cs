@@ -678,7 +678,7 @@ namespace Great.Models
 
             foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
-                TimesheetDTO timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
+                TimesheetEVM timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
                 if (timesheet != null)
                 {

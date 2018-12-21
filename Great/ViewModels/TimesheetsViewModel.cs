@@ -42,6 +42,8 @@ namespace Great.ViewModels
             get => _currentYear;
             set
             {
+                bool updateDays = _currentYear != value;
+
                 if (value < ApplicationSettings.Timesheets.MinYear)
                     _currentYear = ApplicationSettings.Timesheets.MinYear;
                 else if (value > ApplicationSettings.Timesheets.MaxYear)
@@ -51,7 +53,8 @@ namespace Great.ViewModels
 
                 Set(ref _currentYear, value);
 
-                UpdateWorkingDays();
+                if(updateDays)
+                    UpdateWorkingDays();
             }
         }
 
@@ -99,7 +102,7 @@ namespace Great.ViewModels
             set
             {
                 if (value == null)
-                    _selectedTimesheet = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
+                    value = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
 
                 Set(ref _selectedTimesheet, value);
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
@@ -332,10 +335,16 @@ namespace Great.ViewModels
             if (timesheet.FDL == null)
                 timesheet.FDL1 = null;
 
-            SelectedWorkingDay.Save();
+            using (DBArchive db = new DBArchive())
+            {
+                SelectedWorkingDay.Save(db);
 
-            if (timesheet.Save())
-                SelectedTimesheet = null;
+                if (timesheet.Save(db))
+                {
+                    SelectedWorkingDay.Refresh(db);
+                    SelectedTimesheet = null;
+                }
+            }
         }
     }
 }

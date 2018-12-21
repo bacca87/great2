@@ -191,11 +191,18 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);
+            db.SaveChanges();
+            Id = ea.Id;
 
             return true;
         }
 
         public override bool Delete(DBArchive db)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Refresh(DBArchive db)
         {
             throw new System.NotImplementedException();
         }

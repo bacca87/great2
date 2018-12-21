@@ -172,7 +172,11 @@ namespace Great.ViewModels.Database
         public FactoryDTO Factory1
         {
             get => _Factory1;
-            set => Set(ref _Factory1, value);
+            set
+            {
+                Set(ref _Factory1, value);
+                RaisePropertyChanged(nameof(FDL_Factory_Display));
+            }
         }
 
         private FDLStatusDTO _FDLStatus;
@@ -189,7 +193,7 @@ namespace Great.ViewModels.Database
             set => Set(ref _FDLResult, value);
         }
 
-        public ObservableCollection<TimesheetDTO> Timesheets { get; set; }
+        public ObservableCollection<TimesheetEVM> Timesheets { get; set; }
 
         public string FilePath { get { return ApplicationSettings.Directories.FDL + FileName; } }
 
@@ -233,11 +237,11 @@ namespace Great.ViewModels.Database
         #endregion
         
         // hack because XAML didnt support default parameters
-        public FDLEVM() => Timesheets = new ObservableCollection<TimesheetDTO>();
+        public FDLEVM() => Timesheets = new ObservableCollection<TimesheetEVM>();
 
         public FDLEVM(FDL fdl = null)
         {
-            Timesheets = new ObservableCollection<TimesheetDTO>();
+            Timesheets = new ObservableCollection<TimesheetEVM>();
             
             if(fdl != null)
                 Mapper.Map(fdl, this);
@@ -249,11 +253,17 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
+            db.SaveChanges();
 
             return true;
         }
 
         public override bool Delete(DBArchive db)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Refresh(DBArchive db)
         {
             throw new NotImplementedException();
         }

@@ -6,6 +6,7 @@ using Itenso.TimePeriod;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
@@ -366,6 +367,8 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, timesheet);
             db.Timesheets.AddOrUpdate(timesheet);
+            db.SaveChanges();
+            Id = timesheet.Id;
 
             return true;
         }
@@ -379,7 +382,20 @@ namespace Great.ViewModels.Database
 
         public override bool Delete(DBArchive db)
         {
-            throw new NotImplementedException();
+            db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
+            db.SaveChanges();
+            return true;
+        }
+
+        public override bool Refresh(DBArchive db)
+        {
+            var timesheet = db.Timesheets.SingleOrDefault(t => t.Id == Id);
+            db.Entry(timesheet).Reference(p => p.FDL1).Load();
+
+            if (timesheet != null)
+                return Mapper.Map(timesheet, this) != null;
+
+            return false;
         }
     }
 }

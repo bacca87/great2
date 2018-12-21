@@ -5,13 +5,18 @@ namespace Great.ViewModels.Database
 {
     public abstract class EntityViewModelBase : ViewModelBase
     {
+        public bool Refresh()
+        {
+            using (DBArchive db = new DBArchive())
+                return Refresh(db);
+        }
+
+        public abstract bool Refresh(DBArchive db);
+
         public bool Save()
         {
             using (DBArchive db = new DBArchive())
-            {
-                Save(db);
-                return db.SaveChanges() > 0;
-            }
+                return Save(db);
         }
 
         public abstract bool Save(DBArchive db);
@@ -19,10 +24,7 @@ namespace Great.ViewModels.Database
         public bool Delete()
         {
             using (DBArchive db = new DBArchive())
-            {
-                Delete(db);
-                return db.SaveChanges() > 0;
-            }
+                return Delete(db);
         }
 
         public abstract bool Delete(DBArchive db);
