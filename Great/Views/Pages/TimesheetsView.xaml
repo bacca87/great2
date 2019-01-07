@@ -7,7 +7,7 @@
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
-      xmlns:m="clr-namespace:Great.Models.Database" 
+      xmlns:e="clr-namespace:Great.ViewModels.Database" 
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet"
@@ -178,7 +178,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <DataGrid Grid.Column="0"
-                      ItemsSource="{Binding Timesheets}"                      
+                      ItemsSource="{Binding SelectedWorkingDay.Timesheets}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
                       AutoGenerateColumns="False" 
                       CanUserReorderColumns="False" 
@@ -267,14 +267,14 @@
                     <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
                     <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
 
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B"/>
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheetClone.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheetClone.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheetClone.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheetClone.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B"/>
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
+                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
                 </Grid>                
                 <Grid Grid.Column="0" Grid.Row="1" Margin="15">
                     <GroupBox Header="FDL" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}">
@@ -285,8 +285,8 @@
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Number:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                             <ComboBox Grid.Column="1" Margin="5" Width="200" 
-                                  SelectedItem="{Binding SelectedTimesheetClone.FDL1}" 
-                                  SelectedValue="{Binding SelectedTimesheetClone.FDL}" 
+                                  SelectedItem="{Binding SelectedTimesheet.FDL1}" 
+                                  SelectedValue="{Binding SelectedTimesheet.FDL}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="FDL_Factory_Display" 
                                   SelectedValuePath="Id" 
@@ -296,7 +296,7 @@
                                 </ComboBox.Resources>
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
-                                        <m:FDL/>
+                                        <e:FDLEVM/>
                                         <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
@@ -307,7 +307,7 @@
                 <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
                     <Button Margin="10" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                     <Button Margin="10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
-                    <Button Margin="10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheetClone}" />
+                    <Button Margin="10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                 </StackPanel>
             </Grid>            
         </Grid>

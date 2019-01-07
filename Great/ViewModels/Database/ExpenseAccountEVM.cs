@@ -12,9 +12,26 @@ namespace Great.ViewModels.Database
     public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
-        public long Id { get; set; }
-        public string FDL { get; set; }
-        public long? CdC { get; set; }
+        private long _Id;
+        public long Id
+        {
+            get => _Id;
+            set => Set(ref _Id, value);
+        }
+
+        private string _FDL;
+        public string FDL
+        {
+            get => _FDL;
+            set => Set(ref _FDL, value);
+        }
+
+        private long? _CdC;
+        public long? CdC
+        {
+            get => _CdC;
+            set => Set(ref _CdC, value);
+        }
 
         private string _Currency;
         public string Currency
@@ -38,7 +55,11 @@ namespace Great.ViewModels.Database
         public long Status
         {
             get => _Status;
-            set => Set(ref _Status, value);
+            set
+            {
+                Set(ref _Status, value);
+                RaisePropertyChanged(nameof(EStatus));
+            }
         }
 
         private string _LastError;
@@ -118,9 +139,9 @@ namespace Great.ViewModels.Database
             get => (EFDLStatus)Status;
             set
             {
-                RaisePropertyChanged();
                 Status = (long)value;
                 IsNew = value == EFDLStatus.New;
+                RaisePropertyChanged();
             }
         }
 
@@ -141,14 +162,15 @@ namespace Great.ViewModels.Database
         }
         #endregion;
 
-        public ExpenseAccountEVM(ExpenseAccount ea)
+        public ExpenseAccountEVM(ExpenseAccount ea = null)
         {
             Expenses = new ObservableCollectionEx<ExpenseEVM>();
             Expenses.CollectionChanged += (sender, e) => UpdateTotals();
             Expenses.CollectionChanged += (sender, e) => InsertExpenseEnabled = Expenses.Count < ApplicationSettings.ExpenseAccount.MaxExpenseCount;
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
-            Mapper.Map(ea, this);
+            if(ea != null)
+                Mapper.Map(ea, this);
         }
 
         private void UpdateTotals()
@@ -169,8 +191,20 @@ namespace Great.ViewModels.Database
 
             Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);
+            db.SaveChanges();
+            Id = ea.Id;
 
             return true;
+        }
+
+        public override bool Delete(DBArchive db)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Refresh(DBArchive db)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -385,7 +385,7 @@ namespace Great.Utils
                         if (stopImport)
                             break;
 
-                        Day d = new Day();
+                        DayEVM d = new DayEVM();
 
                         try
                         {
@@ -400,7 +400,7 @@ namespace Great.Utils
                             else if (d.Type == 6)
                                 d.Type = 2;
 
-                            db.Days.AddOrUpdate(d);
+                            d.Save(db);
 
                             //t = new Timesheet();
                             long timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
@@ -412,7 +412,7 @@ namespace Great.Utils
                                 r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_PM") != 0)
                             {
-                                Timesheet office = new Timesheet();
+                                TimesheetEVM office = new TimesheetEVM();
                                 office.Timestamp = timestamp;
 
                                 office.TravelStartTimeAM = null;
@@ -424,8 +424,8 @@ namespace Great.Utils
                                 office.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
                                 office.TravelEndTimePM = null;
 
-                                if(db.Timesheets.Where(x => x.Timestamp == office.Timestamp && office.FDL == string.Empty).Count() == 0)
-                                    db.Timesheets.Add(office);
+                                if (db.Timesheets.Where(x => x.Timestamp == office.Timestamp && office.FDL == string.Empty).Count() == 0)
+                                    office.Save(db);
                             }
 
                             // Factory association
@@ -599,7 +599,7 @@ namespace Great.Utils
                     if (stopImport)
                         break;
 
-                    ExpenseAccount ea = null;
+                    ExpenseAccountEVM ea = null;
 
                     try
                     {

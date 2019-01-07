@@ -74,23 +74,32 @@ namespace Great.ViewModels.Database
 
         #endregion
 
-        public CarEVM() { }
-
-        public CarEVM(Car c)
+        public CarEVM(Car car = null)
         {
-            Mapper.Map(c, this);
+            if (car != null)
+                Mapper.Map(car, this);
         }
 
         public override bool Save(DBArchive db)
         {
-            Car c = new Car();
+            Car car = new Car();
 
-            Mapper.Map(this, c);
-            db.Cars.AddOrUpdate(c);
+            Mapper.Map(this, car);
+            db.Cars.AddOrUpdate(car);
+            db.SaveChanges();
+            Id = car.Id;
 
             return true;
-
         }
 
+        public override bool Delete(DBArchive db)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Refresh(DBArchive db)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

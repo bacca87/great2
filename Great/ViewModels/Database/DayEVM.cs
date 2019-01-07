@@ -1,31 +1,61 @@
-﻿using Great.Utils.Extensions;
+﻿using AutoMapper;
+using Great.Models;
+using Great.Models.Database;
+using Great.Utils;
+using Great.Utils.Extensions;
 using Itenso.TimePeriod;
 using Nager.Date;
 using Nager.Date.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Migrations;
 using System.Linq;
+using Day = Great.Models.Database.Day;
 
-namespace Great.Models.Database
+namespace Great.ViewModels.Database
 {
-    public partial class Day : INotifyPropertyChanged
+    public class DayEVM : EntityViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotMapped]
-        public DateTime Date
+        #region Properties
+        public long _Timestamp;
+        public long Timestamp
         {
-            get { return DateTime.Now.FromUnixTimestamp(Timestamp); }
-            set { Timestamp = value.ToUnixTimestamp(); }
+            get => _Timestamp;
+            set => Set(ref _Timestamp, value);
         }
 
-        [NotMapped]
-        public int WeekNr { get { return Date.WeekNr(); } }
-        [NotMapped]
-        public bool IsHoliday { get { return DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country); } }
-        [NotMapped]
+        public long _Type;
+        public long Type
+        {
+            get => _Type;
+            set
+            {
+                Set(ref _Type, value);
+                RaisePropertyChanged(nameof(EType));
+            }
+        }
+
+        public DayType _DayType;
+        public DayType DayType
+        {
+            get => _DayType;
+            set => Set(ref _DayType, value);
+        }
+
+        public ObservableCollectionEx<TimesheetEVM> Timesheets { get; set; }
+
+        public DateTime Date
+        {
+            get => DateTime.Now.FromUnixTimestamp(Timestamp);
+            set
+            {
+                Timestamp = value.ToUnixTimestamp();
+                RaisePropertyChanged();
+            }
+        }
+
+        public int WeekNr => Date.WeekNr();
+        public bool IsHoliday => DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country);
         public string HolidayLocalName
         {
             get
@@ -35,29 +65,21 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public EDayType EType
         {
-            get
-            {
-                return (EDayType)Type;
-            }
-
+            get => (EDayType)Type;
             set
             {
                 Type = (long)value;
+                RaisePropertyChanged();
             }
         }
 
-        [NotMapped]
-        public bool IsWorkDay { get { return EType == EDayType.WorkDay; } }
-        [NotMapped]
-        public bool IsVacationDay { get { return EType == EDayType.VacationDay; } }
-        [NotMapped]
-        public bool IsSickLeave { get { return EType == EDayType.SickLeave; } }
+        public bool IsWorkDay => EType == EDayType.WorkDay;
+        public bool IsVacationDay => EType == EDayType.VacationDay;
+        public bool IsSickLeave => EType == EDayType.SickLeave;
 
         #region Totals
-        [NotMapped]
         public float? TotalTime
         {
             get
@@ -67,7 +89,7 @@ namespace Great.Models.Database
                 if (Timesheets == null || Timesheets.Count == 0)
                     return null;
 
-                foreach (Timesheet ts in Timesheets)
+                foreach (TimesheetEVM ts in Timesheets)
                     if (ts.TotalTime.HasValue)
                         total += ts.TotalTime.Value;
 
@@ -75,7 +97,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public float? WorkTime
         {
             get
@@ -85,7 +106,7 @@ namespace Great.Models.Database
                 if (Timesheets == null || Timesheets.Count == 0)
                     return null;
 
-                foreach (Timesheet ts in Timesheets)
+                foreach (TimesheetEVM ts in Timesheets)
                     if (ts.WorkTime.HasValue)
                         total += ts.WorkTime.Value;
 
@@ -93,7 +114,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public float? TravelTime
         {
             get
@@ -103,7 +123,7 @@ namespace Great.Models.Database
                 if (Timesheets == null || Timesheets.Count == 0)
                     return null;
 
-                foreach (Timesheet ts in Timesheets)
+                foreach (TimesheetEVM ts in Timesheets)
                     if (ts.TravelTime.HasValue)
                         total += ts.TravelTime.Value;
 
@@ -111,7 +131,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public float? HoursOfLeave
         {
             get
@@ -125,7 +144,6 @@ namespace Great.Models.Database
         #endregion
 
         #region Time Periods
-        [NotMapped]
         public TimePeriodCollection TimePeriods
         {
             get
@@ -135,7 +153,7 @@ namespace Great.Models.Database
                 if (Timesheets == null || Timesheets.Count == 0)
                     return null;
 
-                foreach (Timesheet ts in Timesheets)
+                foreach (TimesheetEVM ts in Timesheets)
                     if (ts.TimePeriods != null)
                         timePeriods.AddAll(ts.TimePeriods);
 
@@ -143,7 +161,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public TimePeriodCollection WorkPeriods
         {
             get
@@ -153,7 +170,7 @@ namespace Great.Models.Database
                 if (Timesheets == null || Timesheets.Count == 0)
                     return null;
 
-                foreach (Timesheet ts in Timesheets)
+                foreach (TimesheetEVM ts in Timesheets)
                     if (ts.WorkPeriods != null)
                         workingPeriods.AddAll(ts.WorkPeriods);
 
@@ -161,7 +178,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public TimePeriodCollection TravelPeriods
         {
             get
@@ -171,7 +187,7 @@ namespace Great.Models.Database
                 if (Timesheets == null || Timesheets.Count == 0)
                     return null;
 
-                foreach (Timesheet ts in Timesheets)
+                foreach (TimesheetEVM ts in Timesheets)
                     if (ts.TravelPeriods != null)
                         travelPeriods.AddAll(ts.TravelPeriods);
 
@@ -181,7 +197,6 @@ namespace Great.Models.Database
         #endregion
 
         #region Overtimes
-        [NotMapped]
         public float? Overtime34
         {
             get
@@ -213,7 +228,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public float? Overtime35
         {
             get
@@ -240,14 +254,13 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public float? Overtime50
         {
             get
             {
                 float? overtime50 = null;
 
-                if(!IsHoliday)
+                if (!IsHoliday)
                 {
                     if (Date.DayOfWeek == DayOfWeek.Saturday && TotalTime.HasValue && TotalTime.Value > 4)
                     {
@@ -266,7 +279,6 @@ namespace Great.Models.Database
             }
         }
 
-        [NotMapped]
         public float? Overtime100
         {
             get
@@ -282,62 +294,93 @@ namespace Great.Models.Database
         #endregion
 
         #region Display Properties
-        [NotMapped]
-        public string WeekNr_Display { get { return Date.DayOfWeek == DayOfWeek.Monday ? WeekNr.ToString() : ""; } }
-        [NotMapped]
+        public string WeekNr_Display => Date.DayOfWeek == DayOfWeek.Monday ? WeekNr.ToString() : "";
         public string Factories_Display
         {
             get
             {
                 string factories = string.Empty;
 
-                foreach (Timesheet timesheet in Timesheets)
+                foreach (TimesheetEVM timesheet in Timesheets)
                 {
-                    if (timesheet.FDL != string.Empty)
+                    if (!string.IsNullOrEmpty(timesheet.FDL))
                         factories += timesheet?.FDL1?.Factory1?.Name + "; ";
                 }
 
-                if (factories != string.Empty)
+                if (!string.IsNullOrEmpty(factories))
                     factories = factories.Remove(factories.Length - 2);
 
                 return factories;
             }
         }
-        #endregion        
+        #endregion
 
-        private void OnPropertyChanged(string propertyName)
+        #endregion
+
+        public DayEVM(Day day = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Timesheets = new ObservableCollectionEx<TimesheetEVM>();
+
+            if (day != null)
+                Mapper.Map(day, this);
+
+            Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
+            Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
         }
 
-        public void NotifyDayPropertiesChanged()
+        private void UpdateInfo()
         {
-            OnPropertyChanged(nameof(Type));
+            RaisePropertyChanged(nameof(IsWorkDay));
+            RaisePropertyChanged(nameof(IsVacationDay));
+            RaisePropertyChanged(nameof(IsSickLeave));
 
-            OnPropertyChanged(nameof(IsWorkDay));
-            OnPropertyChanged(nameof(IsVacationDay));
-            OnPropertyChanged(nameof(IsSickLeave));
+            RaisePropertyChanged(nameof(TotalTime));
+            RaisePropertyChanged(nameof(WorkTime));
+            RaisePropertyChanged(nameof(TravelTime));
+            RaisePropertyChanged(nameof(HoursOfLeave));
 
-            OnPropertyChanged(nameof(TotalTime));
-            OnPropertyChanged(nameof(WorkTime));
-            OnPropertyChanged(nameof(TravelTime));
-            OnPropertyChanged(nameof(HoursOfLeave));
+            RaisePropertyChanged(nameof(Overtime34));
+            RaisePropertyChanged(nameof(Overtime35));
+            RaisePropertyChanged(nameof(Overtime50));
+            RaisePropertyChanged(nameof(Overtime100));
 
-            OnPropertyChanged(nameof(Overtime34));
-            OnPropertyChanged(nameof(Overtime35));
-            OnPropertyChanged(nameof(Overtime50));
-            OnPropertyChanged(nameof(Overtime100));
-
-            OnPropertyChanged(nameof(Factories_Display));
+            RaisePropertyChanged(nameof(Factories_Display));
         }
 
-        public Day Clone()
+        public override bool Save(DBArchive db)
         {
-            return new Day()
+            Day day = new Day();
+
+            Mapper.Map(this, day);
+            db.Days.AddOrUpdate(day);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public override bool Delete(DBArchive db)
+        {
+            db.Days.Remove(db.Days.SingleOrDefault(d => d.Timestamp == Timestamp));
+            db.SaveChanges();
+            Timesheets.Clear();
+            return true;
+        }
+
+        public override bool Refresh(DBArchive db)
+        {
+            Day day = db.Days.SingleOrDefault(d => d.Timestamp == Timestamp);
+
+            if (day != null)
             {
-                Timestamp = this.Timestamp,
-                Type = this.Type
-            };
+                Mapper.Map(day, this);
+
+                foreach (TimesheetEVM timesheet in Timesheets)
+                    timesheet.Refresh(db);
+
+                return true;
+            }
+
+            return false;
         }
     }
 
