@@ -184,7 +184,7 @@
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Year">
-                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
                         <Fluent:TextBox.ToolTip>
                             <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
                         </Fluent:TextBox.ToolTip>

@@ -45,9 +45,9 @@ namespace Great.Views.Pages
             workingDaysDataGrid.UpdateLayout();
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
 
-            // scroll 1 unit up for showing current group header
+            // scroll 45 unit up for showing current group header
             workingDaysDataGrid.UpdateLayout();
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 1);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 45);
         }
 
         private void scrollToSelectedDay(DayEVM day)
@@ -96,6 +96,9 @@ namespace Great.Views.Pages
 
                 return;
             }
+
+            if (textbox.CaretIndex >= textbox.MaxLength)
+                return;
 
             if (!ParseTimeSpanMask(textbox.Text.Remove(textbox.CaretIndex, 1).Insert(textbox.CaretIndex, e.Text), textbox.PromptChar, out hours, out minutes))
                 return;
