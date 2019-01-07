@@ -43,15 +43,16 @@ namespace Great.ViewModels
             set
             {
                 bool updateDays = _currentYear != value;
+                int year = 0;
 
                 if (value < ApplicationSettings.Timesheets.MinYear)
-                    _currentYear = ApplicationSettings.Timesheets.MinYear;
+                    year = ApplicationSettings.Timesheets.MinYear;
                 else if (value > ApplicationSettings.Timesheets.MaxYear)
-                    _currentYear = ApplicationSettings.Timesheets.MaxYear;
+                    year = ApplicationSettings.Timesheets.MaxYear;
                 else
-                    _currentYear = value;
+                    year = value;
 
-                Set(ref _currentYear, value);
+                Set(ref _currentYear, year);
 
                 if(updateDays)
                     UpdateWorkingDays();
@@ -65,7 +66,12 @@ namespace Great.ViewModels
             set => Set(ref _currentMonth, value);
         }
 
-        public ObservableCollectionEx<DayEVM> WorkingDays { get; set; }
+        private ObservableCollectionEx<DayEVM> _WorkingDays;
+        public ObservableCollectionEx<DayEVM> WorkingDays
+        {
+            get => _WorkingDays;
+            set => Set(ref _WorkingDays, value);
+        }
 
         private DayEVM _selectedWorkingDay;
         public DayEVM SelectedWorkingDay
@@ -255,7 +261,7 @@ namespace Great.ViewModels
             if (day == null)
                 return;
 
-            DayEVM dayClone = null;
+            DayEVM dayClone = new DayEVM();
             Mapper.Map(day, dayClone);
 
             ClipboardX.Clear();
@@ -270,7 +276,7 @@ namespace Great.ViewModels
 
         public void PasteDay(DayEVM destinationDay)
         {
-            if (destinationDay == null || !ClipboardX.Contains("Day") || !ClipboardX.Contains("Timesheets"))
+            if (destinationDay == null || !ClipboardX.Contains("Day"))
                 return;
             
             DayEVM sourceDay = ClipboardX.GetItem<DayEVM>("Day");
@@ -282,21 +288,31 @@ namespace Great.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
-                foreach (var timesheet in destinationDay.Timesheets)
-                    timesheet.Delete(db);
-
-                destinationDay.Timesheets.Clear();
-
-                foreach (var timesheet in sourceDay.Timesheets)
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    timesheet.Id = 0;
-                    timesheet.Timestamp = destinationDay.Timestamp;
-                    destinationDay.Timesheets.Add(timesheet);
-                    timesheet.Save(db);
-                }
+                    try
+                    {
+                        foreach (var timesheet in destinationDay.Timesheets)
+                            timesheet.Delete(db);
 
-                if (destinationDay.Save(db))
-                    SelectedWorkingDay = destinationDay;
+                        destinationDay.Timesheets.Clear();
+                        destinationDay.Save(db);
+
+                        foreach (var timesheet in sourceDay.Timesheets)
+                        {
+                            timesheet.Id = 0;
+                            timesheet.Timestamp = destinationDay.Timestamp;
+                            destinationDay.Timesheets.Add(timesheet);
+                            timesheet.Save(db);
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                    }
+                }
             }
         }
 
@@ -312,7 +328,10 @@ namespace Great.ViewModels
                 return;
 
             if (timesheet.Delete())
+            {
+                SelectedWorkingDay.Timesheets.Remove(timesheet);
                 SelectedTimesheet = null;
+            }   
         }
 
         public void SaveTimesheet(TimesheetEVM timesheet)

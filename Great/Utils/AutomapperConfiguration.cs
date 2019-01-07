@@ -39,6 +39,7 @@ namespace Great.Utils
                     .ForMember(x => x.FDLResult, opt => opt.Ignore())
                     .ForMember(x => x.Timesheets, opt => opt.Ignore());
 
+                cfg.CreateMap<DayEVM, DayEVM>();
                 cfg.CreateMap<Day, DayEVM>();
                 cfg.CreateMap<DayEVM, Day>()
                     .ForMember(x => x.DayType, opt => opt.Ignore())
