@@ -224,10 +224,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Database\Car.cs" />
-    <Compile Include="Models\Database\Car.ext.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
-    <Compile Include="Models\Database\CarRentalHistory.ext.cs" />
     <Compile Include="Models\Database\Currency.cs" />
     <Compile Include="Models\Database\Day.cs" />
     <Compile Include="Models\Database\DayType.cs" />
@@ -269,7 +267,6 @@
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
     <Compile Include="Utils\Converters\CompareIntConverter.cs" />
     <Compile Include="Models\FDLManager.cs" />
-    <Compile Include="Models\Database\Factory.ext.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -286,6 +283,7 @@
     <Compile Include="Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Utils\Extensions\TimePeriodCollectionExtensions.cs" />
     <Compile Include="Utils\Extensions\TimeSpanExtensions.cs" />
+    <Compile Include="Utils\Messages\DeletedItemMessage.cs" />
     <Compile Include="Utils\Messages\ItemChangedMessage.cs" />
     <Compile Include="Utils\Messages\NewItemMessage.cs" />
     <Compile Include="Utils\Messages\StatusChangeMessage.cs" />
@@ -300,6 +298,7 @@
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />
+    <Compile Include="ViewModels\Database\FactoryEVM.cs" />
     <Compile Include="ViewModels\Database\FDLEVM.cs" />
     <Compile Include="ViewModels\Database\TimesheetEVM.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
@@ -336,7 +335,6 @@
       <DependentUpon>InformationsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Models\Database\Timesheet.ext.cs" />
     <Compile Include="Controls\FactoryMarker.xaml.cs">
       <DependentUpon>FactoryMarker.xaml</DependentUpon>
     </Compile>

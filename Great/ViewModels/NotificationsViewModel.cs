@@ -134,7 +134,7 @@ namespace Great.ViewModels
             }
 
             MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => NewFDLCount++);
-            MessengerInstance.Register(this, (NewItemMessage<Factory> x) => NewFactoriesCount++);
+            MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Sender is FDLManager) NewFactoriesCount++; });
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => NewExpenseAccountsCount++);
             MessengerInstance.Register<StatusChangeMessage<EExchangeStatus>>(this, OnExchangeStatusChange);
         }
