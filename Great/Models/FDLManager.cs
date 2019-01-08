@@ -372,7 +372,7 @@ namespace Great.Models
                                 {
                                     transaction.Commit();
 
-                                    if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
+                                    if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, new FactoryEVM(factory)));
                                     Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, fdlEVM));
                                 }
                                 else
@@ -588,7 +588,9 @@ namespace Great.Models
                                 {
                                     transaction.Commit();
 
-                                    if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<Factory>(this, factory));
+                                    if (IsNewFactory)
+                                        Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, new FactoryEVM(factory)));
+
                                     Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, fdlEVM));
                                 }
                                 else

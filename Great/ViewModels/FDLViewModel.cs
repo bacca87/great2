@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using AutoMapper;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
@@ -141,7 +142,10 @@ namespace Great.ViewModels
                         
             MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
-            MessengerInstance.Register(this, (PropertyChangedMessage<ObservableCollectionEx<Factory>> p) => { Factories = new ObservableCollection<FactoryDTO>(p.NewValue.Select(f => new FactoryDTO(f))); });
+
+            MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
+            MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
+            MessengerInstance.Register<DeletedItemMessage<FactoryEVM>>(this, FactoryDeleted);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -178,6 +182,65 @@ namespace Great.ViewModels
                             fdl.Status = item.Content.Status;
                             fdl.LastError = item.Content.LastError;
                         }
+                    }
+                })
+            );
+        }
+
+        public void NewFactory(NewItemMessage<FactoryEVM> item)
+        {
+            if (!(item.Sender is FactoriesViewModel))
+                return;
+
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
+                    {
+                        FactoryDTO factory = new FactoryDTO();
+                        Mapper.Map(item.Content, factory);
+                        Factories.Add(factory);
+                    }
+                })
+            );
+        }
+
+        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        {
+            if (!(item.Sender is FactoriesViewModel))
+                return;
+
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
+
+                        if (factory != null)
+                            Mapper.Map(item.Content, factory);
+                    }
+                })
+            );
+        }
+
+        public void FactoryDeleted(DeletedItemMessage<FactoryEVM> item)
+        {
+            if (!(item.Sender is FactoriesViewModel))
+                return;
+
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
+
+                        if (factory != null)
+                            Factories.Remove(factory);
                     }
                 })
             );
