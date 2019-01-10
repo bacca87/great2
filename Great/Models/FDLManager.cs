@@ -312,6 +312,9 @@ namespace Great.Models
                                 }
                                 #endregion
 
+                                db.FDLs.Add(fdl);
+                                db.SaveChanges();
+
                                 #region Timesheets
                                 if (!ExcludeTimesheets)
                                 {
@@ -357,9 +360,6 @@ namespace Great.Models
                                     }
                                 }
                                 #endregion
-
-                                db.FDLs.Add(fdl);
-                                db.SaveChanges();
 
                                 // sUpdate all navigation properties
                                 db.Entry(fdl).Reference(p => p.FDLResult).Load();
@@ -525,11 +525,14 @@ namespace Great.Models
                                         if (UserSettings.Advanced.AutoAssignFactories)
                                             fdl.Factory = factory.Id;
                                     }
-                                }                                
+                                }
                                 #endregion
-                                
+
+                                db.FDLs.Add(fdl);
+                                db.SaveChanges();
+
                                 #region Timesheets
-                                if(!ExcludeTimesheets)
+                                if (!ExcludeTimesheets)
                                 {
                                     foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
                                     {
@@ -573,9 +576,6 @@ namespace Great.Models
                                     }
                                 }
                                 #endregion
-
-                                db.FDLs.Add(fdl);
-                                db.SaveChanges();
 
                                 // sUpdate all navigation properties
                                 db.Entry(fdl).Reference(p => p.FDLResult).Load();
