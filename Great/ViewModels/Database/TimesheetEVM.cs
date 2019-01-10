@@ -384,6 +384,7 @@ namespace Great.ViewModels.Database
         {
             db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
             db.SaveChanges();
+            Id = 0;
             return true;
         }
 

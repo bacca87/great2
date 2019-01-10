@@ -91,6 +91,7 @@ namespace Great.ViewModels.Database
         {
             db.Factories.Remove(db.Factories.SingleOrDefault(f => f.Id == Id));
             db.SaveChanges();
+            Id = 0;
             return true;
         }
 
@@ -106,6 +107,7 @@ namespace Great.ViewModels.Database
             Mapper.Map(this, factory);
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();
+            Id = factory.Id;
 
             return true;
         }
