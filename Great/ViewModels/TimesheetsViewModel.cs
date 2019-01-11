@@ -146,8 +146,8 @@ namespace Great.ViewModels
         /// </summary>
         public TimesheetsViewModel()
         {
-            NextYearCommand = new RelayCommand(SetNextYear);
-            PreviousYearCommand = new RelayCommand(SetPreviousYear);
+            NextYearCommand = new RelayCommand(() => CurrentYear++);
+            PreviousYearCommand = new RelayCommand(() => CurrentYear--);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
             SelectTodayCommand = new RelayCommand(SelectToday);
 
@@ -200,9 +200,6 @@ namespace Great.ViewModels
             }
         }
         
-        private void SetNextYear() => CurrentYear++;
-        private void SetPreviousYear() => CurrentYear--;
-
         public void SelectFirstDayInMonth(int month)
         {
             if (month > 0 && month <= 12)
