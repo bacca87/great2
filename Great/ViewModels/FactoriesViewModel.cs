@@ -1,9 +1,12 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -17,145 +20,86 @@ namespace Great.ViewModels
     public class FactoriesViewModel : ViewModelBase
     {
         #region Properties
-        /// <summary>
-        /// Gets the TransferTypes property.  
-        /// </summary>
-        public ObservableCollection<TransferType> TransferTypes
+        public ObservableCollection<TransferTypeDTO> TransferTypes { get; set; }
+
+        public ObservableCollectionEx<FactoryEVM> Factories { get; set; }
+
+        private FactoryEVM _selectedFactory;
+        public FactoryEVM SelectedFactory
         {
-            get
-            {
-                return new ObservableCollection<TransferType>(_db.TransferTypes);
-            }
+            get => _selectedFactory;
+            set => Set(ref _selectedFactory, value ?? new FactoryEVM());
         }
 
-        /// <summary>
-        /// The <see cref="Factories" /> property's name.
-        /// </summary>
-        private ObservableCollectionEx<Factory> _factories;
-
-        /// <summary>
-        /// Sets and gets the Factories property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
-        public ObservableCollectionEx<Factory> Factories
-        {
-            get
-            {
-                return _factories;
-            }
-            set
-            {
-                _factories = value;
-                RaisePropertyChanged(nameof(Factories), true);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="SelectedFactory" /> property's name.
-        /// </summary>
-        private Factory _selectedFactory;
-
-        /// <summary>
-        /// Sets and gets the SelectedFactory property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Factory SelectedFactory
-        {
-            get
-            {
-                return _selectedFactory;
-            }
-
-            set
-            {
-                var oldValue = _selectedFactory;
-                _selectedFactory = value;
-
-                SelectedFactoryClone = _selectedFactory != null ? _selectedFactory.Clone() : new Factory();
-                
-                RaisePropertyChanged(nameof(SelectedFactory), oldValue, value);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="SelectedFactoryClone" /> property's name.
-        /// </summary>
-        private Factory _factoryInfo = new Factory();
-
-        /// <summary>
-        /// Sets and gets the SelectedFactoryClone property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Factory SelectedFactoryClone
-        {
-            get
-            {
-                return _factoryInfo;
-            }
-
-            set
-            {
-                var oldValue = _factoryInfo;
-                _factoryInfo = value;
-                RaisePropertyChanged(nameof(SelectedFactoryClone), oldValue, value);
-            }
-        }
-
-        /// <summary>
-        /// Sets and gets the OnZoomOnFactoryRequest Action.
-        /// </summary>
-        public Action<Factory> OnZoomOnFactoryRequest;
-
-        private DBArchive _db { get; set; }
+        public Action<FactoryEVM> OnZoomOnFactoryRequest { get; set; }
         #endregion
 
         #region Commands
-        public RelayCommand<Factory> DeleteFactoryCommand { get; set; }
-        public RelayCommand<Factory> SaveFactoryCommand { get; set; }
+        public RelayCommand<FactoryEVM> DeleteFactoryCommand { get; set; }
+        public RelayCommand<FactoryEVM> SaveFactoryCommand { get; set; }
         public RelayCommand ClearSelectionCommand { get; set; }
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the FactoriesViewModel class.
         /// </summary>
-        public FactoriesViewModel(DBArchive db)
+        public FactoriesViewModel()
         {
-            _db = db;
-
-            Factories = new ObservableCollectionEx<Factory>(_db.Factories.ToList());
+            using (DBArchive db = new DBArchive())
+            {
+                Factories = new ObservableCollectionEx<FactoryEVM>(db.Factories.ToList().Select(f => new FactoryEVM(f)));
+            }
+                
             Factories.CollectionChanged += Factories_CollectionChanged;
+            Factories.ItemPropertyChanged += Factories_ItemPropertyChanged;
             
-            DeleteFactoryCommand = new RelayCommand<Factory>(DeleteFactory);
-            SaveFactoryCommand = new RelayCommand<Factory>(SaveFactory);
+            DeleteFactoryCommand = new RelayCommand<FactoryEVM>(DeleteFactory);
+            SaveFactoryCommand = new RelayCommand<FactoryEVM>(SaveFactory);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
-            MessengerInstance.Register<NewItemMessage<Factory>>(this, NewFactory);
-            MessengerInstance.Register<ItemChangedMessage<Factory>>(this, FactoryChanged);
+            MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
+            MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
+        }
+
+        private void Factories_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
+        {
+            Messenger.Default.Send(new ItemChangedMessage<FactoryEVM>(this, Factories[e.CollectionIndex]));
         }
 
         private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RaisePropertyChanged(nameof(Factories), null, Factories, true);
+            switch(e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach(FactoryEVM f in e.NewItems)
+                        Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, f));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (FactoryEVM f in e.NewItems)
+                        Messenger.Default.Send(new DeletedItemMessage<FactoryEVM>(this, f));
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public void NewFactory(NewItemMessage<Factory> item)
+        public void NewFactory(NewItemMessage<FactoryEVM> item)
         {
+            if (!(item.Sender is FDLManager))
+                return;
+
             // Using the dispatcher for preventing thread conflicts
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null)
-                    {
-                        Factory factory = _db.Factories.SingleOrDefault(f => f.Id == item.Content.Id);
-
-                        if (factory != null && !Factories.Contains(factory))
-                            Factories.Add(factory);
-                    }
+                    if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
+                        Factories.Add(item.Content);
                 })
             );
         }
 
-        public void FactoryChanged(ItemChangedMessage<Factory> item)
+        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             // NOT USED
             // Using the dispatcher for preventing thread conflicts   
@@ -167,7 +111,7 @@ namespace Great.ViewModels
             //);
         }
 
-        public void ZoomOnFactoryRequest(Factory factory)
+        public void ZoomOnFactoryRequest(FactoryEVM factory)
         {
             OnZoomOnFactoryRequest?.Invoke(factory);
         }
@@ -177,30 +121,22 @@ namespace Great.ViewModels
             SelectedFactory = null;            
         }
 
-        private void DeleteFactory(Factory factory)
+        private void DeleteFactory(FactoryEVM factory)
         {
-            _db.Factories.Remove(factory);
-
-            if (_db.SaveChanges() > 0)
+            if (factory.Delete())
             {
                 Factories.Remove(factory);
                 SelectedFactory = null;
             }
         }
 
-        private void SaveFactory(Factory factory)
+        private void SaveFactory(FactoryEVM factory)
         {
             factory.NotifyAsNew = false;
-            _db.Factories.AddOrUpdate(factory);            
 
-            if (_db.SaveChanges() > 0)
+            if (factory.Save())
             {
-                // check if already exist in the collection
-                Factory itemFactory = Factories.Where(f => f.Id == factory.Id).FirstOrDefault();
-
-                if (itemFactory != null)
-                    Factories[Factories.IndexOf(itemFactory)] = factory;
-                else
+                if (!Factories.Contains(factory))
                 {
                     factory.NotifyAsNew = false;
                     Factories.Add(factory);

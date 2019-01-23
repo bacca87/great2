@@ -317,8 +317,6 @@ namespace Great.Utils
             {
                 using (DBArchive db = new DBArchive())
                 {
-                    Timesheet t = null;
-
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtPlants.Rows.Cast<DataRow>();
 
@@ -327,7 +325,7 @@ namespace Great.Utils
                         if (stopImport)
                             break;
 
-                        Factory f = new Factory();
+                        FactoryEVM f = new FactoryEVM();
 
                         try
                         {   
@@ -339,8 +337,7 @@ namespace Great.Utils
                             long transferType = r.Field<byte>("dbf_Tipo_Trasf");
                             f.TransferType = transferType != 4 ? transferType : 0;
 
-                            db.Factories.AddOrUpdate(f);
-                            db.SaveChanges();
+                            f.Save(db);
 
                             _factories.Add(r.Field<int>("dbf_Index"), f.Id);
 
@@ -442,6 +439,7 @@ namespace Great.Utils
                                     {
                                         fdl.Factory = _factories[factoryId.Value];
                                         db.FDLs.AddOrUpdate(fdl);
+                                        db.SaveChanges();
                                     }
                                 }
                                 else
@@ -459,6 +457,7 @@ namespace Great.Utils
                                 {
                                     fdl.Factory = _factories[factory2Id.Value];
                                     db.FDLs.AddOrUpdate(fdl);
+                                    db.SaveChanges();
                                 }
                                 else
                                     Warning($"The second FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");

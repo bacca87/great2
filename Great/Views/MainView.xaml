@@ -184,7 +184,7 @@
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Year">
-                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
                         <Fluent:TextBox.ToolTip>
                             <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
                         </Fluent:TextBox.ToolTip>
@@ -412,8 +412,28 @@
                                   IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="STATISTICS" 
+                                  DataContext="{Binding Statistics, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=statsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=statsTab, Path=IsSelected, Mode=OneWay}">
+                <Fluent:RibbonGroupBox Header="Year">
+                    <Fluent:TextBox Text="{Binding SelectedYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                        <Fluent:TextBox.ToolTip>
+                            <Fluent:ScreenTip Title="Year" Text="Set the year." />
+                        </Fluent:TextBox.ToolTip>
+                    </Fluent:TextBox>
+                    <Fluent:Gallery MaxItemsInRow="2">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-left.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-right.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="EDIT" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
