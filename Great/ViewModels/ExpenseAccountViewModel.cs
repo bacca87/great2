@@ -256,6 +256,7 @@ namespace Great.ViewModels
 
                 foreach (var expense in ea.Expenses)
                 {
+                    expense.Id = 0;
                     expense.ExpenseAccount = ea.Id;
                     expense.Save(db);
                 }
