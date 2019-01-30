@@ -117,6 +117,9 @@ namespace Great.ViewModels.Database
         }
         #endregion
 
+        // hack because XAML didnt support default parameters
+        public ExpenseEVM() { }
+
         public ExpenseEVM(Expense expense = null)
         {
             if (expense != null)
