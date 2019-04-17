@@ -55,7 +55,7 @@ namespace Great.Utils
                 cfg.CreateMap<Currency, CurrencyDTO>();
                 cfg.CreateMap<ExpenseType, ExpenseTypeDTO>();
                 cfg.CreateMap<Factory, FactoryDTO>();
-                cfg.CreateMap<TransferType, TransferTypeDTO>();
+                cfg.CreateMap<TransferType, TransferTypeDTO>();           
                 cfg.CreateMap<FDLResult, FDLResultDTO>();
                 cfg.CreateMap<Timesheet, TimesheetDTO>();
                 cfg.CreateMap<Car, CarDTO>();
