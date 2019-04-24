@@ -62,9 +62,9 @@ namespace Great.ViewModels
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
 
-            SelectedYear = DateTime.Now.Year;
-
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
+
+            SelectedYear = DateTime.Now.Year;
 
             MonthsLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
         }
