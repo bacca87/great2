@@ -382,10 +382,14 @@ namespace Great.ViewModels.Database
 
         public override bool Delete(DBArchive db)
         {
-            db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
-            db.SaveChanges();
-            Id = 0;
-            return true;
+            if (Id > 0)
+            {
+                db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
+                db.SaveChanges();
+                Id = 0;
+                return true;
+            }
+            return false;
         }
 
         public override bool Refresh(DBArchive db)
