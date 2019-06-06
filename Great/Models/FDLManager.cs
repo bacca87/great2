@@ -28,15 +28,15 @@ namespace Great.Models
     {
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        MSExchangeProvider exchangeProvider;
+        IProvider provider;
 
-        public FDLManager(MSExchangeProvider exProvider)
+        public FDLManager(IProvider exProvider)
         {
-            exchangeProvider = exProvider;
-            exchangeProvider.OnNewMessage += ExchangeProvider_OnNewMessage;
+            provider = exProvider;
+            provider.OnNewMessage += provider_OnNewMessage;
         }
 
-        private void ExchangeProvider_OnNewMessage(object sender, NewMessageEventArgs e)
+        private void provider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
             ProcessMessage(e.Message);
         }
@@ -934,7 +934,7 @@ namespace Great.Models
             else
                 return false;
 
-            exchangeProvider.SendEmail(message);
+            provider.SendEmail(message);
             return true;
         }
 
@@ -959,7 +959,7 @@ namespace Great.Models
                 foreach(string address in UserSettings.Email.Recipients.FDLCancelRequest)
                     message.ToRecipients.Add(address);
 
-                exchangeProvider.SendEmail(message);
+                provider.SendEmail(message);
 
                 fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
                 return true;
@@ -1245,7 +1245,7 @@ namespace Great.Models
         Reminder
     }
 
-    public enum EExchangeStatus
+    public enum EProviderStatus
     {
         Offline,
         Connecting,

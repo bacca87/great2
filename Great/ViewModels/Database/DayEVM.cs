@@ -308,8 +308,7 @@ namespace Great.ViewModels.Database
 
                     if (!string.IsNullOrEmpty(timesheet.Notes))
                     {
-                        if (timesheet.Notes.Length <= 20)
-                            factories += timesheet?.Notes + "; ";
+                        factories += timesheet?.Notes + "; ";
                     }
 
                 }

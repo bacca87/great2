@@ -15,6 +15,7 @@
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.Interfaces;
 
 namespace Great.ViewModels
 {
@@ -42,7 +43,7 @@ namespace Great.ViewModels
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
-            SimpleIoc.Default.Register<MSExchangeProvider>();
+            SimpleIoc.Default.Register<IProvider,MSExchangeProvider>();
             SimpleIoc.Default.Register<FDLManager>();
             SimpleIoc.Default.Register<DBArchive>();
 

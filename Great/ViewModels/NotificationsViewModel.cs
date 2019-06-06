@@ -98,13 +98,13 @@ namespace Great.ViewModels
         /// <summary>
         /// The <see cref="ExchangeStatus" /> property's name.
         /// </summary>
-        private EExchangeStatus _exchangeStatus = 0;
+        private EProviderStatus _exchangeStatus = 0;
 
         /// <summary>
         /// Sets and gets the ExchangeStatus property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public EExchangeStatus ExchangeStatus
+        public EProviderStatus ExchangeStatus
         {
             get
             {
@@ -136,16 +136,16 @@ namespace Great.ViewModels
             MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => NewFDLCount++);
             MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Sender is FDLManager) NewFactoriesCount++; });
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => NewExpenseAccountsCount++);
-            MessengerInstance.Register<StatusChangeMessage<EExchangeStatus>>(this, OnExchangeStatusChange);
+            MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }
 
-        private void OnExchangeStatusChange(StatusChangeMessage<EExchangeStatus> x)
+        private void OnExchangeStatusChange(StatusChangeMessage<EProviderStatus> x)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => 
             {
                 ExchangeStatus = x.Content;
 
-                if (ExchangeStatus == EExchangeStatus.LoginError)
+                if (ExchangeStatus == EProviderStatus.LoginError)
                 {
                     ExchangeLoginView loginView = new ExchangeLoginView();
                     loginView.ShowDialog();

@@ -1,4 +1,13 @@
-<Application x:Class="Great.App" StartupUri="/Views/MainView.xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Great" xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit" d1p1:Ignorable="d" xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006" Startup="Application_Startup">
+<Application x:Class="Great.App" 
+             StartupUri="/Views/MainView.xaml" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:local="clr-namespace:Great" xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
+             xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit" 
+             d1p1:Ignorable="d" 
+             xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             Startup="Application_Startup">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
