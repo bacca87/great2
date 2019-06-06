@@ -305,6 +305,13 @@ namespace Great.ViewModels.Database
                 {
                     if (!string.IsNullOrEmpty(timesheet.FDL))
                         factories += timesheet?.FDL1?.Factory1?.Name + "; ";
+
+                    if (!string.IsNullOrEmpty(timesheet.Notes))
+                    {
+                        if (timesheet.Notes.Length <= 20)
+                            factories += timesheet?.Notes + "; ";
+                    }
+
                 }
 
                 if (!string.IsNullOrEmpty(factories))

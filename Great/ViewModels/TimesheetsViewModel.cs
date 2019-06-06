@@ -54,7 +54,7 @@ namespace Great.ViewModels
 
                 Set(ref _currentYear, year);
 
-                if(updateDays)
+                if (updateDays)
                     UpdateWorkingDays();
             }
         }
@@ -84,7 +84,7 @@ namespace Great.ViewModels
                 if (_selectedWorkingDay != null)
                 {
                     SelectedTimesheet = null;
-                    CurrentMonth = _selectedWorkingDay.Date.Month;                    
+                    CurrentMonth = _selectedWorkingDay.Date.Month;
                     IsInputEnabled = _selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay;
 
                     using (DBArchive db = new DBArchive())
@@ -116,7 +116,7 @@ namespace Great.ViewModels
         }
 
         public ObservableCollection<FDLEVM> FDLs { get; set; }
-        
+
         public Action<DayEVM> OnSelectFirstDayInMonth;
         public Action<DayEVM> OnSelectToday;
         #endregion
@@ -138,7 +138,7 @@ namespace Great.ViewModels
 
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
-        public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }        
+        public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Great.ViewModels
 
             UpdateWorkingDays();
         }
-        
+
         private void UpdateWorkingDays()
         {
             ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
@@ -199,12 +199,12 @@ namespace Great.ViewModels
                 yield return new DateTime(year, month, day);
             }
         }
-        
+
         public void SelectFirstDayInMonth(int month)
         {
             if (month > 0 && month <= 12)
             {
-                SelectedWorkingDay = WorkingDays.Where(day => day.Date.Month == month && day.Date.Day == 1).FirstOrDefault();                
+                SelectedWorkingDay = WorkingDays.Where(day => day.Date.Month == month && day.Date.Day == 1).FirstOrDefault();
                 OnSelectFirstDayInMonth?.Invoke(SelectedWorkingDay);
             }
         }
@@ -237,22 +237,22 @@ namespace Great.ViewModels
                     {
                         db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == day.Timestamp));
                     }
-                        
+
                     day.Timesheets.Clear();
                 }
                 else
                     cancel = true;
             }
 
-            if(!cancel)
+            if (!cancel)
             {
                 day.EType = type;
                 day.Save();
             }
-            
+
             IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay;
         }
-        
+
         public void CopyDay(DayEVM day)
         {
             if (day == null)
@@ -275,13 +275,14 @@ namespace Great.ViewModels
         {
             if (destinationDay == null || !ClipboardX.Contains("Day"))
                 return;
-            
+
             DayEVM sourceDay = ClipboardX.GetItem<DayEVM>("Day");
 
             if (sourceDay == null)
                 return;
 
             destinationDay.Type = sourceDay.Type;
+
 
             using (DBArchive db = new DBArchive())
             {
@@ -304,6 +305,7 @@ namespace Great.ViewModels
                         }
 
                         transaction.Commit();
+                        SelectedWorkingDay.Refresh(db);
                     }
                     catch
                     {
@@ -328,7 +330,7 @@ namespace Great.ViewModels
             {
                 SelectedWorkingDay.Timesheets.Remove(timesheet);
                 SelectedTimesheet = null;
-            }   
+            }
         }
 
         public void SaveTimesheet(TimesheetEVM timesheet)
@@ -341,7 +343,7 @@ namespace Great.ViewModels
                 MessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            else if(timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
+            else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
             {
                 MessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;

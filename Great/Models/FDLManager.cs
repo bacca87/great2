@@ -1249,7 +1249,8 @@ namespace Great.Models
     {
         Offline,
         Connecting,
-        Online,
+        Syncronizing,
+        Syncronized,
         Reconnecting,
         LoginError,
         Error

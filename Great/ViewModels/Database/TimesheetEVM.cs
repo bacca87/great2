@@ -134,6 +134,13 @@ namespace Great.ViewModels.Database
             set => Set(ref _FDL, value);
         }
 
+        private string _Notes;
+        public string Notes
+        {
+            get => _Notes;
+            set => Set(ref _Notes, value);
+        }
+
         private DayDTO _Day;
         public DayDTO Day
         {
@@ -382,10 +389,14 @@ namespace Great.ViewModels.Database
 
         public override bool Delete(DBArchive db)
         {
-            db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
-            db.SaveChanges();
-            Id = 0;
-            return true;
+            if (Id > 0)
+            {
+                db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
+                db.SaveChanges();
+                Id = 0;
+                return true;
+            }
+            return false;
         }
 
         public override bool Refresh(DBArchive db)

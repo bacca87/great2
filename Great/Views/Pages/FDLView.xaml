@@ -142,14 +142,12 @@
                           SelectedValue="{Binding SelectedFDL.Factory}" 
                           IsEnabled="{Binding IsInputEnabled}"
                           DisplayMemberPath="Name" 
-                          SelectedValuePath="Id" 
-                          SelectedIndex="0">
+                          SelectedValuePath="Id">
                         <ComboBox.Resources>
                             <CollectionViewSource x:Key="Items" Source="{Binding Factories}" />
                         </ComboBox.Resources>
                         <ComboBox.ItemsSource>
                             <CompositeCollection>
-                                <m:FactoryDTO Id="-1"/>
                                 <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
                             </CompositeCollection>
                         </ComboBox.ItemsSource>

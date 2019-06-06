@@ -217,7 +217,7 @@ namespace Great.Models
                 }
             } while (connection == null || !connection.IsOpen);
 
-            ExchangeStatus = EExchangeStatus.Online;
+            ExchangeStatus = EExchangeStatus.Syncronizing;
         }
 
         private void ExchangeSync()
@@ -233,6 +233,7 @@ namespace Great.Models
             };
 
             bool IsSynced = false;
+            ExchangeStatus = EExchangeStatus.Syncronizing;
 
             do
             {
@@ -244,6 +245,17 @@ namespace Great.Models
 
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
 
+                    // try to get last week messages (high priority)
+                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem + " received: last week", folderView, itemView))
+                    {
+                        if (!(item is EmailMessage))
+                            continue;
+
+                        EmailMessage message = EmailMessage.Bind(service, item.Id);
+                        NotifyNewMessage(message);
+                    }
+
+                    // then all the other messages
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
                     {
                         if (!(item is EmailMessage))
@@ -254,6 +266,8 @@ namespace Great.Models
                     }
 
                     IsSynced = true;
+                    ExchangeStatus = EExchangeStatus.Syncronized;
+
                 }
                 catch
                 {
@@ -300,7 +314,7 @@ namespace Great.Models
             try
             {
                 (sender as StreamingSubscriptionConnection).Open();
-                ExchangeStatus = EExchangeStatus.Online;
+                ExchangeStatus = EExchangeStatus.Syncronizing;
             }
             catch { }
 
