@@ -18,6 +18,7 @@ namespace Great.Models.Database
         public long? WorkStartTimePM { get; set; }
         public long? WorkEndTimePM { get; set; }
         public string FDL { get; set; }
+        public string Notes { get; set; }
 
         [ForeignKey("Timestamp")]
         public virtual Day Day { get; set; }

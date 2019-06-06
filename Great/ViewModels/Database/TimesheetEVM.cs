@@ -134,6 +134,13 @@ namespace Great.ViewModels.Database
             set => Set(ref _FDL, value);
         }
 
+        private string _Notes;
+        public string Notes
+        {
+            get => _Notes;
+            set => Set(ref _Notes, value);
+        }
+
         private DayDTO _Day;
         public DayDTO Day
         {
