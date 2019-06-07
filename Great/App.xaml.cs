@@ -4,7 +4,9 @@ using Great.Utils;
 using NLog;
 using System;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace Great
@@ -16,6 +18,17 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //Single instance check
+            Process proc = Process.GetCurrentProcess();
+            int count = Process.GetProcesses().Where(p =>
+                p.ProcessName == proc.ProcessName).Count();
+
+            if (count > 1)
+            {
+                App.Current.Shutdown();
+                return;
+            }
+
             //basic splash screen implementation
             SplashScreen sp = new SplashScreen("SplashScreen.png");
             sp.Show(true,true);
