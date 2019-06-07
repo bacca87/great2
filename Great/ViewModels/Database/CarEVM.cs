@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models.Database;
+﻿using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
 using System.Data.Entity.Migrations;
@@ -77,14 +76,14 @@ namespace Great.ViewModels.Database
         public CarEVM(Car car = null)
         {
             if (car != null)
-                Mapper.Map(car, this);
+                Global.Mapper.Map(car, this);
         }
 
         public override bool Save(DBArchive db)
         {
             Car car = new Car();
 
-            Mapper.Map(this, car);
+            Global.Mapper.Map(this, car);
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
             Id = car.Id;

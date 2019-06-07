@@ -3,13 +3,15 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.ViewModels.Database;
 
-namespace Great.Utils
+namespace Great
 {
-    public static class AutomapperConfiguration
+    public static class Global
     {
-        public static void RegisterMappings()
+        public static IMapper Mapper { get; internal set; }
+
+        static Global()
         {
-            Mapper.Initialize(cfg =>
+            var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Expense, ExpenseEVM>();
                 cfg.CreateMap<ExpenseEVM, Expense>()
@@ -46,23 +48,30 @@ namespace Great.Utils
                     .ForMember(x => x.Timesheets, opt => opt.Ignore());
 
                 cfg.CreateMap<Timesheet, TimesheetEVM>();
-                    cfg.CreateMap<TimesheetEVM, Timesheet>()
+                cfg.CreateMap<TimesheetEVM, Timesheet>()
                     .ForMember(x => x.Day, opt => opt.Ignore())
                     .ForMember(x => x.FDL1, opt => opt.Ignore());
+
+                cfg.CreateMap<Factory, FactoryEVM>();
+                cfg.CreateMap<FactoryEVM, Factory>()
+                    .ForMember(x => x.TransferType1, opt => opt.Ignore());                
 
                 cfg.CreateMap<FDL, FDLDTO>();
                 cfg.CreateMap<FDLStatus, FDLStatusDTO>();
                 cfg.CreateMap<Currency, CurrencyDTO>();
                 cfg.CreateMap<ExpenseType, ExpenseTypeDTO>();
                 cfg.CreateMap<Factory, FactoryDTO>();
-                cfg.CreateMap<TransferType, TransferTypeDTO>();           
+                cfg.CreateMap<TransferType, TransferTypeDTO>();
                 cfg.CreateMap<FDLResult, FDLResultDTO>();
                 cfg.CreateMap<Timesheet, TimesheetDTO>();
                 cfg.CreateMap<Car, CarDTO>();
                 cfg.CreateMap<CarRentalCompany, CarRentalCompanyDTO>();
                 cfg.CreateMap<Day, DayDTO>();
                 cfg.CreateMap<DayType, DayTypeDTO>();
+                cfg.CreateMap<FactoryEVM, FactoryDTO>();
             });
+
+            Mapper = config.CreateMapper();
         }
     }
 }

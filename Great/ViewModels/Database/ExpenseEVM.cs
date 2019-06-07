@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using Great.Models.Database;
 using Great.Models.DTO;
 using System.Data.Entity.Migrations;
@@ -123,14 +122,14 @@ namespace Great.ViewModels.Database
         public ExpenseEVM(Expense expense = null)
         {
             if (expense != null)
-                Mapper.Map(expense, this);
+                Global.Mapper.Map(expense, this);
         }
 
         public override bool Save(DBArchive db)
         {
             Expense e = new Expense();
 
-            Mapper.Map(this, e);
+            Global.Mapper.Map(this, e);
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;

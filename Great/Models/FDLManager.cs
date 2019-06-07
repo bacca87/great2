@@ -129,19 +129,21 @@ namespace Great.Models
                                             Type = typeId
                                         };
 
-                                        if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString().Replace(",","."), NumberStyles.Any, CultureInfo.InvariantCulture, out double amount))
+                                        // TODO: first i remove the thousands separator "." from the value, and then i replace the decimal separator with "."
+                                        // CONTROLLA MODELO perche li non funziona
+                                        if (double.TryParse(fields[entry["Mon_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double amount))
                                             expense.MondayAmount = amount;
-                                        if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        if (double.TryParse(fields[entry["Tue_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.TuesdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        if (double.TryParse(fields[entry["Wed_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.WednesdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        if (double.TryParse(fields[entry["Thu_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.ThursdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        if (double.TryParse(fields[entry["Fri_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.FridayAmount = amount;
-                                        if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        if (double.TryParse(fields[entry["Sat_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.SaturdayAmount = amount;
-                                        if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString().Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        if (double.TryParse(fields[entry["Sun_Amount"]].GetValueAsString().Replace(".", "").Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
                                             expense.SundayAmount = amount;
 
                                         db.Expenses.Add(expense);
