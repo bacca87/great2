@@ -30,6 +30,15 @@ namespace Great.ViewModels
             set => Set(ref _Hours, value);
         }
 
+        private SeriesCollection _days;
+        public SeriesCollection Days
+        {
+            get => _days;
+            set => Set(ref _days, value);
+        }
+
+
+
         private int _SelectedYear;
         public int SelectedYear
         {
@@ -48,7 +57,7 @@ namespace Great.ViewModels
             set => Set(ref _MonthsLabels, value);
         }
         #endregion
-        
+
         #region Commands Definitions
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
@@ -58,6 +67,7 @@ namespace Great.ViewModels
         {
             Factories = new SeriesCollection();
             Hours = new SeriesCollection();
+            Days = new SeriesCollection();
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
@@ -75,7 +85,8 @@ namespace Great.ViewModels
             {
                 LoadFactoriesData();
                 LoadHoursData();
-            }   
+                LoadDayStatistic();
+            }
         }
 
         private void LoadFactoriesData()
@@ -89,7 +100,7 @@ namespace Great.ViewModels
 
                 factoriesData = (from fdl in db.FDLs
                                  from timesheets in fdl.Timesheets
-                                 where fdl.Id.Substring(0,4) == YearStr && fdl.Factory1 != null
+                                 where fdl.Id.Substring(0, 4) == YearStr && fdl.Factory1 != null
                                  group fdl.Factory1 by fdl.Factory1.Name into factories
                                  select factories).ToDictionary(x => x.Key, x => x.Count());
 
@@ -118,9 +129,10 @@ namespace Great.ViewModels
                 var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
 
                 var MontlyHours = Days?.GroupBy(d => d.Date.Month)
-                                       .Select(g => new {
+                                       .Select(g => new
+                                       {
                                            TotalTime = g.Sum(x => (x.TotalTime ?? 0)),
-                                           Ordinary = g.Sum(x => (x.TotalTime ?? 0) - (x.Overtime34 ?? 0) - (x.Overtime35 ?? 0) - (x.Overtime50 ?? 0) - (x.Overtime100 ?? 0)),                                           
+                                           Ordinary = g.Sum(x => (x.TotalTime ?? 0) - (x.Overtime34 ?? 0) - (x.Overtime35 ?? 0) - (x.Overtime50 ?? 0) - (x.Overtime100 ?? 0)),
                                            Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
                                            Overtime35 = g.Sum(x => x.Overtime35 ?? 0),
                                            Overtime50 = g.Sum(x => x.Overtime50 ?? 0),
@@ -143,9 +155,9 @@ namespace Great.ViewModels
                     Overtime50Values.Add(month.Overtime50);
                     Overtime100Values.Add(month.Overtime100);
                 }
-                
+
                 Hours = new SeriesCollection()
-                {   
+                {
                     new StackedColumnSeries()
                     {
                         Title = "Ordinary Hours",
@@ -190,6 +202,72 @@ namespace Great.ViewModels
                     }
                 };
             }
+        }
+
+        private void LoadDayStatistic()
+        {
+            Days.Clear();
+
+            using (DBArchive db = new DBArchive())
+            {
+                string YearStr = SelectedYear.ToString();
+
+                //count all trip days
+                var businessTripDays = (from d in db.Days
+                                        from ts in d.Timesheets
+                                        where ts.FDL1 != null
+                                        && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                        select d).Count();
+
+                //count all office days without fdl
+                var officeDays = (from d in db.Days
+                                  from ts in d.Timesheets
+                                  where d.DayType.Id == (long)EDayType.WorkDay && ts.FDL1 == null
+                                  select d
+                            ).Count();
+
+                //count all sick days without
+                var sickDays = (from d in db.Days
+                                where d.DayType.Id == (long)EDayType.SickLeave
+                                select d
+                            ).Count();
+
+                //count all vacations days without
+                var vacationDays = (from d in db.Days
+                                    where d.DayType.Id == (long)EDayType.VacationDay
+                                    select d
+                            ).Count();
+
+                Days.Add(new PieSeries
+                {
+                    Title = "Office",
+                    Values = new ChartValues<int> { officeDays },
+                    DataLabels = true
+                });
+
+                Days.Add(new PieSeries
+                {
+                    Title = "Business Trip",
+                    Values = new ChartValues<int> { businessTripDays },
+                    DataLabels = true
+                });
+
+                Days?.Add(new PieSeries
+                {
+                    Title = "Sick",
+                    Values = new ChartValues<int> { sickDays },
+                    DataLabels = true
+                });
+
+                Days?.Add(new PieSeries
+                {
+                    Title = "Vacation",
+                    Values = new ChartValues<int> { vacationDays },
+                    DataLabels = true
+                });
+            }
+
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Great.Models.DTO;
+using Great.Models.Interfaces;
 using Great.Utils.Messages;
 using Microsoft.Exchange.WebServices.Data;
 using System;
@@ -15,7 +16,7 @@ namespace Great.Models
     //La libreria Microsoft EWS (https://github.com/OfficeDev/ews-managed-api) è deprecata
     //il pacchetto Nuget non viene aggiornato e la versione su github è piu aggiornata e con parecchi bugs corretti, di conseguenza la libreria è stata ricompilata a mano e aggiunta alle reference del progetto.
 
-    public class MSExchangeProvider
+    public class MSExchangeProvider : IProvider
     {
         private ExchangeService exService = new ExchangeService();
 
@@ -30,9 +31,9 @@ namespace Great.Models
 
         private ConcurrentQueue<EmailMessageDTO> emailQueue = new ConcurrentQueue<EmailMessageDTO>();
 
-        private EExchangeStatus exchangeStatus = EExchangeStatus.Offline;
+        private EProviderStatus exchangeStatus = EProviderStatus.Offline;
 
-        public EExchangeStatus ExchangeStatus
+        public EProviderStatus Status
         {
             get
             {
@@ -41,12 +42,12 @@ namespace Great.Models
                     return exchangeStatus;
                 }
             }
-            internal set
+            set
             {
                 lock (this)
                 {
                     exchangeStatus = value;
-                    Messenger.Default.Send(new StatusChangeMessage<EExchangeStatus>(this, exchangeStatus));
+                    Messenger.Default.Send(new StatusChangeMessage<EProviderStatus>(this, exchangeStatus));
                 }
             }
         }
@@ -70,10 +71,11 @@ namespace Great.Models
             do
             {
                 try
-                {   
+                {
                     exService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
                     //exService.UseDefaultCredentials = true;
-                    exService.AutodiscoverUrl(UserSettings.Email.EmailAddress, (string redirectionUrl) => {
+                    exService.AutodiscoverUrl(UserSettings.Email.EmailAddress, (string redirectionUrl) =>
+                    {
                         // The default for the validation callback is to reject the URL.
                         bool result = false;
                         Uri redirectionUri = new Uri(redirectionUrl);
@@ -91,9 +93,9 @@ namespace Great.Models
                 {
                     if (trace.Result == ETraceResult.LoginError)
                     {
-                        ExchangeStatus = EExchangeStatus.LoginError;
+                        Status = EProviderStatus.LoginError;
                         WaitCredentialsChange();
-                    }   
+                    }
                     else
                         Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
                 }
@@ -163,7 +165,7 @@ namespace Great.Models
                         {
                             if (trace.Result == ETraceResult.LoginError)
                             {
-                                ExchangeStatus = EExchangeStatus.LoginError;
+                                Status = EProviderStatus.LoginError;
                                 WaitCredentialsChange();
                             }
                             else
@@ -191,14 +193,14 @@ namespace Great.Models
 
             StreamingSubscriptionConnection connection = new StreamingSubscriptionConnection(service, 30);
 
-            ExchangeStatus = EExchangeStatus.Connecting;
+            Status = EProviderStatus.Connecting;
 
             do
             {
                 try
                 {
                     StreamingSubscription streamingSubscription = service.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
-                                        
+
                     connection.AddSubscription(streamingSubscription);
                     connection.OnNotificationEvent += Connection_OnNotificationEvent;
                     connection.OnSubscriptionError += Connection_OnSubscriptionError;
@@ -209,7 +211,7 @@ namespace Great.Models
                 {
                     if (trace.Result == ETraceResult.LoginError)
                     {
-                        ExchangeStatus = EExchangeStatus.LoginError;
+                        Status = EProviderStatus.LoginError;
                         WaitCredentialsChange();
                     }
                     else
@@ -217,7 +219,7 @@ namespace Great.Models
                 }
             } while (connection == null || !connection.IsOpen);
 
-            ExchangeStatus = EExchangeStatus.Syncronizing;
+            Status = EProviderStatus.Syncronizing;
         }
 
         private void ExchangeSync()
@@ -233,7 +235,7 @@ namespace Great.Models
             };
 
             bool IsSynced = false;
-            ExchangeStatus = EExchangeStatus.Syncronizing;
+            Status = EProviderStatus.Syncronizing;
 
             do
             {
@@ -266,14 +268,14 @@ namespace Great.Models
                     }
 
                     IsSynced = true;
-                    ExchangeStatus = EExchangeStatus.Syncronized;
+                    Status = EProviderStatus.Syncronized;
 
                 }
                 catch
                 {
                     if (trace.Result == ETraceResult.LoginError)
                     {
-                        ExchangeStatus = EExchangeStatus.LoginError;
+                        Status = EProviderStatus.LoginError;
                         WaitCredentialsChange();
                     }
                     else
@@ -305,16 +307,16 @@ namespace Great.Models
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
         {
-            if (ExchangeStatus != EExchangeStatus.Error)
-                ExchangeStatus = EExchangeStatus.Offline;
+            if (Status != EProviderStatus.Error)
+                Status = EProviderStatus.Offline;
 
             Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
-            ExchangeStatus = EExchangeStatus.Reconnecting;
+            Status = EProviderStatus.Reconnecting;
 
             try
             {
                 (sender as StreamingSubscriptionConnection).Open();
-                ExchangeStatus = EExchangeStatus.Syncronizing;
+                Status = EProviderStatus.Syncronizing;
             }
             catch { }
 
@@ -323,7 +325,7 @@ namespace Great.Models
 
         private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
         {
-            ExchangeStatus = EExchangeStatus.Error;
+            Status = EProviderStatus.Error;
             Debugger.Break();
         }
         #endregion
@@ -397,7 +399,7 @@ namespace Great.Models
             string LastAddress = UserSettings.Email.EmailAddress;
             string LastPassword = UserSettings.Email.EmailPassword;
 
-            while(LastAddress == UserSettings.Email.EmailAddress && LastPassword == UserSettings.Email.EmailPassword)
+            while (LastAddress == UserSettings.Email.EmailAddress && LastPassword == UserSettings.Email.EmailPassword)
                 Thread.Sleep(ApplicationSettings.General.WaitForCredentialsCheck);
         }
         #endregion
@@ -462,7 +464,7 @@ namespace Great.Models
 
         public void Trace(string traceType, string traceMessage)
         {
-            if(traceMessage.Contains("(401)"))
+            if (traceMessage.Contains("(401)"))
                 Result = ETraceResult.LoginError;
 
             if (traceMessage.Contains("No matching Autodiscover DNS SRV records were found."))

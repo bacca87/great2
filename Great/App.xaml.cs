@@ -16,8 +16,11 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //basic splash screen implementation
+            SplashScreen sp = new SplashScreen("SplashScreen.png");
+            sp.Show(true,true);
+
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
-            
             InitializeDirectoryTree();
             InitializeDatabase();
 
