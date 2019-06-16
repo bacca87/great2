@@ -32,5 +32,12 @@ namespace Great.Views.Pages
             wizard.Owner = Window.GetWindow(this);
             wizard.ShowDialog();
         }
+
+        private void FDLImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            FDLImportWizardView wizard = new FDLImportWizardView();
+            wizard.Owner = Window.GetWindow(this);
+            wizard.ShowDialog();
+        }
     }
 }

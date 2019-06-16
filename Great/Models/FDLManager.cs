@@ -1064,15 +1064,15 @@ namespace Great.Models
 
                             FileAttachment fileAttachment = attachment as FileAttachment;
 
-                            switch (GetAttachmentType(attachment.Name))
+                            switch (GetFileType(attachment.Name))
                             {
-                                case EAttachmentType.FDL:
+                                case EFileType.FDL:
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
 
                                     ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
                                     break;
-                                case EAttachmentType.ExpenseAccount:
+                                case EFileType.ExpenseAccount:
                                     if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
                                         fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
 
@@ -1104,13 +1104,13 @@ namespace Great.Models
                 return EMessageType.EA_RejectedResubmission;
             else if (subject.Contains(ApplicationSettings.FDL.Reminder))
                 return EMessageType.Reminder;
-            else if (GetAttachmentType(subject) == EAttachmentType.FDL)
+            else if (GetFileType(subject) == EFileType.FDL)
                 return EMessageType.FDL_EA_New;
             else
                 return EMessageType.Unknown;
         }
 
-        private EAttachmentType GetAttachmentType(string filename)
+        public static EFileType GetFileType(string filename)
         {
             try
             {
@@ -1127,18 +1127,18 @@ namespace Great.Models
                     if (FDL.All(char.IsDigit))
                     {
                         if (words.LastOrDefault().Contains("R"))
-                            return EAttachmentType.ExpenseAccount;
+                            return EFileType.ExpenseAccount;
                         else if (CID.All(char.IsDigit) &&
                                  WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
                                  Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
                                  Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
-                            return EAttachmentType.FDL;
+                            return EFileType.FDL;
                     }
                 }
             }
             catch { }
             
-            return EAttachmentType.Unknown;
+            return EFileType.Unknown;
         }
         
         private string GetFDLNumber(EmailMessage message, EMessageType type)
@@ -1155,16 +1155,16 @@ namespace Great.Models
                         if (!(attachment is FileAttachment))
                             continue;
 
-                        EAttachmentType attType = GetAttachmentType(attachment.Name);
+                        EFileType attType = GetFileType(attachment.Name);
 
-                        if (attType == EAttachmentType.Unknown)
+                        if (attType == EFileType.Unknown)
                             continue;
 
                         words = Path.GetFileNameWithoutExtension(attachment.Name).Split(' ');
 
-                        if (attType == EAttachmentType.FDL)
+                        if (attType == EFileType.FDL)
                             FDL = $"{words[words.Length - 1]}/{words[0]}";
-                        else if (attType == EAttachmentType.ExpenseAccount)
+                        else if (attType == EFileType.ExpenseAccount)
                             FDL = $"{words[words.Length - 2]}/{words[0]}";
                         break;
                     }
@@ -1228,7 +1228,7 @@ namespace Great.Models
         }
     }
     
-    public enum EAttachmentType
+    public enum EFileType
     {
         Unknown,
         FDL,

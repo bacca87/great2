@@ -15,30 +15,30 @@ namespace Great.ViewModels
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class GreatImportWizardViewModel : ViewModelBase
+    public class FDLImportWizardViewModel : ViewModelBase
     {
         #region Properties
-        private readonly Logger log = LogManager.GetLogger("GreatImport");
+        private readonly Logger log = LogManager.GetLogger("FDLImport");
 
         /// <summary>
-        /// The <see cref="InstallationFolder" /> property's name.
+        /// The <see cref="FDLFolder" /> property's name.
         /// </summary>
-        private string _installationFolder;
+        private string _fdlFolder;
 
         /// <summary>
         /// Sets and gets the InstallationPath property.
         /// Changes to that property's value raise the PropertyChanged event.
         /// </summary>
-        public string InstallationFolder
+        public string FDLFolder
         {
             get
             {
-                return _installationFolder;
+                return _fdlFolder;
             }
             set
             {
-                _installationFolder = value;
-                RaisePropertyChanged(nameof(InstallationFolder));
+                _fdlFolder = value;
+                RaisePropertyChanged(nameof(FDLFolder));
             }
         }
 
@@ -130,7 +130,6 @@ namespace Great.ViewModels
             }
         }
 
-        private GreatImport _greatMigra;
         #endregion
 
         #region Commands Definitions
@@ -144,15 +143,17 @@ namespace Great.ViewModels
         private string CachedText;
         #endregion
 
+        private FDLImport _fdlImport;
+
         /// <summary>
         /// Initializes a new instance of the GreatImportWizardViewModel class.
         /// </summary>
-        public GreatImportWizardViewModel()
+        public FDLImportWizardViewModel()
         {
-            _greatMigra = new GreatImport();
-            _greatMigra.OnStatusChanged += _greatMigra_OnStatusChanged; ;
-            _greatMigra.OnMessage += _greatMigra_OnMessage;
-            _greatMigra.OnFinish += _greatMigra_OnFinished;
+            _fdlImport = new FDLImport();
+            _fdlImport.OnStatusChanged += _fdlImport_OnStatusChanged; ;
+            _fdlImport.OnMessage += _fdlImport_OnMessage;
+            _fdlImport.OnFinish += _fdlImport_OnFinished;
 
             StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
@@ -161,7 +162,7 @@ namespace Great.ViewModels
             Reset();
         }
 
-        private void _greatMigra_OnStatusChanged(object source, ImportArgs args)
+        private void _fdlImport_OnStatusChanged(object source, ImportArgs args)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -171,7 +172,7 @@ namespace Great.ViewModels
             );
         }
 
-        private void _greatMigra_OnMessage(object source, ImportArgs args)
+        private void _fdlImport_OnMessage(object source, ImportArgs args)
         {
             CachedText += args.Message + Environment.NewLine;
 
@@ -190,7 +191,7 @@ namespace Great.ViewModels
             }
         }
 
-        private void _greatMigra_OnFinished(object source, bool IsCompleted)
+        private void _fdlImport_OnFinished(object source, bool IsCompleted)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -205,7 +206,7 @@ namespace Great.ViewModels
         private void Reset()
         {
             Completed = false;
-            InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
+            FDLFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             CachedText = string.Empty;
             LastTextUpdate = DateTime.UtcNow;
             CanSelectPreviousPage = true;
@@ -215,13 +216,13 @@ namespace Great.ViewModels
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
 
-            dialog.Title = "GREAT Installation Folder";
+            dialog.Title = "FDL Folder";
             dialog.IsFolderPicker = true;
-            dialog.InitialDirectory = InstallationFolder;
+            dialog.InitialDirectory = FDLFolder;
 
             dialog.AddToMostRecentlyUsedList = false;
             dialog.AllowNonFileSystemItems = false;
-            dialog.DefaultDirectory = GreatImport.sGreatDefaultInstallationFolder;
+            dialog.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             dialog.EnsureFileExists = true;
             dialog.EnsurePathExists = true;
             dialog.EnsureReadOnly = false;
@@ -231,20 +232,20 @@ namespace Great.ViewModels
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                InstallationFolder = dialog.FileName;
+                FDLFolder = dialog.FileName;
             }
         }
 
         public void StartImport()
         {
-            _greatMigra.GreatPath = InstallationFolder;
-            _greatMigra.Start();
+            _fdlImport.FDLFolder = FDLFolder;
+            _fdlImport.Start();
             CanSelectPreviousPage = false;
         }
 
         public void Cancel()
         {
-            _greatMigra.Cancel();
+            _fdlImport.Cancel();
             Reset();
         }
     }
