@@ -290,8 +290,8 @@ namespace Great.Models
 
                                     if (address != string.Empty && customer != string.Empty)
                                     {
-                                        //TODO: migliorare riconoscimento stabilimenti 
-                                        factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+                                        // try to associate the correct factory
+                                        factory = GetFactory(db, fdl, address, customer);
 
                                         if (factory == null && UserSettings.Advanced.AutoAddFactories)
                                         {
@@ -506,8 +506,8 @@ namespace Great.Models
 
                                     if (address != string.Empty && customer != string.Empty)
                                     {
-                                        //TODO: migliorare riconoscimento stabilimenti usando anche i codici ORDINE
-                                        factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+                                        // try to associate the correct factory
+                                        factory = GetFactory(db, fdl, address, customer);
 
                                         if (factory == null && UserSettings.Advanced.AutoAddFactories)
                                         {
@@ -620,6 +620,58 @@ namespace Great.Models
             }
 
             return fdlEVM;
+        }
+
+        private Factory GetFactory(DBArchive db, FDL fdl, string address, string customer)
+        {
+            // 1) try with the exact address match
+            Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
+
+            // 2) try if there are other FDL with the same order
+            if (factory == null)
+            {
+                factory = (from f in db.Factories
+                           from d in db.FDLs
+                           where d.Order == fdl.Order && d.Factory == f.Id
+                           select f).FirstOrDefault();
+            }
+
+            // 3) try if the address words are similar to the factory address
+            if(factory == null)
+            {
+                try
+                {   
+                    string[] newAddress = address.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    Dictionary<long, int> factoryMatchRate = new Dictionary<long, int>();
+
+                    foreach (Factory f in db.Factories)
+                    {
+                        int matchCount = 0;
+                        string[] exsAddress = f.Address.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (string word in newAddress)
+                        {
+                            if (word.Trim() != string.Empty && exsAddress.Any(x => x == word))
+                                matchCount++;
+                        }
+
+                        if(matchCount > 0)
+                            factoryMatchRate.Add(f.Id, (matchCount * 100) / newAddress.Count());
+                    }
+
+                    if (factoryMatchRate.Count > 0)
+                    {
+                        // get the factory with the highest match rate
+                        var factoryRate = factoryMatchRate.Aggregate((l, r) => l.Value > r.Value ? l : r);
+
+                        if (factoryRate.Value > 50)
+                            factory = db.Factories.SingleOrDefault(f => f.Id == factoryRate.Key);
+                    }
+                }
+                catch { }
+            }
+
+            return factory;
         }
 
         private Dictionary<string, string> GetXFAFormFields(XfaForm form)
