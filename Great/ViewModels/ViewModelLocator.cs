@@ -59,6 +59,7 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<OrderRecipientsViewModel>();
             SimpleIoc.Default.Register<StatisticsViewModel>();
             SimpleIoc.Default.Register<CarRentalViewModel>();
+            SimpleIoc.Default.Register<FDLImportWizardViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -154,6 +155,14 @@ namespace Great.ViewModels
             get
             {
                 return SimpleIoc.Default.GetInstance<CarRentalViewModel>();
+            }
+        }
+
+        public FDLImportWizardViewModel FDLImportWizard
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<FDLImportWizardViewModel>();
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models.Database;
+﻿using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils.Extensions;
 using Itenso.TimePeriod;
@@ -365,14 +364,14 @@ namespace Great.ViewModels.Database
         public TimesheetEVM(Timesheet timesheet = null)
         {
             if (timesheet != null)
-                Mapper.Map(timesheet, this);
+                Global.Mapper.Map(timesheet, this);
         }
 
         public override bool Save(DBArchive db)
         {
             Timesheet timesheet = new Timesheet();
 
-            Mapper.Map(this, timesheet);
+            Global.Mapper.Map(this, timesheet);
             db.Timesheets.AddOrUpdate(timesheet);
             db.SaveChanges();
             Id = timesheet.Id;
@@ -405,7 +404,7 @@ namespace Great.ViewModels.Database
             db.Entry(timesheet).Reference(p => p.FDL1).Load();
 
             if (timesheet != null)
-                return Mapper.Map(timesheet, this) != null;
+                return Global.Mapper.Map(timesheet, this) != null;
 
             return false;
         }

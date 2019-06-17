@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models;
+﻿using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
@@ -170,7 +169,7 @@ namespace Great.ViewModels.Database
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             if(ea != null)
-                Mapper.Map(ea, this);
+                Global.Mapper.Map(ea, this);
         }
 
         private void UpdateTotals()
@@ -189,7 +188,7 @@ namespace Great.ViewModels.Database
         {
             ExpenseAccount ea = new ExpenseAccount();
 
-            Mapper.Map(this, ea);
+            Global.Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;

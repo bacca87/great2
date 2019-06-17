@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models;
+﻿using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Extensions;
@@ -328,7 +327,7 @@ namespace Great.ViewModels.Database
             Timesheets = new ObservableCollectionEx<TimesheetEVM>();
 
             if (day != null)
-                Mapper.Map(day, this);
+                Global.Mapper.Map(day, this);
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
@@ -357,7 +356,7 @@ namespace Great.ViewModels.Database
         {
             Day day = new Day();
 
-            Mapper.Map(this, day);
+            Global.Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
             db.SaveChanges();
 
@@ -378,7 +377,7 @@ namespace Great.ViewModels.Database
 
             if (day != null)
             {
-                Mapper.Map(day, this);
+                Global.Mapper.Map(day, this);
 
                 foreach (TimesheetEVM timesheet in Timesheets)
                     timesheet.Refresh(db);

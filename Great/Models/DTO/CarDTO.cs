@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models.Database;
+﻿using Great.Models.Database;
 
 namespace Great.Models.DTO
 {
@@ -15,7 +14,7 @@ namespace Great.Models.DTO
 
         public CarDTO(Car car)
         {
-            Mapper.Map(car, this);
+            Global.Mapper.Map(car, this);
         }
     }
 }

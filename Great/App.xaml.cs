@@ -18,6 +18,7 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+<<<<<<< HEAD
             //Single instance check
             Process proc = Process.GetCurrentProcess();
             int count = Process.GetProcesses().Where(p =>
@@ -33,11 +34,11 @@ namespace Great
             SplashScreen sp = new SplashScreen("SplashScreen.png");
             sp.Show(true,true);
 
+=======
+>>>>>>> b6f954842f82e611f3bbe04a099802d71ba69cd9
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             InitializeDirectoryTree();
             InitializeDatabase();
-
-            AutomapperConfiguration.RegisterMappings();
 
             // TODO: Auto Updater (https://github.com/ravibpatel/AutoUpdater.NET)
         }

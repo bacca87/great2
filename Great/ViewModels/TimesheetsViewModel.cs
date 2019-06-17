@@ -1,19 +1,13 @@
-using AutoMapper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Models.Database;
-using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Extensions;
-using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
 
@@ -259,7 +253,7 @@ namespace Great.ViewModels
                 return;
 
             DayEVM dayClone = new DayEVM();
-            Mapper.Map(day, dayClone);
+            Global.Mapper.Map(day, dayClone);
 
             ClipboardX.Clear();
             ClipboardX.AddItem("Day", dayClone);

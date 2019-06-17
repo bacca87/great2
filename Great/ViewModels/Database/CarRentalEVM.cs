@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Great.Models.Database;
-using Great.Models.DTO;
+﻿using Great.Models.Database;
 using Great.Utils.Extensions;
 using System;
 using System.Data.Entity.Migrations;
@@ -162,14 +160,14 @@ namespace Great.ViewModels.Database
         public CarRentalHistoryEVM(CarRentalHistory rent = null)
         {
             if(rent != null)
-                Mapper.Map(rent, this);
+                Global.Mapper.Map(rent, this);
         }
 
         public override bool Save(DBArchive db)
         {
             CarRentalHistory rent = new CarRentalHistory();
 
-            Mapper.Map(this, rent);
+            Global.Mapper.Map(this, rent);
             db.CarRentalHistories.AddOrUpdate(rent);
             db.SaveChanges();
             Id = rent.Id;

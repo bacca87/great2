@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using AutoMapper;
 using Great.Models.Database;
 using Great.Models.DTO;
 
@@ -84,7 +83,7 @@ namespace Great.ViewModels.Database
         public FactoryEVM(Factory factory = null)
         {
             if (factory != null)
-                Mapper.Map(factory, this);
+                Global.Mapper.Map(factory, this);
         }
 
         public override bool Delete(DBArchive db)
@@ -104,7 +103,7 @@ namespace Great.ViewModels.Database
         {
             Factory factory = new Factory();
 
-            Mapper.Map(this, factory);
+            Global.Mapper.Map(this, factory);
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();
             Id = factory.Id;

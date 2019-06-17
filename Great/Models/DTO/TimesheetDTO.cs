@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models.Database;
+﻿using Great.Models.Database;
 using System;
 
 namespace Great.Models.DTO
@@ -24,7 +23,7 @@ namespace Great.Models.DTO
 
         public TimesheetDTO(Timesheet timesheet)
         {
-            Mapper.Map(timesheet, this);
+            Global.Mapper.Map(timesheet, this);
         }
     }
 }

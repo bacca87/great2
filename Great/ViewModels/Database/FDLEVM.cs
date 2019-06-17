@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models;
+﻿using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
@@ -244,14 +243,14 @@ namespace Great.ViewModels.Database
             Timesheets = new ObservableCollection<TimesheetEVM>();
             
             if(fdl != null)
-                Mapper.Map(fdl, this);
+                Global.Mapper.Map(fdl, this);
         }
 
         public override bool Save(DBArchive db)
         {
             FDL fdl = new FDL();
 
-            Mapper.Map(this, fdl);
+            Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();
 

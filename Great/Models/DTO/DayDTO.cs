@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using Great.Models.Database;
 
 namespace Great.Models.DTO
@@ -15,7 +14,7 @@ namespace Great.Models.DTO
 
         public DayDTO(Day day)
         {
-            Mapper.Map(day, this);
+            Global.Mapper.Map(day, this);
         }
     }
 }

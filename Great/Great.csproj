@@ -38,11 +38,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.1.1\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="AutoUpdater.NET, Version=1.4.11.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autoupdater.NET.Official.1.4.11\lib\net40\AutoUpdater.NET.dll</HintPath>
+    <Reference Include="AutoUpdater.NET, Version=1.5.3.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autoupdater.NET.Official.1.5.3\lib\net40\AutoUpdater.NET.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.5\lib\net40\BouncyCastle.Crypto.dll</HintPath>
@@ -281,6 +281,8 @@
     <Compile Include="Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Utils\Extensions\TimePeriodCollectionExtensions.cs" />
     <Compile Include="Utils\Extensions\TimeSpanExtensions.cs" />
+    <Compile Include="Utils\ImpExp\BaseImport.cs" />
+    <Compile Include="Utils\ImpExp\FDLImport.cs" />
     <Compile Include="Utils\Messages\DeletedItemMessage.cs" />
     <Compile Include="Utils\Messages\ItemChangedMessage.cs" />
     <Compile Include="Utils\Messages\NewItemMessage.cs" />
@@ -301,6 +303,7 @@
     <Compile Include="ViewModels\Database\TimesheetEVM.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
+    <Compile Include="ViewModels\FDLImportWizardViewModel.cs" />
     <Compile Include="ViewModels\GreatImportWizardViewModel.cs" />
     <Compile Include="ViewModels\ImportExportViewModel.cs" />
     <Compile Include="ViewModels\StatisticsViewModel.cs" />
@@ -348,6 +351,9 @@
     </Compile>
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Wizards\FDLImportWizardView.xaml.cs">
+      <DependentUpon>FDLImportWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Wizards\GreatImportWizardView.xaml.cs">
       <DependentUpon>GreatImportWizardView.xaml</DependentUpon>
@@ -415,6 +421,10 @@
     <Page Include="Views\Pages\TimesheetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Wizards\FDLImportWizardView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Wizards\GreatImportWizardView.xaml">
       <SubType>Designer</SubType>
@@ -569,7 +579,7 @@
     <Resource Include="Images\32\pdf-file.png" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="SplashScreen.png" />
+    <SplashScreen Include="Images\SplashScreen.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" />

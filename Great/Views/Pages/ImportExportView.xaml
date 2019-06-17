@@ -15,6 +15,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Button Content="Import GREAT" Width="100" Height="100" Click="GreatImportButton_Click"/>
+        <StackPanel>
+            <Button Content="Import GREAT" Width="100" Height="100" Click="GreatImportButton_Click"/>
+            <Separator/>
+            <Button Content="Import FDL" Width="100" Height="100" Click="FDLImportButton_Click"/>
+        </StackPanel>        
     </Grid>
 </Page>

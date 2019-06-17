@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
@@ -199,7 +198,7 @@ namespace Great.ViewModels
                     if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
                     {
                         FactoryDTO factory = new FactoryDTO();
-                        Mapper.Map(item.Content, factory);
+                        Global.Mapper.Map(item.Content, factory);
                         Factories.Add(factory);
                     }
                 })
@@ -220,7 +219,7 @@ namespace Great.ViewModels
                         FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
                         if (factory != null)
-                            Mapper.Map(item.Content, factory);
+                            Global.Mapper.Map(item.Content, factory);
                     }
                 })
             );

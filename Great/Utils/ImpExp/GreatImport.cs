@@ -15,17 +15,8 @@ using Great.ViewModels.Database;
 
 namespace Great.Utils
 {
-    public class GreatImport
+    public class GreatImport : BaseImport
     {
-        #region Events
-        public delegate void OperationFinishedHandler(object source, bool failed);
-        public delegate void StatusChangedHandler(object source, GreatImportArgs args);
-        public delegate void MessageHandler(object source, GreatImportArgs args);
-        public event OperationFinishedHandler OnFinish;
-        public event StatusChangedHandler OnStatusChanged;
-        public event MessageHandler OnMessage;
-        #endregion
-
         #region Constants
 
         public const string sGreatDefaultInstallationFolder = @"C:\Program Files (x86)\GREAT";
@@ -37,8 +28,6 @@ namespace Great.Utils
         #endregion
 
         #region Properties
-        private readonly Logger log = LogManager.GetLogger("GreatImport");
-
         private FDLManager FDLManager = SimpleIoc.Default.GetInstance<FDLManager>();
         private volatile bool stopImport;
 
@@ -64,17 +53,20 @@ namespace Great.Utils
         public string _sourceEAPath { get; private set; }
         public string _destinationFdlPath { get; private set; }
         public string _destinationEAPath { get; private set; }
+        public string GreatPath { get; set; }
         #endregion
 
-        public void StartImport(string greatPath)
+        public GreatImport() : base(LogManager.GetLogger("GreatImport")) { }
+
+        public override void Start()
         {
             stopImport = false;
 
             StatusChanged("Import Started...");
 
-            if (Directory.Exists(greatPath))
+            if (Directory.Exists(GreatPath))
             {
-                _sourceDatabase = GetGreatDatabaseFile(greatPath);
+                _sourceDatabase = GetGreatDatabaseFile(GreatPath);
 
                 if (!string.IsNullOrEmpty(_sourceDatabase))
                 {
@@ -107,15 +99,20 @@ namespace Great.Utils
                 }
                 else Error($"Database not found on path: {_sourceDatabase}");
             }
-            else Error($"Wrong GREAT directory path: {greatPath}");
+            else Error($"Wrong GREAT directory path: {GreatPath}");
 
             StatusChanged("Import failed!");
             Finished(false);
         }
 
-        public void CancelImport()
+        public override void Cancel()
         {
             stopImport = true;
+        }
+
+        public override void Close()
+        {
+            connection.Dispose();
         }
 
         private void ImportThread()
@@ -652,7 +649,6 @@ namespace Great.Utils
             return result;
         }
 
-        #region Auxiliar methods
         private string GetGreatDatabaseFile(string folder)
         {
             var uri = new DirectoryInfo(folder);
@@ -663,53 +659,5 @@ namespace Great.Utils
             else
                 return (Path.Combine(folder, "DB\\Archivio.mdb"));
         }
-
-        public void Close()
-        {
-            connection.Dispose();
-        }
-        #endregion
-
-        #region Events
-        protected void StatusChanged(string status)
-        {
-            OnStatusChanged?.Invoke(this, new GreatImportArgs(status));
-            OnMessage?.Invoke(this, new GreatImportArgs(status));
-            log.Info(status);
-        }
-
-        protected void Warning(string message)
-        {
-            OnMessage?.Invoke(this, new GreatImportArgs($"WARNING: {message}"));
-            log.Warn(message);
-        }
-
-        protected void Error(string message, Exception ex = null)
-        {
-            OnMessage?.Invoke(this, new GreatImportArgs($"ERROR: {message}"));
-            log.Error(ex, message);
-        }
-
-        protected void Message(string message)
-        {
-            OnMessage?.Invoke(this, new GreatImportArgs(message));
-            log.Debug(message);
-        }
-
-        protected void Finished(bool isCompleted = true)
-        {
-            OnFinish?.Invoke(this, isCompleted);
-        }
-        #endregion
-    }
-
-    public class GreatImportArgs : EventArgs
-    {
-        public GreatImportArgs(string message)
-        {
-            Message = message;
-        }
-
-        public string Message { get; set; }
     }
 }

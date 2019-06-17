@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Great.Models.Database;
+﻿using Great.Models.Database;
 
 namespace Great.Models.DTO
 {
@@ -12,7 +11,7 @@ namespace Great.Models.DTO
 
         public FDLResultDTO(FDLResult result)
         {
-            Mapper.Map(result, this);
+            Global.Mapper.Map(result, this);
         }
     }
 }
