@@ -58,6 +58,7 @@ namespace Great.ViewModels
             get => _selectedFDL;
             set
             {
+
                 Set(ref _selectedFDL, value);
 
                 if (_selectedFDL != null)
@@ -180,6 +181,7 @@ namespace Great.ViewModels
                         {
                             fdl.Status = item.Content.Status;
                             fdl.LastError = item.Content.LastError;
+                            fdl.Timesheets = item.Content.Timesheets;
                         }
                     }
                 })

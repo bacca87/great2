@@ -291,6 +291,7 @@ namespace Great.ViewModels
                 || existingCar?.CarRentalCompany != SelectedCar.CarRentalCompany)
             {
                 var SelectedCarClone = new CarEVM();
+                SelectedCarClone.Id = SelectedCar.Id;
                 SelectedCarClone.Brand = SelectedCar.Brand;
                 SelectedCarClone.Model = SelectedCar.Model;
                 SelectedCarClone.LicensePlate = SelectedCar.LicensePlate;
