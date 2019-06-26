@@ -58,6 +58,7 @@ namespace Great.ViewModels
             get => _selectedFDL;
             set
             {
+
                 Set(ref _selectedFDL, value);
 
                 if (_selectedFDL != null)
@@ -141,6 +142,8 @@ namespace Great.ViewModels
                         
             MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
+            MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, TimeSheetChanged);
+            MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, TimeSheetDeleted);
 
             MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
@@ -186,6 +189,43 @@ namespace Great.ViewModels
             );
         }
 
+        public void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.FDL1?.Id);
+
+                        if (fdl != null)
+                        {
+                            fdl.Timesheets.Add(item.Content);
+                        }
+                    }
+                })
+            );
+        }
+        public void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.FDL1?.Id);
+
+                        if (fdl != null)
+                        {
+                            var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
+                            fdl.Timesheets.Remove(ts);
+                        }
+                    }
+                })
+            );
+        }
         public void NewFactory(NewItemMessage<FactoryEVM> item)
         {
             if (!(item.Sender is FactoriesViewModel))
@@ -204,7 +244,6 @@ namespace Great.ViewModels
                 })
             );
         }
-
         public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             if (!(item.Sender is FactoriesViewModel))
