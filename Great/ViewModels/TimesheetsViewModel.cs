@@ -327,11 +327,7 @@ namespace Great.ViewModels
                 SelectedWorkingDay.Timesheets.Remove(timesheet);
                 SelectedTimesheet = null;
 
-                if (timesheet.FDL1 != null)
-                {
-                    timesheet.FDL1.Timesheets.Remove(timesheet);
-                    Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));
-                }
+                Messenger.Default.Send(new DeletedItemMessage<TimesheetEVM>(this, timesheet));
             }
         }
 
@@ -366,8 +362,10 @@ namespace Great.ViewModels
 
                     timesheet.FDL1.Refresh(db);
 
-                    if (timesheet.FDL1 != null)
-                        Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));
+                    //if (timesheet.FDL1 != null)
+                    //    Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));
+
+                    Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
             }
         }

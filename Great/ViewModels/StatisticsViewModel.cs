@@ -8,6 +8,7 @@ using Great.ViewModels.Database;
 using Great.Utils.Extensions;
 using LiveCharts.Wpf;
 using GalaSoft.MvvmLight.Command;
+using Great.Utils.Messages;
 
 namespace Great.ViewModels
 {
@@ -77,6 +78,8 @@ namespace Great.ViewModels
             SelectedYear = DateTime.Now.Year;
 
             MonthsLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+            MessengerInstance.Register<NewItemMessage<TimesheetEVM>>(this, RefreshTimesheet);
         }
 
         private void RefreshAllData()
@@ -268,6 +271,10 @@ namespace Great.ViewModels
             }
 
 
+        }
+        private void RefreshTimesheet (NewItemMessage<TimesheetEVM> item)
+        {
+            RefreshAllData();
         }
     }
 }
