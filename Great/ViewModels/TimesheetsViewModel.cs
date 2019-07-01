@@ -360,7 +360,7 @@ namespace Great.ViewModels
                     SelectedWorkingDay.Refresh(db);
                     SelectedTimesheet = null;
 
-                    timesheet.FDL1.Refresh(db);
+                    timesheet.FDL1?.Refresh(db);
 
                     //if (timesheet.FDL1 != null)
                     //    Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));

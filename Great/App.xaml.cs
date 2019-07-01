@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace Great
@@ -32,7 +33,7 @@ namespace Great
 
             //basic splash screen implementation
             SplashScreen sp = new SplashScreen(@"Images\SplashScreen.png");
-            sp.Show(true,true);
+            sp.Show(true, true);
 
 
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
@@ -58,14 +59,52 @@ namespace Great
         {
             // disable EF database initializer
             Database.SetInitializer<DBArchive>(null);
-            
+
             string dbDirectory = Path.GetDirectoryName(ApplicationSettings.Database.DBFileName);
             string dbFileName = dbDirectory + "\\" + Path.GetFileName(ApplicationSettings.Database.DBFileName);
 
             Directory.CreateDirectory(dbDirectory);
-            
-            if(!File.Exists(dbFileName))
+
+            if (!File.Exists(dbFileName))
                 File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
+            else
+                ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
+
+
+        }
+
+
+        private void ApplyMigrations()
+        {
+            using (DBArchive db = new DBArchive())
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var version = db.Database.SqlQuery<int>("PRAGMA user_version").First();
+
+                        foreach (var f in Directory.GetFiles("Utils/Migrations/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                        {
+                            if (!int.TryParse(Path.GetFileName(f).Split('.').First(), out int sqlVersion))
+                                continue;
+
+                            if (sqlVersion <= version)
+                                continue;
+
+                            db.Database.ExecuteSqlCommand(File.ReadAllText(f));
+                            db.SaveChanges();
+
+                        }
+                        transaction.Commit();
+                    }
+
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
         }
     }
 }
