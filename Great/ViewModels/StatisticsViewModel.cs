@@ -79,7 +79,8 @@ namespace Great.ViewModels
 
             MonthsLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-            MessengerInstance.Register<NewItemMessage<TimesheetEVM>>(this, RefreshTimesheet);
+            MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, RefreshTimesheet);
+            MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, RefreshTimesheet);
         }
 
         private void RefreshAllData()
@@ -272,7 +273,11 @@ namespace Great.ViewModels
 
 
         }
-        private void RefreshTimesheet (NewItemMessage<TimesheetEVM> item)
+        private void RefreshTimesheet (ItemChangedMessage<TimesheetEVM> item)
+        {
+            RefreshAllData();
+        }
+        private void RefreshTimesheet(DeletedItemMessage<TimesheetEVM> item)
         {
             RefreshAllData();
         }

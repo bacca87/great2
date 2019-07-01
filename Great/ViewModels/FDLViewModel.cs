@@ -201,7 +201,9 @@ namespace Great.ViewModels
 
                         if (fdl != null)
                         {
-                            fdl.Timesheets.Add(item.Content);
+                            var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
+                            ts = item.Content;
+
                         }
                     }
                 })
