@@ -248,7 +248,7 @@ namespace Great.Models
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
 
                     // try to get last week messages (high priority)
-                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem + " received: last week", folderView, itemView))
+                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem + " received:>=lastweek", folderView, itemView))
                     {
                         if (!(item is EmailMessage))
                             continue;

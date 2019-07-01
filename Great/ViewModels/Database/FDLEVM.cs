@@ -264,7 +264,19 @@ namespace Great.ViewModels.Database
 
         public override bool Refresh(DBArchive db)
         {
-            throw new NotImplementedException();
+            FDL fdl = db.FDLs.SingleOrDefault(f=> f.Id == Id);
+
+            if (fdl != null)
+            {
+                Global.Mapper.Map(fdl, this);
+
+                //foreach (TimesheetEVM timesheet in Timesheets)
+                //    timesheet.Refresh(db);
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

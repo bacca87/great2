@@ -1,9 +1,11 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Extensions;
+using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.Generic;
@@ -324,6 +326,8 @@ namespace Great.ViewModels
             {
                 SelectedWorkingDay.Timesheets.Remove(timesheet);
                 SelectedTimesheet = null;
+
+                Messenger.Default.Send(new DeletedItemMessage<TimesheetEVM>(this, timesheet));
             }
         }
 
@@ -355,6 +359,13 @@ namespace Great.ViewModels
                 {
                     SelectedWorkingDay.Refresh(db);
                     SelectedTimesheet = null;
+
+                    timesheet.FDL1?.Refresh(db);
+
+                    //if (timesheet.FDL1 != null)
+                    //    Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));
+
+                    Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
             }
         }
