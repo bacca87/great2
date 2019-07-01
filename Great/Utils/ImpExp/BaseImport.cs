@@ -1,20 +1,80 @@
 ﻿using NLog;
 using System;
+using System.Collections.Concurrent;
 
 namespace Great.Utils
 {
     public class BaseImport
     {
+        #region Properties
         protected Logger log = null;
 
-        public delegate void OperationFinishedHandler(object source, bool failed);
-        public delegate void StatusChangedHandler(object source, ImportArgs args);
-        public delegate void MessageHandler(object source, ImportArgs args);
-        public event OperationFinishedHandler OnFinish;
-        public event StatusChangedHandler OnStatusChanged;
-        public event MessageHandler OnMessage;
+        public ConcurrentQueue<string> Output { get; internal set; }
 
-        protected BaseImport(Logger log) => this.log = log;
+        private string _status;
+        public string Status
+        {
+            get
+            {
+                lock(this)
+                {
+                    return _status;
+                }
+            }
+            internal set
+            {
+                lock(this)
+                {
+                    _status = value;
+                }
+            }
+        }
+
+        private bool _IsCompleted;
+        public bool IsCompleted
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _IsCompleted;
+                }
+            }
+            internal set
+            {
+                lock (this)
+                {
+                    _IsCompleted = value;
+                }
+            }
+        }
+
+        private bool _IsCancelled;
+        public bool IsCancelled
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _IsCancelled;
+                }
+            }
+            internal set
+            {
+                lock (this)
+                {
+                    _IsCancelled = value;
+                }
+            }
+        }
+        #endregion
+
+        protected BaseImport(Logger log)
+        {
+            IsCompleted = false;
+            this.log = log;
+            Output = new ConcurrentQueue<string>();
+        }
 
         public virtual void Start() { }
         public virtual void Cancel() { }
@@ -22,32 +82,33 @@ namespace Great.Utils
 
         protected void StatusChanged(string status)
         {
-            OnStatusChanged?.Invoke(this, new ImportArgs(status));
-            OnMessage?.Invoke(this, new ImportArgs(status));
+            Status = status;
+            Message(status);
             log.Info(status);
         }
 
         protected void Warning(string message)
         {
-            OnMessage?.Invoke(this, new ImportArgs($"WARNING: {message}"));
+            Message($"WARNING: {message}");
             log.Warn(message);
         }
 
         protected void Error(string message, Exception ex = null)
         {
-            OnMessage?.Invoke(this, new ImportArgs($"ERROR: {message}"));
+            Message($"ERROR: {message}");
             log.Error(ex, message);
         }
 
         protected void Message(string message)
         {
-            OnMessage?.Invoke(this, new ImportArgs(message));
+            Output.Enqueue(message);
             log.Debug(message);
         }
 
         protected void Finished(bool isCompleted = true)
         {
-            OnFinish?.Invoke(this, isCompleted);
+            IsCompleted = isCompleted;
+            IsCancelled = !isCompleted;
         }
     }
 

@@ -39,6 +39,9 @@
                 <i:EventTrigger EventName="Cancel">
                     <mvvm:EventToCommand Command="{Binding CancelCommand}"/>
                 </i:EventTrigger>
+                <i:EventTrigger EventName="Finish">
+                    <mvvm:EventToCommand Command="{Binding FinishCommand}"/>
+                </i:EventTrigger>
             </i:Interaction.Triggers>
             <xctk:WizardPage Title="Welcome to the FDL data import Wizard"
                              Description="This Wizard will walk you though how to import all the FDLs and expense accounts from the selected folder."/>

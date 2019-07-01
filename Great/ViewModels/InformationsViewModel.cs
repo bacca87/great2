@@ -74,7 +74,18 @@ namespace Great.ViewModels
                 return FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
             }
         }
-                
+
+        /// <summary>
+        /// Gets the Version property.
+        /// </summary>
+        public string AppNameAndVersion
+        {
+            get
+            {
+                return Title + " v" + Version;
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the InformationsViewModel class.
         /// </summary>

@@ -13,6 +13,12 @@ using System.ComponentModel;
 using Great.Controls;
 using Great.Models.Database;
 using Great.ViewModels.Database;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using GalaSoft.MvvmLight.Ioc;
+using System.Globalization;
 
 namespace Great.Views
 {
@@ -46,10 +52,8 @@ namespace Great.Views
             zoomSlider.Value = factoriesMapControl.Zoom;
             
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
-            _viewModel.Factories.CollectionChanged += Factories_CollectionChanged;
             _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
-
-            RefreshMarkers();
+            
             factoriesMapControl.ZoomAndCenterMarkers(null);
         }
 
@@ -105,7 +109,7 @@ namespace Great.Views
 
         private void ZoomOnFactory(FactoryEVM factory)
         {   
-            PointLatLng? point = GetFactoryPosition(factory);
+            PointLatLng? point = GetFactoryCoordsAsync(factory).Result;
 
             if (point.HasValue)
             {
@@ -117,20 +121,29 @@ namespace Great.Views
             }
         }
 
-        public PointLatLng? GetFactoryPosition(FactoryEVM factory)
+        public async Task<PointLatLng?> GetFactoryCoordsAsync(FactoryEVM factory)
         {
-            PointLatLng? point;
-
             if (factory.Latitude.HasValue && factory.Longitude.HasValue)
-                point = new PointLatLng(factory.Latitude.Value, factory.Longitude.Value);
+                return new PointLatLng(factory.Latitude.Value, factory.Longitude.Value);
             else
-                point = GetPointFromAddress(factory.Address);
+            {
+                var point = await GetCoordsFromAddressAsync(factory.Address);
 
-            return point;
+                if (point.HasValue)
+                {
+                    factory.Latitude = point.Value.Lat;
+                    factory.Longitude = point.Value.Lng;
+                    factory.Save();
+                }
+
+                return point;
+            }
         }
 
         private PointLatLng? GetPointFromAddress(string address)
         {
+            //The GetPoint method of Gmap.NET run on GUI thread freezing everything until the end of the computation
+            //use this methon only for one time call. For big bulk of data use GetCoordsFromAddressAsync()
             PointLatLng? point;
             GeoCoderStatusCode status;
 
@@ -139,51 +152,93 @@ namespace Great.Views
             return point;
         }
 
+        public static async Task<PointLatLng?> GetCoordsFromAddressAsync(string address)
+        {
+            try
+            {
+                // we call directly the OSM web api in order to prevent GUI freeze. The GetPoint method of Gmap.NET run on GUI thread freezing everything until the end of the computation
+                HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://nominatim.openstreetmap.org") };
+                httpClient.DefaultRequestHeaders.Add("User-Agent", SimpleIoc.Default.GetInstance<InformationsViewModel>().AppNameAndVersion);
+
+                HttpResponseMessage httpResult = await httpClient.GetAsync($"search.php?q={address}&format=json&polygon=1&addressdetails=1");
+
+                var result = await httpResult.Content.ReadAsStringAsync();
+
+                var r = (JArray)JsonConvert.DeserializeObject(result);
+
+                if (r.HasValues)
+                {
+                    var latString = ((JValue)r[0]["lat"]).Value as string;
+                    var lngString = ((JValue)r[0]["lon"]).Value as string;
+
+                    if (latString != string.Empty && lngString != string.Empty)
+                    {
+                        double lat = double.Parse(latString, CultureInfo.InvariantCulture);
+                        double lng = double.Parse(lngString, CultureInfo.InvariantCulture);
+
+                        return new PointLatLng(lat, lng);
+                    }
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
         private GMapMarker CreateMarker(PointLatLng point, FactoryEVM factory, FactoryMarkerColor color)
         {
             FactoryMarker shape = new FactoryMarker() { DataContext = factory, Color = color };
 
             GMapMarker marker = new GMapMarker(point);
+            marker.Tag = factory;
             marker.Shape = shape;
             marker.Offset = new Point(-(shape.Rectangle.Width / 2), -shape.Rectangle.Height);
+
+            factory.Latitude = point.Lat;
+            factory.Longitude = point.Lng;
+            factory.Save();
 
             return marker;
         }
 
-        public void RefreshMarkers()
+        public async void RefreshMarkersAsync(IList<FactoryEVM> factories)
         {
             tempMarker = null;
             tempPosMarker = null;
-            factoriesMapControl.Markers.Clear();            
 
-            foreach (FactoryEVM factory in _viewModel.Factories)
+            var tasks = new Dictionary<FactoryEVM, Task<PointLatLng?>>();
+
+            var factoriesToAdd = factories.Where(f => !factoriesMapControl.Markers.Any(m => m.Tag != null && (m.Tag as FactoryEVM).Id == f.Id));
+
+            foreach (FactoryEVM factory in factoriesToAdd)
+                tasks.Add(factory, GetFactoryCoordsAsync(factory));
+
+            await Task.WhenAll(tasks.Values);
+
+            foreach (var task in tasks)
             {
-                PointLatLng? point = GetFactoryPosition(factory);
+                FactoryEVM factory = task.Key;
+                PointLatLng? point = task.Value.Result;
 
                 if (point.HasValue)
-                {   
+                {
                     GMapMarker marker = CreateMarker((PointLatLng)point, factory, FactoryMarkerColor.Red);
                     factoriesMapControl.Markers.Add(marker);
                 }
             }
         }
-        
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry(new Uri(factoriesMapControl.MapProvider.RefererUrl).Host);
+                System.Net.IPHostEntry test = System.Net.Dns.GetHostEntry(new Uri("http://nominatim.openstreetmap.org").Host);
             }
             catch
             {
                 factoriesMapControl.Manager.Mode = AccessMode.CacheOnly;
                 MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "Factories Map", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
-
-        private void Factories_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            RefreshMarkers();
         }
 
         private void FactoriesView_PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
@@ -225,7 +280,7 @@ namespace Great.Views
                 GeoCoderStatusCode status;
                 Placemark? placemark = (factoriesMapControl.MapProvider as GeocodingProvider).GetPlacemark(mapPosition, out status);
 
-                if (status == GeoCoderStatusCode.G_GEO_SUCCESS && placemark.HasValue)
+                if (status == GeoCoderStatusCode.OK && placemark.HasValue)
                 {
                     if (tempMarker != null)
                         factoriesMapControl.Markers.Remove(tempMarker);
@@ -313,6 +368,9 @@ namespace Great.Views
         {
             if ((bool)e.NewValue == false && IsLatLngSelectionMode)
                 LatLngSelectionMode(false);
+
+            if ((bool)e.NewValue)
+                RefreshMarkersAsync(new List<FactoryEVM>(_viewModel.Factories));
         }
 
         private void OnZoomOnFactoryRequest(FactoryEVM factory)

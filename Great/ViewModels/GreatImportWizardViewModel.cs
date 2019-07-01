@@ -4,6 +4,7 @@ using Great.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -19,6 +20,8 @@ namespace Great.ViewModels
     {
         #region Properties
         private readonly Logger log = LogManager.GetLogger("GreatImport");
+        private DispatcherTimer refreshTimer = new DispatcherTimer();
+        private GreatImport _greatMigra;
 
         /// <summary>
         /// The <see cref="InstallationFolder" /> property's name.
@@ -129,19 +132,13 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(LogText));
             }
         }
-
-        private GreatImport _greatMigra;
         #endregion
 
         #region Commands Definitions
         public RelayCommand StartImportCommand { get; set; }
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand CancelCommand { get; set; }
-        #endregion
-
-        #region Cache Properties
-        private DateTime LastTextUpdate;
-        private string CachedText;
+        public RelayCommand FinishCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -150,64 +147,50 @@ namespace Great.ViewModels
         public GreatImportWizardViewModel()
         {
             _greatMigra = new GreatImport();
-            _greatMigra.OnStatusChanged += _greatMigra_OnStatusChanged; ;
-            _greatMigra.OnMessage += _greatMigra_OnMessage;
-            _greatMigra.OnFinish += _greatMigra_OnFinished;
 
             StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
             CancelCommand = new RelayCommand(Cancel);
+            FinishCommand = new RelayCommand(Finish);
 
             Reset();
+
+            refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
+            refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            refreshTimer.Start();
         }
 
-        private void _greatMigra_OnStatusChanged(object source, ImportArgs args)
+        private void refreshTimer_Tick(object sender, EventArgs e)
         {
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    Status = args.Message;
-                })
-            );
-        }
+            string newText = string.Empty;
 
-        private void _greatMigra_OnMessage(object source, ImportArgs args)
-        {
-            CachedText += args.Message + Environment.NewLine;
-
-            if(DateTime.UtcNow.Subtract(LastTextUpdate).TotalSeconds > 0.5)
+            while (!_greatMigra.Output.IsEmpty)
             {
-                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                    new Action<string>((text) =>
-                    {
-                        LogText += text;
-                    }), 
-                    CachedText
-                );
+                string text;
 
-                CachedText = string.Empty;
-                LastTextUpdate = DateTime.UtcNow;
+                if (!_greatMigra.Output.TryDequeue(out text))
+                    continue;
+
+                newText += text + Environment.NewLine;
             }
-        }
 
-        private void _greatMigra_OnFinished(object source, bool IsCompleted)
-        {
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {   
-                    Completed = IsCompleted;
-                    CanSelectPreviousPage = !IsCompleted;
-                    LogText += CachedText;
-                })
-            );
+            if (newText != string.Empty)
+                LogText += newText;
+
+            if (Status != _greatMigra.Status)
+                Status = _greatMigra.Status;
+
+            if (Completed != _greatMigra.IsCompleted)
+                Completed = _greatMigra.IsCompleted;
+
+            if (CanSelectPreviousPage != _greatMigra.IsCancelled)
+                CanSelectPreviousPage = _greatMigra.IsCancelled;
         }
 
         private void Reset()
         {
             Completed = false;
             InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
-            CachedText = string.Empty;
-            LastTextUpdate = DateTime.UtcNow;
             CanSelectPreviousPage = true;
         }
 
@@ -246,6 +229,13 @@ namespace Great.ViewModels
         {
             _greatMigra.Cancel();
             Reset();
+        }
+
+        public void Finish()
+        {
+            MessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
     }
 }

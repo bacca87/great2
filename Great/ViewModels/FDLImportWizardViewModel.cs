@@ -4,6 +4,7 @@ using Great.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -19,6 +20,8 @@ namespace Great.ViewModels
     {
         #region Properties
         private readonly Logger log = LogManager.GetLogger("FDLImport");
+        private DispatcherTimer refreshTimer = new DispatcherTimer();
+        private FDLImport _fdlImport;
 
         /// <summary>
         /// The <see cref="FDLFolder" /> property's name.
@@ -136,14 +139,8 @@ namespace Great.ViewModels
         public RelayCommand StartImportCommand { get; set; }
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand CancelCommand { get; set; }
+        public RelayCommand FinishCommand { get; set; }
         #endregion
-
-        #region Cache Properties
-        private DateTime LastTextUpdate;
-        private string CachedText;
-        #endregion
-
-        private FDLImport _fdlImport;
 
         /// <summary>
         /// Initializes a new instance of the GreatImportWizardViewModel class.
@@ -151,64 +148,50 @@ namespace Great.ViewModels
         public FDLImportWizardViewModel()
         {
             _fdlImport = new FDLImport();
-            _fdlImport.OnStatusChanged += _fdlImport_OnStatusChanged; ;
-            _fdlImport.OnMessage += _fdlImport_OnMessage;
-            _fdlImport.OnFinish += _fdlImport_OnFinished;
-
+            
             StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
             CancelCommand = new RelayCommand(Cancel);
+            FinishCommand = new RelayCommand(Finish);
 
             Reset();
+
+            refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
+            refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            refreshTimer.Start();
         }
 
-        private void _fdlImport_OnStatusChanged(object source, ImportArgs args)
+        private void refreshTimer_Tick(object sender, EventArgs e)
         {
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    Status = args.Message;
-                })
-            );
-        }
+            string newText = string.Empty;
 
-        private void _fdlImport_OnMessage(object source, ImportArgs args)
-        {
-            CachedText += args.Message + Environment.NewLine;
-
-            if(DateTime.UtcNow.Subtract(LastTextUpdate).TotalSeconds > 0.5)
+            while(!_fdlImport.Output.IsEmpty)
             {
-                Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                    new Action<string>((text) =>
-                    {
-                        LogText += text;
-                    }), 
-                    CachedText
-                );
+                string text;
 
-                CachedText = string.Empty;
-                LastTextUpdate = DateTime.UtcNow;
+                if (!_fdlImport.Output.TryDequeue(out text))
+                    continue;
+
+                newText += text + Environment.NewLine;
             }
-        }
 
-        private void _fdlImport_OnFinished(object source, bool IsCompleted)
-        {
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {   
-                    Completed = IsCompleted;
-                    CanSelectPreviousPage = !IsCompleted;
-                    LogText += CachedText;
-                })
-            );
+            if (newText != string.Empty)
+                LogText += newText;
+
+            if (Status != _fdlImport.Status)
+                Status = _fdlImport.Status;
+
+            if (Completed != _fdlImport.IsCompleted)
+                Completed = _fdlImport.IsCompleted;
+
+            if (CanSelectPreviousPage != _fdlImport.IsCancelled)
+                CanSelectPreviousPage = _fdlImport.IsCancelled;
         }
 
         private void Reset()
         {
             Completed = false;
             FDLFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            CachedText = string.Empty;
-            LastTextUpdate = DateTime.UtcNow;
             CanSelectPreviousPage = true;
         }
 
@@ -247,6 +230,13 @@ namespace Great.ViewModels
         {
             _fdlImport.Cancel();
             Reset();
+        }
+
+        public void Finish()
+        {
+            MessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
     }
 }
