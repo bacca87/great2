@@ -37,7 +37,9 @@ namespace Great.Models.Database
         public string LastError { get; set; }
         public string FileName { get; set; }
         public bool NotifyAsNew { get; set; }
-    
+        public bool IsCompiled { get; set; }
+        public bool IsReadOnly { get; set; }
+
         public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
         [ForeignKey("Factory")]
         public virtual Factory Factory1 { get; set; }

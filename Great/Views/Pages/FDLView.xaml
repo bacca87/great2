@@ -84,7 +84,12 @@
                                     <Image.ToolTip>
                                         <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
                                     </Image.ToolTip>
-                                </Image>                                
+                                </Image>
+                                <Image Source="pack://application:,,,/Great;component/Images/16/file-pdf.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsCompiled}">
+                                    <Image.ToolTip>
+                                        <TextBlock Text="Compiled"/>
+                                    </Image.ToolTip>
+                                </Image>
                                 <Image Source="pack://application:,,,/Great;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsExtra}">
                                     <Image.ToolTip>
                                         <TextBlock Text="Extra"/>

@@ -872,7 +872,7 @@ namespace Great.Models
             }
         }
 
-        private void CompileXFDF(IFDLFile file, string FDLfileName, string FDFFileName)
+        private void CompileXFDF(IFDLFile file, string FDLfileName, string XFDFFileName)
         {
             XmlDocument xmlDoc = new XmlDocument();
 
@@ -913,7 +913,7 @@ namespace Great.Models
                 fieldsNode.AppendChild(fieldNode);
             }
             
-            xmlDoc.Save(FDFFileName);
+            xmlDoc.Save(XFDFFileName);
         }
 
         public bool SendToSAP(IFDLFile file)
@@ -968,12 +968,11 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            string filePath = Path.GetTempPath() + file.FileName;
-
-            Compile(file, filePath);
+            // removed because sap accept only pdf compiled with adobe library
+            //Compile(file, file.FilePath);
 
             message.Attachments.Clear();
-            message.Attachments.Add(filePath);
+            message.Attachments.Add(file.FilePath);
 
             if (file is FDLEVM)
             {
@@ -1032,15 +1031,17 @@ namespace Great.Models
             }
         }
 
-        public bool SaveXFDF(IFDLFile file, string filePath)
+        public bool CreateXFDF(IFDLFile file, out string FilePath)
         {
-            if (file == null || filePath == string.Empty)
+            FilePath = string.Empty;
+
+            if (file == null)
                 return false;
 
             using (new WaitCursor())
             {
-                File.Copy(file.FilePath, Path.GetDirectoryName(filePath) + "\\" + file.FileName, true);
-                CompileXFDF(file, Path.GetDirectoryName(filePath) + "\\" + file.FileName, filePath);
+                FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
+                CompileXFDF(file, file.FilePath, FilePath);
                 return true;
             }
         }

@@ -105,6 +105,7 @@ namespace Great.ViewModels
         #region Commands Definitions
         public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> CompileCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SaveAsCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> OpenCommand { get; set; }
@@ -156,6 +157,7 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP);
+            CompileCommand = new RelayCommand<ExpenseAccountEVM>(Compile);
             SendByEmailCommand = new RelayCommand<string>(SendByEmail);
             SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs);
             OpenCommand = new RelayCommand<ExpenseAccountEVM>(Open);
@@ -267,6 +269,12 @@ namespace Great.ViewModels
 
         public void SendToSAP(ExpenseAccountEVM ea)
         {
+            if (!ea.IsCompiled)
+            {
+                MessageBox.Show("The selected EA is not compiled! Compile the EA before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }   
+
             if (ea.EStatus == EFDLStatus.Waiting &&
                 MessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
@@ -277,6 +285,12 @@ namespace Great.ViewModels
         public void SendByEmail(string address)
         {
             string error;
+
+            if (!SelectedEA.IsCompiled)
+            {
+                MessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }   
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
@@ -314,15 +328,27 @@ namespace Great.ViewModels
                 _fdlManager.SaveAs(ea, dlg.FileName);
         }
 
+        public void Compile(ExpenseAccountEVM ea)
+        {
+            if (ea == null)
+                return;
+
+            string filePath;
+
+            if (_fdlManager.CreateXFDF(ea, out filePath))
+            {
+                Process.Start(filePath);
+                ea.IsCompiled = true;
+                ea.Save();
+            }   
+        }
+
         public void Open(ExpenseAccountEVM ea)
         {
             if (ea == null)
                 return;
 
-            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(ea.FileName) + ".XFDF";
-
-            _fdlManager.SaveXFDF(ea, fileName);
-            Process.Start(fileName);
+            Process.Start(ea.FileName);
         }
 
         public void MarkAsRefunded(ExpenseAccountEVM ea)

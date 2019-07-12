@@ -103,6 +103,7 @@ namespace Great.ViewModels
         public RelayCommand<FDLEVM> SaveCommand { get; set; }
 
         public RelayCommand<FDLEVM> SendToSAPCommand { get; set; }
+        public RelayCommand<FDLEVM> CompileCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<FDLEVM> SaveAsCommand { get; set; }
         public RelayCommand<FDLEVM> OpenCommand { get; set; }
@@ -124,6 +125,7 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<FDLEVM>(SaveFDL, (FDLEVM fdl) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<FDLEVM>(SendToSAP);
+            CompileCommand = new RelayCommand<FDLEVM>(Compile);
             SendByEmailCommand = new RelayCommand<string>(SendByEmail);
             SaveAsCommand = new RelayCommand<FDLEVM>(SaveAs);
             OpenCommand = new RelayCommand<FDLEVM>(Open);
@@ -288,6 +290,12 @@ namespace Great.ViewModels
 
         public void SendToSAP(FDLEVM fdl)
         {
+            if (!fdl.IsCompiled)
+            {
+                MessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                return;
+            }   
+
             if (fdl.EStatus == EFDLStatus.Waiting && 
                 MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
@@ -311,6 +319,12 @@ namespace Great.ViewModels
         public void SendByEmail(string address)
         {
             string error;
+
+            if (!SelectedFDL.IsCompiled)
+            {
+                MessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                return;
+            }   
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
@@ -348,15 +362,27 @@ namespace Great.ViewModels
                 _fdlManager.SaveAs(fdl, dlg.FileName);
         }
 
-        public void Open(FDLEVM fdl)
-        {            
+        public void Compile(FDLEVM fdl)
+        {
             if (fdl == null)
                 return;
 
-            string fileName = Path.GetTempPath() + Path.GetFileNameWithoutExtension(fdl.FileName) + ".XFDF";
+            string filePath;
 
-            _fdlManager.SaveXFDF(fdl, fileName);
-            Process.Start(fileName);
+            if (_fdlManager.CreateXFDF(fdl, out filePath))
+            {
+                Process.Start(filePath);
+                fdl.IsCompiled = true;
+                fdl.Save();
+            }
+        }
+
+        public void Open(FDLEVM fdl)
+        {
+            if (fdl == null)
+                return;
+
+            Process.Start(fdl.FilePath);
         }
 
         public void MarkAsAccepted(FDLEVM fdl)

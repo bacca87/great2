@@ -235,7 +235,7 @@ namespace Great.ViewModels
         public void Finish()
         {
             MessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
-            Process.Start(Application.ResourceAssembly.Location);
+            Process.Start(Application.ResourceAssembly.Location, "-m");
             Application.Current.Shutdown();
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Great.Models;
 using Great.Models.Database;
-using Great.Utils;
 using NLog;
 using System;
 using System.Data.Entity;
@@ -18,23 +17,17 @@ namespace Great
     public partial class App : Application
     {
         private void Application_Startup(object sender, StartupEventArgs e)
-        {
-
-            //Single instance check
-            Process proc = Process.GetCurrentProcess();
-            int count = Process.GetProcesses().Where(p =>
-                p.ProcessName == proc.ProcessName).Count();
-
-            if (count > 1)
+        {   
+            // Multiple istance check
+            if(!e.Args.Contains("-m") && !e.Args.Contains("/m"))
             {
-                App.Current.Shutdown();
-                return;
+                Process proc = Process.GetCurrentProcess();
+                int count = Process.GetProcesses().Where(p =>
+                    p.ProcessName == proc.ProcessName).Count();
+
+                if (count > 1)
+                    Current.Shutdown();
             }
-
-            //basic splash screen implementation
-            SplashScreen sp = new SplashScreen(@"Images\SplashScreen.png");
-            sp.Show(true, true);
-
 
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             InitializeDirectoryTree();
@@ -73,7 +66,6 @@ namespace Great
 
         }
 
-
         private void ApplyMigrations()
         {
             using (DBArchive db = new DBArchive())
@@ -82,23 +74,21 @@ namespace Great
                 {
                     try
                     {
-                        var version = db.Database.SqlQuery<int>("PRAGMA user_version").First();
+                        var db_version = db.Database.SqlQuery<int>("PRAGMA user_version").First();
 
-                        foreach (var f in Directory.GetFiles("Utils/Migrations/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                        foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
                         {
-                            if (!int.TryParse(Path.GetFileName(f).Split('.').First(), out int sqlVersion))
+                            if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
                                 continue;
 
-                            if (sqlVersion <= version)
+                            if (db_version >= scriptVersion)
                                 continue;
 
                             db.Database.ExecuteSqlCommand(File.ReadAllText(f));
                             db.SaveChanges();
-
                         }
                         transaction.Commit();
                     }
-
                     catch (Exception ex)
                     {
                         transaction.Rollback();

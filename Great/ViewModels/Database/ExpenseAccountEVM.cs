@@ -89,6 +89,20 @@ namespace Great.ViewModels.Database
             set => Set(ref _NotifyAsNew, value);
         }
 
+        private bool _IsCompiled;
+        public bool IsCompiled
+        {
+            get => _IsCompiled;
+            set => Set(ref _IsCompiled, value);
+        }
+
+        private bool _IsReadOnly;
+        public bool IsReadOnly
+        {
+            get => _IsReadOnly;
+            set => Set(ref _IsReadOnly, value);
+        }
+
         private CurrencyDTO _Currency1;
         public CurrencyDTO Currency1
         {
@@ -186,7 +200,12 @@ namespace Great.ViewModels.Database
 
         public override bool Save(DBArchive db)
         {
+            if (IsReadOnly)
+                return false;
+
             ExpenseAccount ea = new ExpenseAccount();
+
+            IsCompiled = false;
 
             Global.Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);

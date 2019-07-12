@@ -22,6 +22,8 @@ namespace Great.Models.Database
         public string FileName { get; set; }
         public bool IsRefunded { get; set; }
         public bool NotifyAsNew { get; set; }
+        public bool IsCompiled { get; set; }
+        public bool IsReadOnly { get; set; }
 
         [ForeignKey("Currency")]
         public virtual Currency Currency1 { get; set; }

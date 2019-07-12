@@ -207,7 +207,7 @@
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="Email">
+                <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
@@ -258,9 +258,14 @@
                                 <Fluent:ScreenTip Title="Edit Recipients" Text="Edit the selected FDL order's recipients." />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
-                    </Fluent:DropDownButton>
+                    </Fluent:DropDownButton>                    
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Compile FDL" Text="Compile and save the selected FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                     <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
@@ -273,7 +278,7 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/pdf-file.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/folder.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
@@ -336,7 +341,7 @@
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
-                <Fluent:RibbonGroupBox Header="Email">
+                <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
@@ -378,6 +383,11 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-ea.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Compile EA" Text="Compile and save the selected EA." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                     <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/money-bag.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Refunded" Text="Mark the selected EA as refunded." />
@@ -395,7 +405,7 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/pdf-file.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/folder.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open EA" Text="Open the selected EA with the default viewer." />
                         </Fluent:Button.ToolTip>

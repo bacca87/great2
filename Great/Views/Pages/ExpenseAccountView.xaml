@@ -89,6 +89,11 @@
                                         <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
                                     </Image.ToolTip>
                                 </Image>
+                                <Image Source="pack://application:,,,/Great;component/Images/16/file-pdf.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsCompiled}">
+                                    <Image.ToolTip>
+                                        <TextBlock Text="Compiled"/>
+                                    </Image.ToolTip>
+                                </Image>
                                 <Image Source="pack://application:,,,/Great;component/Images/16/money-bag.png" Stretch="None" Width="16" Height="16" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsRefunded}">
                                     <Image.ToolTip>
                                         <TextBlock Text="Cash Back"/>
