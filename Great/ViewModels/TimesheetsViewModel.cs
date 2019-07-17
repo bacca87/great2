@@ -126,6 +126,8 @@ namespace Great.ViewModels
         public RelayCommand<DayEVM> SetVacationDayCommand { get; set; }
         public RelayCommand<DayEVM> SetSickLeaveCommand { get; set; }
         public RelayCommand<DayEVM> SetWorkDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetHomeWorkDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetVacationPaidDayCommand { get; set; }
 
         public RelayCommand<DayEVM> ResetDayCommand { get; set; }
         public RelayCommand<DayEVM> CopyDayCommand { get; set; }
@@ -150,6 +152,8 @@ namespace Great.ViewModels
             SetVacationDayCommand = new RelayCommand<DayEVM>(SetVacationDay);
             SetSickLeaveCommand = new RelayCommand<DayEVM>(SetSickLeave);
             SetWorkDayCommand = new RelayCommand<DayEVM>(SetWorkDay);
+            SetHomeWorkDayCommand = new RelayCommand<DayEVM>(SetHomeWorkingDay);
+            SetVacationPaidDayCommand = new RelayCommand<DayEVM>(SetVacationPaidDay);
 
             ResetDayCommand = new RelayCommand<DayEVM>(ResetDay);
             CopyDayCommand = new RelayCommand<DayEVM>(CopyDay);
@@ -217,6 +221,8 @@ namespace Great.ViewModels
         public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
         public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
         public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
+        public void SetHomeWorkingDay(DayEVM day) => SetDayType(day, EDayType.HomeWorking);
+        public void SetVacationPaidDay(DayEVM day) => SetDayType(day, EDayType.VacationPaidDay);
 
         private void SetDayType(DayEVM day, EDayType type)
         {
@@ -236,6 +242,7 @@ namespace Great.ViewModels
 
                     day.Timesheets.Clear();
                 }
+
                 else
                     cancel = true;
             }
@@ -244,6 +251,7 @@ namespace Great.ViewModels
             {
                 day.EType = type;
                 day.Save();
+                Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, day));
             }
 
             IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay;

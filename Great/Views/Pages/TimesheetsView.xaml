@@ -89,6 +89,7 @@
                             <Setter Property="Background" Value="#880E4F" />
                             <!--Purple-->
                         </DataTrigger>
+
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
@@ -144,9 +145,12 @@
                     <Separator/>
                     <MenuItem Header="Day Type">
                         <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                        <MenuItem Header="Vacation Paid Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationPaidDay, Mode=OneWay}" Command="{Binding SetVacationPaidDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+
                         <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                         <Separator/>
                         <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                        <MenuItem Header="Day of Home Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsHomeWorking, Mode=OneWay}" Command="{Binding SetHomeWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                     </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>

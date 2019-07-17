@@ -597,6 +597,9 @@
     <Resource Include="Images\16\file-pdf.png" />
     <Resource Include="Images\32\build-ea.png" />
     <Resource Include="Images\32\folder.png" />
+    <Content Include="UpgradeScripts\2_12-07-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="UpgradeScripts\1_12-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

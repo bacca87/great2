@@ -81,6 +81,7 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, RefreshTimesheet);
             MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, RefreshTimesheet);
+            MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, RefreshDay);
         }
 
         private void RefreshAllData()
@@ -130,7 +131,7 @@ namespace Great.ViewModels
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
-                var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
+                var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
 
                 var MontlyHours = Days?.GroupBy(d => d.Date.Month)
                                        .Select(g => new
@@ -140,7 +141,8 @@ namespace Great.ViewModels
                                            Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
                                            Overtime35 = g.Sum(x => x.Overtime35 ?? 0),
                                            Overtime50 = g.Sum(x => x.Overtime50 ?? 0),
-                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0)
+                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0),
+                                           HoursOfLeave = g.Sum(x => (x.EType== EDayType.VacationPaidDay || x.EType == EDayType.VacationPaidDay)? 8: (x.HoursOfLeave ?? 0))
                                        });
 
                 ChartValues<float> TotalTimeValues = new ChartValues<float>();
@@ -149,6 +151,7 @@ namespace Great.ViewModels
                 ChartValues<float> Overtime35Values = new ChartValues<float>();
                 ChartValues<float> Overtime50Values = new ChartValues<float>();
                 ChartValues<float> Overtime100Values = new ChartValues<float>();
+                ChartValues<float> HoursOfLeave = new ChartValues<float>();
 
                 foreach (var month in MontlyHours)
                 {
@@ -158,6 +161,7 @@ namespace Great.ViewModels
                     Overtime35Values.Add(month.Overtime35);
                     Overtime50Values.Add(month.Overtime50);
                     Overtime100Values.Add(month.Overtime100);
+                    HoursOfLeave.Add(month.HoursOfLeave);
                 }
 
                 Hours = new SeriesCollection()
@@ -197,6 +201,14 @@ namespace Great.ViewModels
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },
+
+                    new StackedColumnSeries()
+                    {
+                        Title = "Hours of leave",
+                        Values = HoursOfLeave,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
                     new LineSeries
                     {
                         Title = "Total",
@@ -230,6 +242,12 @@ namespace Great.ViewModels
                                   select d
                             ).Count();
 
+                //count all home working days 
+                var homeWorkingDays = (from d in db.Days
+                                       where d.DayType.Id == (long)EDayType.HomeWorking
+                                       select d
+                            ).Count();
+
                 //count all sick days without
                 var sickDays = (from d in db.Days
                                 where d.DayType.Id == (long)EDayType.SickLeave
@@ -242,10 +260,23 @@ namespace Great.ViewModels
                                     select d
                             ).Count();
 
+                //count all vacations paid days without
+                var vacationPaidDays = (from d in db.Days
+                                    where d.DayType.Id == (long)EDayType.VacationPaidDay
+                                    select d
+                            ).Count();
+
                 Days.Add(new PieSeries
                 {
                     Title = "Office",
                     Values = new ChartValues<int> { officeDays },
+                    DataLabels = true
+                });
+
+                Days.Add(new PieSeries
+                {
+                    Title = "Home Work",
+                    Values = new ChartValues<int> { homeWorkingDays },
                     DataLabels = true
                 });
 
@@ -263,21 +294,32 @@ namespace Great.ViewModels
                     DataLabels = true
                 });
 
-                Days?.Add(new PieSeries
+               Days?.Add(new PieSeries
                 {
                     Title = "Vacation",
                     Values = new ChartValues<int> { vacationDays },
+                    DataLabels = true
+                });
+
+                Days?.Add(new PieSeries
+                {
+                    Title = "Paid Vacation",
+                    Values = new ChartValues<int> { vacationPaidDays },
                     DataLabels = true
                 });
             }
 
 
         }
-        private void RefreshTimesheet (ItemChangedMessage<TimesheetEVM> item)
+        private void RefreshTimesheet(ItemChangedMessage<TimesheetEVM> item)
         {
             RefreshAllData();
         }
         private void RefreshTimesheet(DeletedItemMessage<TimesheetEVM> item)
+        {
+            RefreshAllData();
+        }
+        private void RefreshDay(ItemChangedMessage<DayEVM> item)
         {
             RefreshAllData();
         }

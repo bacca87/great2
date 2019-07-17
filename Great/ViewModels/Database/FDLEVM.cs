@@ -267,7 +267,7 @@ namespace Great.ViewModels.Database
 
             FDL fdl = new FDL();
 
-            IsCompiled = false;
+            //IsCompiled = false;
 
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
