@@ -236,6 +236,9 @@
     <Compile Include="Models\Database\Day.cs" />
     <Compile Include="Models\Database\DayType.cs" />
     <Compile Include="Models\Database\DBArchive.Context.cs" />
+    <Compile Include="Models\Database\Event.cs" />
+    <Compile Include="Models\Database\EventStatus.cs" />
+    <Compile Include="Models\Database\EventType.cs" />
     <Compile Include="Models\Database\Expense.cs" />
     <Compile Include="Models\Database\ExpenseAccount.cs" />
     <Compile Include="Models\Database\ExpenseType.cs" />
@@ -252,6 +255,9 @@
     <Compile Include="Models\DTO\DayTypeDTO.cs" />
     <Compile Include="Models\DTO\DayDTO.cs" />
     <Compile Include="Models\DTO\EmailMessageDTO.cs" />
+    <Compile Include="Models\DTO\EventDTO.cs" />
+    <Compile Include="Models\DTO\EventStatusDTO.cs" />
+    <Compile Include="Models\DTO\EventTypeDTO.cs" />
     <Compile Include="Models\DTO\ExpenseTypeDTO.cs" />
     <Compile Include="Models\DTO\FactoryDTO.cs" />
     <Compile Include="Models\DTO\FDLDTO.cs" />
@@ -267,6 +273,8 @@
     <Compile Include="Utils\AutomapperConfiguration.cs" />
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
     <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
+    <Compile Include="Utils\Converters\EventStatusToImageConverter.cs" />
+    <Compile Include="Utils\Converters\EventStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\NegateBoolConverter.cs" />
@@ -305,11 +313,13 @@
     <Compile Include="ViewModels\Database\CarRentalEVM.cs" />
     <Compile Include="ViewModels\Database\DayEVM.cs" />
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
+    <Compile Include="ViewModels\Database\EventEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />
     <Compile Include="ViewModels\Database\FactoryEVM.cs" />
     <Compile Include="ViewModels\Database\FDLEVM.cs" />
     <Compile Include="ViewModels\Database\TimesheetEVM.cs" />
+    <Compile Include="ViewModels\EventsViewModel.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\FDLImportWizardViewModel.cs" />
@@ -328,6 +338,9 @@
     </Compile>
     <Compile Include="Views\Pages\CarRentalView.xaml.cs">
       <DependentUpon>CarRentalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\EventsView.xaml.cs">
+      <DependentUpon>EventsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\ExpenseAccountView.xaml.cs">
       <DependentUpon>ExpenseAccountView.xaml</DependentUpon>
@@ -380,6 +393,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\CarRentalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\EventsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -597,6 +614,9 @@
     <Resource Include="Images\16\file-pdf.png" />
     <Resource Include="Images\32\build-ea.png" />
     <Resource Include="Images\32\folder.png" />
+    <Content Include="UpgradeScripts\3_19-07-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="UpgradeScripts\2_12-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

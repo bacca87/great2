@@ -7,7 +7,7 @@ namespace Great.Models.DTO
     {
         public long Timestamp { get; set; }
         public long Type { get; set; }
-                
+
         public DayTypeDTO DayType { get; set; }
 
         public DayDTO() { }

@@ -1320,6 +1320,15 @@ namespace Great.Models
         Cancelled = 4
     }
 
+    public enum EEventStatus
+    {
+        New = 0,
+        Waiting = 1,
+        Accepted = 2,
+        Rejected = 3,
+        Cancelled = 4
+    }
+
     public enum EFDLResult
     {
         None = 0,

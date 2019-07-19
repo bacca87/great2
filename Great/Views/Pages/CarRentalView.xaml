@@ -136,9 +136,9 @@
                 <TextBlock>Ending Km</TextBlock>
                 <TextBox Text="{Binding SelectedRent.EndKm, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Start Date:</TextBlock>
-                <DatePicker DisplayDate="{Binding SelectedRent.RentStartDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRent.RentStartDate}" IsEnabled="{Binding IsInputEnabled}"/>
+                <DatePicker  SelectedDate="{Binding SelectedRent.RentStartDate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Date</TextBlock>
-                <DatePicker  DisplayDate="{Binding SelectedRent.RentEndDate, Mode=TwoWay}" SelectedDate="{Binding SelectedRent.RentEndDate}" IsEnabled="{Binding IsInputEnabled}"/>
+                <DatePicker   SelectedDate="{Binding SelectedRent.RentEndDate}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent Start Location</TextBlock>
                 <TextBox Text="{Binding SelectedRent.StartLocation, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock>Rent End Location</TextBlock>

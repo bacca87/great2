@@ -402,6 +402,7 @@ namespace Great.ViewModels.Database
         VacationDay = 1,
         SickLeave = 2,
         HomeWorking = 3,
-        VacationPaidDay=4
+        PendingVacation = 4,
+        VacationPaidDay=5
     }
 }

@@ -260,12 +260,6 @@ namespace Great.ViewModels
                                     select d
                             ).Count();
 
-                //count all vacations paid days without
-                var vacationPaidDays = (from d in db.Days
-                                    where d.DayType.Id == (long)EDayType.VacationPaidDay
-                                    select d
-                            ).Count();
-
                 Days.Add(new PieSeries
                 {
                     Title = "Office",
@@ -301,12 +295,7 @@ namespace Great.ViewModels
                     DataLabels = true
                 });
 
-                Days?.Add(new PieSeries
-                {
-                    Title = "Paid Vacation",
-                    Values = new ChartValues<int> { vacationPaidDays },
-                    DataLabels = true
-                });
+
             }
 
 
