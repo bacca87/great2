@@ -90,7 +90,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="Skin: "/>
-                    <ComboBox ItemsSource="{Binding Source={StaticResource enumSkins}}" SelectedItem="{Binding Skin, Mode=TwoWay}"/>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource enumSkins}}" SelectedItem="{Binding Skin}"/>
                 </StackPanel>
                 <GroupBox Grid.Row="1" Header="Colors" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
                     <Grid>
