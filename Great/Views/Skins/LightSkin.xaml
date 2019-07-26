@@ -1,4 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <vm:ViewModelLocator xmlns:vm="clr-namespace:Great.ViewModels" x:Key="Locator" />
@@ -20,5 +22,94 @@
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/light.xaml" />
         <!--this is required always-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
+
+        <ResourceDictionary>
+            <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Blue-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Red-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsHoliday}" Value="True">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Red-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}" Value="1">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Orange-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}" Value="2">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Purple-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}" Value="3">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Purple-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}" Value="4">
+                        <Setter Property="Background" Value="#334cff" />
+                        <!--Purple-->
+                    </DataTrigger>
+
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="travelstartTextBox"  TargetType="xctk:MaskedTextBox" >
+                <Setter Property="Background" Value="#334cff" />
+                <Setter Property="Margin" Value="2.5" />
+                <Setter Property="MaxLength" Value="5" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="Width" Value="70" />
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="Mask" Value="00\:00" />
+                <Setter Property="PromptChar" Value=" "/>
+                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
+                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
+                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+
+            </Style>
+            <Style x:Key="travelendTextBox"  TargetType="xctk:MaskedTextBox" >
+                <Setter Property="Background" Value="#334cff" />
+                <Setter Property="Margin" Value="2.5" />
+                <Setter Property="MaxLength" Value="5" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="Width" Value="70" />
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="Mask" Value="00\:00" />
+                <Setter Property="PromptChar" Value=" "/>
+                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
+                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
+                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+            </Style>
+            <Style x:Key="workstartTextBox"  TargetType="xctk:MaskedTextBox" >
+                <Setter Property="Background" Value="#334cff" />
+                <Setter Property="Margin" Value="2.5" />
+                <Setter Property="MaxLength" Value="5" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="Width" Value="70" />
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="Mask" Value="00\:00" />
+                <Setter Property="PromptChar" Value=" "/>
+                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
+                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
+                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+            </Style>
+            <Style x:Key="workendTextBox"  TargetType="xctk:MaskedTextBox" >
+                <Setter Property="Margin" Value="2.5" />
+                <Setter Property="MaxLength" Value="5" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="Width" Value="70" />
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="Mask" Value="00\:00" />
+                <Setter Property="PromptChar" Value=" "/>
+                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
+                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
+                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+                <Setter Property="Background" Value="#334cff" />
+            </Style>
+        </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

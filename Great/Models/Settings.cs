@@ -1150,70 +1150,7 @@ namespace Great.Models
 
         public static class Themes
         {
-            public static Color SaturdayColor
-            {
-                get { return Settings.Default.SaturdayColor; }
-                set
-                {
-                    Settings.Default.SaturdayColor = value;
-                    Settings.Default.Save();
-                }
-            }
-            public static Color SundayColor
-            {
-                get { return Settings.Default.SundayColor; }
-                set
-                {
-                    Settings.Default.SundayColor = value;
-                    Settings.Default.Save();
-                }
-            }
-            public static Color SickColor
-            {
-                get { return Settings.Default.SickColor; }
-                set
-                {
-                    Settings.Default.SickColor = value;
-                    Settings.Default.Save();
-                }
-            }
-            public static Color HomeWorkColor
-            {
-                get { return Settings.Default.HomeWorkingColor; }
-                set
-                {
-                    Settings.Default.HomeWorkingColor = value;
-                    Settings.Default.Save();
-                }
-            }
-            public static Color PendingVacationColor
-            {
-                get { return Settings.Default.PendingVacationColor; }
-                set
-                {
-                    Settings.Default.PendingVacationColor = value;
-                    Settings.Default.Save();
-                }
-            }
-            public static Color VacationColor
-            {
-                get { return Settings.Default.VacationColor; }
-                set
-                {
-                    Settings.Default.VacationColor = value;
-                    Settings.Default.Save();
-                }
-            }
-            public static Color HolidayColor
-            {
-                get { return Settings.Default.HolidayColor; }
-                set
-                {
-                    Settings.Default.HolidayColor = value;
-                    Settings.Default.Save();
-                }
-            }
-
+         
             private static ESkin _skin;
             public static ESkin Skin
             {

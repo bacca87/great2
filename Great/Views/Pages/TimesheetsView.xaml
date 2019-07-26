@@ -15,9 +15,7 @@
       Style="{DynamicResource MetroPage}">
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
-        <conv:DayNameToBrushConverter x:Key="DayNameToBrushConverter"/>
-        <conv:DayTypeToBrushConverter x:Key="DayTypeToBrushConverter"/>
-        <conv:HolidayToBrushConverter x:Key="HolidayToBrushConverter"/>
+
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Date.Month" Converter="{StaticResource IntToMonthConverter}"/>
@@ -45,6 +43,7 @@
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item" 
+                  RowStyle="{StaticResource timeSheetDatagridStyle}"
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
                 <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
@@ -69,41 +68,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
-                            <Setter Property="Background" Value="{Binding Date.DayOfWeek , Converter={StaticResource DayNameToBrushConverter}}" />
-                            <!--Blue-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                            <Setter Property="Background" Value="{Binding Date.DayOfWeek , Converter={StaticResource DayNameToBrushConverter}}" />
-                            <!--Red-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                            <Setter Property="Background" Value="{Binding IsHoliday , Converter={StaticResource HolidayToBrushConverter}}" />
-                            <!--Red-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Type}" Value="1">
-                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
-                            <!--Orange-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Type}" Value="2">
-                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
-                            <!--Purple-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Type}" Value="3">
-                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
-                            <!--Purple-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Type}" Value="4">
-                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
-                            <!--Purple-->
-                        </DataTrigger>
-
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
             <DataGrid.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -267,7 +231,7 @@
 
                                 <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
                                     <Grid.Resources>
-                                        <Style TargetType="{x:Type xctk:MaskedTextBox}">
+                                        <!--<Style  TargetType="{x:Type xctk:MaskedTextBox}">
                                             <Setter Property="Margin" Value="2.5" />
                                             <Setter Property="MaxLength" Value="5" />
                                             <Setter Property="FontSize" Value="20" />
@@ -280,7 +244,7 @@
                                             <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
                                             <EventSetter Event="PreviewLostKeyboardFocus" Handler="MaskedTextBox_PreviewLostKeyboardFocus"/>
                                             <EventSetter Event="PreviewTextInput" Handler="MaskedTextBox_PreviewTextInput"/>
-                                        </Style>
+                                        </Style>-->
                                         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
                                     </Grid.Resources>
                                     <Grid.ColumnDefinitions>
@@ -304,14 +268,14 @@
                                     <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
 
 
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
                                 </Grid>
                                 <Button Margin="10,37,10,10" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                                 <Button Margin="10,37,10,10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />

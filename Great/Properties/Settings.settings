@@ -26,29 +26,8 @@
     <Setting Name="Great_SharepointReference_Lists" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">https://intranet.elettric80.it/_vti_bin/lists.asmx</Value>
     </Setting>
-    <Setting Name="SaturdayColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
-    <Setting Name="SundayColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
-    <Setting Name="SickColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
-    <Setting Name="HomeWorkingColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFC0C0C0</Value>
-    </Setting>
-    <Setting Name="PendingVacationColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
-    <Setting Name="VacationColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
-    <Setting Name="HolidayColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#00000000</Value>
-    </Setting>
     <Setting Name="Skin" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

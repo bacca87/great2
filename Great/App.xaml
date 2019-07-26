@@ -16,26 +16,6 @@
                 <local:SkinResourceDictionary DarkSource="Views/Skins/DarkSkin.xaml" 
                                               LightSource="Views/Skins/LightSkin.xaml">
                 </local:SkinResourceDictionary>
-
-                <!--Fluent Ribbon Styles--><!--
-                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Accents/Cobalt.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseDark.xaml" />
-
-                --><!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! --><!--
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                --><!-- Accent and AppTheme setting --><!--
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-
-                --><!--Live Charts Styles--><!--
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Size/l.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/light.xaml" />
-                --><!--this is required always--><!--
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator xmlns:vm="clr-namespace:Great.ViewModels" x:Key="Locator" />
         </ResourceDictionary>

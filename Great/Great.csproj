@@ -276,9 +276,6 @@
     <Compile Include="Utils\AttachedProperties\TextBoxHelper.cs" />
     <Compile Include="Utils\AutomapperConfiguration.cs" />
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
-    <Compile Include="Utils\Converters\HolidayToBrushConverter.cs" />
-    <Compile Include="Utils\Converters\DayTypeToBrushConverter.cs" />
-    <Compile Include="Utils\Converters\DayNameToBrushConverter.cs" />
     <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
     <Compile Include="Utils\Converters\EventStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\EventStatusToTextConverter.cs" />
