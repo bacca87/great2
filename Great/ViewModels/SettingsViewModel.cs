@@ -111,12 +111,12 @@ namespace Great.ViewModels
         {
             get
             {
-                return UserSettings.SaturdayColor;
+                return UserSettings.Themes.SaturdayColor;
             }
 
             set
             {
-                UserSettings.SaturdayColor = value;
+                UserSettings.Themes.SaturdayColor = value;
                 RaisePropertyChanged(nameof(SaturdayColor));
             }
         }
@@ -129,12 +129,12 @@ namespace Great.ViewModels
         {
             get
             {
-                return UserSettings.SundayColor;
+                return UserSettings.Themes.SundayColor;
             }
 
             set
             {
-                UserSettings.SundayColor = value;
+                UserSettings.Themes.SundayColor = value;
                 RaisePropertyChanged(nameof(SundayColor));
             }
         }
@@ -147,12 +147,12 @@ namespace Great.ViewModels
         {
             get
             {
-                return UserSettings.SickColor;
+                return UserSettings.Themes.SickColor;
             }
 
             set
             {
-                UserSettings.SickColor = value;
+                UserSettings.Themes.SickColor = value;
                 RaisePropertyChanged(nameof(SickColor));
             }
         }
@@ -165,12 +165,12 @@ namespace Great.ViewModels
         {
             get
             {
-                return UserSettings.HomeWorkColor;
+                return UserSettings.Themes.HomeWorkColor;
             }
 
             set
             {
-                UserSettings.HomeWorkColor = value;
+                UserSettings.Themes.HomeWorkColor = value;
                 RaisePropertyChanged(nameof(HomeWorkingColor));
             }
         }
@@ -183,12 +183,12 @@ namespace Great.ViewModels
         {
             get
             {
-                return UserSettings.PendingVacationColor;
+                return UserSettings.Themes.PendingVacationColor;
             }
 
             set
             {
-                UserSettings.PendingVacationColor = value;
+                UserSettings.Themes.PendingVacationColor = value;
                 RaisePropertyChanged(nameof(PendingVacationColor));
             }
         }
@@ -201,13 +201,31 @@ namespace Great.ViewModels
         {
             get
             {
-                return UserSettings.VacationColor;
+                return UserSettings.Themes.VacationColor;
             }
 
             set
             {
-                UserSettings.VacationColor = value;
+                UserSettings.Themes.VacationColor = value;
                 RaisePropertyChanged(nameof(VacationColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the VacationColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public ESkin Skin
+        {
+            get
+            {
+                return UserSettings.Themes.Skin;
+            }
+
+            set
+            {
+                UserSettings.Themes.Skin = value;
+                RaisePropertyChanged(nameof(Skin));
             }
         }
 
@@ -258,6 +276,7 @@ namespace Great.ViewModels
         /// </summary>
         public SettingsViewModel()
         {
+            
         }
     }
 }

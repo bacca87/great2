@@ -19,19 +19,19 @@ namespace Great.Utils.Converters
             switch (value)
             {
                 case 1:
-                    result = UserSettings.VacationColor;
+                    result = UserSettings.Themes.VacationColor;
                     break;
 
                 case 2: 
-                    result = UserSettings.SickColor;
+                    result = UserSettings.Themes.SickColor;
                     break;
 
                 case 3:
-                    result = UserSettings.HomeWorkColor;
+                    result = UserSettings.Themes.HomeWorkColor;
                     break;
 
                 case 4:
-                    result = UserSettings.PendingVacationColor;
+                    result = UserSettings.Themes.PendingVacationColor;
                     break;
 
                 default:

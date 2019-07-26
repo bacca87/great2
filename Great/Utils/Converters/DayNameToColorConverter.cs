@@ -19,11 +19,11 @@ namespace Great.Utils.Converters
             switch (value.ToString())
             {
                 case "Saturday":
-                    result = UserSettings.SaturdayColor;
+                    result = UserSettings.Themes.SaturdayColor;
                     break;
 
                 case "Sunday": // Waiting
-                    result = UserSettings.SundayColor;
+                    result = UserSettings.Themes.SundayColor;
                     break;
 
 

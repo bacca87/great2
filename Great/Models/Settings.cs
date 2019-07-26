@@ -1,5 +1,6 @@
 ﻿using Great.Properties;
 using Great.Utils.Extensions;
+using Great.Views.Skins;
 using Nager.Date;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Great.Models
@@ -34,7 +36,7 @@ namespace Great.Models
                 get
                 {
                     string DataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(ConnectionString);                                        
+                    SQLiteConnectionStringBuilder sqliteBuilder = new SQLiteConnectionStringBuilder(ConnectionString);
                     return sqliteBuilder.DataSource.Replace("|DataDirectory|", DataDirectory.Remove(DataDirectory.Length - 1)); // remove last \ to the DataDirectory path
                 }
             }
@@ -49,7 +51,7 @@ namespace Great.Models
                 get
                 {
                     string dataDirectoryPath = ConfigurationManager.AppSettings["DataDirectoryPath"];
-                    
+
                     if (dataDirectoryPath == null || dataDirectoryPath == string.Empty)
                         throw new ConfigurationErrorsException("Missing or invalid DataDirectoryPath configuration!");
 
@@ -115,7 +117,7 @@ namespace Great.Models
             public const int OtherNotesMaxLength = 595;
 
             public const string MIMEType = "application/pdf";
-            
+
             public const string FDL_Accepted = "FDL RECEIVED";
             public const string FDL_Rejected = "INVALID FDL";
             public const string FDL_Extra = "EXTRA";
@@ -137,7 +139,7 @@ namespace Great.Models
                 public const string Order = "data[0].#subform[0].Tabella5[0].Riga1[0].#field[0]";
                 public const string OrderType = "data[0].#subform[0].Tabella5[0].Riga1[1].#field[0]";
                 public const string AssistanceDescription = "data[0].#subform[0].Tabella4[0].Riga1[0].Cella1[0]";
-                
+
                 public const string FDLNumber2 = "data[0].#subform[12].Campoditesto1[1]";
                 public const string Customer2 = "data[0].#subform[12].Tabella2[1].Riga1[0].Cella2[0]";
                 public const string Address2 = "data[0].#subform[12].Tabella2[1].Riga2[0].Cella2[0]";
@@ -157,7 +159,7 @@ namespace Great.Models
                 public const string Mon_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga2[0].ORAINILP[0]";
                 public const string Mon_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga2[0].ORAENDLP[0]";
                 public const string Mon_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga2[0].ORAENDAP[0]";
-                       
+
                 public const string Tue_Date = "data[0].#subform[0].Tabella1[0].Riga3[0].DATA[0]";
                 public const string Tue_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga3[0].ORAINIPM[0]";
                 public const string Tue_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga3[0].ORAINILM[0]";
@@ -167,7 +169,7 @@ namespace Great.Models
                 public const string Tue_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga3[0].ORAINILP[0]";
                 public const string Tue_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga3[0].ORAENDLP[0]";
                 public const string Tue_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga3[0].ORAENDAP[0]";
-                       
+
                 public const string Wed_Date = "data[0].#subform[0].Tabella1[0].Riga4[0].DATA[0]";
                 public const string Wed_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga4[0].ORAINIPM[0]";
                 public const string Wed_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga4[0].ORAINILM[0]";
@@ -177,7 +179,7 @@ namespace Great.Models
                 public const string Wed_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga4[0].ORAINILP[0]";
                 public const string Wed_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga4[0].ORAENDLP[0]";
                 public const string Wed_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga4[0].ORAENDAP[0]";
-                       
+
                 public const string Thu_Date = "data[0].#subform[0].Tabella1[0].Riga5[0].DATA[0]";
                 public const string Thu_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga5[0].ORAINIPM[0]";
                 public const string Thu_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga5[0].ORAINILM[0]";
@@ -187,7 +189,7 @@ namespace Great.Models
                 public const string Thu_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga5[0].ORAINILP[0]";
                 public const string Thu_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga5[0].ORAENDLP[0]";
                 public const string Thu_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga5[0].ORAENDAP[0]";
-                       
+
                 public const string Fri_Date = "data[0].#subform[0].Tabella1[0].Riga6[0].DATA[0]";
                 public const string Fri_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga6[0].ORAINIPM[0]";
                 public const string Fri_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga6[0].ORAINILM[0]";
@@ -197,7 +199,7 @@ namespace Great.Models
                 public const string Fri_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga6[0].ORAINILP[0]";
                 public const string Fri_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga6[0].ORAENDLP[0]";
                 public const string Fri_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga6[0].ORAENDAP[0]";
-                       
+
                 public const string Sat_Date = "data[0].#subform[0].Tabella1[0].Riga7[0].DATA[0]";
                 public const string Sat_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga7[0].ORAINIPM[0]";
                 public const string Sat_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga7[0].ORAINILM[0]";
@@ -207,7 +209,7 @@ namespace Great.Models
                 public const string Sat_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga7[0].ORAINILP[0]";
                 public const string Sat_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga7[0].ORAENDLP[0]";
                 public const string Sat_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga7[0].ORAENDAP[0]";
-                       
+
                 public const string Sun_Date = "data[0].#subform[0].Tabella1[0].Riga7[1].DATA[0]";
                 public const string Sun_TravelStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAINIPM[0]";
                 public const string Sun_WorkStartTimeAM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAINILM[0]";
@@ -217,7 +219,7 @@ namespace Great.Models
                 public const string Sun_WorkStartTimePM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAINILP[0]";
                 public const string Sun_WorkEndTimePM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAENDLP[0]";
                 public const string Sun_TravelEndTimePM = "data[0].#subform[0].Tabella1[0].Riga7[1].ORAENDAP[0]";
-                
+
                 public const string Cars1 = "data[0].#subform[0].Tabella1[0].Riga7[3].Campoditesto16[0]";
                 public const string Cars2 = "data[0].#subform[0].Tabella1[0].Riga7[4].Campoditesto17[0]";
 
@@ -787,7 +789,7 @@ namespace Great.Models
 
                 #region ExpenseMatrix
                 public static readonly Dictionary<string, string>[] ExpenseMatrix = new Dictionary<string, string>[]
-                {   
+                {
                     new Dictionary<string, string>
                     {
                         { "Type",       EX1_Type},
@@ -1146,58 +1148,81 @@ namespace Great.Models
 
         #region Environment
 
-        public static Color SaturdayColor
+        public static class Themes
         {
-            get { return Settings.Default.SaturdayColor; }
-            set
+            public static Color SaturdayColor
             {
-                Settings.Default.SaturdayColor = value;
-                Settings.Default.Save();
+                get { return Settings.Default.SaturdayColor; }
+                set
+                {
+                    Settings.Default.SaturdayColor = value;
+                    Settings.Default.Save();
+                }
             }
-        }
-        public static Color SundayColor
-        {
-            get { return Settings.Default.SundayColor; }
-            set
+            public static Color SundayColor
             {
-                Settings.Default.SundayColor = value;
-                Settings.Default.Save();
+                get { return Settings.Default.SundayColor; }
+                set
+                {
+                    Settings.Default.SundayColor = value;
+                    Settings.Default.Save();
+                }
             }
-        }
-        public static Color SickColor
-        {
-            get { return Settings.Default.SickColor; }
-            set
+            public static Color SickColor
             {
-                Settings.Default.SickColor = value;
-                Settings.Default.Save();
+                get { return Settings.Default.SickColor; }
+                set
+                {
+                    Settings.Default.SickColor = value;
+                    Settings.Default.Save();
+                }
             }
-        }
-        public static Color HomeWorkColor
-        {
-            get { return Settings.Default.HomeWorkingColor; }
-            set
+            public static Color HomeWorkColor
             {
-                Settings.Default.HomeWorkingColor = value;
-                Settings.Default.Save();
+                get { return Settings.Default.HomeWorkingColor; }
+                set
+                {
+                    Settings.Default.HomeWorkingColor = value;
+                    Settings.Default.Save();
+                }
             }
-        }
-        public static Color PendingVacationColor
-        {
-            get { return Settings.Default.PendingVacationColor; }
-            set
+            public static Color PendingVacationColor
             {
-                Settings.Default.PendingVacationColor = value;
-                Settings.Default.Save();
+                get { return Settings.Default.PendingVacationColor; }
+                set
+                {
+                    Settings.Default.PendingVacationColor = value;
+                    Settings.Default.Save();
+                }
             }
-        }
-        public static Color VacationColor
-        {
-            get { return Settings.Default.VacationColor; }
-            set
+            public static Color VacationColor
             {
-                Settings.Default.VacationColor = value;
-                Settings.Default.Save();
+                get { return Settings.Default.VacationColor; }
+                set
+                {
+                    Settings.Default.VacationColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            private static ESkin _skin;
+            public static ESkin Skin
+            {
+                get
+                {
+                    return (ESkin)Settings.Default.Skin;
+
+                }
+
+                set
+                {
+
+                    _skin = value;
+                    (App.Current as App).ApplySkin(value);
+                    Settings.Default.Skin = (int)value;
+                    Settings.Default.Save();
+
+                }
             }
         }
 
@@ -1205,4 +1230,10 @@ namespace Great.Models
         #endregion
     }
     #endregion
+
+    public enum ESkin : int
+    {
+        Light = 1,
+        Dark = 0
+    }
 }

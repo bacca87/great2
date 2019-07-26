@@ -6,12 +6,14 @@
       xmlns:System="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:date="clr-namespace:Nager.Date;assembly=Nager.Date"
+      xmlns:enm="clr-namespace:Great.Models"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"      
       xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
       Title="SettingsView"
       Style="{DynamicResource MetroPage}">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -74,13 +76,21 @@
         </GroupBox>
         <GroupBox Grid.Row="3" Header="Environment" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <Grid>
+                <Grid.Resources>
+                    <ObjectDataProvider x:Key="enumSkins"
+                                    MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="enm:ESkin"/>
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="Skin: "/>
-                    <ComboBox Text="Dark"/>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource enumSkins}}" SelectedItem="{Binding Skin, Mode=TwoWay}"/>
                 </StackPanel>
                 <GroupBox Grid.Row="1" Header="Colors" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
                     <Grid>
