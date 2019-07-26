@@ -62,13 +62,6 @@
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
-                <Fluent:RibbonContextualTabGroup x:Name="EditEventsGroup"
-                                     Header="EVENTS" 
-                                     DataContext="{Binding Events, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
-                                     Background="Green" 
-                                     BorderBrush="Green" >
-                </Fluent:RibbonContextualTabGroup>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="TIMESHEETS"

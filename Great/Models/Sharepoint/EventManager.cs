@@ -1,14 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using Great.Models.Database;
-using Great.Models.DTO;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.Models
 {
@@ -24,36 +17,51 @@ namespace Great.Models
             provider.OnEventChanged += provider_OnEventChanged;
         }
 
-        private void provider_OnEventChanged(object sender, EventDTO e)
+        private void provider_OnEventChanged(object sender, EventChangedEventArgs e)
         {
-            ProcessEvent(e);
+            ProcessEvent(e.Ev);
         }
 
-        private void ProcessEvent(EventDTO ev)
+        private void ProcessEvent(EventEVM ev)
         {
-            using (DBArchive db = new DBArchive())
-            {
-                Event evnt = db.Events.SingleOrDefault(x => x.SharepointId == ev.SharepointId);
-                if (evnt != null)
-                {
-                    evnt.Status = (long)ev.EStatus;
-                    db.SaveChanges();
-                    Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, new EventEVM(evnt)));
-                }
-            }
-
+            Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, ev));
         }
 
-        public bool Send(EventEVM ev)
+        public bool Add(EventEVM ev)
         {
             if (ev == null)
                 return false;
 
             using (new WaitCursor())
             {
-                provider.Send(ev);
+                provider.Add(ev);
             }
             return true;
+        }
+
+        public bool Update(EventEVM ev)
+        {
+            if (ev == null)
+                return false;
+
+            using (new WaitCursor())
+            {
+                provider.Update(ev);
+            }
+            return true;
+        }
+
+        public bool Delete(EventEVM ev)
+        {
+            if (ev == null)
+                return false;
+
+            using (new WaitCursor())
+            {
+                provider.Delete(ev);
+            }
+            return true;
+
         }
 
         public enum EEventStatus
@@ -62,7 +70,9 @@ namespace Great.Models
             Rejected = 1,
             Pending = 2,
             New = 3,
-            Cancelled = 4
+            Cancelled = 4,
+            PendingCancel = 5,
+            PendingUpdate = 6
         }
     }
 }

@@ -51,6 +51,16 @@ namespace Great.ViewModels.Database
             }
         }
 
+        private string _Title;
+        public string Title
+        {
+            get => _Title;
+            set
+            {
+                Set(ref _Title, value);
+            }
+        }
+
         private string _Location;
         public string Location
         {
@@ -194,14 +204,14 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private DateTime _ApprodationDateTime;
+        private DateTime _ApprovationDateTime;
         public DateTime ApprovationDateTime
         {
-            get => _ApprodationDateTime;
+            get => _ApprovationDateTime;
             set
             {
-                Set(ref _ApprodationDateTime, value);
-                RaisePropertyChanged(nameof(_ApprodationDateTime));
+                Set(ref _ApprovationDateTime, value);
+                RaisePropertyChanged(nameof(_ApprovationDateTime));
             }
         }
 
@@ -264,6 +274,7 @@ namespace Great.ViewModels.Database
             RaisePropertyChanged(nameof(SharePointId));
             RaisePropertyChanged(nameof(Type));
             RaisePropertyChanged(nameof(Location));
+            RaisePropertyChanged(nameof(Title));
             RaisePropertyChanged(nameof(StartDate));
 
             RaisePropertyChanged(nameof(EndDate));

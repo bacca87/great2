@@ -62,6 +62,7 @@ namespace Great.ViewModels
 
                 if (_SelectedEvent != null)
                 {
+                    IsInputEnabled = true;
                     BeginHour = _SelectedEvent.StartDate.Hour;
                     BeginMinutes = _SelectedEvent.StartDate.Minute;
                     EndHour = _SelectedEvent.EndDate.Hour;
@@ -119,7 +120,6 @@ namespace Great.ViewModels
         public EventsViewModel(EventManager evm)
         {
             _eventManager = evm;
-            IsInputEnabled = true;
 
             Minutes = new List<int>();
             Hours = new List<int>();
@@ -134,8 +134,8 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<EventEVM>(SaveEvent, (EventEVM v) => { return IsInputEnabled; });
             MarkAsAcceptedCommand = new RelayCommand<EventEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<EventEVM>(MarkAsCancelled);
-            DeleteCommand = new RelayCommand<EventEVM>(DeleteEvent);
-            NewCommand = new RelayCommand<EventEVM>(AddEEvent);
+            DeleteCommand = new RelayCommand<EventEVM>(RequestCancellation);
+            NewCommand = new RelayCommand<EventEVM>(AddEvent);
 
             using (DBArchive db = new DBArchive())
             {
@@ -162,13 +162,27 @@ namespace Great.ViewModels
             ev.StartDate = ev.StartDate.AddHours(BeginHour).AddMinutes(BeginMinutes);
             ev.EndDate = ev.EndDate.AddHours(EndHour).AddMinutes(EndMinutes);
             ev.Days = null;
+
+            var Id = ev.Id;
+
             ev.Save();
-            _eventManager.Send(ev);
+
+             if (Id == 0 )_eventManager.Add(ev);
+             else _eventManager.Update(ev);
 
             if (!Events.Any(e => e.Id == ev.Id)) Events.Add(ev);
-
-            Messenger.Default.Send(new NewItemMessage<EventEVM>(this, ev));
         }
+        public void RequestCancellation(EventEVM ev)
+        {
+            if (ev == null)
+                return;
+
+            ev.EStatus = EEventStatus.PendingCancel;
+            ev.Save();
+            _eventManager.Delete(ev);
+
+        }
+
         public void MarkAsAccepted(EventEVM ev)
         {
             if (ev == null)
@@ -179,7 +193,7 @@ namespace Great.ViewModels
 
             ev.EStatus = EEventStatus.Accepted;
             ev.Save();
-            Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, ev));
+
         }
         public void MarkAsCancelled(EventEVM ev)
         {
@@ -191,21 +205,9 @@ namespace Great.ViewModels
 
             ev.EStatus = EEventStatus.Cancelled;
             ev.Save();
-            Messenger.Default.Send(new DeletedItemMessage<EventEVM>(this, ev));
-        }
-        public void DeleteEvent(EventEVM ev)
-        {
-            if (ev == null)
-                return;
 
-            if (MessageBox.Show("Are you sure to send a cancellation request for the selected Vacation?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                return;
-
-            //_fdlManager.SendCancellationRequest(fdl);
-            ev.EStatus = EEventStatus.Cancelled;
-            ev.Save();
-            Messenger.Default.Send(new DeletedItemMessage<EventEVM>(this, ev));
         }
+
         public void EventChanged(ItemChangedMessage<EventEVM> item)
         {
             if (item.Content != null)
@@ -217,7 +219,7 @@ namespace Great.ViewModels
                     v.Save();
             }
         }
-        public void AddEEvent(EventEVM ev)
+        public void AddEvent(EventEVM ev)
         {
             IsInputEnabled = true;
             SelectedEvent = new EventEVM();

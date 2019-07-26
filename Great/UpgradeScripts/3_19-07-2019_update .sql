@@ -29,6 +29,7 @@ CREATE TABLE [EventType](
   [Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, 
   [SharepointId] INTEGER NOT NULL, 
   [Type] INTEGER NOT NULL REFERENCES [EventType]([Id]), 
+  [Title] TEXT(50), 
   [Location] TEXT(50), 
   [StartDateTimestamp] INTEGER NOT NULL, 
   [EndDateTimestamp] INTEGER NOT NULL, 

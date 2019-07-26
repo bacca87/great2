@@ -19,6 +19,7 @@ namespace Great.Models.Database
         public long Id { get; set; }
         public long SharepointId { get; set; }
         public long Type { get; set; }
+        public string Title { get; set; }
         public string Location { get; set; }
         public long StartDateTimeStamp { get; set; }
         public long EndDateTimeStamp { get; set; }

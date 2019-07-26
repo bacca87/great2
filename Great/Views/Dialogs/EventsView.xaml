@@ -11,6 +11,7 @@
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d"
         Title="Events" 
+       Style="{DynamicResource MetroWindow}"  
         DataContext="{Binding Events, Source={StaticResource Locator}}">
     <Window.Resources>
         <CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding Events}" IsLiveSortingRequested="True" >
@@ -21,8 +22,8 @@
     </Window.Resources>
     <Grid Margin="10,0,10,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="40*"/>
         </Grid.ColumnDefinitions>
         <DataGrid Name="vacationsDataGridView"
                 Grid.Column="0"
@@ -76,20 +77,15 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }" FontWeight="Bold"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}"  FontWeight="Bold" />
+                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }"/>
                 <DataGridTextColumn Header="End Date" Binding="{Binding EndDate,StringFormat='dd/MM/yyyy'}"/>
-                <DataGridTextColumn Header="Location" Binding="{Binding Location}"/>
                 <DataGridTextColumn Header="Description"  Binding="{Binding Description}" />
                 <DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />
-                <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDate}" />
+                <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDateTime}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="GotFocus">
-                    <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -103,8 +99,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Category:" VerticalAlignment="Center"/>
+            <TextBlock Foreground="White" Margin="5" Grid.Row="0" Text="Category:" VerticalAlignment="Center"/>
             <ComboBox  Grid.Row="1"
                                   SelectedItem="{Binding SelectedEvent.Type1}" 
                                   SelectedValue="{Binding SelectedEvent.Type}" 
@@ -121,10 +119,12 @@
                     </CompositeCollection>
                 </ComboBox.ItemsSource>
             </ComboBox>
-            <TextBlock Grid.Row="2" Text="Location:" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="3" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-            <TextBlock Grid.Row="4" Text="Start Date:" VerticalAlignment="Center"/>
-            <Grid Grid.Row="5" VerticalAlignment="Center" >
+            <TextBlock Foreground="White" Margin="5" Grid.Row="2" Text="Title:" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="3" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+            <TextBlock Foreground="White"  Margin="5" Grid.Row="4" Text="Location:" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="5" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+            <TextBlock Foreground="White" Margin="5" Grid.Row="6" Text="Start Date:" VerticalAlignment="Center"/>
+            <Grid Grid.Row="7" VerticalAlignment="Center" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="10"/>
@@ -151,9 +151,8 @@
                 </ComboBox>
             </Grid>
 
-            <TextBlock Grid.Row="6" Text="End Date:" VerticalAlignment="Center"/>
-
-            <Grid Grid.Row="7" VerticalAlignment="Center" >
+            <TextBlock Foreground="White" Margin="5" Grid.Row="8" Text="End Date:" VerticalAlignment="Center"/>
+            <Grid Grid.Row="9" VerticalAlignment="Center" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="10"/>
@@ -179,18 +178,19 @@
 
                 </ComboBox>
             </Grid>
-            <TextBlock Grid.Row="8" Text="Description:" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="9" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-            <CheckBox Grid.Row="10" FlowDirection="LeftToRight"  Content="All Day Event" IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+
+            <TextBlock  Foreground="White" Grid.Row="10" Margin="5" Text="Description:" VerticalAlignment="Center"/>
+            <TextBox    Grid.Row="11" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+            <CheckBox   Grid.Row="12" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event" IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
             <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
 
-            <StackPanel Grid.Row="11" Orientation="Horizontal">
+            <StackPanel Grid.Row="13" Orientation="Horizontal">
                 <Button Margin="10" Content="New" Command="{Binding NewCommand}" />
                 <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" CommandParameter="{Binding SelectedEvent}" />
                 <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEvent}" />
                 <Button Margin="10" Content="Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEvent}" />
                 <Button Margin="10" Content="Cancelled" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEvent}" />
-
+                <Button Margin="10" Content="Req Cancel" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedEvent}" />
             </StackPanel>
         </Grid>
     </Grid>
