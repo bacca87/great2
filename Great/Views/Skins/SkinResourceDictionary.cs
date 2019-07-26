@@ -36,7 +36,7 @@ namespace Great.Views.Skins
 
         public void UpdateSource()
         {
-            var val = UserSettings.Themes.Skin == ESkin.Light ? LightSource : DarkSource;
+            var val = UserSettings.Themes.Skin == ESkin.Light ? DarkSource : LightSource;
             if (val != null && base.Source != val)
                 base.Source = val;
         }

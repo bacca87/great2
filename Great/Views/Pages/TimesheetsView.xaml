@@ -15,8 +15,9 @@
       Style="{DynamicResource MetroPage}">
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
-        <conv:DayNameToColorConverter x:Key="DayNameToColorConverter"/>
-        <conv:DayTypeToColorConverter x:Key="DayTypeToColorConverter"/>
+        <conv:DayNameToBrushConverter x:Key="DayNameToBrushConverter"/>
+        <conv:DayTypeToBrushConverter x:Key="DayTypeToBrushConverter"/>
+        <conv:HolidayToBrushConverter x:Key="HolidayToBrushConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Date.Month" Converter="{StaticResource IntToMonthConverter}"/>
@@ -72,31 +73,31 @@
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
-                            <Setter Property="Background" Value="#0D47A1" />
+                            <Setter Property="Background" Value="{Binding Date.DayOfWeek , Converter={StaticResource DayNameToBrushConverter}}" />
                             <!--Blue-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                            <Setter Property="Background" Value="#B71C1C" />
+                            <Setter Property="Background" Value="{Binding Date.DayOfWeek , Converter={StaticResource DayNameToBrushConverter}}" />
                             <!--Red-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                            <Setter Property="Background" Value="#B71C1C" />
+                            <Setter Property="Background" Value="{Binding IsHoliday , Converter={StaticResource HolidayToBrushConverter}}" />
                             <!--Red-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="1">
-                            <Setter Property="Background" Value="#4A148C" />
+                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
                             <!--Orange-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="2">
-                            <Setter Property="Background" Value="#880E4F" />
+                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
                             <!--Purple-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="3">
-                            <Setter Property="Background" Value="#c0c0c0" />
+                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
                             <!--Purple-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="4">
-                            <Setter Property="Background" Value="#f2ccff" />
+                            <Setter Property="Background" Value="{Binding Type , Converter={StaticResource DayTypeToBrushConverter}}" />
                             <!--Purple-->
                         </DataTrigger>
 

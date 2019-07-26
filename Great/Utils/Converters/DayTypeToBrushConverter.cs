@@ -10,28 +10,28 @@ using System.Windows.Data;
 
 namespace Great.Utils.Converters
 {
-    class DayTypeToColorConverter : IValueConverter
+    class DayTypeToBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Color result = new Color() ;
+            Brush result =null ;
 
             switch (value)
             {
                 case 1:
-                    result = UserSettings.Themes.VacationColor;
+                    result = new SolidColorBrush(UserSettings.Themes.VacationColor);
                     break;
 
                 case 2: 
-                    result = UserSettings.Themes.SickColor;
+                    result = new SolidColorBrush(UserSettings.Themes.SickColor);
                     break;
 
                 case 3:
-                    result = UserSettings.Themes.HomeWorkColor;
+                    result = new SolidColorBrush(UserSettings.Themes.HomeWorkColor);
                     break;
 
                 case 4:
-                    result = UserSettings.Themes.PendingVacationColor;
+                    result = new SolidColorBrush(UserSettings.Themes.PendingVacationColor);
                     break;
 
                 default:

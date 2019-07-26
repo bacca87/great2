@@ -10,28 +10,11 @@ using System.Windows.Data;
 
 namespace Great.Utils.Converters
 {
-    class DayNameToColorConverter : IValueConverter
+    class HolidayToBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Color result = new Color();
-
-            switch (value.ToString())
-            {
-                case "Saturday":
-                    result = UserSettings.Themes.SaturdayColor;
-                    break;
-
-                case "Sunday": // Waiting
-                    result = UserSettings.Themes.SundayColor;
-                    break;
-
-
-                default:
-                    break;
-            }
-
-            return result;
+            return new SolidColorBrush(UserSettings.Themes.HolidayColor);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

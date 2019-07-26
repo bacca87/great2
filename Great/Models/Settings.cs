@@ -1204,6 +1204,15 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+            public static Color HolidayColor
+            {
+                get { return Settings.Default.HolidayColor; }
+                set
+                {
+                    Settings.Default.HolidayColor = value;
+                    Settings.Default.Save();
+                }
+            }
 
             private static ESkin _skin;
             public static ESkin Skin

@@ -212,6 +212,24 @@ namespace Great.ViewModels
         }
 
         /// <summary>
+        /// Sets and gets the Holiday property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color HolidayColor
+        {
+            get
+            {
+                return UserSettings.Themes.HolidayColor;
+            }
+
+            set
+            {
+                UserSettings.Themes.HolidayColor = value;
+                RaisePropertyChanged(nameof(HolidayColor));
+            }
+        }
+
+        /// <summary>
         /// Sets and gets the VacationColor property.
         /// Changes to that property's value raise the PropertyChanged event.         
         /// </summary>

@@ -105,6 +105,7 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <xctk:ColorPicker Grid.Column="1" Grid.Row="0" Margin="2" SelectedColor="{Binding SaturdayColor, Mode=TwoWay}" x:Name="SaturdayColor"/>
                         <xctk:ColorPicker Grid.Column="1" Grid.Row="1" Margin="2" SelectedColor="{Binding SundayColor, Mode=TwoWay}" x:Name="SundayColor"/>
@@ -112,12 +113,14 @@
                         <xctk:ColorPicker Grid.Column="1" Grid.Row="3" Margin="2" SelectedColor="{Binding HomeWorkingColor, Mode=TwoWay}" x:Name="HomeWorkingColor"/>
                         <xctk:ColorPicker Grid.Column="1" Grid.Row="4" Margin="2" SelectedColor="{Binding PendingVacationColor, Mode=TwoWay}" x:Name="PendingVacationColor"/>
                         <xctk:ColorPicker Grid.Column="1" Grid.Row="5" Margin="2" SelectedColor="{Binding VacationColor, Mode=TwoWay}" x:Name="VacationColor"/>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="6" Margin="2" SelectedColor="{Binding HolidayColor, Mode=TwoWay}" x:Name="HolidayColor"/>
                         <TextBlock Grid.Column="0" Grid.Row="0" >Saturday</TextBlock>
                         <TextBlock Grid.Column="0" Grid.Row="1" >Sunday</TextBlock>
                         <TextBlock Grid.Column="0" Grid.Row="2" >Sick Leave</TextBlock>
                         <TextBlock Grid.Column="0" Grid.Row="3" >Home Working</TextBlock>
                         <TextBlock Grid.Column="0" Grid.Row="4" >Pending Vacation</TextBlock>
                         <TextBlock Grid.Column="0" Grid.Row="5" >Vacation</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="6" >Holiday</TextBlock>
                     </Grid>
                 </GroupBox>
             </Grid>
