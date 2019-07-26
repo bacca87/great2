@@ -27,15 +27,15 @@
             <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
-                        <Setter Property="Background" Value="#334cff" />
+                        <Setter Property="Background" Value="#4da6ff" />
                         <!--Blue-->
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                        <Setter Property="Background" Value="#334cff" />
+                        <Setter Property="Background" Value="#99ccff" />
                         <!--Red-->
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                        <Setter Property="Background" Value="#334cff" />
+                        <Setter Property="Background" Value="#cce6ff" />
                         <!--Red-->
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Type}" Value="1">

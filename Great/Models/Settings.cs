@@ -1164,9 +1164,9 @@ namespace Great.Models
                 {
 
                     _skin = value;
-                    (App.Current as App).ApplySkin(value);
                     Settings.Default.Skin = (int)value;
                     Settings.Default.Save();
+                    (App.Current as App).ApplySkin(value);
 
                 }
             }
