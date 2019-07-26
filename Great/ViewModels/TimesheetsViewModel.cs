@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using static Great.Models.EventManager;
 
 namespace Great.ViewModels
 {
@@ -137,6 +138,7 @@ namespace Great.ViewModels
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
+        public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -379,11 +381,13 @@ namespace Great.ViewModels
 
         private void EventDeleted(DeletedItemMessage<EventEVM> ev)
         {
+            UpdateWorkingDays();
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             days.ForEach(x => SetDayType(x, EDayType.WorkDay));
         }
         private void EventChanged(ItemChangedMessage<EventEVM> ev)
         {
+            UpdateWorkingDays();
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             switch (ev.Content.EStatus)
             {

@@ -13,24 +13,22 @@ namespace Great.Utils.Converters
             switch (intValue)
             {
                 case 0:
-                    result = "New";
-                    break;
-
-                case 1:
-                    result = "Waiting";
-                    break;
-
-                case 2:
                     result = "Accepted";
                     break;
 
-                case 3:
+                case 1:
                     result = "Rejected";
                     break;
 
-                case 4:
-                    result = "Cancelled";
+                case 2:
+                    result = "Pending";
                     break;
+
+                case 3:
+                    result = "New";
+                    break;
+
+
             }
 
             return result;

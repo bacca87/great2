@@ -44,7 +44,9 @@ namespace Great.ViewModels
             ////}
 
             SimpleIoc.Default.Register<IProvider, MSExchangeProvider>();
+            SimpleIoc.Default.Register<MSSharepointProvider>();
             SimpleIoc.Default.Register<FDLManager>();
+            SimpleIoc.Default.Register<EventManager>();
             SimpleIoc.Default.Register<DBArchive>();
 
             SimpleIoc.Default.Register<TimesheetsViewModel>();

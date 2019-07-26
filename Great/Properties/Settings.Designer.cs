@@ -104,5 +104,99 @@ namespace Great.Properties {
                 this["CountryCode"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://intranet.elettric80.it/_vti_bin/lists.asmx")]
+        public string Great_SharepointReference_Lists {
+            get {
+                return ((string)(this["Great_SharepointReference_Lists"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color SaturdayColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["SaturdayColor"]));
+            }
+            set {
+                this["SaturdayColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color SundayColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["SundayColor"]));
+            }
+            set {
+                this["SundayColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color SickColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["SickColor"]));
+            }
+            set {
+                this["SickColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFC0C0C0")]
+        public global::System.Windows.Media.Color HomeWorkingColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["HomeWorkingColor"]));
+            }
+            set {
+                this["HomeWorkingColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color PendingVacationColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["PendingVacationColor"]));
+            }
+            set {
+                this["PendingVacationColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color VacationColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["VacationColor"]));
+            }
+            set {
+                this["VacationColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#00000000")]
+        public global::System.Windows.Media.Color HolidayColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["HolidayColor"]));
+            }
+            set {
+                this["HolidayColor"] = value;
+            }
+        }
     }
 }

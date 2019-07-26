@@ -6,6 +6,7 @@ using Nager.Date;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Windows.Media;
 using System.Linq;
 
 namespace Great.ViewModels
@@ -98,6 +99,115 @@ namespace Great.ViewModels
             {
                 UserSettings.Advanced.AutoAddFactories = value;
                 RaisePropertyChanged(nameof(AutoAddFactories));
+            }
+        }
+
+
+        /// <summary>
+        /// Sets and gets the SaturdayColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color SaturdayColor
+        {
+            get
+            {
+                return UserSettings.SaturdayColor;
+            }
+
+            set
+            {
+                UserSettings.SaturdayColor = value;
+                RaisePropertyChanged(nameof(SaturdayColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the SundayColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color SundayColor
+        {
+            get
+            {
+                return UserSettings.SundayColor;
+            }
+
+            set
+            {
+                UserSettings.SundayColor = value;
+                RaisePropertyChanged(nameof(SundayColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the SickColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color SickColor
+        {
+            get
+            {
+                return UserSettings.SickColor;
+            }
+
+            set
+            {
+                UserSettings.SickColor = value;
+                RaisePropertyChanged(nameof(SickColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the HomeworkingColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color HomeWorkingColor
+        {
+            get
+            {
+                return UserSettings.HomeWorkColor;
+            }
+
+            set
+            {
+                UserSettings.HomeWorkColor = value;
+                RaisePropertyChanged(nameof(HomeWorkingColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the PendingVacationColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color PendingVacationColor
+        {
+            get
+            {
+                return UserSettings.PendingVacationColor;
+            }
+
+            set
+            {
+                UserSettings.PendingVacationColor = value;
+                RaisePropertyChanged(nameof(PendingVacationColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets and gets the VacationColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public Color VacationColor
+        {
+            get
+            {
+                return UserSettings.VacationColor;
+            }
+
+            set
+            {
+                UserSettings.VacationColor = value;
+                RaisePropertyChanged(nameof(VacationColor));
             }
         }
 

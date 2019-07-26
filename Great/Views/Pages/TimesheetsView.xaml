@@ -15,6 +15,8 @@
       Style="{DynamicResource MetroPage}">
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
+        <conv:DayNameToColorConverter x:Key="DayNameToColorConverter"/>
+        <conv:DayTypeToColorConverter x:Key="DayTypeToColorConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Date.Month" Converter="{StaticResource IntToMonthConverter}"/>
@@ -69,7 +71,7 @@
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
+                        <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
                             <Setter Property="Background" Value="#0D47A1" />
                             <!--Blue-->
                         </DataTrigger>
@@ -87,6 +89,14 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="2">
                             <Setter Property="Background" Value="#880E4F" />
+                            <!--Purple-->
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="3">
+                            <Setter Property="Background" Value="#c0c0c0" />
+                            <!--Purple-->
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="4">
+                            <Setter Property="Background" Value="#f2ccff" />
                             <!--Purple-->
                         </DataTrigger>
 

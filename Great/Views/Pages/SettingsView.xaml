@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0" Header="General" Margin="10" HorizontalAlignment="Left">
             <GroupBox.Resources>
@@ -68,6 +69,46 @@
                         <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}"/>
                         <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
                     </StackPanel>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="3" Header="Environment" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Skin: "/>
+                    <ComboBox Text="Dark"/>
+                </StackPanel>
+                <GroupBox Grid.Row="1" Header="Colors" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="0" Margin="2" SelectedColor="{Binding SaturdayColor, Mode=TwoWay}" x:Name="SaturdayColor"/>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="1" Margin="2" SelectedColor="{Binding SundayColor, Mode=TwoWay}" x:Name="SundayColor"/>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="2" Margin="2" SelectedColor="{Binding SickColor, Mode=TwoWay}" x:Name="SickColor"/>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="3" Margin="2" SelectedColor="{Binding HomeWorkingColor, Mode=TwoWay}" x:Name="HomeWorkingColor"/>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="4" Margin="2" SelectedColor="{Binding PendingVacationColor, Mode=TwoWay}" x:Name="PendingVacationColor"/>
+                        <xctk:ColorPicker Grid.Column="1" Grid.Row="5" Margin="2" SelectedColor="{Binding VacationColor, Mode=TwoWay}" x:Name="VacationColor"/>
+                        <TextBlock Grid.Column="0" Grid.Row="0" >Saturday</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" >Sunday</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2" >Sick Leave</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" >Home Working</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="4" >Pending Vacation</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="5" >Vacation</TextBlock>
+                    </Grid>
                 </GroupBox>
             </Grid>
         </GroupBox>

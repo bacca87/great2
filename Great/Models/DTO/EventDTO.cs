@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Great.Models.EventManager;
 
 namespace Great.Models.DTO
 {
@@ -21,6 +22,7 @@ namespace Great.Models.DTO
 
         public EventStatusDTO Status1 { get; set; }
         public EventTypeDTO Type1 { get; set; }
+        public EEventStatus EStatus { get; set; }
 
         public EventDTO(Event ev)
         {

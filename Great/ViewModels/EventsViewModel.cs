@@ -16,12 +16,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using static Great.Models.EventManager;
+using EventManager = Great.Models.EventManager;
 
 namespace Great.ViewModels
 {
     public class EventsViewModel : ViewModelBase
     {
         #region Properties
+        EventManager _eventManager;
+
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
         {
@@ -37,26 +41,6 @@ namespace Great.ViewModels
                 _isInputEnabled = value;
 
                 RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
-
-            }
-        }
-
-        private bool _showContextualMenu = false;
-        public bool ShowContextualMenu
-        {
-            get => _showContextualMenu;
-
-            set
-            {
-                if (_showContextualMenu == value)
-                {
-                    return;
-                }
-
-                var oldValue = _showContextualMenu;
-                _showContextualMenu = value;
-
-                RaisePropertyChanged(nameof(ShowContextualMenu), oldValue, value);
 
             }
         }
@@ -113,7 +97,6 @@ namespace Great.ViewModels
             set => Set(ref _BeginMinutes, value);
         }
 
-
         private int _EndMinutes;
         public int EndMinutes
         {
@@ -130,12 +113,12 @@ namespace Great.ViewModels
         public RelayCommand<EventEVM> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<EventEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand<EventEVM> DeleteCommand { get; set; }
-        public RelayCommand ShowContextualMenuCommand { get; set; }
 
         #endregion
 
-        public EventsViewModel()
+        public EventsViewModel(EventManager evm)
         {
+            _eventManager = evm;
             IsInputEnabled = true;
 
             Minutes = new List<int>();
@@ -153,7 +136,6 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<EventEVM>(MarkAsCancelled);
             DeleteCommand = new RelayCommand<EventEVM>(DeleteEvent);
             NewCommand = new RelayCommand<EventEVM>(AddEEvent);
-            ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
 
             using (DBArchive db = new DBArchive())
             {
@@ -181,6 +163,7 @@ namespace Great.ViewModels
             ev.EndDate = ev.EndDate.AddHours(EndHour).AddMinutes(EndMinutes);
             ev.Days = null;
             ev.Save();
+            _eventManager.Send(ev);
 
             if (!Events.Any(e => e.Id == ev.Id)) Events.Add(ev);
 
@@ -238,6 +221,7 @@ namespace Great.ViewModels
         {
             IsInputEnabled = true;
             SelectedEvent = new EventEVM();
+            SelectedEvent.EStatus = EEventStatus.New;
             SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
 

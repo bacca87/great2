@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
+using System.Windows.Media;
 
 namespace Great.Models
 {
@@ -1068,6 +1069,10 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+            public static string Username
+            {
+                get { return Settings.Default.EmailAddress.Split('@')[0]; }
+            }
 
             public static string EmailPassword
             {
@@ -1137,6 +1142,66 @@ namespace Great.Models
                 }
             }
         }
+        #endregion
+
+        #region Environment
+
+        public static Color SaturdayColor
+        {
+            get { return Settings.Default.SaturdayColor; }
+            set
+            {
+                Settings.Default.SaturdayColor = value;
+                Settings.Default.Save();
+            }
+        }
+        public static Color SundayColor
+        {
+            get { return Settings.Default.SundayColor; }
+            set
+            {
+                Settings.Default.SundayColor = value;
+                Settings.Default.Save();
+            }
+        }
+        public static Color SickColor
+        {
+            get { return Settings.Default.SickColor; }
+            set
+            {
+                Settings.Default.SickColor = value;
+                Settings.Default.Save();
+            }
+        }
+        public static Color HomeWorkColor
+        {
+            get { return Settings.Default.HomeWorkingColor; }
+            set
+            {
+                Settings.Default.HomeWorkingColor = value;
+                Settings.Default.Save();
+            }
+        }
+        public static Color PendingVacationColor
+        {
+            get { return Settings.Default.PendingVacationColor; }
+            set
+            {
+                Settings.Default.PendingVacationColor = value;
+                Settings.Default.Save();
+            }
+        }
+        public static Color VacationColor
+        {
+            get { return Settings.Default.VacationColor; }
+            set
+            {
+                Settings.Default.VacationColor = value;
+                Settings.Default.Save();
+            }
+        }
+
+
         #endregion
     }
     #endregion

@@ -78,6 +78,7 @@ namespace Great
                 cfg.CreateMap<DayType, DayTypeDTO>();
                 cfg.CreateMap<FactoryEVM, FactoryDTO>();
                 cfg.CreateMap<EventType, EventTypeDTO>();
+                cfg.CreateMap<Event, EventDTO>().ForMember(x => x.Status1, opt => opt.Ignore());
             });
 
             Mapper = config.CreateMapper();
