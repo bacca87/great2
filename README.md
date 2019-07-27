@@ -1,7 +1,5 @@
 # Project codename: Great2 [![Build status](https://ci.appveyor.com/api/projects/status/57rep4aev3dtps0j?svg=true)](https://ci.appveyor.com/project/AndreaCorradini/great2)
 
-
-
 Before building the project, download and install the following dependencies:
 
 - ### VS2019:
