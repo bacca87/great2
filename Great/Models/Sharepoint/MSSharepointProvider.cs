@@ -135,9 +135,9 @@ namespace Great.Models
                             }
 
                         }
-                        catch (Exception ex)
+                        catch 
                         {
-
+                            continue;
                         }
                     }
                     while (!IsSent);
@@ -165,30 +165,37 @@ namespace Great.Models
                     XmlDocument doc = new XmlDocument();
                     doc.LoadXml(camlQueryString);
                     XmlNode n = doc.DocumentElement;
-
-                    using (SharepointReference.Lists l = new SharepointReference.Lists())
+                    try
                     {
-                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                        var response = l.GetListItems("Vacations ITA", null, n, null, null, null, null);
-
-                        XmlDocument xdoc = new XmlDocument();
-                        xdoc.LoadXml(response.OuterXml);
-                        var newStatus = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows__ModerationStatus"].Value ?? "1"); //default rejected
-                        var approver = xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Editor"]?.Value;
-                        var approvationdatetime = Convert.ToDateTime(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Modified"].Value);
-
-                        if (newStatus != e.Status)
+                        using (SharepointReference.Lists l = new SharepointReference.Lists())
                         {
-                            e.Status = newStatus;
-                            if (e.EStatus == EEventStatus.Accepted)
+                            l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                            var response = l.GetListItems("Vacations ITA", null, n, null, null, null, null);
+
+                            XmlDocument xdoc = new XmlDocument();
+                            xdoc.LoadXml(response.OuterXml);
+                            var newStatus = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows__ModerationStatus"].Value ?? "1"); //default rejected
+                            var approver = xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Editor"]?.Value;
+                            var approvationdatetime = Convert.ToDateTime(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Modified"].Value);
+
+                            if (newStatus != e.Status)
                             {
-                                e.Approver = approver;
-                                e.ApprovationDateTime = approvationdatetime;
+                                e.Status = newStatus;
+                                if (e.EStatus == EEventStatus.Accepted)
+                                {
+                                    e.Approver = approver;
+                                    e.ApprovationDateTime = approvationdatetime;
+                                }
+                                e.Save();
+                                NotifyEventChanged(e);
                             }
-                            e.Save();
-                            NotifyEventChanged(e);
                         }
                     }
+                    catch 
+                    {
+                        continue;
+                    }
+                   
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);

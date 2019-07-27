@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Great.Views.Dialogs
     /// <summary>
     /// Interaction logic for EventsView.xaml
     /// </summary>
-    public partial class EventsView : Window
+    public partial class EventsView : MetroWindow
     {
         public EventsView()
         {
