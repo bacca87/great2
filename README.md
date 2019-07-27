@@ -1,4 +1,5 @@
-# Project codename: Great2 [![Build status](https://ci.appveyor.com/api/projects/status/5nctvo1b8u8lbdav?svg=true)](https://ci.appveyor.com/project/bacca87/great2)
+# Project codename: Great2 [![Build status](ttps://ci.appveyor.com/api/projects/status/57rep4aev3dtps0j/branch/master?svg=true)
+
 
 Before building the project, download and install the following dependencies:
 
