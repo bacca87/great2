@@ -24,6 +24,7 @@
 
         <ResourceDictionary>
             <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                <Setter Property="BorderThickness" Value="0.5"></Setter>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
                         <Setter Property="Background" Value="#80b3ff" />

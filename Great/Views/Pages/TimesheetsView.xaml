@@ -168,7 +168,8 @@
                       CanUserResizeRows="False" 
                       CanUserSortColumns="False"
                       HeadersVisibility="Column"
-                      IsReadOnly="True">
+                      BorderThickness="0.5"
+                     IsReadOnly="True">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                             <Setter Property="TextBlock.TextAlignment" Value="Center" />

@@ -24,6 +24,9 @@
 
         <ResourceDictionary>
             <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                <Setter Property="BorderThickness" Value="0.5"></Setter>
+
+
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
                         <Setter Property="Background" Value="#005ce6" />
@@ -55,6 +58,7 @@
                     </DataTrigger>
 
                 </Style.Triggers>
+            
             </Style>
             <Style x:Key="travelstartTextBox"  TargetType="xctk:MaskedTextBox" >
                 <Setter Property="Background" Value="#004de6" />
