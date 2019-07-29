@@ -31,15 +31,29 @@
                     </ObjectDataProvider.MethodParameters>
                 </ObjectDataProvider>
             </GroupBox.Resources>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBlock Text="Country:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <ComboBox
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <TextBlock Text="Country:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <ComboBox
                     ItemsSource="{Binding Source={StaticResource enumCountries}}"
                     SelectedValue="{Binding Country, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                     FontSize="15"
                     IsEditable="True"
                     Width="60"/>
-            </StackPanel>
+                </StackPanel>
+                <GroupBox Grid.Row="1" Header="Advanced" Margin="10" HorizontalAlignment="Left">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <TextBlock Text="Data Directory:" VerticalAlignment="Center"/>
+                        <TextBox Margin="5" Text="{Binding DataDirectory}" Width="300"/>
+                        <Button Margin="0,5" Content="..." Command="{Binding SelectFolderCommand}"/>
+                        <Button Margin="5,5" Content="Migrate Data" Command="{Binding MigrateDataCommand}"/>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <Grid>
@@ -75,7 +89,7 @@
                 </GroupBox>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="3" Header="Environment" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+        <GroupBox Grid.Row="3" Header="Themes" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <Grid>
                 <Grid.Resources>
                     <ObjectDataProvider x:Key="enumSkins"
@@ -89,7 +103,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0">
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="Skin: "/>
                     <ComboBox ItemsSource="{Binding Source={StaticResource enumSkins}}" SelectedValue="{Binding Skin, Mode=TwoWay}"/>
                 </StackPanel>

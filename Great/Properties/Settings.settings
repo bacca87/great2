@@ -26,5 +26,8 @@
     <Setting Name="Skin" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="DataDirectoryPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%USERPROFILE%\documents\Great\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

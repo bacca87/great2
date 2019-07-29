@@ -8,6 +8,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Media;
 using System.Linq;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
+using System.Windows;
+using System.Diagnostics;
 
 namespace Great.ViewModels
 {
@@ -161,14 +165,93 @@ namespace Great.ViewModels
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
             }
         }
+
+        private string _DataDirectory;
+        public string DataDirectory
+        {
+            get => _DataDirectory;
+            set
+            {
+                Set(ref _DataDirectory, value);
+                MigrateDataCommand.RaiseCanExecuteChanged();
+            }
+        }
+        #endregion
+
+        #region Commands Definitions
+        public RelayCommand SelectFolderCommand { get; set; }
+        public RelayCommand MigrateDataCommand { get; set; }
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the SettingsViewModel class.
         /// </summary>
         public SettingsViewModel()
+        {   
+            SelectFolderCommand = new RelayCommand(SelectFolder);
+            MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
+
+            DataDirectory = ApplicationSettings.Directories.Data;
+        }
+
+        public void SelectFolder()
         {
-            
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+
+            dialog.Title = "Data Folder";
+            dialog.IsFolderPicker = true;
+            dialog.InitialDirectory = ApplicationSettings.Directories.Data;
+
+            dialog.AddToMostRecentlyUsedList = false;
+            dialog.AllowNonFileSystemItems = false;
+            dialog.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            dialog.EnsureFileExists = true;
+            dialog.EnsurePathExists = true;
+            dialog.EnsureReadOnly = false;
+            dialog.EnsureValidNames = true;
+            dialog.Multiselect = false;
+            dialog.ShowPlacesList = true;
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                DataDirectory = dialog.FileName;
+            }
+        }
+
+        public void MigrateData()
+        {
+            if (MessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            try
+            {
+                using (new WaitCursor())
+                {
+                    string SourcePath = ApplicationSettings.Directories.Data.TrimEnd('\\');
+                    string DestinationPath = DataDirectory.TrimEnd('\\');
+
+                    //Now Create all of the directories
+                    foreach (string dirPath in Directory.GetDirectories(SourcePath, "*",
+                        SearchOption.AllDirectories))
+                        Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
+
+                    //Copy all the files & Replaces any files with the same name
+                    foreach (string newPath in Directory.GetFiles(SourcePath, "*.*",
+                        SearchOption.AllDirectories))
+                        File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
+
+                    ApplicationSettings.Directories.Data = DataDirectory;
+                    MigrateDataCommand.RaiseCanExecuteChanged();
+                }
+
+                MessageBox.Show("Migration Completed!\nThe application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
+                Process.Start(Application.ResourceAssembly.Location, "-m");
+                Application.Current.Shutdown();                
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

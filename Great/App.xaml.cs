@@ -66,7 +66,7 @@ namespace Great
             else
                 ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
 
-
+            //TODO: creare backup del db ogni giorno fino a un massimo di 7 giorni
         }
 
         private void ApplyMigrations()
@@ -95,6 +95,7 @@ namespace Great
                     catch (Exception ex)
                     {
                         transaction.Rollback();
+                        //TODO: se fallisce bisogna chiudere l'applicazione. errore fatale
                     }
                 }
             }

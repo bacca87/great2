@@ -49,7 +49,7 @@ namespace Great.Models
             {
                 get
                 {
-                    string dataDirectoryPath = ConfigurationManager.AppSettings["DataDirectoryPath"];
+                    string dataDirectoryPath = Settings.Default.DataDirectoryPath;
 
                     if (dataDirectoryPath == null || dataDirectoryPath == string.Empty)
                         throw new ConfigurationErrorsException("Missing or invalid DataDirectoryPath configuration!");
@@ -57,7 +57,13 @@ namespace Great.Models
                     dataDirectoryPath = Environment.ExpandEnvironmentVariables(dataDirectoryPath);
                     return dataDirectoryPath + (!dataDirectoryPath.EndsWith("\\") ? "\\" : "");
                 }
+                set
+                {
+                    Settings.Default.DataDirectoryPath = value;
+                    Settings.Default.Save();
+                }
             }
+
             public static string FDL
             {
                 get
@@ -65,6 +71,7 @@ namespace Great.Models
                     return Data + "FDL\\";
                 }
             }
+
             public static string ExpenseAccount
             {
                 get
@@ -1145,7 +1152,7 @@ namespace Great.Models
         }
         #endregion
 
-        #region Environment
+        #region Themes
 
         public static class Themes
         {
