@@ -202,6 +202,13 @@
                         </Fluent:Button>
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Ohter">
+                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click" LargeIcon="pack://application:,,,/Great;component/Images/32/christmas-tree.png">
+                        <Fluent:ToggleButton.ToolTip>
+                            <Fluent:ScreenTip Title="December" Text="Set December as the current month." />
+                        </Fluent:ToggleButton.ToolTip>
+                    </Fluent:ToggleButton>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="FDL" 
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
@@ -258,7 +265,7 @@
                                 <Fluent:ScreenTip Title="Edit Recipients" Text="Edit the selected FDL order's recipients." />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
-                    </Fluent:DropDownButton>                    
+                    </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
                     <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
@@ -341,6 +348,7 @@
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
+
                 <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
@@ -417,6 +425,34 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
+            <!--<Fluent:RibbonTabItem Header="EVENTS" 
+                                  DataContext="{Binding Events, Source={StaticResource Locator}}"
+                                  Visibility="{Binding ElementName=eventsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  IsSelected="{Binding ElementName=eventsTab, Path=IsSelected, Mode=OneWay}">
+
+                <Fluent:RibbonGroupBox Header="Actions">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/bus.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Add Vacation" Text="Add a new Vacation" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected EA as accepted." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Mark as Deleted" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Mark as Deleted" Text="Mark the selected EA as accepted." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Cancel" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Cancel EA" Text="Cancel the selected EA." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>-->
             <Fluent:RibbonTabItem Header="FACTORIES" 
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
@@ -469,6 +505,18 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
+            <!--<Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding Events, Source={StaticResource Locator}}"
+                                  IsSelected="{Binding ShowContextualMenu}"
+                                  Group="{Binding Source={x:Reference EditEventsGroup}}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save Vacation" Text="Save the current vacation." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>-->
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
@@ -530,8 +578,12 @@
             <TabItem Name="factoriesTab" Header="Factories" ap:NotificationHelper.NotificationCount="{Binding NewFactoriesCount}">
                 <Frame Source="/Views/Pages/FactoriesView.xaml"/>
             </TabItem>
+            <!--<TabItem Name="eventsTab" Header="Events" ap:NotificationHelper.NotificationCount="0">
+                <Frame Source="/Views/Pages/EventsView.xaml"/>
+            </TabItem>-->
             <TabItem Name="statsTab" Header="Statistics" ap:NotificationHelper.NotificationCount="0">
                 <Frame Source="/Views/Pages/StatisticsView.xaml"/>
+
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Notifications, Source={StaticResource Locator}}">

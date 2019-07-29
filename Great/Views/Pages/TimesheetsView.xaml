@@ -2,11 +2,10 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:e="clr-namespace:Great.ViewModels.Database" 
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
@@ -42,6 +41,7 @@
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item" 
+                  RowStyle="{StaticResource timeSheetDatagridStyle}"
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
                 <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
@@ -66,32 +66,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Saturday">
-                            <Setter Property="Background" Value="#0D47A1" />
-                            <!--Blue-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                            <Setter Property="Background" Value="#B71C1C" />
-                            <!--Red-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                            <Setter Property="Background" Value="#B71C1C" />
-                            <!--Red-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Type}" Value="1">
-                            <Setter Property="Background" Value="#4A148C" />
-                            <!--Orange-->
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Type}" Value="2">
-                            <Setter Property="Background" Value="#880E4F" />
-                            <!--Purple-->
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
             <DataGrid.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -144,9 +118,12 @@
                     <Separator/>
                     <MenuItem Header="Day Type">
                         <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+                        <MenuItem Header="Vacation Paid Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationPaidDay, Mode=OneWay}" Command="{Binding SetVacationPaidDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
+
                         <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                         <Separator/>
                         <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                        <MenuItem Header="Day of Home Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsHomeWorking, Mode=OneWay}" Command="{Binding SetHomeWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                     </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
@@ -191,7 +168,8 @@
                       CanUserResizeRows="False" 
                       CanUserSortColumns="False"
                       HeadersVisibility="Column"
-                      IsReadOnly="True">
+                      BorderThickness="0.5"
+                     IsReadOnly="True">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                             <Setter Property="TextBlock.TextAlignment" Value="Center" />
@@ -252,7 +230,7 @@
 
                                 <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
                                     <Grid.Resources>
-                                        <Style TargetType="{x:Type xctk:MaskedTextBox}">
+                                        <!--<Style  TargetType="{x:Type xctk:MaskedTextBox}">
                                             <Setter Property="Margin" Value="2.5" />
                                             <Setter Property="MaxLength" Value="5" />
                                             <Setter Property="FontSize" Value="20" />
@@ -265,10 +243,11 @@
                                             <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
                                             <EventSetter Event="PreviewLostKeyboardFocus" Handler="MaskedTextBox_PreviewLostKeyboardFocus"/>
                                             <EventSetter Event="PreviewTextInput" Handler="MaskedTextBox_PreviewTextInput"/>
-                                        </Style>
+                                        </Style>-->
                                         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
                                     </Grid.Resources>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -280,49 +259,54 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Center">Travel<LineBreak/>Start Time</TextBlock>
                                     <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
                                     <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
+                                    <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right">FDL</TextBlock>
+                                    <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right">Notes</TextBlock>
 
 
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#33691E"/>
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Background="#01579B" />
-                                </Grid>
-                                <Button Margin="10,37,10,10" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
-                                <Button Margin="10,37,10,10" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
-                                <Button Margin="10,37,10,10" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
-                            </StackPanel>
-
-                            <Label Grid.Column="0" Grid.Row="1" Content="FDL:" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                            <ComboBox Grid.Column="2" Grid.Row="1" Margin="5" Width="200" HorizontalAlignment="Left"
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{StaticResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                    <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"
                                   SelectedItem="{Binding SelectedTimesheet.FDL1}" 
                                   SelectedValue="{Binding SelectedTimesheet.FDL}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="FDL_Factory_Display" 
                                   SelectedValuePath="Id" 
                                   SelectedIndex="0">
-                                <ComboBox.Resources>
-                                    <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
-                                </ComboBox.Resources>
-                                <ComboBox.ItemsSource>
-                                    <CompositeCollection>
-                                        <e:FDLEVM/>
-                                        <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                                    </CompositeCollection>
-                                </ComboBox.ItemsSource>
-                            </ComboBox>
-                            <Label Grid.Column="0" Grid.Row="2" Content="Notes:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="2" Grid.Row="2" Margin="5" Width="500" HorizontalAlignment="Left" Text="{Binding SelectedTimesheet.Notes}"></TextBox>
+                                        <ComboBox.Resources>
+                                            <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
+                                        </ComboBox.Resources>
+                                        <ComboBox.ItemsSource>
+                                            <CompositeCollection>
+                                                <e:FDLEVM/>
+                                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                                            </CompositeCollection>
+                                        </ComboBox.ItemsSource>
+                                    </ComboBox>
+                                    <TextBox Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="295" Text="{Binding SelectedTimesheet.Notes}"></TextBox>
+                                    <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
+                                        <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
+                                        <Button Margin="2" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
+                                        <Button Margin="2" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
+                                    </StackPanel>
+                                </Grid>
+
+
+                            </StackPanel>
+
                         </Grid>
                     </GroupBox>
                 </Grid>

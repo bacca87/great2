@@ -1,5 +1,6 @@
 ﻿using Great.Models;
 using Great.Models.Database;
+using Great.Views.Skins;
 using NLog;
 using System;
 using System.Data.Entity;
@@ -16,7 +17,8 @@ namespace Great
     /// </summary>
     public partial class App : Application
     {
-        private void Application_Startup(object sender, StartupEventArgs e)
+
+         private void Application_Startup(object sender, StartupEventArgs e)
         {   
             // Multiple istance check
             if(!e.Args.Contains("-m") && !e.Args.Contains("/m"))
@@ -33,6 +35,7 @@ namespace Great
             InitializeDirectoryTree();
             InitializeDatabase();
 
+            ApplySkin(UserSettings.Themes.Skin);
             // TODO: Auto Updater (https://github.com/ravibpatel/AutoUpdater.NET)
         }
 
@@ -95,6 +98,20 @@ namespace Great
                     }
                 }
             }
+        }
+
+        public void ApplySkin(ESkin newSkin)
+        {
+
+            foreach (ResourceDictionary dict in Resources.MergedDictionaries)
+            {
+
+                if (dict is SkinResourceDictionary skinDict)
+                    skinDict.UpdateSource();
+                else
+                    dict.Source = dict.Source;
+            }
+
         }
     }
 }

@@ -42,5 +42,18 @@ namespace Great.Views
             OrderRecipientsView view = new OrderRecipientsView();
             view.ShowDialog();
         }
+
+        private void mEventPage_Click(object sender, RoutedEventArgs e)
+        {
+            EventsViewModel eventVM = SimpleIoc.Default.GetInstance<EventsViewModel>();
+
+
+            if (eventVM == null)
+                return;
+
+
+            EventsView view = new EventsView();
+            view.ShowDialog();
+        }
     }
 }

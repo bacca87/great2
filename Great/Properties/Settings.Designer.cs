@@ -104,5 +104,17 @@ namespace Great.Properties {
                 this["CountryCode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Skin {
+            get {
+                return ((int)(this["Skin"]));
+            }
+            set {
+                this["Skin"] = value;
+            }
+        }
     }
 }

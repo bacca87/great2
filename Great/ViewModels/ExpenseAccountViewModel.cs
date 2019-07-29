@@ -348,7 +348,7 @@ namespace Great.ViewModels
             if (ea == null)
                 return;
 
-            Process.Start(ea.FileName);
+            Process.Start(ea.FilePath);
         }
 
         public void MarkAsRefunded(ExpenseAccountEVM ea)

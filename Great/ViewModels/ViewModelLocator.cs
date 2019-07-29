@@ -43,8 +43,10 @@ namespace Great.ViewModels
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
-            SimpleIoc.Default.Register<IProvider,MSExchangeProvider>();
+            SimpleIoc.Default.Register<IProvider, MSExchangeProvider>();
+            SimpleIoc.Default.Register<MSSharepointProvider>();
             SimpleIoc.Default.Register<FDLManager>();
+            SimpleIoc.Default.Register<EventManager>();
             SimpleIoc.Default.Register<DBArchive>();
 
             SimpleIoc.Default.Register<TimesheetsViewModel>();
@@ -60,6 +62,7 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<StatisticsViewModel>();
             SimpleIoc.Default.Register<CarRentalViewModel>();
             SimpleIoc.Default.Register<FDLImportWizardViewModel>();
+            SimpleIoc.Default.Register<EventsViewModel>();
         }
 
         public TimesheetsViewModel Timesheets
@@ -163,6 +166,14 @@ namespace Great.ViewModels
             get
             {
                 return SimpleIoc.Default.GetInstance<FDLImportWizardViewModel>();
+            }
+        }
+
+        public EventsViewModel Events
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<EventsViewModel>();
             }
         }
 

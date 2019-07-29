@@ -23,5 +23,8 @@
     <Setting Name="CountryCode" Type="Nager.Date.CountryCode" Scope="User">
       <Value Profile="(Default)">IT</Value>
     </Setting>
+    <Setting Name="Skin" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

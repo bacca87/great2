@@ -41,10 +41,18 @@ namespace Great
                     .ForMember(x => x.FDLResult, opt => opt.Ignore())
                     .ForMember(x => x.Timesheets, opt => opt.Ignore());
 
+                cfg.CreateMap<Event, EventEVM>()
+                .ForMember(x => x.Status1, opt => opt.Ignore());
+                cfg.CreateMap<EventEVM, Event>()
+                    .ForMember(x => x.Status1, opt => opt.Ignore())
+                    .ForMember(x => x.Type1, opt => opt.Ignore());
+
+
                 cfg.CreateMap<DayEVM, DayEVM>();
                 cfg.CreateMap<Day, DayEVM>();
                 cfg.CreateMap<DayEVM, Day>()
                     .ForMember(x => x.DayType, opt => opt.Ignore())
+                    .ForMember(x => x.Event, opt => opt.Ignore())
                     .ForMember(x => x.Timesheets, opt => opt.Ignore());
 
                 cfg.CreateMap<Timesheet, TimesheetEVM>();
@@ -54,7 +62,7 @@ namespace Great
 
                 cfg.CreateMap<Factory, FactoryEVM>();
                 cfg.CreateMap<FactoryEVM, Factory>()
-                    .ForMember(x => x.TransferType1, opt => opt.Ignore());                
+                    .ForMember(x => x.TransferType1, opt => opt.Ignore());
 
                 cfg.CreateMap<FDL, FDLDTO>();
                 cfg.CreateMap<FDLStatus, FDLStatusDTO>();
@@ -69,6 +77,8 @@ namespace Great
                 cfg.CreateMap<Day, DayDTO>();
                 cfg.CreateMap<DayType, DayTypeDTO>();
                 cfg.CreateMap<FactoryEVM, FactoryDTO>();
+                cfg.CreateMap<EventType, EventTypeDTO>();
+                cfg.CreateMap<Event, EventDTO>().ForMember(x => x.Status1, opt => opt.Ignore());
             });
 
             Mapper = config.CreateMapper();

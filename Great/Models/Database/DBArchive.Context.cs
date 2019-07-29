@@ -27,5 +27,8 @@ namespace Great.Models.Database
         public virtual DbSet<OrderEmailRecipient> OrderEmailRecipients { get; set; }
         public virtual DbSet<Timesheet> Timesheets { get; set; }
         public virtual DbSet<TransferType> TransferTypes { get; set; }
+        public virtual DbSet<Event> Events { get; set; }
+        public virtual DbSet<EventType> EventTypes { get; set; }
+        public virtual DbSet<EventStatus> EventStatus { get; set; }
     }
 }

@@ -164,6 +164,7 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.111.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
@@ -182,6 +183,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Controls.Input.Toolkit">
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
       <Private>True</Private>
@@ -236,6 +238,9 @@
     <Compile Include="Models\Database\Day.cs" />
     <Compile Include="Models\Database\DayType.cs" />
     <Compile Include="Models\Database\DBArchive.Context.cs" />
+    <Compile Include="Models\Database\Event.cs" />
+    <Compile Include="Models\Database\EventStatus.cs" />
+    <Compile Include="Models\Database\EventType.cs" />
     <Compile Include="Models\Database\Expense.cs" />
     <Compile Include="Models\Database\ExpenseAccount.cs" />
     <Compile Include="Models\Database\ExpenseType.cs" />
@@ -252,6 +257,9 @@
     <Compile Include="Models\DTO\DayTypeDTO.cs" />
     <Compile Include="Models\DTO\DayDTO.cs" />
     <Compile Include="Models\DTO\EmailMessageDTO.cs" />
+    <Compile Include="Models\DTO\EventDTO.cs" />
+    <Compile Include="Models\DTO\EventStatusDTO.cs" />
+    <Compile Include="Models\DTO\EventTypeDTO.cs" />
     <Compile Include="Models\DTO\ExpenseTypeDTO.cs" />
     <Compile Include="Models\DTO\FactoryDTO.cs" />
     <Compile Include="Models\DTO\FDLDTO.cs" />
@@ -261,19 +269,23 @@
     <Compile Include="Models\DTO\TransferTypeDTO.cs" />
     <Compile Include="Models\Interfaces\IFDLFile.cs" />
     <Compile Include="Models\Interfaces\IProvider.cs" />
-    <Compile Include="Models\MSExchangeProvider.cs" />
+    <Compile Include="Models\Sharepoint\EventManager.cs" />
+    <Compile Include="Models\Sharepoint\MSSharepointProvider.cs" />
+    <Compile Include="Models\Exchange\MSExchangeProvider.cs" />
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
     <Compile Include="Utils\AttachedProperties\TextBoxHelper.cs" />
     <Compile Include="Utils\AutomapperConfiguration.cs" />
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
     <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
+    <Compile Include="Utils\Converters\EventStatusToImageConverter.cs" />
+    <Compile Include="Utils\Converters\EventStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\NegateBoolConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
     <Compile Include="Utils\Converters\CompareIntConverter.cs" />
-    <Compile Include="Models\FDLManager.cs" />
+    <Compile Include="Models\Exchange\FDLManager.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -305,11 +317,13 @@
     <Compile Include="ViewModels\Database\CarRentalEVM.cs" />
     <Compile Include="ViewModels\Database\DayEVM.cs" />
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
+    <Compile Include="ViewModels\Database\EventEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseAccountEVM.cs" />
     <Compile Include="ViewModels\Database\ExpenseEVM.cs" />
     <Compile Include="ViewModels\Database\FactoryEVM.cs" />
     <Compile Include="ViewModels\Database\FDLEVM.cs" />
     <Compile Include="ViewModels\Database\TimesheetEVM.cs" />
+    <Compile Include="ViewModels\EventsViewModel.cs" />
     <Compile Include="ViewModels\ExpenseAccountViewModel.cs" />
     <Compile Include="ViewModels\FDLViewModel.cs" />
     <Compile Include="ViewModels\FDLImportWizardViewModel.cs" />
@@ -320,6 +334,9 @@
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\OrderRecipientsViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\Dialogs\EventsView.xaml.cs">
+      <DependentUpon>EventsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\ExchangeLoginView.xaml.cs">
       <DependentUpon>ExchangeLoginView.xaml</DependentUpon>
     </Compile>
@@ -361,13 +378,23 @@
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Skins\SkinResourceDictionary.cs" />
     <Compile Include="Views\Wizards\FDLImportWizardView.xaml.cs">
       <DependentUpon>FDLImportWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Wizards\GreatImportWizardView.xaml.cs">
       <DependentUpon>GreatImportWizardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Web References\SharepointReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\EventsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -431,6 +458,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Skins\LightSkin.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Skins\DarkSkin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Wizards\FDLImportWizardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -464,6 +499,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Web References\SharepointReference\lists.wsdl" />
+    <None Include="Web References\SharepointReference\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -597,12 +637,34 @@
     <Resource Include="Images\16\file-pdf.png" />
     <Resource Include="Images\32\build-ea.png" />
     <Resource Include="Images\32\folder.png" />
+    <Content Include="UpgradeScripts\3_19-07-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\2_12-07-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="UpgradeScripts\1_12-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="UpgradeScripts\Template\X_TemplateMigration.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://intranet.elettric80.it/_vti_bin/lists.asmx%3fWSDL">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\SharepointReference\</RelPath>
+      <UpdateFromURL>https://intranet.elettric80.it/_vti_bin/lists.asmx%3fWSDL</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Great_SharepointReference_Lists</CachedSettingsPropName>
+    </WebReferenceUrl>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" />

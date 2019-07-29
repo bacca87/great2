@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using static Great.Models.EventManager;
 
 namespace Great.ViewModels
 {
@@ -126,6 +127,8 @@ namespace Great.ViewModels
         public RelayCommand<DayEVM> SetVacationDayCommand { get; set; }
         public RelayCommand<DayEVM> SetSickLeaveCommand { get; set; }
         public RelayCommand<DayEVM> SetWorkDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetHomeWorkDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetVacationPaidDayCommand { get; set; }
 
         public RelayCommand<DayEVM> ResetDayCommand { get; set; }
         public RelayCommand<DayEVM> CopyDayCommand { get; set; }
@@ -135,6 +138,7 @@ namespace Great.ViewModels
         public RelayCommand ClearTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
+        public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -150,6 +154,8 @@ namespace Great.ViewModels
             SetVacationDayCommand = new RelayCommand<DayEVM>(SetVacationDay);
             SetSickLeaveCommand = new RelayCommand<DayEVM>(SetSickLeave);
             SetWorkDayCommand = new RelayCommand<DayEVM>(SetWorkDay);
+            SetHomeWorkDayCommand = new RelayCommand<DayEVM>(SetHomeWorkingDay);
+            SetVacationPaidDayCommand = new RelayCommand<DayEVM>(SetVacationPaidDay);
 
             ResetDayCommand = new RelayCommand<DayEVM>(ResetDay);
             CopyDayCommand = new RelayCommand<DayEVM>(CopyDay);
@@ -159,6 +165,10 @@ namespace Great.ViewModels
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
+
+            MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventCreated);
+            MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
+            MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
 
             UpdateWorkingDays();
         }
@@ -173,6 +183,7 @@ namespace Great.ViewModels
                 {
                     foreach (DateTime day in AllDatesInMonth(CurrentYear, month))
                     {
+                        var a = db.Days.ToList();
                         long timestamp = day.ToUnixTimestamp();
                         Day currentDay = db.Days.SingleOrDefault(d => d.Timestamp == timestamp);
 
@@ -217,6 +228,8 @@ namespace Great.ViewModels
         public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
         public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
         public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
+        public void SetHomeWorkingDay(DayEVM day) => SetDayType(day, EDayType.HomeWorking);
+        public void SetVacationPaidDay(DayEVM day) => SetDayType(day, EDayType.VacationPaidDay);
 
         private void SetDayType(DayEVM day, EDayType type)
         {
@@ -236,6 +249,7 @@ namespace Great.ViewModels
 
                     day.Timesheets.Clear();
                 }
+
                 else
                     cancel = true;
             }
@@ -244,11 +258,11 @@ namespace Great.ViewModels
             {
                 day.EType = type;
                 day.Save();
+                Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, day));
             }
 
             IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay;
         }
-
         public void CopyDay(DayEVM day)
         {
             if (day == null)
@@ -260,13 +274,11 @@ namespace Great.ViewModels
             ClipboardX.Clear();
             ClipboardX.AddItem("Day", dayClone);
         }
-
         public void CutDay(DayEVM day)
         {
             CopyDay(day);
             ResetDay(day);
         }
-
         public void PasteDay(DayEVM destinationDay)
         {
             if (destinationDay == null || !ClipboardX.Contains("Day"))
@@ -310,13 +322,11 @@ namespace Great.ViewModels
                 }
             }
         }
-
         public void ResetDay(DayEVM day)
         {
             if (day.Delete())
                 day.EType = EDayType.WorkDay;
         }
-
         public void DeleteTimesheet(TimesheetEVM timesheet)
         {
             if (timesheet == null)
@@ -330,7 +340,6 @@ namespace Great.ViewModels
                 Messenger.Default.Send(new DeletedItemMessage<TimesheetEVM>(this, timesheet));
             }
         }
-
         public void SaveTimesheet(TimesheetEVM timesheet)
         {
             if (timesheet == null)
@@ -368,6 +377,33 @@ namespace Great.ViewModels
                     Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
             }
+        }
+
+        private void EventDeleted(DeletedItemMessage<EventEVM> ev)
+        {
+            UpdateWorkingDays();
+            var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
+            days.ForEach(x => SetDayType(x, EDayType.WorkDay));
+        }
+        private void EventChanged(ItemChangedMessage<EventEVM> ev)
+        {
+            UpdateWorkingDays();
+            var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
+            switch (ev.Content.EStatus)
+            {
+                case EEventStatus.Accepted:
+                    days.ForEach(x => SetDayType(x, EDayType.VacationDay));
+                    break;
+                case EEventStatus.Rejected:
+                case EEventStatus.Cancelled:
+                    days.ForEach(x => SetDayType(x, EDayType.WorkDay));
+                    break;
+            }
+        }
+        private void EventCreated(NewItemMessage<EventEVM> ev)
+        {
+            var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
+            days.ForEach(x => SetDayType(x, EDayType.PendingVacation));
         }
     }
 }

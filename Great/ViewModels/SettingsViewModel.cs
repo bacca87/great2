@@ -6,6 +6,7 @@ using Nager.Date;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Windows.Media;
 using System.Linq;
 
 namespace Great.ViewModels
@@ -101,6 +102,25 @@ namespace Great.ViewModels
             }
         }
 
+    
+        /// <summary>
+        /// Sets and gets the VacationColor property.
+        /// Changes to that property's value raise the PropertyChanged event.         
+        /// </summary>
+        public ESkin Skin
+        {
+            get
+            {
+                return UserSettings.Themes.Skin;
+            }
+
+            set
+            {
+                UserSettings.Themes.Skin = value;
+                RaisePropertyChanged(nameof(Skin));
+            }
+        }
+
         /// <summary>
         /// Sets and gets the AutoAssignFactories property.
         /// Changes to that property's value raise the PropertyChanged event.         
@@ -148,6 +168,7 @@ namespace Great.ViewModels
         /// </summary>
         public SettingsViewModel()
         {
+            
         }
     }
 }

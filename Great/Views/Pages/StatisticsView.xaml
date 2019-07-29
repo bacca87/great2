@@ -83,14 +83,14 @@
                           Labels="{Binding MonthsLabels}" 
                           Foreground="{DynamicResource TextBrush}">
                         <lvc:Axis.Separator>
-                            <lvc:Separator Step="1" />
+                            <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
                         </lvc:Axis.Separator>
                     </lvc:Axis>
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.AxisY>
                     <lvc:Axis Title="Hours"
                           Foreground="{DynamicResource TextBrush}">
-                        <lvc:Axis.Separator>
+                        <lvc:Axis.Separator >
                             <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                 <lvc:Separator.Stroke>
                                     <SolidColorBrush Color="{DynamicResource Gray7}" />

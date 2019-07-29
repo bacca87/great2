@@ -81,6 +81,7 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, RefreshTimesheet);
             MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, RefreshTimesheet);
+            MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, RefreshDay);
         }
 
         private void RefreshAllData()
@@ -230,6 +231,12 @@ namespace Great.ViewModels
                                   select d
                             ).Count();
 
+                //count all home working days 
+                var homeWorkingDays = (from d in db.Days
+                                       where d.DayType.Id == (long)EDayType.HomeWorking
+                                       select d
+                            ).Count();
+
                 //count all sick days without
                 var sickDays = (from d in db.Days
                                 where d.DayType.Id == (long)EDayType.SickLeave
@@ -251,6 +258,13 @@ namespace Great.ViewModels
 
                 Days.Add(new PieSeries
                 {
+                    Title = "Home Work",
+                    Values = new ChartValues<int> { homeWorkingDays },
+                    DataLabels = true
+                });
+
+                Days.Add(new PieSeries
+                {
                     Title = "Business Trip",
                     Values = new ChartValues<int> { businessTripDays },
                     DataLabels = true
@@ -263,21 +277,27 @@ namespace Great.ViewModels
                     DataLabels = true
                 });
 
-                Days?.Add(new PieSeries
+               Days?.Add(new PieSeries
                 {
                     Title = "Vacation",
                     Values = new ChartValues<int> { vacationDays },
                     DataLabels = true
                 });
+
+
             }
 
 
         }
-        private void RefreshTimesheet (ItemChangedMessage<TimesheetEVM> item)
+        private void RefreshTimesheet(ItemChangedMessage<TimesheetEVM> item)
         {
             RefreshAllData();
         }
         private void RefreshTimesheet(DeletedItemMessage<TimesheetEVM> item)
+        {
+            RefreshAllData();
+        }
+        private void RefreshDay(ItemChangedMessage<DayEVM> item)
         {
             RefreshAllData();
         }
