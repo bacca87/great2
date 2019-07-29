@@ -378,7 +378,7 @@
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Skins\SkinResourceDictionary.cs" />
+    <Compile Include="Utils\SkinResourceDictionary.cs" />
     <Compile Include="Views\Wizards\FDLImportWizardView.xaml.cs">
       <DependentUpon>FDLImportWizardView.xaml</DependentUpon>
     </Compile>
@@ -458,11 +458,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Skins\LightSkin.xaml">
+    <Page Include="Skins\LightSkin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Skins\DarkSkin.xaml">
+    <Page Include="Skins\DarkSkin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,6 +1,6 @@
 ﻿using Great.Models;
 using Great.Models.Database;
-using Great.Views.Skins;
+using Great.Utils;
 using NLog;
 using System;
 using System.Data.Entity;
@@ -102,10 +102,8 @@ namespace Great
 
         public void ApplySkin(ESkin newSkin)
         {
-
             foreach (ResourceDictionary dict in Resources.MergedDictionaries)
             {
-
                 if (dict is SkinResourceDictionary skinDict)
                     skinDict.UpdateSource();
                 else
