@@ -216,6 +216,8 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 string YearStr = SelectedYear.ToString();
+                long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
+                long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
 
                 //count all trip days
                 var businessTripDays = (from d in db.Days
@@ -227,67 +229,94 @@ namespace Great.ViewModels
                 //count all office days without fdl
                 var officeDays = (from d in db.Days
                                   from ts in d.Timesheets
-                                  where d.DayType.Id == (long)EDayType.WorkDay && ts.FDL1 == null
+                                  where d.DayType.Id == (long)EDayType.WorkDay && ts.FDL1 == null && d.Timestamp >= startDate && d.Timestamp <= endDate
                                   select d
                             ).Count();
 
                 //count all home working days 
                 var homeWorkingDays = (from d in db.Days
-                                       where d.DayType.Id == (long)EDayType.HomeWorking
+                                       where d.DayType.Id == (long)EDayType.HomeWorking && d.Timestamp >= startDate && d.Timestamp <= endDate
                                        select d
                             ).Count();
 
-                //count all sick days without
+                //count all sick leaves 
                 var sickDays = (from d in db.Days
-                                where d.DayType.Id == (long)EDayType.SickLeave
+                                where d.DayType.Id == (long)EDayType.SickLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
                                 select d
                             ).Count();
 
-                //count all vacations days without
+                //count all vacations days
                 var vacationDays = (from d in db.Days
-                                    where d.DayType.Id == (long)EDayType.VacationDay
+                                    where d.DayType.Id == (long)EDayType.VacationDay && d.Timestamp >= startDate && d.Timestamp <= endDate
                                     select d
                             ).Count();
 
-                Days.Add(new PieSeries
+                //count all special leaves
+                var specialDays = (from d in db.Days
+                                    where d.DayType.Id == (long)EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                   select d
+                            ).Count();
+
+                if (officeDays > 0)
                 {
-                    Title = "Office",
-                    Values = new ChartValues<int> { officeDays },
-                    DataLabels = true
-                });
+                    Days.Add(new PieSeries
+                    {
+                        Title = "Office",
+                        Values = new ChartValues<int> { officeDays },
+                        DataLabels = true
+                    });
+                }
 
-                Days.Add(new PieSeries
+                if (homeWorkingDays > 0)
                 {
-                    Title = "Home Work",
-                    Values = new ChartValues<int> { homeWorkingDays },
-                    DataLabels = true
-                });
+                    Days.Add(new PieSeries
+                    {
+                        Title = "Home Work",
+                        Values = new ChartValues<int> { homeWorkingDays },
+                        DataLabels = true
+                    });
+                }
 
-                Days.Add(new PieSeries
+                if (businessTripDays > 0)
                 {
-                    Title = "Business Trip",
-                    Values = new ChartValues<int> { businessTripDays },
-                    DataLabels = true
-                });
+                    Days.Add(new PieSeries
+                    {
+                        Title = "Business Trip",
+                        Values = new ChartValues<int> { businessTripDays },
+                        DataLabels = true
+                    });
+                }
 
-                Days?.Add(new PieSeries
+                if (sickDays > 0)
                 {
-                    Title = "Sick",
-                    Values = new ChartValues<int> { sickDays },
-                    DataLabels = true
-                });
+                    Days?.Add(new PieSeries
+                    {
+                        Title = "Sick Leave",
+                        Values = new ChartValues<int> { sickDays },
+                        DataLabels = true
+                    });
+                }
 
-               Days?.Add(new PieSeries
+                if (vacationDays > 0)
                 {
-                    Title = "Vacation",
-                    Values = new ChartValues<int> { vacationDays },
-                    DataLabels = true
-                });
+                    Days?.Add(new PieSeries
+                    {
+                        Title = "Vacations",
+                        Values = new ChartValues<int> { vacationDays },
+                        DataLabels = true
+                    });
+                }
 
-
+                if (specialDays > 0)
+                {
+                    Days?.Add(new PieSeries
+                    {
+                        Title = "Special Leave",
+                        Values = new ChartValues<int> { specialDays },
+                        DataLabels = true
+                    });
+                }
             }
-
-
         }
         private void RefreshTimesheet(ItemChangedMessage<TimesheetEVM> item)
         {

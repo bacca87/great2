@@ -78,7 +78,7 @@ namespace Great.ViewModels.Database
         public bool IsVacationDay => EType == EDayType.VacationDay;
         public bool IsSickLeave => EType == EDayType.SickLeave;
         public bool IsHomeWorking => EType == EDayType.HomeWorking;
-        public bool IsVacationPaidDay => EType == EDayType.VacationPaidDay;
+        public bool IsSpecialLeave => EType == EDayType.SpecialLeave;
 
         #region Totals
         public float? TotalTime
@@ -342,7 +342,7 @@ namespace Great.ViewModels.Database
         {
             RaisePropertyChanged(nameof(IsWorkDay));
             RaisePropertyChanged(nameof(IsVacationDay));
-            RaisePropertyChanged(nameof(IsVacationPaidDay));
+            RaisePropertyChanged(nameof(IsSpecialLeave));
             RaisePropertyChanged(nameof(IsSickLeave));
             RaisePropertyChanged(nameof(IsHomeWorking));
 
@@ -402,7 +402,6 @@ namespace Great.ViewModels.Database
         VacationDay = 1,
         SickLeave = 2,
         HomeWorking = 3,
-        PendingVacation = 4,
-        VacationPaidDay=5
+        SpecialLeave = 4
     }
 }

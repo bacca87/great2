@@ -262,12 +262,7 @@ namespace Great.ViewModels.Database
 
         public override bool Save(DBArchive db)
         {
-            if (IsReadOnly)
-                return false;
-
             FDL fdl = new FDL();
-
-            IsCompiled = false;
 
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);

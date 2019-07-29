@@ -118,8 +118,7 @@
                     <Separator/>
                     <MenuItem Header="Day Type">
                         <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
-                        <MenuItem Header="Vacation Paid Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationPaidDay, Mode=OneWay}" Command="{Binding SetVacationPaidDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
-
+                        <MenuItem Header="Special Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSpecialLeave, Mode=OneWay}" Command="{Binding SetSpecialLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
                         <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                         <Separator/>
                         <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>

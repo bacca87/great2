@@ -436,7 +436,7 @@ namespace Great.ViewModels
 
         public void SaveFDL(FDLEVM fdl)
         {
-            if (fdl == null)
+            if (fdl == null || fdl.IsReadOnly)
                 return;
 
             if (fdl.Factory == null || fdl.Factory == -1)
@@ -445,6 +445,7 @@ namespace Great.ViewModels
                 return;
             }
 
+            fdl.IsCompiled = false;
             fdl.Save();
         }
     }

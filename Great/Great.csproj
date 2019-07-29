@@ -634,6 +634,9 @@
     <Resource Include="Images\32\build-fdl.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="UpgradeScripts\4_29-07-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\16\file-pdf.png" />
     <Resource Include="Images\32\build-ea.png" />
     <Resource Include="Images\32\folder.png" />

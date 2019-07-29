@@ -200,12 +200,7 @@ namespace Great.ViewModels.Database
 
         public override bool Save(DBArchive db)
         {
-            if (IsReadOnly)
-                return false;
-
             ExpenseAccount ea = new ExpenseAccount();
-
-            IsCompiled = false;
 
             Global.Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);

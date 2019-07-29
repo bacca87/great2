@@ -238,7 +238,7 @@ namespace Great.ViewModels
 
         public void SaveEA(ExpenseAccountEVM ea)
         {
-            if (ea == null)
+            if (ea == null || ea.IsReadOnly)
                 return;
 
             if (string.IsNullOrEmpty(ea.Currency))
@@ -249,6 +249,7 @@ namespace Great.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
+                ea.IsCompiled = false;
                 ea.Save(db);
 
                 if (ea.Id == 0)

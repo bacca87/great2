@@ -128,7 +128,7 @@ namespace Great.ViewModels
         public RelayCommand<DayEVM> SetSickLeaveCommand { get; set; }
         public RelayCommand<DayEVM> SetWorkDayCommand { get; set; }
         public RelayCommand<DayEVM> SetHomeWorkDayCommand { get; set; }
-        public RelayCommand<DayEVM> SetVacationPaidDayCommand { get; set; }
+        public RelayCommand<DayEVM> SetSpecialLeaveCommand { get; set; }
 
         public RelayCommand<DayEVM> ResetDayCommand { get; set; }
         public RelayCommand<DayEVM> CopyDayCommand { get; set; }
@@ -155,7 +155,7 @@ namespace Great.ViewModels
             SetSickLeaveCommand = new RelayCommand<DayEVM>(SetSickLeave);
             SetWorkDayCommand = new RelayCommand<DayEVM>(SetWorkDay);
             SetHomeWorkDayCommand = new RelayCommand<DayEVM>(SetHomeWorkingDay);
-            SetVacationPaidDayCommand = new RelayCommand<DayEVM>(SetVacationPaidDay);
+            SetSpecialLeaveCommand = new RelayCommand<DayEVM>(SetSpecialLeave);
 
             ResetDayCommand = new RelayCommand<DayEVM>(ResetDay);
             CopyDayCommand = new RelayCommand<DayEVM>(CopyDay);
@@ -229,7 +229,7 @@ namespace Great.ViewModels
         public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
         public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
         public void SetHomeWorkingDay(DayEVM day) => SetDayType(day, EDayType.HomeWorking);
-        public void SetVacationPaidDay(DayEVM day) => SetDayType(day, EDayType.VacationPaidDay);
+        public void SetSpecialLeave(DayEVM day) => SetDayType(day, EDayType.SpecialLeave);
 
         private void SetDayType(DayEVM day, EDayType type)
         {
@@ -391,8 +391,7 @@ namespace Great.ViewModels
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             switch (ev.Content.EStatus)
             {
-                case EEventStatus.Accepted:
-                    days.ForEach(x => SetDayType(x, EDayType.VacationDay));
+                case EEventStatus.Accepted:                    
                     break;
                 case EEventStatus.Rejected:
                 case EEventStatus.Cancelled:
@@ -403,7 +402,7 @@ namespace Great.ViewModels
         private void EventCreated(NewItemMessage<EventEVM> ev)
         {
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
-            days.ForEach(x => SetDayType(x, EDayType.PendingVacation));
+            days.ForEach(x => SetDayType(x, EDayType.VacationDay));
         }
     }
 }
