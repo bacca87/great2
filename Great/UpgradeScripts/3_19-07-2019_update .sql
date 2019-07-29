@@ -41,7 +41,7 @@ CREATE TABLE [EventType](
 
    ALTER TABLE [Day] ADD COLUMN [Event] INTEGER null REFERENCES [Event]([Id]);
 
-   UPDATE [DayType] SET Name ='Pending Vacation' WHERE Id=4
+   UPDATE [DayType] SET Name ='Pending Vacation' WHERE Id=4;
 
 --=========================================================================
 -- MANDATORY: Increment internal db version
