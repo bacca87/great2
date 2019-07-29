@@ -238,7 +238,7 @@ namespace Great.ViewModels
             if (day == null || day.EType == type)
                 cancel = true;
 
-            if (!cancel && type != EDayType.WorkDay && day.Timesheets.Count() > 0)
+            if (!cancel && (type != EDayType.WorkDay && type != EDayType.HomeWorking) && day.Timesheets.Count() > 0)
             {
                 if (MessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
@@ -261,7 +261,7 @@ namespace Great.ViewModels
                 Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, day));
             }
 
-            IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay;
+            IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay && day.EType != EDayType.SpecialLeave;
         }
         public void CopyDay(DayEVM day)
         {

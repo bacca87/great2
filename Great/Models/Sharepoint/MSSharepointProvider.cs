@@ -133,10 +133,6 @@ namespace Great.Models
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
             }
-
-
-
-
         }
 
         private void UpdaterThread()
@@ -283,8 +279,6 @@ namespace Great.Models
             d.LoadXml(doc.ToString());
             return d;
         }
-
-
     }
 
     public class EventChangedEventArgs : EventArgs
