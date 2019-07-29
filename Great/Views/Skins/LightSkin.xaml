@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
     <ResourceDictionary.MergedDictionaries>
         <!--Fluent Ribbon Styles-->
         <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
@@ -22,6 +20,8 @@
         <!--this is required always-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
 
+        <!--Custom Styles-->
+        <!--TODO allineare con material palette -->
         <ResourceDictionary>
             <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
                 <Setter Property="BorderThickness" Value="0.5"></Setter>
@@ -38,76 +38,36 @@
                         <Setter Property="Background" Value="#ffb380" />
                         <!--Light orange-->
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="1">
+                    <DataTrigger Binding="{Binding Type}" Value="1"> <!--Vacation-->
                         <Setter Property="Background" Value="#80ff80" />
                         <!--light green -->
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="2">
+                    <DataTrigger Binding="{Binding Type}" Value="2"> <!--Day Of Sick-->
                         <Setter Property="Background" Value="#ff80ff" />
                         <!--Purple-->
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="3">
+                    <DataTrigger Binding="{Binding Type}" Value="3"> <!--Day of Home Work-->
                         <Setter Property="Background" Value="#bfbfbf" />
                         <!--Purple-->
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="4">
+                    <DataTrigger Binding="{Binding Type}" Value="4"> <!--Special Leave-->
                         <Setter Property="Background" Value="#ccffcc" />
                         <!--Purple-->
                     </DataTrigger>
-
                 </Style.Triggers>
             </Style>
-            <Style x:Key="travelstartTextBox"  TargetType="xctk:MaskedTextBox" >
-                <Setter Property="Background" Value="#ccddff" />
-                <Setter Property="Margin" Value="2.5" />
-                <Setter Property="MaxLength" Value="5" />
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="Width" Value="70" />
-                <Setter Property="TextAlignment" Value="Center" />
-                <Setter Property="Mask" Value="00\:00" />
-                <Setter Property="PromptChar" Value=" "/>
-                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
-                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
-                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
 
-            </Style>
-            <Style x:Key="travelendTextBox"  TargetType="xctk:MaskedTextBox" >
+            <!--TODO allineare con material palette -->
+            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
                 <Setter Property="Background" Value="#ccddff" />
-                <Setter Property="Margin" Value="2.5" />
-                <Setter Property="MaxLength" Value="5" />
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="Width" Value="70" />
-                <Setter Property="TextAlignment" Value="Center" />
-                <Setter Property="Mask" Value="00\:00" />
-                <Setter Property="PromptChar" Value=" "/>
-                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
-                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
-                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
             </Style>
-            <Style x:Key="workstartTextBox"  TargetType="xctk:MaskedTextBox" >
+            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
+                <Setter Property="Background" Value="#ccddff" />
+            </Style>
+            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
                 <Setter Property="Background" Value="#e6ffcc" />
-                <Setter Property="Margin" Value="2.5" />
-                <Setter Property="MaxLength" Value="5" />
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="Width" Value="70" />
-                <Setter Property="TextAlignment" Value="Center" />
-                <Setter Property="Mask" Value="00\:00" />
-                <Setter Property="PromptChar" Value=" "/>
-                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
-                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
-                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
             </Style>
-            <Style x:Key="workendTextBox"  TargetType="xctk:MaskedTextBox" >
-                <Setter Property="Margin" Value="2.5" />
-                <Setter Property="MaxLength" Value="5" />
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="Width" Value="70" />
-                <Setter Property="TextAlignment" Value="Center" />
-                <Setter Property="Mask" Value="00\:00" />
-                <Setter Property="PromptChar" Value=" "/>
-                <Setter Property="ValueDataType" Value="{x:Type sys:TimeSpan}" />
-                <Setter Property="AutoSelectBehavior" Value="OnFocus" />
-                <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
                 <Setter Property="Background" Value="#e6ffcc" />
             </Style>
         </ResourceDictionary>
