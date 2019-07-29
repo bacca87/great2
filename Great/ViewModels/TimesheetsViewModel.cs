@@ -228,7 +228,7 @@ namespace Great.ViewModels
         public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
         public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
         public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
-        public void SetHomeWorkingDay(DayEVM day) => SetDayType(day, EDayType.HomeWorking);
+        public void SetHomeWorkingDay(DayEVM day) => SetDayType(day, EDayType.HomeWorkDay);
         public void SetSpecialLeave(DayEVM day) => SetDayType(day, EDayType.SpecialLeave);
 
         private void SetDayType(DayEVM day, EDayType type)
@@ -238,7 +238,7 @@ namespace Great.ViewModels
             if (day == null || day.EType == type)
                 cancel = true;
 
-            if (!cancel && (type != EDayType.WorkDay && type != EDayType.HomeWorking) && day.Timesheets.Count() > 0)
+            if (!cancel && (type != EDayType.WorkDay && type != EDayType.HomeWorkDay) && day.Timesheets.Count() > 0)
             {
                 if (MessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {

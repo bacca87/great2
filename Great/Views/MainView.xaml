@@ -91,6 +91,11 @@
                             <Fluent:ScreenTip Title="Day of Work" Text="Set the selected day as day of work." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
+                    <Fluent:RadioButton Header="Day of Home Work" IsChecked="{Binding SelectedWorkingDay.IsHomeWork, Mode=OneWay}" Command="{Binding SetHomeWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                        <Fluent:RadioButton.ToolTip>
+                            <Fluent:ScreenTip Title="Day of Home Work" Text="Set the selected day as day of home work." />
+                        </Fluent:RadioButton.ToolTip>
+                    </Fluent:RadioButton>
                     <Fluent:RadioButton Header="Sick Leave" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Sick Leave" Text="Set the selected day as sick leave." />
@@ -99,6 +104,11 @@
                     <Fluent:RadioButton Header="Vacation Day" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Vacation Day" Text="Set the selected day as vacation day." />
+                        </Fluent:RadioButton.ToolTip>
+                    </Fluent:RadioButton>
+                    <Fluent:RadioButton Header="Special Leave Day" IsChecked="{Binding SelectedWorkingDay.IsSpecialLeave, Mode=OneWay}" Command="{Binding SetSpecialLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                        <Fluent:RadioButton.ToolTip>
+                            <Fluent:ScreenTip Title="Special Leave Day" Text="Set the selected day as special leave day." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
                     <Fluent:Button Header="Today" Command="{Binding SelectTodayCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/calendar.png">
@@ -424,35 +434,7 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>
-            <!--<Fluent:RibbonTabItem Header="EVENTS" 
-                                  DataContext="{Binding Events, Source={StaticResource Locator}}"
-                                  Visibility="{Binding ElementName=eventsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=eventsTab, Path=IsSelected, Mode=OneWay}">
-
-                <Fluent:RibbonGroupBox Header="Actions">
-                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/bus.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Add Vacation" Text="Add a new Vacation" />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected EA as accepted." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Mark as Deleted" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Mark as Deleted" Text="Mark the selected EA as accepted." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Cancel EA" Text="Cancel the selected EA." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>-->
+            </Fluent:RibbonTabItem>            
             <Fluent:RibbonTabItem Header="FACTORIES" 
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
@@ -504,19 +486,7 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>
-            <!--<Fluent:RibbonTabItem Header="EDIT" 
-                                  DataContext="{Binding Events, Source={StaticResource Locator}}"
-                                  IsSelected="{Binding ShowContextualMenu}"
-                                  Group="{Binding Source={x:Reference EditEventsGroup}}">
-                <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Save Vacation" Text="Save the current vacation." />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>-->
+            </Fluent:RibbonTabItem>            
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">

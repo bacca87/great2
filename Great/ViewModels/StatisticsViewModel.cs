@@ -235,7 +235,7 @@ namespace Great.ViewModels
 
                 //count all home working days 
                 var homeWorkingDays = (from d in db.Days
-                                       where d.DayType.Id == (long)EDayType.HomeWorking && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                       where d.DayType.Id == (long)EDayType.HomeWorkDay && d.Timestamp >= startDate && d.Timestamp <= endDate
                                        select d
                             ).Count();
 

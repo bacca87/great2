@@ -122,7 +122,7 @@
                         <MenuItem Header="Sick Leave" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                         <Separator/>
                         <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
-                        <MenuItem Header="Day of Home Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsHomeWorking, Mode=OneWay}" Command="{Binding SetHomeWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
+                        <MenuItem Header="Day of Home Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsHomeWork, Mode=OneWay}" Command="{Binding SetHomeWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                     </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
