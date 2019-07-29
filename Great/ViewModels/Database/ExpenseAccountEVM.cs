@@ -205,7 +205,7 @@ namespace Great.ViewModels.Database
 
             ExpenseAccount ea = new ExpenseAccount();
 
-           // IsCompiled = false;
+            IsCompiled = false;
 
             Global.Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);

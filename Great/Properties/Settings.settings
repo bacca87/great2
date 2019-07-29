@@ -23,9 +23,6 @@
     <Setting Name="CountryCode" Type="Nager.Date.CountryCode" Scope="User">
       <Value Profile="(Default)">IT</Value>
     </Setting>
-    <Setting Name="Great_SharepointReference_Lists" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">https://intranet.elettric80.it/_vti_bin/lists.asmx</Value>
-    </Setting>
     <Setting Name="Skin" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>

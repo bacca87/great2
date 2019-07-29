@@ -20,8 +20,9 @@ namespace Great.SharepointReference {
     using System.Web.Services.Protocols;
     using System.Xml.Serialization;
     using System.ComponentModel;
-    
-    
+    using System.Configuration;
+
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -97,7 +98,7 @@ namespace Great.SharepointReference {
         
         /// <remarks/>
         public Lists() {
-            this.Url = global::Great.Properties.Settings.Default.Great_SharepointReference_Lists;
+            this.Url = ConfigurationManager.AppSettings["Great_SharepointReference_Lists"];
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;

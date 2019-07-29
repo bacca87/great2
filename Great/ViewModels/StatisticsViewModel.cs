@@ -131,7 +131,7 @@ namespace Great.ViewModels
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
-                var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
+                var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
 
                 var MontlyHours = Days?.GroupBy(d => d.Date.Month)
                                        .Select(g => new
@@ -141,8 +141,7 @@ namespace Great.ViewModels
                                            Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
                                            Overtime35 = g.Sum(x => x.Overtime35 ?? 0),
                                            Overtime50 = g.Sum(x => x.Overtime50 ?? 0),
-                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0),
-                                           HoursOfLeave = g.Sum(x => (x.EType== EDayType.VacationPaidDay || x.EType == EDayType.VacationPaidDay)? 8: (x.HoursOfLeave ?? 0))
+                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0)
                                        });
 
                 ChartValues<float> TotalTimeValues = new ChartValues<float>();
@@ -151,7 +150,6 @@ namespace Great.ViewModels
                 ChartValues<float> Overtime35Values = new ChartValues<float>();
                 ChartValues<float> Overtime50Values = new ChartValues<float>();
                 ChartValues<float> Overtime100Values = new ChartValues<float>();
-                ChartValues<float> HoursOfLeave = new ChartValues<float>();
 
                 foreach (var month in MontlyHours)
                 {
@@ -161,7 +159,6 @@ namespace Great.ViewModels
                     Overtime35Values.Add(month.Overtime35);
                     Overtime50Values.Add(month.Overtime50);
                     Overtime100Values.Add(month.Overtime100);
-                    HoursOfLeave.Add(month.HoursOfLeave);
                 }
 
                 Hours = new SeriesCollection()
@@ -198,14 +195,6 @@ namespace Great.ViewModels
                     {
                         Title = "Overtime 100%",
                         Values = Overtime100Values,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-
-                    new StackedColumnSeries()
-                    {
-                        Title = "Hours of leave",
-                        Values = HoursOfLeave,
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },

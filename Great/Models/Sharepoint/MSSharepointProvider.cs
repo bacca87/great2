@@ -48,103 +48,94 @@ namespace Great.Models
 
             while (!exit)
             {
-                while (eventQueue.Any(e => e.EStatus == EEventStatus.New || e.EStatus == EEventStatus.PendingCancel || e.EStatus == EEventStatus.PendingUpdate))
+                foreach (EventEVM ev in eventQueue)
                 {
-                    EventEVM ev;
-                    bool IsSent = false;
-
-                    if (!eventQueue.TryDequeue(out ev))
-                        continue;
-
-                    do
+                    try
                     {
-                        try
+                        XmlNode request = null;
+
+                        switch (ev.EStatus)
                         {
-                            XmlNode request = null;
+                            case EEventStatus.New:
 
-                            switch (ev.EStatus)
-                            {
-                                case EEventStatus.New:
+                                request = GenerateBatchInsertXML(ev);
+                                using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                {
+                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                    XmlDocument xdoc = new XmlDocument();
 
-                                    request = GenerateBatchInsertXML(ev);
-                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                    xdoc.LoadXml(response.OuterXml);
+                                    var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
+
+                                    if (eventId > 0)
                                     {
-                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        XmlDocument xdoc = new XmlDocument();
-
-                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                        xdoc.LoadXml(response.OuterXml);
-                                        var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
-
-                                        if (eventId > 0)
-                                        {
-                                            IsSent = true;
-                                            ev.SharePointId = eventId;
-                                            ev.EStatus = EEventStatus.Pending;
-                                            ev.Save();
-                                            eventQueue.Enqueue(ev);
-                                            NotifyEventChanged(ev);
-                                        }
+                                        ev.SharePointId = eventId;
+                                        ev.EStatus = EEventStatus.Pending;
+                                        ev.Save();
+                                        NotifyEventChanged(ev);
                                     }
-                                    break;
+                                }
+                                break;
 
-                                case EEventStatus.PendingUpdate:
+                            case EEventStatus.PendingUpdate:
 
-                                    request = GenerateBatchUpdateXML(ev);
-                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                request = GenerateBatchUpdateXML(ev);
+                                using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                {
+                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                    XmlDocument xdoc = new XmlDocument();
+
+                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                    xdoc.LoadXml(response.OuterXml);
+                                    var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
+
+                                    if (ecode == 0)
                                     {
-                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        XmlDocument xdoc = new XmlDocument();
-
-                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                        xdoc.LoadXml(response.OuterXml);
-                                        var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
-
-                                        if (ecode == 0)
-                                        {
-                                            IsSent = true;
-                                            ev.EStatus = EEventStatus.Pending;
-                                            ev.Save();
-                                            NotifyEventChanged(ev);
-                                        }
+ 
+                                        ev.EStatus = EEventStatus.Pending;
+                                        ev.Save();
+                                        NotifyEventChanged(ev);
                                     }
-                                    break;
+                                }
+                                break;
 
-                                case EEventStatus.PendingCancel:
+                            case EEventStatus.PendingCancel:
 
-                                    request = GenerateBatchDeletetXML(ev);
-                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                request = GenerateBatchDeletetXML(ev);
+                                using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                {
+                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                    XmlDocument xdoc = new XmlDocument();
+
+                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                    xdoc.LoadXml(response.OuterXml);
+                                    var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
+
+                                    if (ecode == 0)
                                     {
-                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        XmlDocument xdoc = new XmlDocument();
-
-                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                        xdoc.LoadXml(response.OuterXml);
-                                        var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
-
-                                        if (ecode == 0)
-                                        {
-                                            IsSent = true;
-                                            ev.EStatus = EEventStatus.Cancelled;
-                                            ev.Save();
-                                            NotifyEventChanged(ev);
-                                        }
+                                        ev.EStatus = EEventStatus.Cancelled;
+                                        ev.Save();
+                                        NotifyEventChanged(ev);
                                     }
+                                }
 
-                                    break;
-                            }
-
+                                break;
                         }
-                        catch 
-                        {
-                            continue;
-                        }
+
                     }
-                    while (!IsSent);
+                    catch
+                    {
+                        continue;
+                    }
+
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
             }
+
+
+
 
         }
 
@@ -154,7 +145,6 @@ namespace Great.Models
 
             while (!exit)
             {
-
                 foreach (EventEVM e in eventQueue)
                 {
                     if (e.EStatus != EEventStatus.Pending) continue;
@@ -191,11 +181,11 @@ namespace Great.Models
                             }
                         }
                     }
-                    catch 
+                    catch
                     {
                         continue;
                     }
-                   
+
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
@@ -248,7 +238,7 @@ namespace Great.Models
                 new XElement("Field", new XAttribute("Name", "Title"), ev.Description),
                 new XElement("Field", new XAttribute("Name", "EventDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", s)),
                 new XElement("Field", new XAttribute("Name", "EndDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", e)),
-                new XElement("Field", new XAttribute("Name", "fAllDayEvent"), ev.IsAllDay ? 0 : 1),
+                new XElement("Field", new XAttribute("Name", "fAllDayEvent"), ev.IsAllDay ? 1 : 0),
                 new XElement("Field", new XAttribute("Name", "EventType"), ev.Type - 1))));
 
             XmlDocument d = new XmlDocument();
