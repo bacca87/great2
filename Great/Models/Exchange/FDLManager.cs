@@ -1082,7 +1082,19 @@ namespace Great.Models
                 case EMessageType.EA_Accepted:
                     using (DBArchive db = new DBArchive())
                     {
-                        ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+                        string filename = string.Empty;
+
+                        // get the EA file name
+                        foreach (Attachment attachment in message.Attachments)
+                        {
+                            if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                                continue;
+
+                            filename = (attachment as FileAttachment).Name.ToLower();
+                            break;
+                        }
+
+                        ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
                             accepted.Status = (long)EFDLStatus.Accepted;
@@ -1096,8 +1108,19 @@ namespace Great.Models
                 case EMessageType.EA_RejectedResubmission:
                     using (DBArchive db = new DBArchive())
                     {
-                        //TODO: differenziare la nota spese R da R1
-                        ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FDL == fdlNumber);
+                        string filename = string.Empty;
+
+                        // get the EA file name
+                        foreach (Attachment attachment in message.Attachments)
+                        {
+                            if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                                continue;
+
+                            filename = (attachment as FileAttachment).Name.ToLower();
+                            break;
+                        }
+
+                        ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
                         if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
                         {
                             expenseAccount.Status = (long)EFDLStatus.Rejected;
