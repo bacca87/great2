@@ -242,6 +242,9 @@ namespace Great.ViewModels
 
                     ApplicationSettings.Directories.Data = DataDirectory;
                     MigrateDataCommand.RaiseCanExecuteChanged();
+
+                    // delete old folder and its contents
+                    Directory.Delete(SourcePath, true);
                 }
 
                 MessageBox.Show("Migration Completed!\nThe application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
