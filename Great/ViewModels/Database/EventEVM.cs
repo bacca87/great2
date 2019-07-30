@@ -204,8 +204,8 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private DateTime _ApprovationDateTime;
-        public DateTime ApprovationDateTime
+        private DateTime? _ApprovationDateTime;
+        public DateTime? ApprovationDateTime
         {
             get => _ApprovationDateTime;
             set
