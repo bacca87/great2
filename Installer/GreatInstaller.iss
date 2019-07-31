@@ -21,8 +21,14 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName=C:\Program Files\Great
+; uncomment for version >= 6
+;DefaultDirName={commonpf64}\Great
 DisableProgramGroupPage=yes
 LicenseFile=..\LICENSE
+; Uncomment the following line to run in non administrative install mode (install for current user only.)
+;PrivilegesRequired=lowest
+; uncomment for version >= 6
+;PrivilegesRequiredOverridesAllowed=dialog
 OutputBaseFilename={#MyAppName}{#MyAppVersion}-v{#ApplicationVersion}_setup
 Compression=lzma
 SolidCompression=yes
@@ -41,6 +47,10 @@ Source: "..\Great\bin\Release\*"; Excludes: "*.pdb"; DestDir: "{app}"; Flags: ig
 [Icons]
 Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
+; uncomment for version >= 6
+;Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+;Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
