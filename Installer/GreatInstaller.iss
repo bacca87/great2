@@ -26,7 +26,7 @@ LicenseFile=..\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename={#MyAppName}{#MyAppVersion}_v{#ApplicationVersion}-installer
+OutputBaseFilename={#MyAppName}{#MyAppVersion}-v{#ApplicationVersion}_setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
