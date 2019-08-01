@@ -1,6 +1,7 @@
 ﻿using AutoUpdaterDotNET;
 using Great.Models;
 using Great.Models.Database;
+using Great.Properties;
 using Great.Utils;
 using Newtonsoft.Json;
 using NLog;
@@ -19,7 +20,6 @@ namespace Great
     /// </summary>
     public partial class App : Application
     {
-
          private void Application_Startup(object sender, StartupEventArgs e)
         {   
             // Multiple istance check
@@ -31,6 +31,14 @@ namespace Great
 
                 if (count > 1)
                     Current.Shutdown();
+            }
+
+            // Upgrade Settings
+            if (Settings.Default.UpgradeSettings)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeSettings = false;
+                Settings.Default.Save();
             }
 
             // check for updates

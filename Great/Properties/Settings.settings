@@ -29,5 +29,8 @@
     <Setting Name="DataDirectoryPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">%USERPROFILE%\documents\Great\</Value>
     </Setting>
+    <Setting Name="UpgradeSettings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
