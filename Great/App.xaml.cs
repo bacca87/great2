@@ -1,6 +1,8 @@
-﻿using Great.Models;
+﻿using AutoUpdaterDotNET;
+using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
+using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Data.Entity;
@@ -31,12 +33,15 @@ namespace Great
                     Current.Shutdown();
             }
 
+            // check for updates
+            AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+            AutoUpdater.Start("https://api.github.com/repos/bacca87/great2/releases");
+
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             InitializeDirectoryTree();
             InitializeDatabase();
 
             ApplySkin(UserSettings.Themes.Skin);
-            // TODO: Auto Updater (https://github.com/ravibpatel/AutoUpdater.NET)
         }
 
         private void InitializeDirectoryTree()
@@ -110,7 +115,18 @@ namespace Great
                 else
                     dict.Source = dict.Source;
             }
+        }
 
+        private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
+        {
+            dynamic json = JsonConvert.DeserializeObject(args.RemoteData);
+            args.UpdateInfo = new UpdateInfoEventArgs
+            {
+                CurrentVersion = json.version,
+                ChangelogURL = json.changelog,
+                Mandatory = json.mandatory,
+                DownloadURL = json.url
+            };
         }
     }
 }
