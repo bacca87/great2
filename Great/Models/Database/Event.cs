@@ -25,12 +25,14 @@ namespace Great.Models.Database
         public long EndDateTimeStamp { get; set; }
         public string Description { get; set; }
         public long Status { get; set; }
+        public bool IsSent { get; set; }
         public bool IsAllDay { get; set; }
         public string Approver { get; set; }
         public DateTime? ApprovationDate { get; set; }
 
         [ForeignKey("Status")]
         public virtual EventStatus Status1 { get; set; }
+
         [ForeignKey("Type")]
         public virtual EventType Type1 { get; set; }
         public virtual ICollection<Day> Days { get; set; }

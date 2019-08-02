@@ -9,7 +9,7 @@ namespace Great.Utils.Converters
         {
             string result = string.Empty;
             int intValue = System.Convert.ToInt32(value);
-            
+
             switch (intValue)
             {
                 case 0:
@@ -21,13 +21,9 @@ namespace Great.Utils.Converters
                     break;
 
                 case 2:
+
                     result = "Pending";
                     break;
-
-                case 3:
-                    result = "New";
-                    break;
-
 
             }
 

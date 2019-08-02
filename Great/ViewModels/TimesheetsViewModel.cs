@@ -394,7 +394,6 @@ namespace Great.ViewModels
                 case EEventStatus.Accepted:                    
                     break;
                 case EEventStatus.Rejected:
-                case EEventStatus.Cancelled:
                     days.ForEach(x => SetDayType(x, EDayType.WorkDay));
                     break;
             }

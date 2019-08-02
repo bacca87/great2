@@ -146,7 +146,6 @@ namespace Great.ViewModels
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
         }
 
-
         public void ClearEvent()
         {
             SelectedEvent.StartDate = DateTime.Now;
@@ -156,54 +155,61 @@ namespace Great.ViewModels
 
         public void SaveEvent(EventEVM ev)
         {
-            if (ev == null)
+            if (ev == null || ev.EStatus != EEventStatus.Pending)
                 return;
 
-            ev.StartDate = ev.StartDate.AddHours(BeginHour).AddMinutes(BeginMinutes);
-            ev.EndDate = ev.EndDate.AddHours(EndHour).AddMinutes(EndMinutes);
+            ev.StartDate = new DateTime(ev.StartDate.Year, ev.StartDate.Month, ev.StartDate.Day, BeginHour, BeginMinutes, 0);
+            ev.EndDate = new DateTime(ev.EndDate.Year, ev.EndDate.Month, ev.EndDate.Day, EndHour, EndMinutes, 0);
             ev.Days = null;
 
+            if (ev.StartDate > ev.EndDate) return;
+
+            //id backup
             var Id = ev.Id;
 
             ev.Save();
 
-             if (Id == 0 )_eventManager.Add(ev);
-             else _eventManager.Update(ev);
+            if (Id == 0)
+            {
+                _eventManager.Add(ev);
+                Events.Add(ev);
+            }
 
-            if (!Events.Any(e => e.Id == ev.Id)) Events.Add(ev);
+            else _eventManager.Update(ev);
+
         }
         public void RequestCancellation(EventEVM ev)
         {
-            if (ev == null)
+            if (ev == null || ev.EStatus == EEventStatus.Rejected)
                 return;
 
-            ev.EStatus = EEventStatus.PendingCancel;
-            ev.Save();
             _eventManager.Delete(ev);
 
         }
 
         public void MarkAsAccepted(EventEVM ev)
         {
-            if (ev == null)
+            if (ev == null || ev.EStatus == EEventStatus.Accepted)
                 return;
 
             if (MessageBox.Show("Are you sure to mark as accepted the selected Vacation?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ev.EStatus = EEventStatus.Accepted;
+            ev.IsSent = true;
             ev.Save();
 
         }
         public void MarkAsCancelled(EventEVM ev)
         {
-            if (ev == null)
+            if (ev == null || ev.EStatus == EEventStatus.Rejected)
                 return;
 
             if (MessageBox.Show("Are you sure to mark as Cancelled the selected Vacation?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            ev.EStatus = EEventStatus.Cancelled;
+            ev.EStatus = EEventStatus.Rejected;
+            ev.IsSent = true;
             ev.Save();
 
         }
@@ -215,18 +221,17 @@ namespace Great.ViewModels
                 EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
 
                 //update also approver andd date of approval!
-                    v.EStatus = item.Content.EStatus;
-                    v.Save();
+                v.EStatus = item.Content.EStatus;
+                v.Save();
             }
         }
         public void AddEvent(EventEVM ev)
         {
             IsInputEnabled = true;
             SelectedEvent = new EventEVM();
-            SelectedEvent.EStatus = EEventStatus.New;
+            SelectedEvent.EStatus = EEventStatus.Pending;
             SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
-
         }
     }
 }

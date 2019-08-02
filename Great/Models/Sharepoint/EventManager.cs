@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Great.Utils;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using NLog;
@@ -11,9 +12,9 @@ namespace Great.Models
 
         MSSharepointProvider provider;
 
-        public EventManager(MSSharepointProvider exProvider)
+        public EventManager(MSSharepointProvider shProvider)
         {
-            provider = exProvider;
+            provider = shProvider;
             provider.OnEventChanged += provider_OnEventChanged;
         }
 
@@ -32,10 +33,8 @@ namespace Great.Models
             if (ev == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                provider.Add(ev);
-            }
+            provider.Add(ev);
+
             return true;
         }
 
@@ -44,10 +43,8 @@ namespace Great.Models
             if (ev == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                provider.Update(ev);
-            }
+            provider.Update(ev);
+
             return true;
         }
 
@@ -56,10 +53,8 @@ namespace Great.Models
             if (ev == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                provider.Delete(ev);
-            }
+            provider.Delete(ev);
+
             return true;
 
         }
@@ -68,11 +63,7 @@ namespace Great.Models
         {
             Accepted = 0,
             Rejected = 1,
-            Pending = 2,
-            New = 3,
-            Cancelled = 4,
-            PendingCancel = 5,
-            PendingUpdate = 6
+            Pending = 2
         }
     }
 }

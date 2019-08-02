@@ -136,6 +136,16 @@ namespace Great.ViewModels.Database
             }
         }
 
+        private bool _IsSent;
+        public bool IsSent
+        {
+            get => _IsSent;
+            set
+            {
+                Set(ref _IsSent, value);
+                 RaisePropertyChanged(nameof(IsSent));
+            }
+        }
         private long _Status;
         public long Status
         {
@@ -160,7 +170,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Status = (int)value;
-                IsNew = value == EEventStatus.New;
+                IsNew = value == EEventStatus.Pending && SharePointId ==0;
                 RaisePropertyChanged();
             }
         }

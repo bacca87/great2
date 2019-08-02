@@ -78,7 +78,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Orientation="Vertical">
+            <StackPanel Grid.Row="0" Orientation="Vertical" Margin="2">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="GotFocus">
                         <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
@@ -100,10 +100,12 @@
                 <TextBlock>Car Plate</TextBlock>
                 <toolkit:AutoCompleteBox
                     IsTextCompletionEnabled="False"
+                     IsEnabled="{Binding IsInputEnabled}"
+                    Style="{StaticResource AutoCompleteBoxStyle }"
                     ItemsSource="{Binding Cars }" 
                     ItemTemplate="{StaticResource AutoCompleteLicensePlate}"
                     ValueMemberPath="LicensePlate"
-                    SelectedItem="{Binding SelectedCar, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedCar}"
                     Text="{Binding SelectedCar.LicensePlate, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
 
 

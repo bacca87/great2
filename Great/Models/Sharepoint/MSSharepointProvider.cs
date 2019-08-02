@@ -30,7 +30,6 @@ namespace Great.Models
             using (DBArchive db = new DBArchive())
                 eventQueue = new ConcurrentQueue<EventEVM>(db.Events.ToList().Select(e => new EventEVM(e)));
 
-
             eventUpdaterThread = new Thread(UpdaterThread);
             eventUpdaterThread.Name = "Sharepoint polling thread";
             eventUpdaterThread.IsBackground = true;
@@ -50,15 +49,19 @@ namespace Great.Models
             {
                 foreach (EventEVM ev in eventQueue)
                 {
+                    if (ev.IsSent) continue;
+
                     try
                     {
                         XmlNode request = null;
 
                         switch (ev.EStatus)
                         {
-                            case EEventStatus.New:
+                            case EEventStatus.Pending:
 
-                                request = GenerateBatchInsertXML(ev);
+                                if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
+                                else request = GenerateBatchInsertXML(ev);
+
                                 using (SharepointReference.Lists l = new SharepointReference.Lists())
                                 {
                                     l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
@@ -67,41 +70,26 @@ namespace Great.Models
                                     var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
                                     xdoc.LoadXml(response.OuterXml);
                                     var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
-
-                                    if (eventId > 0)
-                                    {
-                                        ev.SharePointId = eventId;
-                                        ev.EStatus = EEventStatus.Pending;
-                                        ev.Save();
-                                        NotifyEventChanged(ev);
-                                    }
-                                }
-                                break;
-
-                            case EEventStatus.PendingUpdate:
-
-                                request = GenerateBatchUpdateXML(ev);
-                                using (SharepointReference.Lists l = new SharepointReference.Lists())
-                                {
-                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                    XmlDocument xdoc = new XmlDocument();
-
-                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                    xdoc.LoadXml(response.OuterXml);
                                     var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
 
-                                    if (ecode == 0)
+                                    if (eventId > 0 && ecode ==0)
                                     {
- 
-                                        ev.EStatus = EEventStatus.Pending;
+                                        ev.SharePointId = eventId;
+                                        ev.IsSent = true;
                                         ev.Save();
                                         NotifyEventChanged(ev);
                                     }
                                 }
                                 break;
+                           
+                            case EEventStatus.Rejected:
 
-                            case EEventStatus.PendingCancel:
-
+                                if (ev.SharePointId == 0)
+                                {
+                                    ev.IsSent = true;
+                                    ev.Save();
+                                    continue;
+                                }
                                 request = GenerateBatchDeletetXML(ev);
                                 using (SharepointReference.Lists l = new SharepointReference.Lists())
                                 {
@@ -114,7 +102,7 @@ namespace Great.Models
 
                                     if (ecode == 0)
                                     {
-                                        ev.EStatus = EEventStatus.Cancelled;
+                                        ev.IsSent = true;
                                         ev.Save();
                                         NotifyEventChanged(ev);
                                     }
@@ -124,7 +112,7 @@ namespace Great.Models
                         }
 
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         continue;
                     }
@@ -145,7 +133,7 @@ namespace Great.Models
                 {
                     if (e.EStatus != EEventStatus.Pending) continue;
 
-                    var camlQueryString = string.Format("<Query><Where><Eq><FieldRef Name='ID' /><Value Type='Number'>{0}</Value></Eq></Where></Query>", e.SharePointId);
+                    var camlQueryString = string.Format("<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Number'>{0}</Value></Eq></Where></Query>", e.SharePointId);
                     //var camlQueryString = string.Format("<Query><Where><Contains><FieldRef Name='Title' /><Value Type='Text'>{0}</Value></Contains></Where></Query>", e.SharePointId);
 
                     XmlDocument doc = new XmlDocument();
@@ -167,11 +155,10 @@ namespace Great.Models
                             if (newStatus != e.Status)
                             {
                                 e.Status = newStatus;
-                                if (e.EStatus == EEventStatus.Accepted)
-                                {
-                                    e.Approver = approver;
-                                    e.ApprovationDateTime = approvationdatetime;
-                                }
+
+                                e.Approver = approver;
+                                e.ApprovationDateTime = approvationdatetime;
+
                                 e.Save();
                                 NotifyEventChanged(e);
                             }
@@ -193,29 +180,30 @@ namespace Great.Models
         }
         public void Add(EventEVM e)
         {
-            if (!eventQueue.Any(x => x.Id == e.Id))
-                eventQueue.Enqueue(e);
+            EventEVM existing = eventQueue.SingleOrDefault(x => x.Id == e.Id);
+
+            if (existing != null) return;
+            eventQueue.Enqueue(e);
         }
         public void Update(EventEVM e)
         {
             EventEVM existing = eventQueue.SingleOrDefault(x => x.Id == e.Id);
 
-            if (existing == null) return;
-
-            var id = existing.Id;
-            Mapper.Map(e, existing);
-            existing.EStatus = EEventStatus.PendingUpdate;
-            existing.Id = id;
+            existing.StartDate = e.StartDate;
+            existing.EndDate = e.EndDate;
+            existing.IsAllDay = e.IsAllDay; 
+            existing.IsSent =false;
             existing.Save();
-
         }
+
         public void Delete(EventEVM e)
         {
             EventEVM existing = eventQueue.SingleOrDefault(x => x.Id == e.Id);
 
             if (existing == null) return;
 
-            existing.EStatus = EEventStatus.PendingCancel;
+            existing.EStatus = EEventStatus.Rejected;
+            existing.IsSent = false;
             existing.Save();
         }
         private static XmlDocument GenerateBatchInsertXML(EventEVM ev)

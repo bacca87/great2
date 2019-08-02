@@ -29,5 +29,8 @@
     <Setting Name="DataDirectoryPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">%USERPROFILE%\documents\Great\</Value>
     </Setting>
+    <Setting Name="Great_SharepointReference_Lists" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://intranet.elettric80.it/_vti_bin/lists.asmx</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
