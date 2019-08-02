@@ -42,7 +42,7 @@ namespace Great
                 Settings.Default.Save();
             }
 
-            if (!System.Diagnostics.Debugger.IsAttached)
+            if (!Debugger.IsAttached)
             {
                 // check for updates
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
