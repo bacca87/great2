@@ -21,10 +21,10 @@ namespace Great
     /// </summary>
     public partial class App : Application
     {
-         private void Application_Startup(object sender, StartupEventArgs e)
-        {   
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
             // Multiple istance check
-            if(!e.Args.Contains("-m") && !e.Args.Contains("/m"))
+            if (!e.Args.Contains("-m") && !e.Args.Contains("/m"))
             {
                 Process proc = Process.GetCurrentProcess();
                 int count = Process.GetProcesses().Where(p =>

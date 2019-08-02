@@ -102,17 +102,17 @@
                 <ContextMenu>
                     <MenuItem Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}">
                         <MenuItem.Icon>
-                            <Image Source="pack://application:,,,/Great;component/Images/16/Cut.png"/>
+                            <Image Source="pack://application:,,,/Great2;component/Images/16/Cut.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}">
                         <MenuItem.Icon>
-                            <Image Source="pack://application:,,,/Great;component/Images/16/Copy.png"/>
+                            <Image Source="pack://application:,,,/Great2;component/Images/16/Copy.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}">
                         <MenuItem.Icon>
-                            <Image Source="pack://application:,,,/Great;component/Images/16/Paste.png"/>
+                            <Image Source="pack://application:,,,/Great2;component/Images/16/Paste.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>

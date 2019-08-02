@@ -69,17 +69,17 @@
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
                                   IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
                 <Fluent:RibbonGroupBox Header="Clipboard">
-                    <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Copy.png">
+                    <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Copy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Copy" Text="Copy the selected day." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Paste.png">
+                    <Fluent:Button Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Paste.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Today" Text="Paste on selected day." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great;component/Images/16/Cut.png">
+                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Cut.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cut" Text="Cut the selected day." />
                         </Fluent:Button.ToolTip>
@@ -111,7 +111,7 @@
                             <Fluent:ScreenTip Title="Special Leave Day" Text="Set the selected day as special leave day." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
-                    <Fluent:Button Header="Today" Command="{Binding SelectTodayCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/calendar.png">
+                    <Fluent:Button Header="Today" Command="{Binding SelectTodayCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/calendar.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Today" Text="Select today." />
                         </Fluent:Button.ToolTip>
@@ -132,62 +132,62 @@
                         <sys:Int32 x:Key="Nov">11</sys:Int32>
                         <sys:Int32 x:Key="Dec">12</sys:Int32>
                     </Fluent:RibbonGroupBox.Resources>
-                    <Fluent:ToggleButton Header="Jan" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jan}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jan}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/cabin-1.png">
+                    <Fluent:ToggleButton Header="Jan" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jan}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jan}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/cabin-1.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="January" Text="Set January as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Feb" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Feb}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Feb}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/snowman.png">
+                    <Fluent:ToggleButton Header="Feb" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Feb}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Feb}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/snowman.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="February" Text="Set February as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Mar" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Mar}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Mar}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/051-bird.png">
+                    <Fluent:ToggleButton Header="Mar" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Mar}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Mar}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/051-bird.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="March" Text="Set March as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Apr" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Apr}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Apr}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/051-leaf.png">
+                    <Fluent:ToggleButton Header="Apr" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Apr}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Apr}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/051-leaf.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="April" Text="Set April as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="May" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource May}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource May}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/051-kite.png">
+                    <Fluent:ToggleButton Header="May" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource May}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource May}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/051-kite.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="May" Text="Set May as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jun" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jun}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jun}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/bus.png">
+                    <Fluent:ToggleButton Header="Jun" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jun}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jun}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="June" Text="Set June as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/sun-umbrella.png">
+                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="July" Text="Set July as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/sun.png">
+                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="August" Text="Set August as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Sep" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Sep}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Sep}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/mushrooms.png">
+                    <Fluent:ToggleButton Header="Sep" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Sep}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Sep}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/mushrooms.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="September" Text="Set September as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Oct" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Oct}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Oct}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/maple-leaf.png">
+                    <Fluent:ToggleButton Header="Oct" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Oct}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Oct}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/maple-leaf.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="October" Text="Set October as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Nov" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Nov}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Nov}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/pumpkin.png">
+                    <Fluent:ToggleButton Header="Nov" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Nov}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Nov}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/pumpkin.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="November" Text="Set November as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Dec" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Dec}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Dec}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great;component/Images/32/christmas-tree.png">
+                    <Fluent:ToggleButton Header="Dec" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Dec}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Dec}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/christmas-tree.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="December" Text="Set December as the current month." />
                         </Fluent:ToggleButton.ToolTip>
@@ -200,12 +200,12 @@
                         </Fluent:TextBox.ToolTip>
                     </Fluent:TextBox>
                     <Fluent:Gallery MaxItemsInRow="2">
-                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-left.png">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
                             </Fluent:Button.ToolTip>
                         </Fluent:Button>
-                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-right.png">
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
                             </Fluent:Button.ToolTip>
@@ -213,7 +213,7 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Ohter">
-                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click" LargeIcon="pack://application:,,,/Great;component/Images/32/christmas-tree.png">
+                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click" LargeIcon="pack://application:,,,/Great2;component/Images/32/christmas-tree.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="December" Text="Set December as the current month." />
                         </Fluent:ToggleButton.ToolTip>
@@ -225,7 +225,7 @@
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
                 <Fluent:RibbonGroupBox Header="E-Mail">
-                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
                         </Fluent:DropDownButton.ToolTip>
@@ -234,26 +234,26 @@
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected FDL to the SAP system." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great;component/Images/24/cloud-up.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
                             </Fluent:GalleryItem>
                             <Fluent:GalleryItem Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected FDL by email." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great;component/Images/24/envelope.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/envelope.png" Width="24" />
                             </Fluent:GalleryItem>
                             <Fluent:GalleryItem Command="{Binding SendCancellationRequestCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Special:">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="Cancel FDL" Text="Send cancellation request for the selected FDL." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great;component/Images/24/sign-ban.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/sign-ban.png" Width="24" />
                             </Fluent:GalleryItem>
                         </Fluent:Gallery>
                         <Fluent:MenuItem Header="Send...">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <Fluent:TextBox Text="{Binding SendToEmailRecipient}" MinWidth="150" Margin="2" />
-                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/paper-plane.png">
+                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/paper-plane.png">
                                     <Fluent:Button.ToolTip>
                                         <Fluent:ScreenTip Title="Send" Text="Send the selected FDL by email to the entered address." />
                                     </Fluent:Button.ToolTip>
@@ -270,7 +270,7 @@
                             </Fluent:MenuItem>
                         </Fluent:MenuItem>
                         <Separator/>
-                        <Fluent:MenuItem Name="mEditRecipients" Header="Edit Recipients..." Icon="pack://application:,,,/Great;component/Images/24/user-id.png" Click="mEditRecipients_Click">
+                        <Fluent:MenuItem Name="mEditRecipients" Header="Edit Recipients..." Icon="pack://application:,,,/Great2;component/Images/24/user-id.png" Click="mEditRecipients_Click">
                             <Fluent:MenuItem.ToolTip>
                                 <Fluent:ScreenTip Title="Edit Recipients" Text="Edit the selected FDL order's recipients." />
                             </Fluent:MenuItem.ToolTip>
@@ -278,29 +278,29 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Compile FDL" Text="Compile and save the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/folder.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/folder.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
@@ -313,12 +313,12 @@
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
-                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/bus.png">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Delete Rent" Text="Delete Selected Rent" />
                         </Fluent:Button.ToolTip>
@@ -360,7 +360,7 @@
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
 
                 <Fluent:RibbonGroupBox Header="E-Mail">
-                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/mail.png">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
                         </Fluent:DropDownButton.ToolTip>
@@ -369,20 +369,20 @@
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great;component/Images/24/cloud-up.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
                             </Fluent:GalleryItem>
                             <Fluent:GalleryItem Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected expense account by email." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great;component/Images/24/envelope.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/envelope.png" Width="24" />
                             </Fluent:GalleryItem>
                         </Fluent:Gallery>
                         <Fluent:MenuItem Header="Send...">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <Fluent:TextBox Text="{Binding SendToEmailRecipient}" MinWidth="150" Margin="2" />
-                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/paper-plane.png">
+                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/paper-plane.png">
                                     <Fluent:Button.ToolTip>
                                         <Fluent:ScreenTip Title="Send" Text="Send the selected expense account by email to the entered address." />
                                     </Fluent:Button.ToolTip>
@@ -401,34 +401,34 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/build-ea.png">
+                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/build-ea.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Compile EA" Text="Compile and save the selected EA." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/money-bag.png">
+                    <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/money-bag.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Refunded" Text="Mark the selected EA as refunded." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-check.png">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected EA as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cancel EA" Text="Cancel the selected EA." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/folder.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/folder.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open EA" Text="Open the selected EA with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected EA to file..." />
                         </Fluent:Button.ToolTip>
@@ -450,12 +450,12 @@
                         </Fluent:TextBox.ToolTip>
                     </Fluent:TextBox>
                     <Fluent:Gallery MaxItemsInRow="2">
-                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-left.png">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
                             </Fluent:Button.ToolTip>
                         </Fluent:Button>
-                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great;component/Images/24/sign-right.png">
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
                             </Fluent:Button.ToolTip>
@@ -468,7 +468,7 @@
                                   IsSelected="{Binding ShowContextualMenu}"                                   
                                   Group="{Binding Source={x:Reference EditRentalGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
@@ -480,7 +480,7 @@
                                   IsSelected="{Binding ShowEditMenu}"
                                   Group="{Binding Source={x:Reference EditEAGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Expense Account" Text="Save the current expense account." />
                         </Fluent:Button.ToolTip>
