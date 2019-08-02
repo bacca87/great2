@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Great")]
+[assembly: AssemblyProduct("Great2")]
 [assembly: AssemblyCopyright("Copyright © 2016  Marco Baccarani")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
