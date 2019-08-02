@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
@@ -147,7 +148,7 @@ namespace Great.ViewModels
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
-                MessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

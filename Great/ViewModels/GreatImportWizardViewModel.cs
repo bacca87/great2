@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Great.Controls;
 using Great.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
@@ -233,7 +234,7 @@ namespace Great.ViewModels
 
         public void Finish()
         {
-            MessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
+            MetroMessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
             Process.Start(Application.ResourceAssembly.Location, "-m");
             Application.Current.Shutdown();
         }

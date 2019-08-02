@@ -97,7 +97,7 @@ namespace Great.SharepointReference {
         
         /// <remarks/>
         public Lists() {
-            this.Url = global::Great.Properties.Settings.Default.Great_SharepointReference_Lists;
+            this.Url = "https://intranet.elettric80.it/_vti_bin/lists.asmx";
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;

@@ -1,4 +1,5 @@
 ﻿using AutoUpdaterDotNET;
+using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
@@ -113,7 +114,7 @@ namespace Great
                     {
                         transaction.Rollback();
 
-                        MessageBox.Show($"Error during the database upgrade.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MetroMessageBox.Show($"Error during the database upgrade.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         Current.Shutdown();
                     }

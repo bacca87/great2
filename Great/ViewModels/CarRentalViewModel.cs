@@ -1,5 +1,7 @@
-﻿using GalaSoft.MvvmLight;
+﻿using BespokeFusion;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Great.Controls;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
@@ -243,13 +245,14 @@ namespace Great.ViewModels
 
         private void NewRent(CarRentalHistoryEVM obj)
         {
+
             SelectedRent = new CarRentalHistoryEVM();
             SelectedCar = new CarEVM();
         }
 
         private void DeleteRent(CarRentalHistoryEVM cr)
         {
-            if (MessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
+            if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
                 using (DBArchive db = new DBArchive())
                 {
