@@ -28,7 +28,7 @@
             </Grid.ColumnDefinitions>
             <TextBox Text="{Binding InputAddress}" Grid.Column="0" FontSize="15"/>
             <Button Grid.Column="1" Command="{Binding AddCommand}" CommandParameter="{Binding InputAddress}">
-                <Image Source="pack://application:,,,/Great2;component/Images/24/sign-add.png" Width="16"/>
+                <Image Source="pack://application:,,,/Great;component/Images/24/sign-add.png" Width="16"/>
             </Button>
         </Grid>
         <ListBox Grid.Row="2" ItemsSource="{Binding Recipients}" SelectedItem="{Binding SelectedRecipient}">
@@ -49,7 +49,7 @@
                                          MouseOverBackground="Transparent"
                                          MousePressedBackground="Transparent">
                             <xctk:IconButton.Icon>
-                                <Image Source="pack://application:,,,/Great2;component/Images/16/delete-square.png"/>
+                                <Image Source="pack://application:,,,/Great;component/Images/16/delete-square.png"/>
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                     </Grid>

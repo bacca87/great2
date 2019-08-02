@@ -68,29 +68,29 @@
                     <FlowDocument>
                     <Paragraph>
                         <Hyperlink NavigateUri="https://github.com/fluentribbon/Fluent.Ribbon" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Fluent.Ribbon" TextDecorations="{x:Null}">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/FluentRibbon.png" Stretch="None" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/FluentRibbon.png" Stretch="None" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://github.com/radioman/greatmaps" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="GMap.NET">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/gmap.png" Stretch="Fill" Width="64" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/gmap.png" Stretch="Fill" Width="64" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="http://www.mvvmlight.net/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MVVM Light">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/mvvmlight.png" Stretch="Fill" Width="100" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/mvvmlight.png" Stretch="Fill" Width="100" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://nlog-project.org/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="NLOG">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/nlog.png" Stretch="None" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/nlog.png" Stretch="None" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://www.sqlite.org" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="SQLite">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/sqlite.gif" Stretch="Fill" Width="100" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/sqlite.gif" Stretch="Fill" Width="100" Margin="5"/>
                         </Hyperlink>
                         <LineBreak/>
                         <Hyperlink NavigateUri="https://github.com/xceedsoftware/wpftoolkit" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Extended WPF Toolkit™">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/WPF_Toolkit.png" Stretch="Fill" Width="200" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/WPF_Toolkit.png" Stretch="Fill" Width="200" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://itextpdf.com/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="ITEXT">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/itext.png" Stretch="Fill" Width="200" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/itext.png" Stretch="Fill" Width="200" Margin="5"/>
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://mahapps.com/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MahApps.Metro">
-                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/mahapps.metro.png" Stretch="Fill" Width="80" Margin="5"/>
+                            <Image Source="pack://application:,,,/Great;component/Images/Logos/mahapps.metro.png" Stretch="Fill" Width="80" Margin="5"/>
                         </Hyperlink>
                         <LineBreak/>
                         <LineBreak/>
