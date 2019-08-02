@@ -14,10 +14,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Title
         {
-            get
-            {
-                return (assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0] as AssemblyTitleAttribute).Title;
-            }
+            get => (assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0] as AssemblyTitleAttribute).Title;
         }
 
         /// <summary>
@@ -25,10 +22,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Description
         {
-            get
-            {
-                return (assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0] as AssemblyDescriptionAttribute).Description;
-            }
+            get => (assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0] as AssemblyDescriptionAttribute).Description;
         }
 
         /// <summary>
@@ -36,10 +30,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Company
         {
-            get
-            {
-                return (assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0] as AssemblyCompanyAttribute).Company;
-            }
+            get => (assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0] as AssemblyCompanyAttribute).Company;
         }
 
         /// <summary>
@@ -47,10 +38,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Copyright
         {
-            get
-            {
-                return (assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0] as AssemblyCopyrightAttribute).Copyright;
-            }
+            get => (assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0] as AssemblyCopyrightAttribute).Copyright;
         }
 
         /// <summary>
@@ -58,10 +46,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Product
         {
-            get
-            {
-                return (assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0] as AssemblyProductAttribute).Product;
-            }
+            get => (assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0] as AssemblyProductAttribute).Product;
         }
 
         /// <summary>
@@ -69,10 +54,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Version
         {
-            get
-            {
-                return FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
-            }
+            get => FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
         }
 
         /// <summary>
@@ -80,10 +62,16 @@ namespace Great.ViewModels
         /// </summary>
         public string AppNameAndVersion
         {
-            get
-            {
-                return Title + " v" + Version;
-            }
+            get => Title + " v" + Version;
+        }
+
+        /// <summary>
+        /// Gets the ProductDescription property.
+        /// </summary>
+        public string ProductDescription
+        {
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -91,6 +79,11 @@ namespace Great.ViewModels
         /// </summary>
         public InformationsViewModel()
         {
+            ProductDescription = "This software has been designed to simplify all the traveler's tasks.\n" +
+                "Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about all your activities.\n" +
+                "All of this in automatic way!" +
+                "Please feel free to crontribute to this project helping us to add new feature and keep everithing up to date, just visit our website for download the source code and start to improve it!\n\n" +
+                "A special thanks to Andrea 'Cina' Ghinelli, the original author of this very useful software!";
         }
     }
 }

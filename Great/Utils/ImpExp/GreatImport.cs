@@ -547,6 +547,9 @@ namespace Great.Utils
                                         else
                                             currentFdl.Status = (long)EFDLStatus.Cancelled;
 
+                                        if(currentFdl.Status != (long)EFDLStatus.New)
+                                            currentFdl.IsReadOnly = true;
+
                                         db.FDLs.AddOrUpdate(currentFdl);
                                         db.SaveChanges();
                                         Message($"FDL {currentFdl.Id} OK");
@@ -621,6 +624,9 @@ namespace Great.Utils
                                     
                                     var expense = expenses.SingleOrDefault(e => !string.IsNullOrEmpty(e.Field<string>("Dbf_Foglio")) && FormatFDL(e.Field<string>("Dbf_Foglio")) == fdl.Id);
                                     currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");
+
+                                    if(currentEA.Status != (long)EFDLStatus.New)
+                                        currentEA.IsReadOnly = true;
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
                                     db.SaveChanges();
