@@ -7,8 +7,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
-using System.Windows;
-using System.Windows.Media;
 
 namespace Great.Models
 {
@@ -1000,6 +998,8 @@ namespace Great.Models
             public const int WaitForNextConnectionRetry = 10000;
             public const int WaitForNextEmailCheck = 1000;
             public const int WaitForCredentialsCheck = 1000;
+
+            public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
         }
         #endregion
 

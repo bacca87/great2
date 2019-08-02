@@ -4,6 +4,7 @@ using Great.Models.Database;
 using Great.Properties;
 using Great.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.Data.Entity;
@@ -41,9 +42,12 @@ namespace Great
                 Settings.Default.Save();
             }
 
-            // check for updates
-            AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
-            AutoUpdater.Start("https://api.github.com/repos/bacca87/great2/releases");
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                // check for updates
+                AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+                AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress);
+            }
 
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             InitializeDirectoryTree();
@@ -108,7 +112,10 @@ namespace Great
                     catch (Exception ex)
                     {
                         transaction.Rollback();
-                        //TODO: se fallisce bisogna chiudere l'applicazione. errore fatale
+
+                        MessageBox.Show($"Error during the database upgrade.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                        Current.Shutdown();
                     }
                 }
             }
@@ -127,13 +134,20 @@ namespace Great
 
         private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
-            dynamic json = JsonConvert.DeserializeObject(args.RemoteData);
+            var json = (JArray)JsonConvert.DeserializeObject(args.RemoteData);
+
+            Func<string, string> GetVersionFromTag = (tag) => { return tag.Remove(0, tag.IndexOf('v') + 1); };
+
+            var CurrentVersion = new Version(GetVersionFromTag(((JValue)json[0]["tag_name"]).Value as string));
+            var ChangelogUrl = string.Empty;
+            var DownloadUrl = ((JValue)json[0]["assets"][0]["browser_download_url"]).Value as string;
+
             args.UpdateInfo = new UpdateInfoEventArgs
             {
-                CurrentVersion = json.version,
-                ChangelogURL = json.changelog,
-                Mandatory = json.mandatory,
-                DownloadURL = json.url
+                CurrentVersion = CurrentVersion,
+                ChangelogURL = ChangelogUrl,
+                Mandatory = false,
+                DownloadURL = DownloadUrl
             };
         }
     }
