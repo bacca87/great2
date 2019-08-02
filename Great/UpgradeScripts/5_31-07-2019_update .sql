@@ -4,9 +4,11 @@
 -- Author: Andrea Corradini
 --=========================================================================
 
-Insert into EventStatus VALUES (4,'Cancelled');
-Insert into EventStatus VALUES (5,'PendingCancel');
-Insert into EventStatus VALUES (6,'PendingUpdate');
+delete from EventStatus Where Id = 3
+
+ALTER TABLE [Event] ADD COLUMN [IsSent] BOOL NOT NULL DEFAULT 0;
+
+ALTER TABLE [Event] ALTER [Status] DEFAULT 2; 
 
 --=========================================================================
 -- MANDATORY: Increment internal db version
