@@ -1183,10 +1183,15 @@ namespace Great.Models
                 return EMessageType.EA_RejectedResubmission;
             else if (subject.Contains(ApplicationSettings.FDL.Reminder))
                 return EMessageType.Reminder;
-            else if (GetFileType(subject) == EFileType.FDL)
-                return EMessageType.FDL_EA_New;
             else
-                return EMessageType.Unknown;
+            {
+                EFileType type = GetFileType(subject);
+
+                if (type == EFileType.FDL || type == EFileType.ExpenseAccount)
+                    return EMessageType.FDL_EA_New;
+                else
+                    return EMessageType.Unknown;
+            }
         }
 
         public static EFileType GetFileType(string filename)
