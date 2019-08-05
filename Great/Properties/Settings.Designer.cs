@@ -119,7 +119,7 @@ namespace Great.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%USERPROFILE%\\documents\\Great\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%USERPROFILE%\\documents\\Great2\\")]
         public string DataDirectoryPath {
             get {
                 return ((string)(this["DataDirectoryPath"]));
