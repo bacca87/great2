@@ -1145,15 +1145,17 @@ namespace Great.Models
                             {
                                 case EFileType.FDL:
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
+                                    {
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
-
-                                    ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
+                                        ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
+                                    }
                                     break;
                                 case EFileType.ExpenseAccount:
                                     if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
+                                    {
                                         fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
-
-                                    ImportEAFromFile(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name, true, true);
+                                        ImportEAFromFile(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name, true, true);
+                                    }
                                     break;
                                 default:
                                     break;
