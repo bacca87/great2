@@ -49,6 +49,7 @@ namespace Great.Models
                     {
                         try
                         {
+                            XmlDocument xdoc;
                             XmlNode request = null;
 
                             switch (ev.EStatus)
@@ -61,7 +62,7 @@ namespace Great.Models
                                     using (SharepointReference.Lists l = new SharepointReference.Lists())
                                     {
                                         l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        XmlDocument xdoc = new XmlDocument();
+                                        xdoc = new XmlDocument();
 
                                         var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
                                         xdoc.LoadXml(response.OuterXml);
@@ -90,7 +91,7 @@ namespace Great.Models
                                     using (SharepointReference.Lists l = new SharepointReference.Lists())
                                     {
                                         l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        XmlDocument xdoc = new XmlDocument();
+                                        xdoc = new XmlDocument();
 
                                         var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
                                         xdoc.LoadXml(response.OuterXml);
@@ -124,7 +125,6 @@ namespace Great.Models
         {
             bool exit = false;
             XmlDocument xdoc = new XmlDocument();
-            XmlNode xnode;
             HttpWebRequest request = null;
 
             while (!exit)
@@ -166,7 +166,7 @@ namespace Great.Models
                             if (shpid == 0) continue;
                             if (existing == null)
                             {
-                                //manually added to clendar. Import it!
+                                //manually added to calendar. Import it!
                                 EventEVM tmp = new EventEVM();
                                 tmp.IsSent = true; // the event is on calendar. Not necessary to send it
                                 tmp.SharePointId = shpid;
@@ -189,13 +189,14 @@ namespace Great.Models
 
                             else
                             {
-                                EventEVM tmp = new EventEVM(existing);
                                 //Great handling. Just update status and approvation date
+                                EventEVM tmp = new EventEVM(existing);
+                                if (tmp.EStatus != EEventStatus.Pending) continue;
+
                                 if (tmp.EStatus != (EEventStatus)status)
                                 {
                                     tmp.EStatus = (EEventStatus)status;
-                                    if (tmp.EStatus != EEventStatus.Pending)
-                                        tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                    tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
 
                                     tmp.Save();
                                     Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));
@@ -203,76 +204,8 @@ namespace Great.Models
 
                             }
 
-
-                            //EventEVM tmpEv = new EventEVM();
-                            //tmpEv.IsSent = true;
-                            //tmpEv.Days = null;
-                            //tmpEv.Type = 1;
-
-
-                            //foreach (XmlNode nd in el.GetElementsByTagName("content")[0]?.FirstChild.ChildNodes)
-                            //{
-                            //    if (nd.Name == "d:Id") tmpEv.SharePointId = Convert.ToInt32(nd.InnerText);
-                            //    if (nd.Name == "d:Title") tmpEv.Title = nd.InnerText.Trim('*');
-                            //    if (nd.Name == "d:Location") tmpEv.Location = nd.InnerText;
-                            //    if (nd.Name == "d:EventDate") tmpEv.StartDate = Convert.ToDateTime(nd.InnerText);
-                            //    if (nd.Name == "d:EndDate") tmpEv.EndDate = Convert.ToDateTime(nd.InnerText);
-                            //    if (nd.Name == "d:Description") tmpEv.Description = nd.InnerText;
-                            //    if (nd.Name == "d:OData__ModerationStatus") tmpEv.Status = Convert.ToInt32(nd.InnerText);
-                            //    if (nd.Name == "d:fAllDayEvent") tmpEv.IsAllDay = Convert.ToBoolean(nd.InnerText);
-                            //    if (nd.Name == "d:Modified") tmpEv.ApprovationDateTime = Convert.ToDateTime(nd.InnerText);
-                            //}
-
-                            //var found = db.Events.SingleOrDefault(x => x.SharepointId == tmpEv.SharePointId);
-
-                            ////add events not handled by great
-                            //if (found == null && tmpEv.SharePointId > 0)
-                            //{
-                            //    tmpEv.Save();
-                            //    Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmpEv));
-                            //}
                         }
-                    }
-
-                    //    //then process all the events in pending state
-                    //    foreach (EventEVM e in db.Events.ToList().Select(v => new EventEVM(v)).Where(e => e.EStatus == EEventStatus.Pending))
-                    //    {
-
-                    //        var camlQueryString = string.Format("<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Number'>{0}</Value></Eq></Where></Query>", e.SharePointId);
-                    //        //var camlQueryString = string.Format("<Query><Where><Contains><FieldRef Name='Title' /><Value Type='Text'>{0}</Value></Contains></Where></Query>", e.SharePointId);
-
-                    //        xdoc.LoadXml(camlQueryString);
-                    //        xnode = xdoc.DocumentElement;
-                    //        try
-                    //        {
-                    //            using (SharepointReference.Lists l = new SharepointReference.Lists())
-                    //            {
-                    //                l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                    //                var response = l.GetListItems("Vacations ITA", null, xnode, null, null, null, null);
-
-                    //                xdoc.LoadXml(response.OuterXml);
-                    //                var newStatus = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows__ModerationStatus"].Value ?? "1"); //default rejected
-                    //                var approver = xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Editor"]?.Value;
-                    //                var approvationdatetime = Convert.ToDateTime(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Modified"].Value);
-
-                    //                if (newStatus != e.Status)
-                    //                {
-                    //                    e.Status = newStatus;
-
-                    //                    e.Approver = approver;
-                    //                    e.ApprovationDateTime = approvationdatetime;
-
-                    //                    e.Save();
-                    //                    Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, e));
-                    //                }
-                    //            }
-                    //        }
-                    //        catch
-                    //        {
-                    //            continue;
-                    //        }
-
-                    //    }
+                    }           
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);
