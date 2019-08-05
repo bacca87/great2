@@ -7,29 +7,25 @@ using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using static Great.Models.EventManager;
 
 namespace Great.Models
 {
 
     public class MSSharepointProvider
     {
-        private ConcurrentQueue<EventEVM> eventQueue = new ConcurrentQueue<EventEVM>();
         public event EventHandler<EventChangedEventArgs> OnEventChanged;
         private Thread eventUpdaterThread;
         private Thread eventSenderThred;
+        private Int32 sharepointUserId;
 
         public MSSharepointProvider()
         {
-            //Load all events
-            using (DBArchive db = new DBArchive())
-                eventQueue = new ConcurrentQueue<EventEVM>(db.Events.ToList().Select(e => new EventEVM(e)));
-
             eventUpdaterThread = new Thread(UpdaterThread);
             eventUpdaterThread.Name = "Sharepoint polling thread";
             eventUpdaterThread.IsBackground = true;
@@ -47,165 +43,246 @@ namespace Great.Models
 
             while (!exit)
             {
-                foreach (EventEVM ev in eventQueue)
+                using (DBArchive db = new DBArchive())
                 {
-                    if (ev.IsSent) continue;
-
-                    try
+                    foreach (EventEVM ev in db.Events.ToList().Select(v => new EventEVM(v)).Where(e => !e.IsSent))
                     {
-                        XmlNode request = null;
-
-                        switch (ev.EStatus)
+                        try
                         {
-                            case EEventStatus.Pending:
+                            XmlNode request = null;
 
-                                if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
-                                else request = GenerateBatchInsertXML(ev);
+                            switch (ev.EStatus)
+                            {
+                                case EEventStatus.Pending:
 
-                                using (SharepointReference.Lists l = new SharepointReference.Lists())
-                                {
-                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                    XmlDocument xdoc = new XmlDocument();
+                                    if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
+                                    else request = GenerateBatchInsertXML(ev);
 
-                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                    xdoc.LoadXml(response.OuterXml);
-                                    var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
-                                    var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
-
-                                    if (eventId > 0 && ecode ==0)
+                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
                                     {
-                                        ev.SharePointId = eventId;
-                                        ev.IsSent = true;
-                                        ev.Save();
-                                        NotifyEventChanged(ev);
+                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                        XmlDocument xdoc = new XmlDocument();
+
+                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                        xdoc.LoadXml(response.OuterXml);
+                                        var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
+                                        var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
+
+                                        if (eventId > 0 && ecode == 0)
+                                        {
+                                            ev.SharePointId = eventId;
+                                            ev.IsSent = true;
+                                            ev.Save();
+                                            Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, ev));
+                                        }
                                     }
-                                }
-                                break;
-                           
-                            case EEventStatus.Rejected:
+                                    break;
 
-                                if (ev.SharePointId == 0)
-                                {
-                                    ev.IsSent = true;
-                                    ev.Save();
-                                    continue;
-                                }
-                                request = GenerateBatchDeletetXML(ev);
-                                using (SharepointReference.Lists l = new SharepointReference.Lists())
-                                {
-                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                    XmlDocument xdoc = new XmlDocument();
+                                case EEventStatus.Rejected:
 
-                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                    xdoc.LoadXml(response.OuterXml);
-                                    var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
-
-                                    if (ecode == 0)
+                                    if (ev.SharePointId == 0)
                                     {
                                         ev.IsSent = true;
                                         ev.Save();
-                                        NotifyEventChanged(ev);
+                                        continue;
                                     }
-                                }
+                                    request = GenerateBatchDeletetXML(ev);
+                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                    {
+                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                        XmlDocument xdoc = new XmlDocument();
 
-                                break;
+                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                        xdoc.LoadXml(response.OuterXml);
+                                        var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
+
+                                        if (ecode == 0)
+                                        {
+                                            ev.IsSent = true;
+                                            ev.Save();
+                                            NotifyEventChanged(ev);
+                                        }
+                                    }
+
+                                    break;
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            continue;
                         }
 
                     }
-                    catch (Exception ex)
-                    {
-                        continue;
-                    }
-
                 }
 
-                Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
+                Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);
             }
         }
 
         private void UpdaterThread()
         {
             bool exit = false;
+            XmlDocument xdoc = new XmlDocument();
+            XmlNode xnode;
+            HttpWebRequest request = null;
 
             while (!exit)
             {
-                foreach (EventEVM e in eventQueue)
+                using (DBArchive db = new DBArchive())
                 {
-                    if (e.EStatus != EEventStatus.Pending) continue;
-
-                    var camlQueryString = string.Format("<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Number'>{0}</Value></Eq></Where></Query>", e.SharePointId);
-                    //var camlQueryString = string.Format("<Query><Where><Contains><FieldRef Name='Title' /><Value Type='Text'>{0}</Value></Contains></Where></Query>", e.SharePointId);
-
-                    XmlDocument doc = new XmlDocument();
-                    doc.LoadXml(camlQueryString);
-                    XmlNode n = doc.DocumentElement;
-                    try
+                    // try to get user Id
+                    if (sharepointUserId == 0)
                     {
-                        using (SharepointReference.Lists l = new SharepointReference.Lists())
+                        request = (HttpWebRequest)WebRequest.Create("https://intranet.elettric80.it/_api/web/currentuser");
+                        request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                        request.Method = "GET";
+
+                        var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                        xdoc.LoadXml(webResponse);
+                        sharepointUserId = Convert.ToInt32(xdoc.GetElementsByTagName("content")[0].FirstChild.FirstChild.LastChild.Value.ToString());
+                    }
+
+                    //take in account only if current user id is retrieved
+                    if (sharepointUserId > 0)
+                    {
+                        // try to get all submitted events
+                        string req = string.Format("https://intranet.elettric80.it/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {0}", sharepointUserId);
+
+                        request = (HttpWebRequest)WebRequest.Create(req);
+                        request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                        request.Method = "GET";
+
+                        var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                        xdoc.LoadXml(webResponse);
+
+                        foreach (XmlElement el in xdoc.GetElementsByTagName("entry"))
                         {
-                            l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                            var response = l.GetListItems("Vacations ITA", null, n, null, null, null, null);
+                            Int64 shpid = Convert.ToInt64(el.GetElementsByTagName("content")[0]?.FirstChild["d:Id"].InnerText);
+                            int status = Convert.ToInt32(el.GetElementsByTagName("content")[0]?.FirstChild["d:OData__ModerationStatus"].InnerText);
 
-                            XmlDocument xdoc = new XmlDocument();
-                            xdoc.LoadXml(response.OuterXml);
-                            var newStatus = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows__ModerationStatus"].Value ?? "1"); //default rejected
-                            var approver = xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Editor"]?.Value;
-                            var approvationdatetime = Convert.ToDateTime(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Modified"].Value);
+                            var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
 
-                            if (newStatus != e.Status)
+                            if (shpid == 0) continue;
+                            if (existing == null)
                             {
-                                e.Status = newStatus;
+                                //manually added to clendar. Import it!
+                                EventEVM tmp = new EventEVM();
+                                tmp.IsSent = true; // the event is on calendar. Not necessary to send it
+                                tmp.SharePointId = shpid;
+                                tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
+                                tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
+                                tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
+                                tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
+                                tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
+                                tmp.Status = status;
+                                tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
 
-                                e.Approver = approver;
-                                e.ApprovationDateTime = approvationdatetime;
+                                if (tmp.EStatus == EEventStatus.Accepted)
+                                    tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
 
-                                e.Save();
-                                NotifyEventChanged(e);
+                                //this field is not available with this kind of query -> Default vacation
+                                tmp.Type = 1;
+                                tmp.Save();
+                                Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
                             }
+
+                            else
+                            {
+                                EventEVM tmp = new EventEVM(existing);
+                                //Great handling. Just update status and approvation date
+                                if (tmp.EStatus != (EEventStatus)status)
+                                {
+                                    tmp.EStatus = (EEventStatus)status;
+                                    if (tmp.EStatus != EEventStatus.Pending)
+                                        tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+
+                                    tmp.Save();
+                                    Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));
+                                }
+
+                            }
+
+
+                            //EventEVM tmpEv = new EventEVM();
+                            //tmpEv.IsSent = true;
+                            //tmpEv.Days = null;
+                            //tmpEv.Type = 1;
+
+
+                            //foreach (XmlNode nd in el.GetElementsByTagName("content")[0]?.FirstChild.ChildNodes)
+                            //{
+                            //    if (nd.Name == "d:Id") tmpEv.SharePointId = Convert.ToInt32(nd.InnerText);
+                            //    if (nd.Name == "d:Title") tmpEv.Title = nd.InnerText.Trim('*');
+                            //    if (nd.Name == "d:Location") tmpEv.Location = nd.InnerText;
+                            //    if (nd.Name == "d:EventDate") tmpEv.StartDate = Convert.ToDateTime(nd.InnerText);
+                            //    if (nd.Name == "d:EndDate") tmpEv.EndDate = Convert.ToDateTime(nd.InnerText);
+                            //    if (nd.Name == "d:Description") tmpEv.Description = nd.InnerText;
+                            //    if (nd.Name == "d:OData__ModerationStatus") tmpEv.Status = Convert.ToInt32(nd.InnerText);
+                            //    if (nd.Name == "d:fAllDayEvent") tmpEv.IsAllDay = Convert.ToBoolean(nd.InnerText);
+                            //    if (nd.Name == "d:Modified") tmpEv.ApprovationDateTime = Convert.ToDateTime(nd.InnerText);
+                            //}
+
+                            //var found = db.Events.SingleOrDefault(x => x.SharepointId == tmpEv.SharePointId);
+
+                            ////add events not handled by great
+                            //if (found == null && tmpEv.SharePointId > 0)
+                            //{
+                            //    tmpEv.Save();
+                            //    Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmpEv));
+                            //}
                         }
                     }
-                    catch
-                    {
-                        continue;
-                    }
 
+                    //    //then process all the events in pending state
+                    //    foreach (EventEVM e in db.Events.ToList().Select(v => new EventEVM(v)).Where(e => e.EStatus == EEventStatus.Pending))
+                    //    {
+
+                    //        var camlQueryString = string.Format("<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Number'>{0}</Value></Eq></Where></Query>", e.SharePointId);
+                    //        //var camlQueryString = string.Format("<Query><Where><Contains><FieldRef Name='Title' /><Value Type='Text'>{0}</Value></Contains></Where></Query>", e.SharePointId);
+
+                    //        xdoc.LoadXml(camlQueryString);
+                    //        xnode = xdoc.DocumentElement;
+                    //        try
+                    //        {
+                    //            using (SharepointReference.Lists l = new SharepointReference.Lists())
+                    //            {
+                    //                l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                    //                var response = l.GetListItems("Vacations ITA", null, xnode, null, null, null, null);
+
+                    //                xdoc.LoadXml(response.OuterXml);
+                    //                var newStatus = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows__ModerationStatus"].Value ?? "1"); //default rejected
+                    //                var approver = xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Editor"]?.Value;
+                    //                var approvationdatetime = Convert.ToDateTime(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_Modified"].Value);
+
+                    //                if (newStatus != e.Status)
+                    //                {
+                    //                    e.Status = newStatus;
+
+                    //                    e.Approver = approver;
+                    //                    e.ApprovationDateTime = approvationdatetime;
+
+                    //                    e.Save();
+                    //                    Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, e));
+                    //                }
+                    //            }
+                    //        }
+                    //        catch
+                    //        {
+                    //            continue;
+                    //        }
+
+                    //    }
                 }
 
-                Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
+                Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);
             }
         }
         protected void NotifyEventChanged(EventEVM e)
         {
             OnEventChanged?.Invoke(this, new EventChangedEventArgs(e));
         }
-        public void Add(EventEVM e)
-        {
-            EventEVM existing = eventQueue.SingleOrDefault(x => x.Id == e.Id);
 
-            if (existing != null) return;
-            eventQueue.Enqueue(e);
-        }
-        public void Update(EventEVM e)
-        {
-            EventEVM existing = eventQueue.SingleOrDefault(x => x.Id == e.Id);
-
-            existing.StartDate = e.StartDate;
-            existing.EndDate = e.EndDate;
-            existing.IsAllDay = e.IsAllDay; 
-            existing.IsSent =false;
-            existing.Save();
-        }
-
-        public void Delete(EventEVM e)
-        {
-            EventEVM existing = eventQueue.SingleOrDefault(x => x.Id == e.Id);
-
-            if (existing == null) return;
-
-            existing.EStatus = EEventStatus.Rejected;
-            existing.IsSent = false;
-            existing.Save();
-        }
         private static XmlDocument GenerateBatchInsertXML(EventEVM ev)
         {
             var s = DateTime.Now.FromUnixTimestamp(ev.StartDateTimeStamp);

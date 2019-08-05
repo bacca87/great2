@@ -10,7 +10,6 @@ using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Great.Models.EventManager;
 
 namespace Great.ViewModels.Database
 {
@@ -235,6 +234,8 @@ namespace Great.ViewModels.Database
         {
             if (ev != null)
                 Global.Mapper.Map(ev, this);
+
+            if (Days ==null )Days = new ObservableCollectionEx<DayEVM>();
 
             Days.CollectionChanged += (sender, e) => UpdateInfo();
             Days.ItemPropertyChanged += (sender, e) => UpdateInfo();

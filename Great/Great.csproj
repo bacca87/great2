@@ -299,7 +299,7 @@
     <Compile Include="Models\DTO\TransferTypeDTO.cs" />
     <Compile Include="Models\Interfaces\IFDLFile.cs" />
     <Compile Include="Models\Interfaces\IProvider.cs" />
-    <Compile Include="Models\Sharepoint\EventManager.cs" />
+    <Compile Include="Models\Sharepoint\EEventStatus.cs" />
     <Compile Include="Models\Sharepoint\MSSharepointProvider.cs" />
     <Compile Include="Models\Exchange\MSExchangeProvider.cs" />
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
@@ -311,6 +311,7 @@
     <Compile Include="Utils\Converters\EventStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
+    <Compile Include="Utils\Converters\MessageBoxImageToImageConverter.cs" />
     <Compile Include="Utils\Converters\NegateBoolConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />

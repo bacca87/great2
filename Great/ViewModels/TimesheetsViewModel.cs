@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using static Great.Models.EventManager;
 
 namespace Great.ViewModels
 {
@@ -392,7 +391,8 @@ namespace Great.ViewModels
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             switch (ev.Content.EStatus)
             {
-                case EEventStatus.Accepted:                    
+                case EEventStatus.Accepted:
+                    days.ForEach(x => SetDayType(x, EDayType.VacationDay));
                     break;
                 case EEventStatus.Rejected:
                     days.ForEach(x => SetDayType(x, EDayType.WorkDay));

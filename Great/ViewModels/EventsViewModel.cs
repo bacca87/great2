@@ -17,15 +17,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using static Great.Models.EventManager;
-using EventManager = Great.Models.EventManager;
+
 
 namespace Great.ViewModels
 {
     public class EventsViewModel : ViewModelBase
     {
         #region Properties
-        EventManager _eventManager;
+        MSSharepointProvider _provider;
 
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
@@ -118,9 +117,9 @@ namespace Great.ViewModels
 
         #endregion
 
-        public EventsViewModel(EventManager evm)
+        public EventsViewModel(MSSharepointProvider pro)
         {
-            _eventManager = evm;
+            _provider = pro;
 
             Minutes = new List<int>();
             Hours = new List<int>();
@@ -145,6 +144,7 @@ namespace Great.ViewModels
             }
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
+            MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
         }
 
         public void ClearEvent()
@@ -157,6 +157,12 @@ namespace Great.ViewModels
         public void SaveEvent(EventEVM ev)
         {
             if (ev == null || ev.EStatus != EEventStatus.Pending)
+            {
+                MetroMessageBox.Show("Cannot save/edit the event because it is approved", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ev.StartDate = new DateTime(ev.StartDate.Year, ev.StartDate.Month, ev.StartDate.Day, BeginHour, BeginMinutes, 0);
@@ -165,33 +171,38 @@ namespace Great.ViewModels
 
             if (ev.StartDate > ev.EndDate) return;
 
-            //id backup
-            var Id = ev.Id;
-
+            ev.EStatus = EEventStatus.Pending;
+            ev.IsSent = false;
             ev.Save();
 
-            if (Id == 0)
-            {
-                _eventManager.Add(ev);
-                Events.Add(ev);
-            }
-
-            else _eventManager.Update(ev);
+            Messenger.Default.Send(new NewItemMessage<EventEVM>(this, ev));
 
         }
         public void RequestCancellation(EventEVM ev)
         {
             if (ev == null || ev.EStatus == EEventStatus.Rejected)
+            {
+                MetroMessageBox.Show("Cannot cancel the event because it is already cancelled", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
+            if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            _eventManager.Delete(ev);
+            ev.IsSent = false;
+            ev.EStatus = EEventStatus.Rejected;
+            ev.Save();
 
         }
 
         public void MarkAsAccepted(EventEVM ev)
         {
             if (ev == null || ev.EStatus == EEventStatus.Accepted)
+            {
+                MetroMessageBox.Show("Cannot set to Accepted the event because it is already accepted", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
+            }
 
             if (MetroMessageBox.Show("Are you sure to mark as accepted the selected Vacation?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
@@ -223,7 +234,17 @@ namespace Great.ViewModels
 
                 //update also approver andd date of approval!
                 v.EStatus = item.Content.EStatus;
+                v.ApprovationDateTime = item.Content.ApprovationDateTime;
+                v.Approver = item.Content.Approver;
                 v.Save();
+            }
+        }
+
+        public void EventImportedFromCalendar(NewItemMessage<EventEVM> item)
+        {
+            if (item.Content != null)
+            {
+                Events.Add(item.Content);
             }
         }
         public void AddEvent(EventEVM ev)
