@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.Models.Database
 {
@@ -13,7 +9,7 @@ namespace Great.Models.Database
     {
         public Event()
         {
-           this.Days = new HashSet<Day>();
+            this.Days = new HashSet<Day>();
         }
 
         public long Id { get; set; }
@@ -21,6 +17,7 @@ namespace Great.Models.Database
         public long Type { get; set; }
         public string Title { get; set; }
         public string Location { get; set; }
+        public DateTime? SendDateTime { get; set; }
         public long StartDateTimeStamp { get; set; }
         public long EndDateTimeStamp { get; set; }
         public string Description { get; set; }

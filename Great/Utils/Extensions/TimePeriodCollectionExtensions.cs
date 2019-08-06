@@ -1,5 +1,4 @@
-﻿using Great.Utils.Extensions;
-using Itenso.TimePeriod;
+﻿using Itenso.TimePeriod;
 using System;
 
 namespace Great.Utils.Extensions

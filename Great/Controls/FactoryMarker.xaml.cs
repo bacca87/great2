@@ -24,7 +24,7 @@ namespace Great.Controls
                 switch (_color)
                 {
                     case FactoryMarkerColor.Red:
-                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/24/map-marker-red.png"));                        
+                        MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/24/map-marker-red.png"));
                         break;
                     case FactoryMarkerColor.Green:
                         MarkerImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/24/map-marker-green.png"));
@@ -45,7 +45,7 @@ namespace Great.Controls
         public FactoryMarker()
         {
             InitializeComponent();
-            
+
             Color = FactoryMarkerColor.Red;
 
             BounceAnimation = this.FindResource("Bounce") as Storyboard;

@@ -17,7 +17,7 @@ namespace Great.Views
         {
             InitializeComponent();
         }
-        
+
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -38,7 +38,7 @@ namespace Great.Views
                 return;
 
             recipientsVM.Order = FdlVM.SelectedFDL.Order;
-            
+
             OrderRecipientsView view = new OrderRecipientsView();
             view.ShowDialog();
         }

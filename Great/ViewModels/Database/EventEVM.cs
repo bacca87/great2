@@ -4,12 +4,8 @@ using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Great.ViewModels.Database
 {
@@ -23,7 +19,7 @@ namespace Great.ViewModels.Database
             get => _Id;
             set
             {
-                Set (ref _Id, value);
+                Set(ref _Id, value);
                 RaisePropertyChanged(nameof(Id));
             }
         }
@@ -71,6 +67,17 @@ namespace Great.ViewModels.Database
             }
         }
 
+        private DateTime? _SendDateTime;
+        public DateTime? SendDateTime
+        {
+            get => _SendDateTime;
+            set
+            {
+                Set(ref _SendDateTime, value);
+                RaisePropertyChanged(nameof(SendDateTime));
+            }
+        }
+
         private long _StartDateTimestamp;
         public long StartDateTimeStamp
         {
@@ -109,7 +116,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _EndDateTimestamp, value);
-                 //RaisePropertyChanged(nameof(EndDate));
+                //RaisePropertyChanged(nameof(EndDate));
             }
         }
 
@@ -142,7 +149,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _IsSent, value);
-                 RaisePropertyChanged(nameof(IsSent));
+                RaisePropertyChanged(nameof(IsSent));
             }
         }
         private long _Status;
@@ -169,7 +176,17 @@ namespace Great.ViewModels.Database
             set
             {
                 Status = (int)value;
-                IsNew = value == EEventStatus.Pending && SharePointId ==0;
+                IsNew = value == EEventStatus.Pending && SharePointId == 0;
+                RaisePropertyChanged();
+            }
+        }
+
+        public EEventType EType
+        {
+            get => (EEventType)Type;
+            set
+            {
+                Type = (int)value;
                 RaisePropertyChanged();
             }
         }
@@ -213,14 +230,14 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private DateTime? _ApprovationDateTime;
-        public DateTime? ApprovationDateTime
+        private DateTime? _ApprovationDate;
+        public DateTime? ApprovationDate
         {
-            get => _ApprovationDateTime;
+            get => _ApprovationDate;
             set
             {
-                Set(ref _ApprovationDateTime, value);
-                RaisePropertyChanged(nameof(_ApprovationDateTime));
+                Set(ref _ApprovationDate, value);
+                RaisePropertyChanged(nameof(_ApprovationDate));
             }
         }
 
@@ -235,7 +252,7 @@ namespace Great.ViewModels.Database
             if (ev != null)
                 Global.Mapper.Map(ev, this);
 
-            if (Days ==null )Days = new ObservableCollectionEx<DayEVM>();
+            if (Days == null) Days = new ObservableCollectionEx<DayEVM>();
 
             Days.CollectionChanged += (sender, e) => UpdateInfo();
             Days.ItemPropertyChanged += (sender, e) => UpdateInfo();

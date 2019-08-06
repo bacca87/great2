@@ -10,7 +10,6 @@ using Great.ViewModels.Database;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -49,10 +48,10 @@ namespace Great.ViewModels
             {
                 Factories = new ObservableCollectionEx<FactoryEVM>(db.Factories.ToList().Select(f => new FactoryEVM(f)));
             }
-                
+
             Factories.CollectionChanged += Factories_CollectionChanged;
             Factories.ItemPropertyChanged += Factories_ItemPropertyChanged;
-            
+
             DeleteFactoryCommand = new RelayCommand<FactoryEVM>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<FactoryEVM>(SaveFactory);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
@@ -68,10 +67,10 @@ namespace Great.ViewModels
 
         private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch(e.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach(FactoryEVM f in e.NewItems)
+                    foreach (FactoryEVM f in e.NewItems)
                         Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, f));
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -118,7 +117,7 @@ namespace Great.ViewModels
 
         private void ClearSelection()
         {
-            SelectedFactory = null;            
+            SelectedFactory = null;
         }
 
         private void DeleteFactory(FactoryEVM factory)

@@ -59,9 +59,6 @@
     <Reference Include="AutoUpdater.NET, Version=1.5.4.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Autoupdater.NET.Official.1.5.4\lib\net40\AutoUpdater.NET.dll</HintPath>
     </Reference>
-    <Reference Include="BespokeFusion, Version=1.0.1.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialMessageBox.1.0.0.11\lib\BespokeFusion.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.5\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -299,13 +296,15 @@
     <Compile Include="Models\DTO\TransferTypeDTO.cs" />
     <Compile Include="Models\Interfaces\IFDLFile.cs" />
     <Compile Include="Models\Interfaces\IProvider.cs" />
-    <Compile Include="Models\Sharepoint\EEventStatus.cs" />
+    <Compile Include="Models\Sharepoint\EventEnum.cs" />
     <Compile Include="Models\Sharepoint\MSSharepointProvider.cs" />
     <Compile Include="Models\Exchange\MSExchangeProvider.cs" />
     <Compile Include="Utils\AttachedProperties\NotificationHelper.cs" />
     <Compile Include="Utils\AttachedProperties\TextBoxHelper.cs" />
     <Compile Include="Utils\AutomapperConfiguration.cs" />
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
+    <Compile Include="Utils\Converters\EEventTypeToImageConverter.cs" />
+    <Compile Include="Utils\Converters\EEventTypeToTextConverter.cs" />
     <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
     <Compile Include="Utils\Converters\EventStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\EventStatusToTextConverter.cs" />
@@ -673,6 +672,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\4_29-07-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\6_06-08-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\16\file-pdf.png" />
