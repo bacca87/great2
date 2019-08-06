@@ -129,83 +129,91 @@ namespace Great.Models
 
             while (!exit)
             {
-                using (DBArchive db = new DBArchive())
+                try
                 {
-                    // try to get user Id
-                    if (sharepointUserId == 0)
+                    using (DBArchive db = new DBArchive())
                     {
-                        request = (HttpWebRequest)WebRequest.Create("https://intranet.elettric80.it/_api/web/currentuser");
-                        request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                        request.Method = "GET";
-
-                        var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
-                        xdoc.LoadXml(webResponse);
-                        sharepointUserId = Convert.ToInt32(xdoc.GetElementsByTagName("content")[0].FirstChild.FirstChild.LastChild.Value.ToString());
-                    }
-
-                    //take in account only if current user id is retrieved
-                    if (sharepointUserId > 0)
-                    {
-                        // try to get all submitted events
-                        string req = string.Format("https://intranet.elettric80.it/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {0}", sharepointUserId);
-
-                        request = (HttpWebRequest)WebRequest.Create(req);
-                        request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                        request.Method = "GET";
-
-                        var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
-                        xdoc.LoadXml(webResponse);
-
-                        foreach (XmlElement el in xdoc.GetElementsByTagName("entry"))
+                        // try to get user Id
+                        if (sharepointUserId == 0)
                         {
-                            Int64 shpid = Convert.ToInt64(el.GetElementsByTagName("content")[0]?.FirstChild["d:Id"].InnerText);
-                            int status = Convert.ToInt32(el.GetElementsByTagName("content")[0]?.FirstChild["d:OData__ModerationStatus"].InnerText);
+                            request = (HttpWebRequest)WebRequest.Create("https://intranet.elettric80.it/_api/web/currentuser");
+                            request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                            request.Method = "GET";
 
-                            var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
+                            var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                            xdoc.LoadXml(webResponse);
+                            sharepointUserId = Convert.ToInt32(xdoc.GetElementsByTagName("content")[0].FirstChild.FirstChild.LastChild.Value.ToString());
+                        }
 
-                            if (shpid == 0) continue;
-                            if (existing == null)
+                        //take in account only if current user id is retrieved
+                        if (sharepointUserId > 0)
+                        {
+                            // try to get all submitted events
+                            string req = string.Format("https://intranet.elettric80.it/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {0}", sharepointUserId);
+
+                            request = (HttpWebRequest)WebRequest.Create(req);
+                            request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                            request.Method = "GET";
+
+                            var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                            xdoc.LoadXml(webResponse);
+
+                            foreach (XmlElement el in xdoc.GetElementsByTagName("entry"))
                             {
-                                //manually added to calendar. Import it!
-                                EventEVM tmp = new EventEVM();
-                                tmp.IsSent = true; // the event is on calendar. Not necessary to send it
-                                tmp.SharePointId = shpid;
-                                tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
-                                tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
-                                tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
-                                tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
-                                tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
-                                tmp.Status = status;
-                                tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
+                                Int64 shpid = Convert.ToInt64(el.GetElementsByTagName("content")[0]?.FirstChild["d:Id"].InnerText);
+                                int status = Convert.ToInt32(el.GetElementsByTagName("content")[0]?.FirstChild["d:OData__ModerationStatus"].InnerText);
 
-                                if (tmp.EStatus == EEventStatus.Accepted)
-                                    tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
 
-                                //this field is not available with this kind of query -> Default vacation
-                                tmp.Type = 1;
-                                tmp.Save();
-                                Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
-                            }
-
-                            else
-                            {
-                                //Great handling. Just update status and approvation date
-                                EventEVM tmp = new EventEVM(existing);
-                                if (tmp.EStatus != EEventStatus.Pending) continue;
-
-                                if (tmp.EStatus != (EEventStatus)status)
+                                if (shpid == 0) continue;
+                                if (existing == null)
                                 {
-                                    tmp.EStatus = (EEventStatus)status;
-                                    tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                    //manually added to calendar. Import it!
+                                    EventEVM tmp = new EventEVM();
+                                    tmp.IsSent = true; // the event is on calendar. Not necessary to send it
+                                    tmp.SharePointId = shpid;
+                                    tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
+                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
+                                    tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
+                                    tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
+                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
+                                    tmp.Status = status;
+                                    tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
 
+                                    if (tmp.EStatus == EEventStatus.Accepted)
+                                        tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+
+                                    //this field is not available with this kind of query -> Default vacation
+                                    tmp.Type = 1;
                                     tmp.Save();
-                                    Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));
+                                    Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
+                                }
+
+                                else
+                                {
+                                    //Great handling. Just update status and approvation date
+                                    EventEVM tmp = new EventEVM(existing);
+                                    if (tmp.EStatus != EEventStatus.Pending) continue;
+
+                                    if (tmp.EStatus != (EEventStatus)status)
+                                    {
+                                        tmp.EStatus = (EEventStatus)status;
+                                        tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+
+                                        tmp.Save();
+                                        Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));
+                                    }
+
                                 }
 
                             }
-
                         }
-                    }           
+                    }
+
+                }
+                catch (Exception)
+                {
+
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);

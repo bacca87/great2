@@ -15,16 +15,16 @@ namespace Great.Utils.Converters
             switch (intValue)
             {
                 case 0: // Accepted
-                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great;component/Images/16/sign-check.png"));
+                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-check.png"));
                     break;
 
                 case 1: // Rejected
-                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great;component/Images/16/sign-error.png"));
+                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-error.png"));
                     break;
 
                 case 2: // Pending
 
-                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great;component/Images/16/clock.png"));
+                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/clock.png"));
                     break;
 
             }

@@ -11,7 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--Application Styles-->
-                <ResourceDictionary Source="pack://application:,,,/Great;Component/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Great2;Component/Styles.xaml" />
                 <local:SkinResourceDictionary DarkSource="Skins/DarkSkin.xaml" 
                                               LightSource="Skins/LightSkin.xaml">
                 </local:SkinResourceDictionary>
