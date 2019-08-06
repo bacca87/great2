@@ -1,5 +1,4 @@
-﻿using BespokeFusion;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Controls;
 using Great.Models.Database;

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Great.Models.Database;
+using Great.Models.DTO;
+using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using Great.Models.Database;
-using Great.Models.DTO;
 
 namespace Great.ViewModels.Database
 {

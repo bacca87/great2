@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Messaging;
 using Great.Models.Database;
-using Great.Models.DTO;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,6 +46,7 @@ namespace Great.Models
                     {
                         try
                         {
+
                             XmlDocument xdoc;
                             XmlNode request = null;
 
@@ -72,6 +70,7 @@ namespace Great.Models
                                         if (eventId > 0 && ecode == 0)
                                         {
                                             ev.SharePointId = eventId;
+                                            ev.SendDateTime = DateTime.Now;
                                             ev.IsSent = true;
                                             ev.Save();
                                             Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, ev));
@@ -109,7 +108,7 @@ namespace Great.Models
                             }
 
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             continue;
                         }
@@ -179,12 +178,21 @@ namespace Great.Models
                                     tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
                                     tmp.Status = status;
                                     tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
+                                    tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d::Created"].InnerText);
+
+                                    if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
+                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
+                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
+                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education") tmp.EType = EEventType.Education;
+                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other") tmp.EType = EEventType.Other;
+                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations") tmp.EType = EEventType.OldVacations;
 
                                     if (tmp.EStatus == EEventStatus.Accepted)
-                                        tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                    {
+                                        tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                        tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
+                                    }
 
-                                    //this field is not available with this kind of query -> Default vacation
-                                    tmp.Type = 1;
                                     tmp.Save();
                                     Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
                                 }
@@ -193,12 +201,12 @@ namespace Great.Models
                                 {
                                     //Great handling. Just update status and approvation date
                                     EventEVM tmp = new EventEVM(existing);
-                                    if (tmp.EStatus != EEventStatus.Pending) continue;
+                                    if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
 
                                     if (tmp.EStatus != (EEventStatus)status)
                                     {
                                         tmp.EStatus = (EEventStatus)status;
-                                        tmp.ApprovationDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                        tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
 
                                         tmp.Save();
                                         Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));

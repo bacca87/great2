@@ -1,14 +1,14 @@
 ﻿using GalaSoft.MvvmLight;
-using Great.Models.Database;
-using LiveCharts;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Great.ViewModels.Database;
-using Great.Utils.Extensions;
-using LiveCharts.Wpf;
 using GalaSoft.MvvmLight.Command;
+using Great.Models.Database;
+using Great.Utils.Extensions;
 using Great.Utils.Messages;
+using Great.ViewModels.Database;
+using LiveCharts;
+using LiveCharts.Wpf;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Great.ViewModels
 {
@@ -253,7 +253,7 @@ namespace Great.ViewModels
 
                 //count all special leaves
                 var specialDays = (from d in db.Days
-                                    where d.DayType.Id == (long)EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                   where d.DayType.Id == (long)EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
                                    select d
                             ).Count();
 

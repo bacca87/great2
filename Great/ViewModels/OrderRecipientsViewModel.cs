@@ -3,12 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
-using Great.Utils;
-using Microsoft.Exchange.WebServices.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 

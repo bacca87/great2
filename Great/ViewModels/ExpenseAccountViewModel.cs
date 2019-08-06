@@ -15,7 +15,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -34,7 +33,7 @@ namespace Great.ViewModels
         private FDLManager _fdlManager;
 
         public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
-                
+
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
         {
@@ -119,7 +118,7 @@ namespace Great.ViewModels
 
         #region Errors Validation
         public string CurrencyText { get; set; }
-        public string ExpenseTypeText { get; set; }        
+        public string ExpenseTypeText { get; set; }
 
         public string Error => throw new NotImplementedException();
 
@@ -127,7 +126,7 @@ namespace Great.ViewModels
         {
             get
             {
-                switch(columnName)
+                switch (columnName)
                 {
                     case "CurrencyText":
                         if (!string.IsNullOrEmpty(CurrencyText) && !Currencies.Any(c => c.Description == CurrencyText))
@@ -166,7 +165,8 @@ namespace Great.ViewModels
             MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() => {
+            LostFocusCommand = new RelayCommand(() =>
+            {
                 //TODO: vedere se serve
             });
 
@@ -214,7 +214,7 @@ namespace Great.ViewModels
                         {
                             ea.Status = item.Content.Status;
                             ea.LastError = item.Content.LastError;
-                        }   
+                        }
                     }
                 })
             );
@@ -231,7 +231,7 @@ namespace Great.ViewModels
 
             DateTime?[] tmpDays = new DateTime?[7];
 
-            for(int i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
                 tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
 
             DaysOfWeek = tmpDays;
@@ -275,7 +275,7 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }   
+            }
 
             if (ea.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
@@ -292,7 +292,7 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }   
+            }
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
@@ -342,7 +342,7 @@ namespace Great.ViewModels
                 Process.Start(filePath);
                 ea.IsCompiled = true;
                 ea.Save();
-            }   
+            }
         }
 
         public void Open(ExpenseAccountEVM ea)

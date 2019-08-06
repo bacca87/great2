@@ -1157,7 +1157,7 @@ namespace Great.Models
 
         public static class Themes
         {
-         
+
             private static ESkin _skin;
             public static ESkin Skin
             {

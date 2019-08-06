@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.OleDb;
-using System.Data;
+﻿using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
-using Great.Utils.Extensions;
-using System.IO;
-using System.Threading;
-using System.Data.Entity.Migrations;
-using GalaSoft.MvvmLight.Ioc;
 using Great.Models.Database;
-using NLog;
+using Great.Utils.Extensions;
 using Great.ViewModels.Database;
+using NLog;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity.Migrations;
+using System.Data.OleDb;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace Great.Utils
 {
@@ -219,7 +219,6 @@ namespace Great.Utils
             {
                 using (DBArchive db = new DBArchive())
                 {
-                    Timesheet t = null;
 
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtCars.Rows.Cast<DataRow>();
@@ -248,7 +247,7 @@ namespace Great.Utils
 
                             Message($"Car {car.LicensePlate} | {car.Brand} {car.Model} OK");
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Error($"Failed to import the car {car.LicensePlate}. {ex}", ex);
                         }
@@ -283,7 +282,7 @@ namespace Great.Utils
 
                                 Message($"Rent {DateTime.Now.FromUnixTimestamp(his.StartDate).ToShortDateString()} Car {licensePlate} OK");
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 Error($"Failed to import the rent in date {DateTime.Now.FromUnixTimestamp(his.StartDate).ToShortDateString()}, Car {licensePlate}. {ex}", ex);
                             }
@@ -325,7 +324,7 @@ namespace Great.Utils
                         FactoryEVM f = new FactoryEVM();
 
                         try
-                        {   
+                        {
                             f.Name = r.Field<string>("dbf_Stabilimento");
                             f.CompanyName = r.Field<string>("dbf_RagioneSociale");
                             f.Address = r.Field<string>("dbf_Indirizzo");
@@ -432,7 +431,7 @@ namespace Great.Utils
 
                                 if (fdl != null)
                                 {
-                                    if(!fdl.Factory.HasValue)
+                                    if (!fdl.Factory.HasValue)
                                     {
                                         fdl.Factory = _factories[factoryId.Value];
                                         db.FDLs.AddOrUpdate(fdl);
@@ -547,7 +546,7 @@ namespace Great.Utils
                                         else
                                             currentFdl.Status = (long)EFDLStatus.Cancelled;
 
-                                        if(currentFdl.Status != (long)EFDLStatus.New)
+                                        if (currentFdl.Status != (long)EFDLStatus.New)
                                             currentFdl.IsReadOnly = true;
 
                                         db.FDLs.AddOrUpdate(currentFdl);
@@ -612,7 +611,7 @@ namespace Great.Utils
                             {
                                 // we must override recived EA with the same of current dbcontext istance
                                 ExpenseAccount currentEA = db.ExpenseAccounts.SingleOrDefault(e => e.Id == ea.Id);
-                                    
+
                                 if (currentEA != null)
                                 {
                                     FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == currentEA.FDL);
@@ -621,11 +620,11 @@ namespace Great.Utils
                                         currentEA.Status = fdl.Status;
                                     else
                                         currentEA.Status = (long)EFDLStatus.Accepted;
-                                    
+
                                     var expense = expenses.SingleOrDefault(e => !string.IsNullOrEmpty(e.Field<string>("Dbf_Foglio")) && FormatFDL(e.Field<string>("Dbf_Foglio")) == fdl.Id);
                                     currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");
 
-                                    if(currentEA.Status != (long)EFDLStatus.New)
+                                    if (currentEA.Status != (long)EFDLStatus.New)
                                         currentEA.IsReadOnly = true;
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
@@ -659,7 +658,7 @@ namespace Great.Utils
         {
             var uri = new DirectoryInfo(folder);
             string virtualStorePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\", uri.Parent.Name), Path.Combine(uri.Name, "DB\\Archivio.mdb"));
-            
+
             if (File.Exists(virtualStorePath))
                 return virtualStorePath;
             else

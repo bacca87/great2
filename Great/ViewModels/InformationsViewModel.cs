@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 

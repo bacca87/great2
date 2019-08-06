@@ -217,7 +217,7 @@ namespace Great.ViewModels.Database
         {
             get => _IsNew;
             set => Set(ref _IsNew, value);
-        } 
+        }
 
         public bool IsValid { get { return Timesheets.Count == 0 || Timesheets.All(ts => ts.IsValid); } }
 
@@ -248,15 +248,15 @@ namespace Great.ViewModels.Database
 
         public string FDL_Factory_Display => $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}";
         #endregion
-        
+
         // hack because XAML didnt support default parameters
         public FDLEVM() => Timesheets = new ObservableCollection<TimesheetEVM>();
 
         public FDLEVM(FDL fdl = null)
         {
             Timesheets = new ObservableCollection<TimesheetEVM>();
-            
-            if(fdl != null)
+
+            if (fdl != null)
                 Global.Mapper.Map(fdl, this);
         }
 
@@ -278,7 +278,7 @@ namespace Great.ViewModels.Database
 
         public override bool Refresh(DBArchive db)
         {
-            FDL fdl = db.FDLs.SingleOrDefault(f=> f.Id == Id);
+            FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == Id);
 
             if (fdl != null)
             {

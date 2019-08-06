@@ -18,5 +18,5 @@ namespace Great.Models.DTO
             CcRecipients = new List<string>();
             Attachments = new List<string>();
         }
-    }    
+    }
 }

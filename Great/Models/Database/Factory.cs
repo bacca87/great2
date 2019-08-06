@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Great.Models.Database
 {
     [Table("Factory")]
     public partial class Factory
-    {    
+    {
         public long Id { get; set; }
         public string Name { get; set; }
         public string CompanyName { get; set; }
