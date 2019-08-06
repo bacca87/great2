@@ -141,7 +141,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding EType, Converter={StaticResource EEventTypeToImageConverter}}" Stretch="None">
                                         <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource EEventTypeToTextConverter}}"/>
                                         </Image.ToolTip>
                                     </Image>
                                     <Image Source="{Binding Status, Converter={StaticResource VacationStatusToImageConverter}}" Stretch="None">
