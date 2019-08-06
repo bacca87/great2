@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
@@ -15,9 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data.Entity.Migrations;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -63,7 +60,7 @@ namespace Great.ViewModels
                 Set(ref _selectedFDL, value);
 
                 if (_selectedFDL != null)
-                {   
+                {
                     SelectedTimesheet = null;
                     IsInputEnabled = true;
                 }
@@ -88,7 +85,7 @@ namespace Great.ViewModels
             get => _sendToEmailRecipient;
             set => Set(ref _sendToEmailRecipient, value);
         }
-        
+
         private ObservableCollection<FactoryDTO> _factories;
         public ObservableCollection<FactoryDTO> Factories
         {
@@ -142,7 +139,7 @@ namespace Great.ViewModels
                 FDLResults = new ObservableCollection<FDLResultDTO>(db.FDLResults.ToList().Select(r => new FDLResultDTO(r)));
                 FDLs = new ObservableCollectionEx<FDLEVM>(db.FDLs.ToList().Select(fdl => new FDLEVM(fdl)));
             }
-                        
+
             MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
             MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, TimeSheetChanged);
@@ -159,12 +156,12 @@ namespace Great.ViewModels
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
-        
+
         public void NewFDL(NewItemMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
-                new Action(() => 
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
                 {
                     if (item.Content != null && !FDLs.Any(f => f.Id == item.Content.Id))
                         FDLs.Add(item.Content);
@@ -175,8 +172,8 @@ namespace Great.ViewModels
         public void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, 
-                new Action(() => 
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
                 {
                     if (item.Content != null)
                     {
@@ -295,9 +292,9 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }   
+            }
 
-            if(!_fdlManager.IsExchangeAvailable())
+            if (!_fdlManager.IsExchangeAvailable())
             {
                 MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -324,7 +321,7 @@ namespace Great.ViewModels
                 _fdlManager.SendToSAP(fdl);
             }
         }
-        
+
         public void SendByEmail(string address)
         {
             string error;
@@ -446,7 +443,7 @@ namespace Great.ViewModels
 
         private void FactoryLink()
         {
-            if(SelectedFDL.Factory.HasValue)
+            if (SelectedFDL.Factory.HasValue)
                 OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
         }
 

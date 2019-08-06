@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,7 +10,7 @@ namespace Great.Models.Database
         {
             this.Expenses = new HashSet<Expense>();
         }
-    
+
         public long Id { get; set; }
         public string FDL { get; set; }
         public long? CdC { get; set; }

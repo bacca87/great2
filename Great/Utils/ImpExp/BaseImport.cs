@@ -16,14 +16,14 @@ namespace Great.Utils
         {
             get
             {
-                lock(this)
+                lock (this)
                 {
                     return _status;
                 }
             }
             internal set
             {
-                lock(this)
+                lock (this)
                 {
                     _status = value;
                 }

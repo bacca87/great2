@@ -1,5 +1,4 @@
-﻿using Great.ViewModels;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Great.Views.Pages
 {

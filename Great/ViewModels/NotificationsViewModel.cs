@@ -39,8 +39,8 @@ namespace Great.ViewModels
             set
             {
                 var oldValue = _newFactoriesCount;
-                _newFactoriesCount = value;            
-                    
+                _newFactoriesCount = value;
+
                 RaisePropertyChanged(nameof(NewFactoriesCount), oldValue, value);
             }
         }
@@ -141,7 +141,7 @@ namespace Great.ViewModels
 
         private void OnExchangeStatusChange(StatusChangeMessage<EProviderStatus> x)
         {
-            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => 
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 ExchangeStatus = x.Content;
 

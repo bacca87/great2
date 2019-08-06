@@ -9,7 +9,7 @@ namespace Great.Utils.Converters
         {
             string result = string.Empty;
             int intValue = System.Convert.ToInt32(value);
-            
+
             switch (intValue)
             {
                 case 0:

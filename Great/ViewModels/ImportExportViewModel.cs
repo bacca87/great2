@@ -1,6 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using Great.Views;
 
 namespace Great.ViewModels
 {
@@ -16,7 +14,7 @@ namespace Great.ViewModels
         /// Initializes a new instance of the ImportExportViewModel class.
         /// </summary>
         public ImportExportViewModel()
-        {  
+        {
         }
     }
 }

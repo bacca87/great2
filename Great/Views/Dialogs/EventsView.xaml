@@ -12,23 +12,90 @@
         xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:conv="clr-namespace:Great.Utils.Converters"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-        mc:Ignorable="d"
+    xmlns:Fluent="urn:fluent-ribbon"
+    mc:Ignorable="d"
         Title="Events"
         DataContext="{Binding Events, Source={StaticResource Locator}}">
     <Window.Resources>
-        <CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding Events}" IsLiveSortingRequested="True" >
+        <CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding FilteredEvents}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Id" Direction="Descending" />
+                <scm:SortDescription PropertyName="StartDate" Direction="Descending" />
+
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Window.Resources>
+
     <Grid Margin="10,0,10,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60*"/>
             <ColumnDefinition Width="40*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid Name="vacationsDataGridView"
-                Grid.Column="0"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Fluent:Ribbon Grid.Row="0">
+            <Fluent:Ribbon.Resources>
+                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+                <conv:CompareIntConverter x:Key="CompareIntConverter"/>
+            </Fluent:Ribbon.Resources>
+            <!--Contextual Tab Groups-->
+            <Fluent:Ribbon.ContextualGroups>
+                <Fluent:RibbonContextualTabGroup x:Name="EditEvents"
+                                     Header="Events" 
+                                     DataContext="{Binding Events, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
+            </Fluent:Ribbon.ContextualGroups>
+            <!--Tabs-->
+            <Fluent:RibbonTabItem Header="Events">
+                <Fluent:RibbonGroupBox Header="Tools">
+                    <Fluent:Button Header="New Event" Command="{Binding NewCommand}" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-add.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="New Event" Text="Add a new Event" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Request Cancellation" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Require cancellation" Text="Require the current event cancellation" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Marked current event as accepted" Text="Marked current event as accepted" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Mark as Rejected" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Marked current event as Rejected" Text="Marked current event as Rejected" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Filters">
+                    <Fluent:CheckBox Header="Show only vacations" IsChecked="{Binding ShowOnlyVacations}">
+
+                    </Fluent:CheckBox>
+                </Fluent:RibbonGroupBox>
+
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding Events, Source={StaticResource Locator}}"                              
+                                  IsSelected="{Binding ShowContextualMenu}"                                   
+                                  Group="{Binding Source={x:Reference EditEvents}}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save Event" Text="Save the current event" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+
+        </Fluent:Ribbon>
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <DataGrid Name="vacationsDataGridView"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
                 AutoGenerateColumns="False" 
@@ -43,51 +110,66 @@
                 SelectedItem="{Binding SelectedEvent}"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
-            <DataGrid.Resources>
-                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
-                    <Style.Setters>
-                        <Setter Property="TextBlock.FontSize" Value="15" />
-                        <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                    </Style.Setters>
-                </Style>
-                <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
-                    <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                    </Style.Setters>
-                </Style>
-                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
-                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                </Style>
+                <DataGrid.Resources>
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style.Setters>
+                    </Style>
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
 
-                <conv:EventStatusToImageConverter x:Key="VacationStatusToImageConverter"/>
-                <conv:EventStatusToTextConverter x:Key="VacationStatusToTextConverter"/>
-            </DataGrid.Resources>
+                    <conv:EventStatusToImageConverter x:Key="VacationStatusToImageConverter"/>
+                    <conv:EventStatusToTextConverter x:Key="VacationStatusToTextConverter"/>
+                    <conv:EEventTypeToImageConverter x:Key="EEventTypeToImageConverter"/>
+                    <conv:EEventTypeToTextConverter x:Key="EEventTypeToTextConverter"/>
+                </DataGrid.Resources>
 
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{Binding Status, Converter={StaticResource VacationStatusToImageConverter}}" Stretch="None">
-                                    <Image.ToolTip>
-                                        <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
-                                    </Image.ToolTip>
-                                </Image>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}"  FontWeight="Bold" />
-                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }"/>
-                <DataGridTextColumn Header="End Date" Binding="{Binding EndDate,StringFormat='dd/MM/yyyy'}"/>
-                <DataGridTextColumn Header="Description"  Binding="{Binding Description}" />
-                <!--<DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />-->
-                <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDateTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <Grid Grid.Column="1" Margin="10,0,0,0">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding EType, Converter={StaticResource EEventTypeToImageConverter}}" Stretch="None">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image Source="{Binding Status, Converter={StaticResource VacationStatusToImageConverter}}" Stretch="None">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
+                                        </Image.ToolTip>
+                                    </Image>
+
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}"  FontWeight="Bold" />
+                    <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }"/>
+                    <DataGridTextColumn Header="End Date" Binding="{Binding EndDate,StringFormat='dd/MM/yyyy'}"/>
+                    <DataGridTextColumn Header="Description"  Binding="{Binding Description}" />
+                    <DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />
+                    <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDate, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <Grid Grid.Column="1" Grid.Row="1" Margin="10,0,0,0">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="GotFocus">
+                    <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -107,7 +189,7 @@
             <TextBlock  Margin="5" Grid.Row="0" Text="Category:" VerticalAlignment="Center"/>
             <ComboBox  Grid.Row="1"
                                   SelectedItem="{Binding SelectedEvent.Type1}" 
-                                  SelectedValue="{Binding SelectedEvent.Type}" 
+                                  SelectedValue="{Binding SelectedEvent.Type, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
                                   SelectedValuePath="Id">
@@ -180,20 +262,12 @@
 
                 </ComboBox>
             </Grid>
-
             <TextBlock   Grid.Row="10" Margin="5" Text="Description:" VerticalAlignment="Center"/>
             <TextBox    Grid.Row="11" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
             <CheckBox   Grid.Row="12" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event" IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
             <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
-
-            <StackPanel Grid.Row="13" Orientation="Horizontal">
-                <Button Margin="10" Content="New" Command="{Binding NewCommand}" />
-                <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" CommandParameter="{Binding SelectedEvent}" />
-                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEvent}" />
-                <Button Margin="10" Content="Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEvent}" />
-                <Button Margin="10" Content="Cancelled" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEvent}" />
-                <Button Margin="10" Content="Req Cancel" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedEvent}" />
-            </StackPanel>
         </Grid>
     </Grid>
+
+
 </mah:MetroWindow>

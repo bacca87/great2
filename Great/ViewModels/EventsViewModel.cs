@@ -6,22 +6,19 @@ using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
-using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 
 namespace Great.ViewModels
 {
-    public class EventsViewModel : ViewModelBase
+    public class EventsViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Properties
         MSSharepointProvider _provider;
@@ -45,12 +42,59 @@ namespace Great.ViewModels
             }
         }
 
+
+        private bool _showContextualMenu = false;
+        public bool ShowContextualMenu
+        {
+            get => _showContextualMenu;
+
+            set
+            {
+                if (_showContextualMenu == value)
+                {
+                    return;
+                }
+
+                var oldValue = _showContextualMenu;
+                _showContextualMenu = value;
+
+                RaisePropertyChanged(nameof(ShowContextualMenu), oldValue, value);
+
+            }
+        }
+
+        private bool _showOnlyVacations = false;
+        public bool ShowOnlyVacations
+        {
+            get => _showOnlyVacations;
+            set
+            {
+                if (value == _showOnlyVacations) return;
+
+                _showOnlyVacations = value;
+                if (value)
+                    FilteredEvents = new ObservableCollectionEx<EventEVM>(Events.Where(x => x.EType == EEventType.Vacations).ToList().Select(v => v));
+                else
+                    FilteredEvents = new ObservableCollectionEx<EventEVM>(Events.ToList().Select(v => v));
+
+                RaisePropertyChanged(nameof(ShowOnlyVacations));
+            }
+        }
+
         private ObservableCollectionEx<EventEVM> _Events;
         public ObservableCollectionEx<EventEVM> Events
         {
             get => _Events;
             set => Set(ref _Events, value);
         }
+
+        private ObservableCollectionEx<EventEVM> _FilteredEvents;
+        public ObservableCollectionEx<EventEVM> FilteredEvents
+        {
+            get => _FilteredEvents;
+            set => Set(ref _FilteredEvents, value);
+        }
+
         public ObservableCollection<EventTypeDTO> EventTypes { get; set; }
         private EventEVM _SelectedEvent;
         public EventEVM SelectedEvent
@@ -62,15 +106,15 @@ namespace Great.ViewModels
 
                 if (_SelectedEvent != null)
                 {
-                    IsInputEnabled = true;
+
                     BeginHour = _SelectedEvent.StartDate.Hour;
                     BeginMinutes = _SelectedEvent.StartDate.Minute;
                     EndHour = _SelectedEvent.EndDate.Hour;
                     EndMinutes = _SelectedEvent.EndDate.Minute;
-                    IsInputEnabled = true;
+
+                    ShowContextualMenu = false;
                 }
-                else
-                    IsInputEnabled = false;
+
             }
         }
 
@@ -114,11 +158,14 @@ namespace Great.ViewModels
         public RelayCommand<EventEVM> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<EventEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand<EventEVM> DeleteCommand { get; set; }
+        public RelayCommand ShowContextualMenuCommand { get; set; }
 
         #endregion
 
+        #region Constructors
         public EventsViewModel(MSSharepointProvider pro)
         {
+            IsInputEnabled = true;
             _provider = pro;
 
             Minutes = new List<int>();
@@ -136,24 +183,27 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<EventEVM>(MarkAsCancelled);
             DeleteCommand = new RelayCommand<EventEVM>(RequestCancellation);
             NewCommand = new RelayCommand<EventEVM>(AddEvent);
+            ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
 
             using (DBArchive db = new DBArchive())
             {
                 EventTypes = new ObservableCollection<EventTypeDTO>(db.EventTypes.ToList().Select(e => new EventTypeDTO(e)));
                 Events = new ObservableCollectionEx<EventEVM>(db.Events.ToList().Select(v => new EventEVM(v)));
+                FilteredEvents = new ObservableCollectionEx<EventEVM>(db.Events.ToList().Select(v => new EventEVM(v)));
             }
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
         }
+        #endregion
 
+        #region Methods
         public void ClearEvent()
         {
             SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
             SelectedEvent.Description = string.Empty;
         }
-
         public void SaveEvent(EventEVM ev)
         {
             if (ev == null || ev.EStatus != EEventStatus.Pending)
@@ -195,7 +245,6 @@ namespace Great.ViewModels
             ev.Save();
 
         }
-
         public void MarkAsAccepted(EventEVM ev)
         {
             if (ev == null || ev.EStatus == EEventStatus.Accepted)
@@ -225,7 +274,6 @@ namespace Great.ViewModels
             ev.Save();
 
         }
-
         public void EventChanged(ItemChangedMessage<EventEVM> item)
         {
             if (item.Content != null)
@@ -234,12 +282,11 @@ namespace Great.ViewModels
 
                 //update also approver andd date of approval!
                 v.EStatus = item.Content.EStatus;
-                v.ApprovationDateTime = item.Content.ApprovationDateTime;
+                v.ApprovationDate = item.Content.ApprovationDate;
                 v.Approver = item.Content.Approver;
                 v.Save();
             }
         }
-
         public void EventImportedFromCalendar(NewItemMessage<EventEVM> item)
         {
             if (item.Content != null)
@@ -251,9 +298,43 @@ namespace Great.ViewModels
         {
             IsInputEnabled = true;
             SelectedEvent = new EventEVM();
+            SelectedEvent.EType = EEventType.Vacations;
             SelectedEvent.EStatus = EEventStatus.Pending;
             SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
         }
+        public string Error => throw new NotImplementedException();
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(SelectedEvent.Title) || string.IsNullOrWhiteSpace(SelectedEvent.Title))
+                            return "Title of event must be set";
+
+                        break;
+
+                    case "StartDate":
+                    case "EndDate":
+                        if (SelectedEvent.StartDate > SelectedEvent.EndDate)
+                            return "Time interval not valid";
+
+                        break;
+
+                    //case "ExpenseTypeText":
+                    //    if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
+                    //        return "Select a valid expense type from the combo list!";
+                    //    break;
+
+                    default:
+                        break;
+                }
+
+                return null;
+            }
+        }
+        #endregion
     }
 }

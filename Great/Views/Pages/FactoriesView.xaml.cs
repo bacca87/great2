@@ -1,24 +1,22 @@
 ﻿using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
+using Great.Controls;
 using Great.Models;
+using Great.ViewModels;
+using Great.ViewModels.Database;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Great.ViewModels;
-using System.ComponentModel;
-using Great.Controls;
-using Great.Models.Database;
-using Great.ViewModels.Database;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using GalaSoft.MvvmLight.Ioc;
-using System.Globalization;
 
 namespace Great.Views
 {
@@ -41,7 +39,7 @@ namespace Great.Views
             InitializeComponent();
 
             factoriesMapControl.CacheLocation = ApplicationSettings.Directories.Cache;
-            factoriesMapControl.MapProvider = GMapProviders.OpenStreetMap;            
+            factoriesMapControl.MapProvider = GMapProviders.OpenStreetMap;
             factoriesMapControl.ShowCenter = false; //The block of wood display centre cross burns
             factoriesMapControl.DragButton = MouseButton.Right; //The key drags left dragging a map
             factoriesMapControl.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
@@ -50,10 +48,10 @@ namespace Great.Views
             zoomSlider.Maximum = factoriesMapControl.MaxZoom;
             zoomSlider.Minimum = factoriesMapControl.MinZoom;
             zoomSlider.Value = factoriesMapControl.Zoom;
-            
+
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
             _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
-            
+
             factoriesMapControl.ZoomAndCenterMarkers(null);
         }
 
@@ -72,7 +70,7 @@ namespace Great.Views
             else
             {
                 Mouse.OverrideCursor = lastCursor;
-                layoutGrid.RowDefinitions[2].Height = lastGridHeight;                
+                layoutGrid.RowDefinitions[2].Height = lastGridHeight;
             }
 
             splitter.IsEnabled = !enable;
@@ -108,7 +106,7 @@ namespace Great.Views
         }
 
         private void ZoomOnFactory(FactoryEVM factory)
-        {   
+        {
             PointLatLng? point = GetFactoryCoordsAsync(factory).Result;
 
             if (point.HasValue)
@@ -243,7 +241,7 @@ namespace Great.Views
 
         private void FactoriesView_PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
-            switch(e.PropertyName)
+            switch (e.PropertyName)
             {
                 case nameof(_viewModel.SelectedFactory):
                     if (tempPosMarker != null)
@@ -254,7 +252,7 @@ namespace Great.Views
                     break;
             }
         }
-        
+
         private void marker_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -267,7 +265,7 @@ namespace Great.Views
 
         private void marker_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            
+
         }
 
         private void FactoriesMapControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -297,8 +295,8 @@ namespace Great.Views
 
         private void factoriesMapControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(IsLatLngSelectionMode)
-            { 
+            if (IsLatLngSelectionMode)
+            {
                 Point mousePos = e.GetPosition(factoriesMapControl);
                 PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
 

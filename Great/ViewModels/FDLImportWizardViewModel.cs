@@ -148,7 +148,7 @@ namespace Great.ViewModels
         public FDLImportWizardViewModel()
         {
             _fdlImport = new FDLImport();
-            
+
             StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
             CancelCommand = new RelayCommand(Cancel);
@@ -165,7 +165,7 @@ namespace Great.ViewModels
         {
             string newText = string.Empty;
 
-            while(!_fdlImport.Output.IsEmpty)
+            while (!_fdlImport.Output.IsEmpty)
             {
                 string text;
 

@@ -35,7 +35,7 @@ namespace Great.Utils
             Uri val = null;
             if (UserSettings.Themes.Skin == ESkin.Light) val = LightSource;
             if (UserSettings.Themes.Skin == ESkin.Dark) val = DarkSource;
-            if (val != null )
+            if (val != null)
                 base.Source = val;
         }
     }

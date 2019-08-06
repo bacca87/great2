@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using GalaSoft.MvvmLight.Ioc;
+﻿using GalaSoft.MvvmLight.Ioc;
 using Great.ViewModels;
 using System.Linq;
 using System.Windows;
@@ -14,7 +13,7 @@ namespace Great.Views.Pages
     public partial class FDLView : Page
     {
         private bool runonce = true;
-        private FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }        
+        private FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }
 
         public FDLView()
         {
@@ -22,13 +21,13 @@ namespace Great.Views.Pages
 
             _viewModel.OnFactoryLink += OnFactoryLink;
         }
-        
+
         private void fdlDataGridView_Loaded(object sender, RoutedEventArgs e)
         {
             // hack for correctly show all default selected FDL data on the side panel
-            if(runonce)
+            if (runonce)
             {
-                if(fdlDataGridView.Items.Count > 0)
+                if (fdlDataGridView.Items.Count > 0)
                 {
                     fdlDataGridView.SelectedIndex = -1;
                     fdlDataGridView.SelectedIndex = 0;
@@ -62,7 +61,7 @@ namespace Great.Views.Pages
                     factoriesVM.SelectedFactory = factoriesVM.Factories.SingleOrDefault(f => f.Id == factoryId);
                     factoriesVM.ZoomOnFactoryRequest(factoriesVM.SelectedFactory);
                     factoriesTabItem.IsSelected = true;
-                }                
+                }
             }
         }
     }

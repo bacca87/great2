@@ -1,18 +1,14 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Great.Controls;
 using Great.Models;
-using Microsoft.Exchange.WebServices.Data;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Windows.Media;
-using System.Linq;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using System.Diagnostics;
-using Great.Controls;
 
 namespace Great.ViewModels
 {
@@ -63,7 +59,7 @@ namespace Great.ViewModels
             {
                 if (UserSettings.Email.EmailAddress == value)
                     return;
-                
+
                 var oldValue = UserSettings.Email.EmailAddress;
                 UserSettings.Email.EmailAddress = value;
 
@@ -107,7 +103,7 @@ namespace Great.ViewModels
             }
         }
 
-    
+
         /// <summary>
         /// Sets and gets the VacationColor property.
         /// Changes to that property's value raise the PropertyChanged event.         
@@ -150,7 +146,7 @@ namespace Great.ViewModels
             {
                 string recipients = string.Empty;
 
-                if(UserSettings.Email.Recipients.FDLCancelRequest != null)
+                if (UserSettings.Email.Recipients.FDLCancelRequest != null)
                 {
                     foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                         recipients += recipients == string.Empty ? address : "; " + address;
@@ -188,7 +184,7 @@ namespace Great.ViewModels
         /// Initializes a new instance of the SettingsViewModel class.
         /// </summary>
         public SettingsViewModel()
-        {   
+        {
             SelectFolderCommand = new RelayCommand(SelectFolder);
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
 
@@ -250,9 +246,9 @@ namespace Great.ViewModels
 
                 MetroMessageBox.Show("Migration Completed!\nThe application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
                 Process.Start(Application.ResourceAssembly.Location, "-m");
-                Application.Current.Shutdown();                
+                Application.Current.Shutdown();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }

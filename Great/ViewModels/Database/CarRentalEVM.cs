@@ -159,7 +159,7 @@ namespace Great.ViewModels.Database
 
         public CarRentalHistoryEVM(CarRentalHistory rent = null)
         {
-            if(rent != null)
+            if (rent != null)
                 Global.Mapper.Map(rent, this);
         }
 
