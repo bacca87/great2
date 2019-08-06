@@ -9,7 +9,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="AutoAddFactories" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AutoAssignFactories" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -27,7 +27,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="DataDirectoryPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">%USERPROFILE%\documents\Great\</Value>
+      <Value Profile="(Default)">%USERPROFILE%\documents\Great2\</Value>
     </Setting>
     <Setting Name="UpgradeSettings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
