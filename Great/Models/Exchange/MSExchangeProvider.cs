@@ -20,6 +20,8 @@ namespace Great.Models
     public class MSExchangeProvider : IProvider
     {
         private ExchangeService exService;
+        private StreamingSubscriptionConnection subconn;
+        private CancellationTokenSource exitToken;
 
         public event EventHandler<NewMessageEventArgs> OnNewMessage;
         public event EventHandler<MessageEventArgs> OnMessageSent;
@@ -48,7 +50,7 @@ namespace Great.Models
             {
                 lock (this)
                 {
-                    if (exchangeStatus != value)
+                    if(exchangeStatus != value)
                     {
                         exchangeStatus = value;
                         Messenger.Default.Send(new StatusChangeMessage<EProviderStatus>(this, exchangeStatus));
@@ -59,6 +61,7 @@ namespace Great.Models
 
         public MSExchangeProvider()
         {
+            exitToken = new CancellationTokenSource();
             Connect();
         }
 
@@ -101,15 +104,18 @@ namespace Great.Models
                         WaitCredentialsChange();
                     }
                     else
-                        Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                        System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
                 }
-            } while (exService.Url == null);
+            } while (exService.Url == null && !exitToken.IsCancellationRequested);
+
+            if (exitToken.IsCancellationRequested)
+                return;
 
             Status = EProviderStatus.Connecting;
 
             exServiceUri = exService.Url;
 
-            if (emailSenderThread == null || !emailSenderThread.IsAlive)
+            if((emailSenderThread == null || !emailSenderThread.IsAlive) && !exitToken.IsCancellationRequested)
             {
                 emailSenderThread = new Thread(EmailSenderThread);
                 emailSenderThread.Name = "Email Sender";
@@ -117,7 +123,7 @@ namespace Great.Models
                 emailSenderThread.Start();
             }
 
-            if (subscribeThread == null || !subscribeThread.IsAlive)
+            if ((subscribeThread == null || !subscribeThread.IsAlive) && !exitToken.IsCancellationRequested)
             {
                 subscribeThread = new Thread(SubscribeNotificationsThread);
                 subscribeThread.Name = "Exchange Subscription Thread";
@@ -125,7 +131,7 @@ namespace Great.Models
                 subscribeThread.Start();
             }
 
-            if (syncThread == null || !syncThread.IsAlive)
+            if ((syncThread == null || !syncThread.IsAlive) && !exitToken.IsCancellationRequested)
             {
                 syncThread = new Thread(ExchangeSync);
                 syncThread.Name = "Exchange Sync";
@@ -135,8 +141,7 @@ namespace Great.Models
         }
 
         private void EmailSenderThread()
-        {
-            bool exit = false;
+        {   
             ExchangeTraceListener trace = new ExchangeTraceListener();
             ExchangeService service = new ExchangeService
             {
@@ -147,7 +152,7 @@ namespace Great.Models
                 Url = exServiceUri
             };
 
-            while (!exit)
+            while (!exitToken.IsCancellationRequested)
             {
                 while (!emailQueue.IsEmpty)
                 {
@@ -186,13 +191,13 @@ namespace Great.Models
                                 WaitCredentialsChange();
                             }
                             else
-                                Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                                System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
                         }
                     }
                     while (!IsSent);
                 }
 
-                Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
+                System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextEmailCheck, exitToken.Token).Wait();
             }
         }
 
@@ -208,7 +213,7 @@ namespace Great.Models
                 Url = exServiceUri
             };
 
-            StreamingSubscriptionConnection connection = new StreamingSubscriptionConnection(service, 30);
+            subconn = new StreamingSubscriptionConnection(service, 30);
 
             do
             {
@@ -216,11 +221,11 @@ namespace Great.Models
                 {
                     StreamingSubscription streamingSubscription = service.SubscribeToStreamingNotificationsOnAllFolders(EventType.NewMail);
 
-                    connection.AddSubscription(streamingSubscription);
-                    connection.OnNotificationEvent += Connection_OnNotificationEvent;
-                    connection.OnSubscriptionError += Connection_OnSubscriptionError;
-                    connection.OnDisconnect += Connection_OnDisconnect;
-                    connection.Open();
+                    subconn.AddSubscription(streamingSubscription);
+                    subconn.OnNotificationEvent += Connection_OnNotificationEvent;
+                    subconn.OnSubscriptionError += Connection_OnSubscriptionError;
+                    subconn.OnDisconnect += Connection_OnDisconnect;
+                    subconn.Open();
                 }
                 catch
                 {
@@ -230,9 +235,9 @@ namespace Great.Models
                         WaitCredentialsChange();
                     }
                     else
-                        Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                        System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
                 }
-            } while (connection == null || !connection.IsOpen);
+            } while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
         }
 
         private void ExchangeSync()
@@ -248,7 +253,7 @@ namespace Great.Models
             };
 
             bool IsSynced = false;
-
+            
             do
             {
                 try
@@ -262,6 +267,8 @@ namespace Great.Models
                     // try to get last week messages (high priority)
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem + " received:>=lastweek", folderView, itemView))
                     {
+                        if (exitToken.IsCancellationRequested) break;
+
                         if (!(item is EmailMessage))
                             continue;
 
@@ -272,6 +279,8 @@ namespace Great.Models
                     // then all the other messages
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
                     {
+                        if (exitToken.IsCancellationRequested) break;
+
                         if (!(item is EmailMessage))
                             continue;
 
@@ -290,9 +299,9 @@ namespace Great.Models
                         WaitCredentialsChange();
                     }
                     else
-                        Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
+                        System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
                 }
-            } while (!IsSynced);
+            } while (!IsSynced && !exitToken.IsCancellationRequested);
         }
         #endregion
 
@@ -321,10 +330,10 @@ namespace Great.Models
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
             try
-            {
+            {   
                 connection.Open();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (Status != EProviderStatus.Error)
                     Status = EProviderStatus.Offline;
@@ -340,7 +349,7 @@ namespace Great.Models
 
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
-            if (!connection.IsOpen)
+            if(!connection.IsOpen)
                 connection.Close();
 
             connection.Dispose();
@@ -352,13 +361,38 @@ namespace Great.Models
         #region Private Methods
         private void Connect()
         {
-            if (mainThread == null || !mainThread.IsAlive)
+            if(mainThread == null || !mainThread.IsAlive)
             {
                 mainThread = new Thread(MainThread);
                 mainThread.Name = "Exchange Autodiscover Thread";
                 mainThread.IsBackground = true;
                 mainThread.Start();
             }
+        }
+
+        private void Disconnect()
+        {
+            if (subconn.IsOpen)
+                subconn.Close();
+
+            subconn.Dispose();
+
+            exitToken.Cancel();
+
+            if (!mainThread.Join(1000))
+                mainThread.Abort();
+
+            if (!subscribeThread.Join(1000))
+                subscribeThread.Abort();
+
+            if (!syncThread.Join(1000))
+                syncThread.Abort();
+
+            mainThread = null;
+            subscribeThread = null;
+            syncThread = null;
+
+            exitToken = new CancellationTokenSource();
         }
 
         private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
@@ -368,10 +402,14 @@ namespace Great.Models
 
             do
             {
+                if (exitToken.IsCancellationRequested) break;
+
                 foldersResults = service.FindFolders(root, folderView);
 
                 foreach (Folder folder in foldersResults)
                 {
+                    if (exitToken.IsCancellationRequested) break;
+
                     if (folder.WellKnownFolderName == WellKnownFolderName.DeletedItems ||
                         folder.WellKnownFolderName == WellKnownFolderName.SentItems ||
                         folder.WellKnownFolderName == WellKnownFolderName.Drafts ||
@@ -387,6 +425,8 @@ namespace Great.Models
 
                     do
                     {
+                        if (exitToken.IsCancellationRequested) break;
+
                         itemsResults = service.FindItems(folder.Id, query, itemView);
 
                         foreach (Item item in itemsResults)
@@ -408,6 +448,8 @@ namespace Great.Models
 
             do
             {
+                if (exitToken.IsCancellationRequested) break;
+
                 itemsResults = service.FindItems(root, query, itemView);
 
                 foreach (Item item in itemsResults)
@@ -434,8 +476,8 @@ namespace Great.Models
             string LastAddress = UserSettings.Email.EmailAddress;
             string LastPassword = UserSettings.Email.EmailPassword;
 
-            while (LastAddress == UserSettings.Email.EmailAddress && LastPassword == UserSettings.Email.EmailPassword)
-                Thread.Sleep(ApplicationSettings.General.WaitForCredentialsCheck);
+            while (LastAddress == UserSettings.Email.EmailAddress && LastPassword == UserSettings.Email.EmailPassword && !exitToken.IsCancellationRequested)
+                System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForCredentialsCheck, exitToken.Token).Wait();
         }
         #endregion
 
@@ -492,7 +534,7 @@ namespace Great.Models
                         return false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

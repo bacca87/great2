@@ -107,16 +107,19 @@ namespace Great.Views
 
         private void ZoomOnFactory(FactoryEVM factory)
         {
-            PointLatLng? point = GetFactoryCoordsAsync(factory).Result;
-
-            if (point.HasValue)
+            if (factory.Latitude.HasValue && factory.Longitude.HasValue)
             {
-                ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
-                FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((FactoryEVM)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
+                PointLatLng? point = new PointLatLng(factory.Latitude.Value, factory.Longitude.Value);
 
-                if (marker != null)
-                    marker.PlayBounce();
-            }
+                if (point.HasValue)
+                {
+                    ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
+                    FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((FactoryEVM)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
+
+                    if (marker != null)
+                        marker.PlayBounce();
+                }
+            }   
         }
 
         public async Task<PointLatLng?> GetFactoryCoordsAsync(FactoryEVM factory)
