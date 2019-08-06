@@ -380,13 +380,22 @@ namespace Great.Models
             exitToken.Cancel();
 
             if (!mainThread.Join(1000))
+            {
+                Debugger.Break();
                 mainThread.Abort();
+            }   
 
             if (!subscribeThread.Join(1000))
+            {
+                Debugger.Break();
                 subscribeThread.Abort();
+            }
 
-            if (!syncThread.Join(1000))
+            if (!syncThread.Join(3000))
+            {
+                Debugger.Break();
                 syncThread.Abort();
+            }   
 
             mainThread = null;
             subscribeThread = null;
