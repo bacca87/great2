@@ -225,6 +225,8 @@ namespace Great.ViewModels
             ev.IsSent = false;
             ev.Save();
 
+            Events.Add(ev);
+            FilteredEvents.Add(ev);
             Messenger.Default.Send(new NewItemMessage<EventEVM>(this, ev));
 
         }

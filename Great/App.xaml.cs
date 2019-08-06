@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
@@ -82,9 +83,9 @@ namespace Great
             if (!File.Exists(dbFileName))
                 File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
             else
+                DoBackup(dbFileName, dbDirectory); //Backup before migrations
                 ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
 
-            //TODO: creare backup del db ogni giorno fino a un massimo di 7 giorni
         }
 
         private void ApplyMigrations()
@@ -120,6 +121,30 @@ namespace Great
                     }
                 }
             }
+        }
+
+        private void DoBackup(string dbFileName, string dbDirectory)
+        {
+            bool copy = true;
+            // get files ordered by creationdatetime
+            IList<FileInfo> files = new DirectoryInfo(dbDirectory).GetFiles("*.db3")
+                                                                  .Where(x=>x.FullName != dbFileName)
+                                                                  .OrderByDescending(x => x.CreationTime)
+                                                                  .ToList();
+
+            if (files.Count > 0)
+            {
+                //on header byte 27 is stored the file change counter. It is updated every time database changes https://www.sqlite.org/fileformat.html -> compare it with last backup file
+                var dbversion = File.ReadAllBytes(dbFileName)[27];
+                var backupDbVersion = File.ReadAllBytes(files.FirstOrDefault().FullName)[27];
+
+                if (dbversion == backupDbVersion) copy = false;
+
+            }
+
+            if (copy) File.Copy(dbFileName,dbDirectory+ "\\"+"archive_" + DateTime.Now.ToString("yyyyMMddHHmmss")+".db3");
+            
+            files.Where(x => DateTime.Now.Subtract(x.CreationTime).TotalDays >= ApplicationSettings.Database.MaxBackupDays).ToList().ForEach(x => x.Delete());          
         }
 
         public void ApplySkin(ESkin newSkin)
