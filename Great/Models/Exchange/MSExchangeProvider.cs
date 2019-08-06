@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Mail;
 using System.Threading;
 using static Great.Models.ExchangeTraceListener;
@@ -18,9 +19,10 @@ namespace Great.Models
 
     public class MSExchangeProvider : IProvider
     {
-        private ExchangeService exService = new ExchangeService();
+        private ExchangeService exService;
 
         public event EventHandler<NewMessageEventArgs> OnNewMessage;
+        public event EventHandler<MessageEventArgs> OnMessageSent;
 
         private Thread mainThread;
         private Thread emailSenderThread;
@@ -46,24 +48,26 @@ namespace Great.Models
             {
                 lock (this)
                 {
-                    exchangeStatus = value;
-                    Messenger.Default.Send(new StatusChangeMessage<EProviderStatus>(this, exchangeStatus));
+                    if(exchangeStatus != value)
+                    {
+                        exchangeStatus = value;
+                        Messenger.Default.Send(new StatusChangeMessage<EProviderStatus>(this, exchangeStatus));
+                    }
                 }
             }
         }
 
         public MSExchangeProvider()
         {
-            mainThread = new Thread(MainThread);
-            mainThread.Name = "Exchange Autodiscover Thread";
-            mainThread.IsBackground = true;
-            mainThread.Start();
+            Connect();
         }
 
         #region Threads
         private void MainThread()
         {
             ExchangeTraceListener trace = new ExchangeTraceListener();
+
+            exService = new ExchangeService();
             exService.TraceListener = trace;
             exService.TraceFlags = TraceFlags.AutodiscoverConfiguration;
             exService.TraceEnabled = true;
@@ -101,22 +105,33 @@ namespace Great.Models
                 }
             } while (exService.Url == null);
 
+            Status = EProviderStatus.Connecting;
+
             exServiceUri = exService.Url;
 
-            emailSenderThread = new Thread(EmailSenderThread);
-            emailSenderThread.Name = "Email Sender";
-            emailSenderThread.IsBackground = true;
-            emailSenderThread.Start();
+            if(emailSenderThread == null || !emailSenderThread.IsAlive)
+            {
+                emailSenderThread = new Thread(EmailSenderThread);
+                emailSenderThread.Name = "Email Sender";
+                emailSenderThread.IsBackground = true;
+                emailSenderThread.Start();
+            }
 
-            subscribeThread = new Thread(SubscribeNotificationsThread);
-            subscribeThread.Name = "Exchange Subscription Thread";
-            subscribeThread.IsBackground = true;
-            subscribeThread.Start();
+            if (subscribeThread == null || !subscribeThread.IsAlive)
+            {
+                subscribeThread = new Thread(SubscribeNotificationsThread);
+                subscribeThread.Name = "Exchange Subscription Thread";
+                subscribeThread.IsBackground = true;
+                subscribeThread.Start();
+            }
 
-            syncThread = new Thread(ExchangeSync);
-            syncThread.Name = "Exchange Sync";
-            syncThread.IsBackground = true;
-            syncThread.Start();
+            if (syncThread == null || !syncThread.IsAlive)
+            {
+                syncThread = new Thread(ExchangeSync);
+                syncThread.Name = "Exchange Sync";
+                syncThread.IsBackground = true;
+                syncThread.Start();
+            }
         }
 
         private void EmailSenderThread()
@@ -160,6 +175,8 @@ namespace Great.Models
 
                             msg.SendAndSaveCopy();
                             IsSent = true;
+
+                            NotifyMessageSent(message);
                         }
                         catch
                         {
@@ -193,8 +210,6 @@ namespace Great.Models
 
             StreamingSubscriptionConnection connection = new StreamingSubscriptionConnection(service, 30);
 
-            Status = EProviderStatus.Connecting;
-
             do
             {
                 try
@@ -218,8 +233,6 @@ namespace Great.Models
                         Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
                 }
             } while (connection == null || !connection.IsOpen);
-
-            Status = EProviderStatus.Syncronizing;
         }
 
         private void ExchangeSync()
@@ -235,8 +248,7 @@ namespace Great.Models
             };
 
             bool IsSynced = false;
-            Status = EProviderStatus.Syncronizing;
-
+            
             do
             {
                 try
@@ -269,7 +281,6 @@ namespace Great.Models
 
                     IsSynced = true;
                     Status = EProviderStatus.Syncronized;
-
                 }
                 catch
                 {
@@ -307,30 +318,49 @@ namespace Great.Models
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
         {
-            if (Status != EProviderStatus.Error)
-                Status = EProviderStatus.Offline;
-
-            Thread.Sleep(ApplicationSettings.General.WaitForNextConnectionRetry);
-            Status = EProviderStatus.Reconnecting;
+            StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
             try
-            {
-                (sender as StreamingSubscriptionConnection).Open();
-                Status = EProviderStatus.Syncronizing;
+            {   
+                connection.Open();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                if (Status != EProviderStatus.Error)
+                    Status = EProviderStatus.Offline;
 
-            Debugger.Break();
+                connection.Dispose();
+                Connect();
+            }
         }
 
         private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
         {
-            Status = EProviderStatus.Error;
             Debugger.Break();
+
+            StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
+
+            if(!connection.IsOpen)
+                connection.Close();
+
+            connection.Dispose();
+            Status = EProviderStatus.Error;
+            Connect();
         }
         #endregion
 
         #region Private Methods
+        private void Connect()
+        {
+            if(mainThread == null || !mainThread.IsAlive)
+            {
+                mainThread = new Thread(MainThread);
+                mainThread.Name = "Exchange Autodiscover Thread";
+                mainThread.IsBackground = true;
+                mainThread.Start();
+            }
+        }
+
         private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
         {
             FindFoldersResults foldersResults;
@@ -394,6 +424,11 @@ namespace Great.Models
             OnNewMessage?.Invoke(this, new NewMessageEventArgs(e));
         }
 
+        protected void NotifyMessageSent(EmailMessageDTO e)
+        {
+            OnMessageSent?.Invoke(this, new MessageEventArgs(e));
+        }
+
         private void WaitCredentialsChange()
         {
             string LastAddress = UserSettings.Email.EmailAddress;
@@ -433,6 +468,35 @@ namespace Great.Models
                 return false;
             }
         }
+
+        public bool IsServiceAvailable()
+        {
+            try
+            {
+                if (exServiceUri == null)
+                    return false;
+
+                var request = (HttpWebRequest)WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
+                request.UserAgent = ApplicationSettings.General.UserAgent;
+                request.KeepAlive = false;
+                request.AllowAutoRedirect = true;
+                request.MaximumAutomaticRedirections = 100;
+                request.CookieContainer = new CookieContainer();
+                request.Method = "GET";
+
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         #endregion
     }
 
@@ -441,6 +505,16 @@ namespace Great.Models
         public EmailMessage Message { get; internal set; }
 
         public NewMessageEventArgs(EmailMessage message)
+        {
+            Message = message;
+        }
+    }
+
+    public class MessageEventArgs : EventArgs
+    {
+        public EmailMessageDTO Message { get; internal set; }
+
+        public MessageEventArgs(EmailMessageDTO message)
         {
             Message = message;
         }

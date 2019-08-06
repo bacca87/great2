@@ -4,7 +4,7 @@
 -- Author: Andrea Corradini
 --=========================================================================
 
-delete from EventStatus Where Id = 3
+delete from EventStatus Where Id = 3;
 
 ALTER TABLE [Event] ADD COLUMN [IsSent] BOOL NOT NULL DEFAULT 0;
 

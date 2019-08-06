@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -33,7 +34,7 @@ namespace Great.ViewModels
         private FDLManager _fdlManager;
 
         public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
-
+                
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
         {
@@ -118,7 +119,7 @@ namespace Great.ViewModels
 
         #region Errors Validation
         public string CurrencyText { get; set; }
-        public string ExpenseTypeText { get; set; }
+        public string ExpenseTypeText { get; set; }        
 
         public string Error => throw new NotImplementedException();
 
@@ -126,7 +127,7 @@ namespace Great.ViewModels
         {
             get
             {
-                switch (columnName)
+                switch(columnName)
                 {
                     case "CurrencyText":
                         if (!string.IsNullOrEmpty(CurrencyText) && !Currencies.Any(c => c.Description == CurrencyText))
@@ -165,8 +166,7 @@ namespace Great.ViewModels
             MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() =>
-            {
+            LostFocusCommand = new RelayCommand(() => {
                 //TODO: vedere se serve
             });
 
@@ -214,7 +214,7 @@ namespace Great.ViewModels
                         {
                             ea.Status = item.Content.Status;
                             ea.LastError = item.Content.LastError;
-                        }
+                        }   
                     }
                 })
             );
@@ -231,7 +231,7 @@ namespace Great.ViewModels
 
             DateTime?[] tmpDays = new DateTime?[7];
 
-            for (int i = 0; i < 7; i++)
+            for(int i = 0; i < 7; i++)
                 tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
 
             DaysOfWeek = tmpDays;
@@ -277,11 +277,20 @@ namespace Great.ViewModels
                 return;
             }
 
+            if (!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (ea.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            _fdlManager.SendToSAP(ea);
+            using (new WaitCursor())
+            {
+                _fdlManager.SendToSAP(ea);
+            }   
         }
 
         public void SendByEmail(string address)
@@ -294,23 +303,32 @@ namespace Great.ViewModels
                 return;
             }
 
+            if (!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
                 MetroMessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // reset input box
-            SendToEmailRecipient = string.Empty;
+            using (new WaitCursor())
+            {
+                // reset input box
+                SendToEmailRecipient = string.Empty;
 
-            MRUEmailRecipients.Add(address);
+                MRUEmailRecipients.Add(address);
 
-            // save to user setting the MRU recipients
-            StringCollection collection = new StringCollection();
-            collection.AddRange(MRUEmailRecipients.ToArray());
-            UserSettings.Email.Recipients.MRU = collection;
+                // save to user setting the MRU recipients
+                StringCollection collection = new StringCollection();
+                collection.AddRange(MRUEmailRecipients.ToArray());
+                UserSettings.Email.Recipients.MRU = collection;
 
-            _fdlManager.SendTo(address, SelectedEA);
+                _fdlManager.SendTo(address, SelectedEA);
+            }
         }
 
         public void SaveAs(ExpenseAccountEVM ea)
@@ -318,16 +336,19 @@ namespace Great.ViewModels
             if (ea == null)
                 return;
 
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Title = "Save Expense Account As...";
-            dlg.FileName = ea.FileName;
-            dlg.DefaultExt = ".pdf";
-            dlg.Filter = "EA (.pdf) | *.pdf";
-            dlg.AddExtension = true;
-            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            using (new WaitCursor())
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.Title = "Save Expense Account As...";
+                dlg.FileName = ea.FileName;
+                dlg.DefaultExt = ".pdf";
+                dlg.Filter = "EA (.pdf) | *.pdf";
+                dlg.AddExtension = true;
+                dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            if (dlg.ShowDialog() == true)
-                _fdlManager.SaveAs(ea, dlg.FileName);
+                if (dlg.ShowDialog() == true)
+                    _fdlManager.SaveAs(ea, dlg.FileName);
+            }
         }
 
         public void Compile(ExpenseAccountEVM ea)
@@ -335,13 +356,16 @@ namespace Great.ViewModels
             if (ea == null)
                 return;
 
-            string filePath;
-
-            if (_fdlManager.CreateXFDF(ea, out filePath))
+            using (new WaitCursor())
             {
-                Process.Start(filePath);
-                ea.IsCompiled = true;
-                ea.Save();
+                string filePath;
+
+                if (_fdlManager.CreateXFDF(ea, out filePath))
+                {
+                    Process.Start(filePath);
+                    ea.IsCompiled = true;
+                    ea.Save();
+                }
             }
         }
 

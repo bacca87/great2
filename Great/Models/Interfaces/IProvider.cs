@@ -7,8 +7,9 @@ namespace Great.Models.Interfaces
     {
         EProviderStatus Status { get; set; }
         void SendEmail(EmailMessageDTO message);
+        bool IsServiceAvailable();
 
         event EventHandler<NewMessageEventArgs> OnNewMessage;
-
+        event EventHandler<MessageEventArgs> OnMessageSent;
     }
 }

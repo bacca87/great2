@@ -5,6 +5,8 @@ namespace Great.Models.DTO
 {
     public class EmailMessageDTO
     {
+        public EEmailMessageType Type { get; set; }
+        public object DataInfo { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public Importance Importance { get; set; }
@@ -18,5 +20,12 @@ namespace Great.Models.DTO
             CcRecipients = new List<string>();
             Attachments = new List<string>();
         }
+    }    
+
+    public enum EEmailMessageType
+    {
+        Message,
+        SAP_Notification,
+        Cancellation_Request
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Exchange.WebServices.Data;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -27,17 +28,73 @@ namespace Great.Models
     {
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        IProvider provider;
+        private IProvider exchange;
 
-        public FDLManager(IProvider exProvider)
+        public FDLManager(IProvider provider)
         {
-            provider = exProvider;
-            provider.OnNewMessage += provider_OnNewMessage;
+            exchange = provider;
+            exchange.OnNewMessage += provider_OnNewMessage;
+            exchange.OnMessageSent += Provider_OnMessageSent;
+        }
+
+        public bool IsExchangeAvailable()
+        {
+            return exchange.IsServiceAvailable();
         }
 
         private void provider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
             ProcessMessage(e.Message);
+        }
+
+        private void Provider_OnMessageSent(object sender, MessageEventArgs e)
+        {
+            switch (e.Message.Type)
+            {
+                case EEmailMessageType.SAP_Notification:
+                    if(e.Message.DataInfo != null)
+                    {
+                        if(e.Message.DataInfo is FDLEVM)
+                        {
+                            FDLEVM fdl = e.Message.DataInfo as FDLEVM;
+                            fdl.EStatus = EFDLStatus.Waiting;
+                            fdl.Save();
+                        }
+                        else if(e.Message.DataInfo is ExpenseAccountEVM)
+                        {
+                            ExpenseAccountEVM ea = e.Message.DataInfo as ExpenseAccountEVM;
+                            ea.EStatus = EFDLStatus.Waiting;
+                            ea.Save();
+                        }
+                    }
+                    break;
+
+                case EEmailMessageType.Cancellation_Request:
+                    if (e.Message.DataInfo != null && e.Message.DataInfo is FDLEVM)
+                    {
+                        FDLEVM fdl = e.Message.DataInfo as FDLEVM;
+                        fdl.EStatus = EFDLStatus.Cancelled;
+                        fdl.Save();
+
+                        using (DBArchive db = new DBArchive())
+                        {
+                            var relatedEAs = db.ExpenseAccounts.Where(ea => ea.FDL == fdl.Id);
+
+                            foreach(var ea in relatedEAs)
+                            {
+                                ExpenseAccountEVM eavm = new ExpenseAccountEVM(ea);
+                                eavm.EStatus = EFDLStatus.Cancelled;
+                                eavm.Save(db);
+
+                                // notify status change on gui
+                                Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, eavm));
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         public ExpenseAccountEVM ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
@@ -83,7 +140,7 @@ namespace Great.Models
                         try
                         {
                             ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(e => e.FileName == ea.FileName);
-
+                            
                             if (tmpEA != null && OverrideIfExist)
                             {
                                 db.ExpenseAccounts.Remove(tmpEA);
@@ -97,7 +154,7 @@ namespace Great.Models
                                 db.SaveChanges();
 
                                 #region Expenses
-                                if (!ExcludeExpense)
+                                if(!ExcludeExpense)
                                 {
                                     foreach (var entry in ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix)
                                     {
@@ -115,7 +172,7 @@ namespace Great.Models
                                             bool IsItaly = ea.FDL1?.Factory1?.TransferType == 0 || ea.FDL1?.Factory1?.TransferType == 1;
                                             typeId = db.ExpenseTypes.Where(t => t.Description.ToLower().Contains(type) && t.Description.ToLower().Contains(IsItaly ? "italia" : "estero")).Select(t => t.Id).FirstOrDefault();
 
-                                            if (typeId == 0) // try last time with less filters as possible
+                                            if(typeId == 0) // try last time with less filters as possible
                                                 typeId = db.ExpenseTypes.Where(t => t.Description.ToLower().Contains(type)).Select(t => t.Id).FirstOrDefault();
 
                                             if (typeId == 0) // unknown expense type
@@ -158,7 +215,7 @@ namespace Great.Models
                                 // Update all navigation properties
                                 db.Entry(ea).Reference(p => p.FDL1).Load();
                                 db.Entry(ea).Reference(p => p.FDLStatus).Load();
-                                db.Entry(ea).Reference(p => p.Currency1).Load();
+                                db.Entry(ea).Reference(p => p.Currency1).Load();                                
                                 db.Entry(ea).Collection(p => p.Expenses).Load();
 
                                 eaEVM = new ExpenseAccountEVM(ea);
@@ -166,7 +223,7 @@ namespace Great.Models
                                 Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, eaEVM));
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             transaction.Rollback();
                             eaEVM = null;
@@ -174,7 +231,7 @@ namespace Great.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 eaEVM = null;
             }
@@ -211,7 +268,7 @@ namespace Great.Models
                 fdl.Id = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber);
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OrderType).Contains(ApplicationSettings.FDL.FDL_Extra);
-
+                
                 // Not yet implemented fields
                 //fdl.EResult = GetFDLResultFromString(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Result));
                 //fdl.OutwardCar = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.OutwardCar) != null;
@@ -381,10 +438,10 @@ namespace Great.Models
                                 {
                                     transaction.Rollback();
                                     fdlEVM = null;
-                                }
+                                }   
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             transaction.Rollback();
                             fdlEVM = null;
@@ -392,7 +449,7 @@ namespace Great.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 fdlEVM = null;
             }
@@ -426,7 +483,7 @@ namespace Great.Models
                 //}
 
                 // General info 
-                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();
+                fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();                                
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
                 fdl.Result = (long)GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
@@ -454,9 +511,9 @@ namespace Great.Models
                 value = fields[ApplicationSettings.FDL.FieldNames.SoftwareVersionsOtherNotes].GetValueAsString().Trim();
                 fdl.Notes = value != string.Empty ? value : null;
 
-                if (fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails))
+                if(fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails))
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
-                else if (fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old)) // Some very old FDL have a different field name for performance description details
+                else if(fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old)) // Some very old FDL have a different field name for performance description details
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old].GetValueAsString().Trim();
 
                 fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
@@ -477,7 +534,7 @@ namespace Great.Models
 
                 if (fdl.WeekNr == 0)
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
-
+                
                 // Save
                 using (DBArchive db = new DBArchive())
                 {
@@ -551,7 +608,7 @@ namespace Great.Models
                                             timesheet.Date = DateTime.Parse(strDate);
 
                                             TimeSpan time;
-
+                                            
                                             if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
                                                 timesheet.TravelStartTimeAM_t = time;
                                             if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
@@ -602,7 +659,7 @@ namespace Great.Models
                                 }
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             transaction.Rollback();
                             fdlEVM = null;
@@ -610,7 +667,7 @@ namespace Great.Models
                     }
                 }
             }
-            catch (Exception)
+            catch(Exception ex)
             {
                 fdlEVM = null;
             }
@@ -637,10 +694,10 @@ namespace Great.Models
             }
 
             // 3) try if the address words are similar to the factory address
-            if (factory == null)
+            if(factory == null)
             {
                 try
-                {
+                {   
                     string[] newAddress = address.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     Dictionary<long, int> factoryMatchRate = new Dictionary<long, int>();
 
@@ -655,7 +712,7 @@ namespace Great.Models
                                 matchCount++;
                         }
 
-                        if (matchCount > 0)
+                        if(matchCount > 0)
                             factoryMatchRate.Add(f.Id, (matchCount * 100) / newAddress.Count());
                     }
 
@@ -748,7 +805,7 @@ namespace Great.Models
                     fields.Add(entry.Value["TravelEndTimePM"], timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
                 }
             }
-
+           
             //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
             //fields.Add(ApplicationSettings.FDL.FieldNames.Cars1,
             //fields.Add(ApplicationSettings.FDL.FieldNames.Cars2,
@@ -837,7 +894,7 @@ namespace Great.Models
         }
 
         private void Compile(IFDLFile file, string destFileName)
-        {
+        {  
             PdfDocument pdfDoc = null;
 
             try
@@ -845,8 +902,8 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(file.FilePath), new PdfWriter(destFileName));
                 PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                if (file is FDLEVM)
+                
+                if(file is FDLEVM)
                 {
                     // this is an hack for display fixed fields on saved read only FDL
                     foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
@@ -858,11 +915,11 @@ namespace Great.Models
 
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
                 {
-                    if (fields.ContainsKey(entry.Key))
+                    if(fields.ContainsKey(entry.Key))
                         fields[entry.Key].SetValue(entry.Value);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Debugger.Break();
             }
@@ -912,7 +969,7 @@ namespace Great.Models
                 fieldNode.AppendChild(valueNode);
                 fieldsNode.AppendChild(fieldNode);
             }
-
+            
             xmlDoc.Save(XFDFFileName);
         }
 
@@ -921,32 +978,27 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            using (new WaitCursor())
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.SAP_Notification;
+            message.DataInfo = file;
+            message.Importance = Importance.High;
+            message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);            
+
+            if (file is FDLEVM)
             {
-                EmailMessageDTO message = new EmailMessageDTO();
-                message.Importance = Importance.High;
-                message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+                FDLEVM fdl = file as FDLEVM;
+                message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
 
-                if (file is FDLEVM)
+                using (DBArchive db = new DBArchive())
                 {
-                    FDLEVM fdl = file as FDLEVM;
-                    message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
+                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
 
-                    using (DBArchive db = new DBArchive())
-                    {
-                        var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
-
-                        foreach (var r in recipients)
-                            message.CcRecipients.Add(r);
-                    }
+                    foreach (var r in recipients)
+                        message.CcRecipients.Add(r);
                 }
-
-                bool result = SendMessage(message, file);
-
-                file.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
-
-                return result;
             }
+
+            return SendMessage(message, file);
         }
 
         public bool SendTo(string address, IFDLFile file)
@@ -954,13 +1006,11 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                EmailMessageDTO message = new EmailMessageDTO();
-                message.ToRecipients.Add(address);
-
-                return SendMessage(message, file);
-            }
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.Message;            
+            message.ToRecipients.Add(address);
+                
+            return SendMessage(message, file);
         }
 
         private bool SendMessage(EmailMessageDTO message, IFDLFile file)
@@ -987,7 +1037,7 @@ namespace Great.Models
             else
                 return false;
 
-            provider.SendEmail(message);
+            exchange.SendEmail(message);
             return true;
         }
 
@@ -996,27 +1046,25 @@ namespace Great.Models
             if (fdl == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"Cancellation Request for FDL {fdl.Id}";
-                message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
-                                  <br>
-                                  FDL: <b>{fdl.Id}</b><br>
-                                  Factory: {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")}<br>
-                                  Order: {fdl.Order}<br>
-                                  <br>
-                                  Thank you";
-                message.Importance = Importance.High;
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.Cancellation_Request;
+            message.DataInfo = fdl;
+            message.Subject = $"Cancellation Request for FDL {fdl.Id}";
+            message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
+                                <br>
+                                FDL: <b>{fdl.Id}</b><br>
+                                Factory: {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")}<br>
+                                Order: {fdl.Order}<br>
+                                <br>
+                                Thank you";
+            message.Importance = Importance.High;
 
-                foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
-                    message.ToRecipients.Add(address);
+            foreach(string address in UserSettings.Email.Recipients.FDLCancelRequest)
+                message.ToRecipients.Add(address);
 
-                provider.SendEmail(message);
-
-                fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
-                return true;
-            }
+            exchange.SendEmail(message);
+                
+            return true;
         }
 
         public bool SaveAs(IFDLFile file, string filePath)
@@ -1024,11 +1072,8 @@ namespace Great.Models
             if (file == null || filePath == string.Empty)
                 return false;
 
-            using (new WaitCursor())
-            {
-                Compile(file, filePath);
-                return true;
-            }
+            Compile(file, filePath);
+            return true;
         }
 
         public bool CreateXFDF(IFDLFile file, out string FilePath)
@@ -1038,19 +1083,16 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
-                CompileXFDF(file, file.FilePath, FilePath);
-                return true;
-            }
+            FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
+            CompileXFDF(file, file.FilePath, FilePath);
+            return true;
         }
 
         private void ProcessMessage(EmailMessage message)
-        {
+        {   
             EMessageType type = GetMessageType(message.Subject);
             string fdlNumber = GetFDLNumber(message, type);
-
+            
             switch (type)
             {
                 case EMessageType.FDL_Accepted:
@@ -1131,7 +1173,7 @@ namespace Great.Models
                     }
                     break;
                 case EMessageType.FDL_EA_New:
-                    if (message.HasAttachments)
+                    if(message.HasAttachments)
                     {
                         foreach (Attachment attachment in message.Attachments)
                         {
@@ -1220,10 +1262,10 @@ namespace Great.Models
                 }
             }
             catch { }
-
+            
             return EFileType.Unknown;
         }
-
+        
         private string GetFDLNumber(EmailMessage message, EMessageType type)
         {
             string FDL = string.Empty;
@@ -1310,7 +1352,7 @@ namespace Great.Models
             }
         }
     }
-
+    
     public enum EFileType
     {
         Unknown,
@@ -1336,7 +1378,6 @@ namespace Great.Models
         Connecting,
         Syncronizing,
         Syncronized,
-        Reconnecting,
         LoginError,
         Error
     }

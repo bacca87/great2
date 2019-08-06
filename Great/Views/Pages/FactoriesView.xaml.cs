@@ -157,7 +157,7 @@ namespace Great.Views
             {
                 // we call directly the OSM web api in order to prevent GUI freeze. The GetPoint method of Gmap.NET run on GUI thread freezing everything until the end of the computation
                 HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://nominatim.openstreetmap.org") };
-                httpClient.DefaultRequestHeaders.Add("User-Agent", SimpleIoc.Default.GetInstance<InformationsViewModel>().AppNameAndVersion);
+                httpClient.DefaultRequestHeaders.Add("User-Agent", ApplicationSettings.General.UserAgent);
 
                 HttpResponseMessage httpResult = await httpClient.GetAsync($"search.php?q={address}&format=json&polygon=1&addressdetails=1");
 

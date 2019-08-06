@@ -7,6 +7,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Great.Models
 {
@@ -1001,6 +1003,15 @@ namespace Great.Models
             public const int WaitForCredentialsCheck = 1000;
 
             public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
+
+            public static string UserAgent
+            {
+                get
+                {
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+                    return $"{assembly.GetName().Name} v{FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion}";
+                }
+            }
         }
         #endregion
 
