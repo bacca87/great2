@@ -280,7 +280,14 @@ namespace Great.ViewModels
                 MessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            _fdlManager.SendToSAP(ea);
+            using (new WaitCursor())
+            {
+                if (_fdlManager.SendToSAP(ea))
+                {
+                    ea.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                    ea.Save();
+                }
+            }   
         }
 
         public void SendByEmail(string address)
@@ -299,17 +306,20 @@ namespace Great.ViewModels
                 return;
             }
 
-            // reset input box
-            SendToEmailRecipient = string.Empty;
+            using (new WaitCursor())
+            {
+                // reset input box
+                SendToEmailRecipient = string.Empty;
 
-            MRUEmailRecipients.Add(address);
+                MRUEmailRecipients.Add(address);
 
-            // save to user setting the MRU recipients
-            StringCollection collection = new StringCollection();
-            collection.AddRange(MRUEmailRecipients.ToArray());
-            UserSettings.Email.Recipients.MRU = collection;
+                // save to user setting the MRU recipients
+                StringCollection collection = new StringCollection();
+                collection.AddRange(MRUEmailRecipients.ToArray());
+                UserSettings.Email.Recipients.MRU = collection;
 
-            _fdlManager.SendTo(address, SelectedEA);
+                _fdlManager.SendTo(address, SelectedEA);
+            }
         }
 
         public void SaveAs(ExpenseAccountEVM ea)
@@ -317,16 +327,19 @@ namespace Great.ViewModels
             if (ea == null)
                 return;
 
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Title = "Save Expense Account As...";
-            dlg.FileName = ea.FileName;
-            dlg.DefaultExt = ".pdf";
-            dlg.Filter = "EA (.pdf) | *.pdf";
-            dlg.AddExtension = true;
-            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            using (new WaitCursor())
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.Title = "Save Expense Account As...";
+                dlg.FileName = ea.FileName;
+                dlg.DefaultExt = ".pdf";
+                dlg.Filter = "EA (.pdf) | *.pdf";
+                dlg.AddExtension = true;
+                dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            if (dlg.ShowDialog() == true)
-                _fdlManager.SaveAs(ea, dlg.FileName);
+                if (dlg.ShowDialog() == true)
+                    _fdlManager.SaveAs(ea, dlg.FileName);
+            }
         }
 
         public void Compile(ExpenseAccountEVM ea)
@@ -334,14 +347,17 @@ namespace Great.ViewModels
             if (ea == null)
                 return;
 
-            string filePath;
-
-            if (_fdlManager.CreateXFDF(ea, out filePath))
+            using (new WaitCursor())
             {
-                Process.Start(filePath);
-                ea.IsCompiled = true;
-                ea.Save();
-            }   
+                string filePath;
+
+                if (_fdlManager.CreateXFDF(ea, out filePath))
+                {
+                    Process.Start(filePath);
+                    ea.IsCompiled = true;
+                    ea.Save();
+                }
+            }
         }
 
         public void Open(ExpenseAccountEVM ea)

@@ -312,8 +312,14 @@ namespace Great.ViewModels
                 }
             }
 
-            _fdlManager.SendToSAP(fdl);
-            fdl.Save();
+            using (new WaitCursor())
+            {
+                if (_fdlManager.SendToSAP(fdl))
+                {
+                    fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
+                    fdl.Save();
+                }
+            }
         }
         
         public void SendByEmail(string address)
@@ -332,17 +338,20 @@ namespace Great.ViewModels
                 return;
             }
 
-            // reset input box
-            SendToEmailRecipient = string.Empty;
+            using (new WaitCursor())
+            {
+                // reset input box
+                SendToEmailRecipient = string.Empty;
 
-            MRUEmailRecipients.Add(address);
+                MRUEmailRecipients.Add(address);
 
-            // save to user setting the MRU recipients
-            StringCollection collection = new StringCollection();
-            collection.AddRange(MRUEmailRecipients.ToArray());
-            UserSettings.Email.Recipients.MRU = collection;
+                // save to user setting the MRU recipients
+                StringCollection collection = new StringCollection();
+                collection.AddRange(MRUEmailRecipients.ToArray());
+                UserSettings.Email.Recipients.MRU = collection;
 
-            _fdlManager.SendTo(address, SelectedFDL);
+                _fdlManager.SendTo(address, SelectedFDL);
+            }
         }
 
         public void SaveAs(FDLEVM fdl)
@@ -350,16 +359,19 @@ namespace Great.ViewModels
             if (fdl == null)
                 return;
 
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Title = "Save FDL As...";
-            dlg.FileName = fdl.FileName;
-            dlg.DefaultExt = ".pdf";
-            dlg.Filter = "FDL (.pdf) | *.pdf";
-            dlg.AddExtension = true;
-            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            
-            if (dlg.ShowDialog() == true)
-                _fdlManager.SaveAs(fdl, dlg.FileName);
+            using (new WaitCursor())
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.Title = "Save FDL As...";
+                dlg.FileName = fdl.FileName;
+                dlg.DefaultExt = ".pdf";
+                dlg.Filter = "FDL (.pdf) | *.pdf";
+                dlg.AddExtension = true;
+                dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                if (dlg.ShowDialog() == true)
+                    _fdlManager.SaveAs(fdl, dlg.FileName);
+            }
         }
 
         public void Compile(FDLEVM fdl)
@@ -367,13 +379,16 @@ namespace Great.ViewModels
             if (fdl == null)
                 return;
 
-            string filePath;
-
-            if (_fdlManager.CreateXFDF(fdl, out filePath))
+            using (new WaitCursor())
             {
-                Process.Start(filePath);
-                fdl.IsCompiled = true;
-                fdl.Save();
+                string filePath;
+
+                if (_fdlManager.CreateXFDF(fdl, out filePath))
+                {
+                    Process.Start(filePath);
+                    fdl.IsCompiled = true;
+                    fdl.Save();
+                }
             }
         }
 
@@ -408,8 +423,13 @@ namespace Great.ViewModels
             if (MessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            _fdlManager.SendCancellationRequest(fdl);
-            fdl.Save();
+            using (new WaitCursor())
+            {
+                _fdlManager.SendCancellationRequest(fdl);
+
+                fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
+                fdl.Save();
+            }
         }
 
         private void FactoryLink()

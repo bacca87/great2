@@ -28,17 +28,58 @@ namespace Great.Models
     {
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        IProvider provider;
+        private IProvider exchange;
 
-        public FDLManager(IProvider exProvider)
+        public FDLManager(IProvider provider)
         {
-            provider = exProvider;
-            provider.OnNewMessage += provider_OnNewMessage;
+            exchange = provider;
+            exchange.OnNewMessage += provider_OnNewMessage;
+            exchange.OnMessageSent += Provider_OnMessageSent;
+        }
+
+        public bool IsExchangeAvailable()
+        {
+            return exchange.IsServiceAvailable();
         }
 
         private void provider_OnNewMessage(object sender, NewMessageEventArgs e)
         {
             ProcessMessage(e.Message);
+        }
+
+        private void Provider_OnMessageSent(object sender, MessageEventArgs e)
+        {
+            switch (e.Message.Type)
+            {
+                case EEmailMessageType.SAP_Notification:
+                    if(e.Message.DataInfo != null)
+                    {
+                        if(e.Message.DataInfo is FDLEVM)
+                        {
+                            FDLEVM fdl = e.Message.DataInfo as FDLEVM;
+                            fdl.EStatus = EFDLStatus.Waiting;
+                            fdl.Save();
+                        }
+                        else if(e.Message.DataInfo is ExpenseAccountEVM)
+                        {
+                            ExpenseAccountEVM ea = e.Message.DataInfo as ExpenseAccountEVM;
+                            ea.EStatus = EFDLStatus.Waiting;
+                            ea.Save();
+                        }
+                    }
+                    break;
+
+                case EEmailMessageType.Cancellation_Request:
+                    if (e.Message.DataInfo != null && e.Message.DataInfo is FDLEVM)
+                    {
+                        FDLEVM fdl = e.Message.DataInfo as FDLEVM;
+                        fdl.EStatus = EFDLStatus.Cancelled;
+                        fdl.Save();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         public ExpenseAccountEVM ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
@@ -922,32 +963,25 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            using (new WaitCursor())
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Importance = Importance.High;
+            message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+
+            if (file is FDLEVM)
             {
-                EmailMessageDTO message = new EmailMessageDTO();
-                message.Importance = Importance.High;
-                message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+                FDLEVM fdl = file as FDLEVM;
+                message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
 
-                if (file is FDLEVM)
+                using (DBArchive db = new DBArchive())
                 {
-                    FDLEVM fdl = file as FDLEVM;
-                    message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
+                    var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
 
-                    using (DBArchive db = new DBArchive())
-                    {
-                        var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
-
-                        foreach (var r in recipients)
-                            message.CcRecipients.Add(r);
-                    }
+                    foreach (var r in recipients)
+                        message.CcRecipients.Add(r);
                 }
-
-                bool result = SendMessage(message, file);
-
-                file.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
-
-                return result;
             }
+
+            return SendMessage(message, file);
         }
 
         public bool SendTo(string address, IFDLFile file)
@@ -955,13 +989,10 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            using (new WaitCursor())
-            {   
-                EmailMessageDTO message = new EmailMessageDTO();
-                message.ToRecipients.Add(address);
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.ToRecipients.Add(address);
                 
-                return SendMessage(message, file);
-            }
+            return SendMessage(message, file);
         }
 
         private bool SendMessage(EmailMessageDTO message, IFDLFile file)
@@ -988,7 +1019,7 @@ namespace Great.Models
             else
                 return false;
 
-            provider.SendEmail(message);
+            exchange.SendEmail(message);
             return true;
         }
 
@@ -997,27 +1028,23 @@ namespace Great.Models
             if (fdl == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                EmailMessageDTO message = new EmailMessageDTO();
-                message.Subject = $"Cancellation Request for FDL {fdl.Id}";
-                message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
-                                  <br>
-                                  FDL: <b>{fdl.Id}</b><br>
-                                  Factory: {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")}<br>
-                                  Order: {fdl.Order}<br>
-                                  <br>
-                                  Thank you";
-                message.Importance = Importance.High;
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Subject = $"Cancellation Request for FDL {fdl.Id}";
+            message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
+                                <br>
+                                FDL: <b>{fdl.Id}</b><br>
+                                Factory: {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")}<br>
+                                Order: {fdl.Order}<br>
+                                <br>
+                                Thank you";
+            message.Importance = Importance.High;
 
-                foreach(string address in UserSettings.Email.Recipients.FDLCancelRequest)
-                    message.ToRecipients.Add(address);
+            foreach(string address in UserSettings.Email.Recipients.FDLCancelRequest)
+                message.ToRecipients.Add(address);
 
-                provider.SendEmail(message);
-
-                fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
-                return true;
-            }
+            exchange.SendEmail(message);
+                
+            return true;
         }
 
         public bool SaveAs(IFDLFile file, string filePath)
@@ -1025,11 +1052,8 @@ namespace Great.Models
             if (file == null || filePath == string.Empty)
                 return false;
 
-            using (new WaitCursor())
-            {
-                Compile(file, filePath);
-                return true;
-            }
+            Compile(file, filePath);
+            return true;
         }
 
         public bool CreateXFDF(IFDLFile file, out string FilePath)
@@ -1039,12 +1063,9 @@ namespace Great.Models
             if (file == null)
                 return false;
 
-            using (new WaitCursor())
-            {
-                FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
-                CompileXFDF(file, file.FilePath, FilePath);
-                return true;
-            }
+            FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
+            CompileXFDF(file, file.FilePath, FilePath);
+            return true;
         }
 
         private void ProcessMessage(EmailMessage message)
@@ -1337,7 +1358,6 @@ namespace Great.Models
         Connecting,
         Syncronizing,
         Syncronized,
-        Reconnecting,
         LoginError,
         Error
     }
@@ -1350,8 +1370,6 @@ namespace Great.Models
         Rejected = 3,
         Cancelled = 4
     }
-
-
 
     public enum EFDLResult
     {
