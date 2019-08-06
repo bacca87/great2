@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using GMap.NET;
+﻿using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
 using Great.Controls;

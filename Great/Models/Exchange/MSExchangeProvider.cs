@@ -48,7 +48,7 @@ namespace Great.Models
             {
                 lock (this)
                 {
-                    if(exchangeStatus != value)
+                    if (exchangeStatus != value)
                     {
                         exchangeStatus = value;
                         Messenger.Default.Send(new StatusChangeMessage<EProviderStatus>(this, exchangeStatus));
@@ -109,7 +109,7 @@ namespace Great.Models
 
             exServiceUri = exService.Url;
 
-            if(emailSenderThread == null || !emailSenderThread.IsAlive)
+            if (emailSenderThread == null || !emailSenderThread.IsAlive)
             {
                 emailSenderThread = new Thread(EmailSenderThread);
                 emailSenderThread.Name = "Email Sender";
@@ -248,7 +248,7 @@ namespace Great.Models
             };
 
             bool IsSynced = false;
-            
+
             do
             {
                 try
@@ -321,10 +321,10 @@ namespace Great.Models
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
             try
-            {   
+            {
                 connection.Open();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (Status != EProviderStatus.Error)
                     Status = EProviderStatus.Offline;
@@ -340,7 +340,7 @@ namespace Great.Models
 
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
-            if(!connection.IsOpen)
+            if (!connection.IsOpen)
                 connection.Close();
 
             connection.Dispose();
@@ -352,7 +352,7 @@ namespace Great.Models
         #region Private Methods
         private void Connect()
         {
-            if(mainThread == null || !mainThread.IsAlive)
+            if (mainThread == null || !mainThread.IsAlive)
             {
                 mainThread = new Thread(MainThread);
                 mainThread.Name = "Exchange Autodiscover Thread";
@@ -492,7 +492,7 @@ namespace Great.Models
                         return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
