@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
+using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -292,12 +293,12 @@ namespace Great.ViewModels
         {
             if (!fdl.IsCompiled)
             {
-                MessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 return;
             }   
 
-            if (fdl.EStatus == EFDLStatus.Waiting && 
-                MessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (fdl.EStatus == EFDLStatus.Waiting &&
+                MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             using (DBArchive db = new DBArchive())
@@ -322,13 +323,13 @@ namespace Great.ViewModels
 
             if (!SelectedFDL.IsCompiled)
             {
-                MessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 return;
             }   
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
-                MessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -387,7 +388,7 @@ namespace Great.ViewModels
 
         public void MarkAsAccepted(FDLEVM fdl)
         {
-            if (MessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             fdl.EStatus = EFDLStatus.Accepted;
@@ -396,7 +397,7 @@ namespace Great.ViewModels
 
         public void MarkAsCancelled(FDLEVM fdl)
         {
-            if (MessageBox.Show("Are you sure to mark as Cancelled the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to mark as Cancelled the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             fdl.EStatus = EFDLStatus.Cancelled;
@@ -405,7 +406,7 @@ namespace Great.ViewModels
 
         public void CancellationRequest(FDLEVM fdl)
         {
-            if (MessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             _fdlManager.SendCancellationRequest(fdl);

@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using static Great.Models.EventManager;
 
 namespace Great.ViewModels
 {
@@ -240,7 +240,7 @@ namespace Great.ViewModels
 
             if (!cancel && (type != EDayType.WorkDay && type != EDayType.HomeWorkDay) && day.Timesheets.Count() > 0)
             {
-                if (MessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                if (MetroMessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     using (DBArchive db = new DBArchive())
                     {
@@ -347,12 +347,12 @@ namespace Great.ViewModels
 
             if (!timesheet.IsValid)
             {
-                MessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
             {
-                MessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -391,10 +391,10 @@ namespace Great.ViewModels
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             switch (ev.Content.EStatus)
             {
-                case EEventStatus.Accepted:                    
+                case EEventStatus.Accepted:
+                    days.ForEach(x => SetDayType(x, EDayType.VacationDay));
                     break;
                 case EEventStatus.Rejected:
-                case EEventStatus.Cancelled:
                     days.ForEach(x => SetDayType(x, EDayType.WorkDay));
                     break;
             }

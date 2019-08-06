@@ -23,14 +23,9 @@ namespace Great.Utils.Converters
                     break;
 
                 case 2: // Pending
+
                     result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/clock.png"));
                     break;
-
-                case 3: // New
-                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-add-blue.png"));
-
-                    break;
-
 
             }
 
