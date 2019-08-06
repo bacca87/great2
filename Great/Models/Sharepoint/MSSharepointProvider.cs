@@ -72,7 +72,7 @@ namespace Great.Models
                                             ev.SharePointId = eventId;
                                             ev.SendDateTime = DateTime.Now;
                                             ev.IsSent = true;
-                                            ev.Save();
+                                            ev.Save(db);
                                             Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, ev));
                                         }
                                     }
@@ -83,7 +83,7 @@ namespace Great.Models
                                     if (ev.SharePointId == 0)
                                     {
                                         ev.IsSent = true;
-                                        ev.Save();
+                                        ev.Save(db);
                                         continue;
                                     }
                                     request = GenerateBatchDeletetXML(ev);
@@ -99,7 +99,7 @@ namespace Great.Models
                                         if (ecode == 0)
                                         {
                                             ev.IsSent = true;
-                                            ev.Save();
+                                            ev.Save(db);
                                             NotifyEventChanged(ev);
                                         }
                                     }
@@ -178,7 +178,7 @@ namespace Great.Models
                                     tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
                                     tmp.Status = status;
                                     tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
-                                    tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d::Created"].InnerText);
+                                    tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
 
                                     if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
                                     else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
@@ -193,10 +193,11 @@ namespace Great.Models
                                         tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
                                     }
 
-                                    tmp.Save();
-                                    Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
-                                }
+                                    tmp.Save(db);
 
+                                    if(tmp.EStatus != EEventStatus.Rejected)
+                                        Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
+                                }
                                 else
                                 {
                                     //Great handling. Just update status and approvation date
@@ -208,12 +209,10 @@ namespace Great.Models
                                         tmp.EStatus = (EEventStatus)status;
                                         tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
 
-                                        tmp.Save();
+                                        tmp.Save(db);
                                         Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));
                                     }
-
                                 }
-
                             }
                         }
                     }
@@ -227,6 +226,7 @@ namespace Great.Models
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);
             }
         }
+
         protected void NotifyEventChanged(EventEVM e)
         {
             OnEventChanged?.Invoke(this, new EventChangedEventArgs(e));
@@ -255,6 +255,7 @@ namespace Great.Models
             d.LoadXml(doc.ToString());
             return d;
         }
+
         private static XmlDocument GenerateBatchUpdateXML(EventEVM ev)
         {
             var s = DateTime.Now.FromUnixTimestamp(ev.StartDateTimeStamp);
@@ -279,6 +280,7 @@ namespace Great.Models
             d.LoadXml(doc.ToString());
             return d;
         }
+
         private static XmlDocument GenerateBatchDeletetXML(EventEVM ev)
         {
             var doc = new XDocument(
