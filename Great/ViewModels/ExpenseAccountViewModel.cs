@@ -275,7 +275,13 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }   
+            }
+
+            if (!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             if (ea.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
@@ -283,11 +289,7 @@ namespace Great.ViewModels
 
             using (new WaitCursor())
             {
-                if (_fdlManager.SendToSAP(ea))
-                {
-                    ea.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
-                    ea.Save();
-                }
+                _fdlManager.SendToSAP(ea);
             }   
         }
 
@@ -299,7 +301,13 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }   
+            }
+
+            if (!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {

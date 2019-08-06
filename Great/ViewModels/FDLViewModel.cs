@@ -293,9 +293,15 @@ namespace Great.ViewModels
         {
             if (!fdl.IsCompiled)
             {
-                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }   
+
+            if(!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             if (fdl.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
@@ -315,11 +321,7 @@ namespace Great.ViewModels
 
             using (new WaitCursor())
             {
-                if (_fdlManager.SendToSAP(fdl))
-                {
-                    fdl.EStatus = EFDLStatus.Waiting; //TODO aggiornare lo stato sull'invio riuscito
-                    fdl.Save();
-                }
+                _fdlManager.SendToSAP(fdl);
             }
         }
         
@@ -329,9 +331,15 @@ namespace Great.ViewModels
 
             if (!SelectedFDL.IsCompiled)
             {
-                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
-            }   
+            }
+
+            if (!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
@@ -421,15 +429,18 @@ namespace Great.ViewModels
 
         public void CancellationRequest(FDLEVM fdl)
         {
+            if (!_fdlManager.IsExchangeAvailable())
+            {
+                MetroMessageBox.Show("The email server is not reachable, please check your connection. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (MetroMessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             using (new WaitCursor())
             {
                 _fdlManager.SendCancellationRequest(fdl);
-
-                fdl.EStatus = EFDLStatus.Cancelled; //TODO aggiornare lo stato sull'invio riuscito
-                fdl.Save();
             }
         }
 

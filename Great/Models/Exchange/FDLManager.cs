@@ -75,6 +75,21 @@ namespace Great.Models
                         FDLEVM fdl = e.Message.DataInfo as FDLEVM;
                         fdl.EStatus = EFDLStatus.Cancelled;
                         fdl.Save();
+
+                        using (DBArchive db = new DBArchive())
+                        {
+                            var relatedEAs = db.ExpenseAccounts.Where(ea => ea.FDL == fdl.Id);
+
+                            foreach(var ea in relatedEAs)
+                            {
+                                ExpenseAccountEVM eavm = new ExpenseAccountEVM(ea);
+                                eavm.EStatus = EFDLStatus.Cancelled;
+                                eavm.Save(db);
+
+                                // notify status change on gui
+                                Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, eavm));
+                            }
+                        }
                     }
                     break;
                 default:
@@ -964,8 +979,10 @@ namespace Great.Models
                 return false;
 
             EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.SAP_Notification;
+            message.DataInfo = file;
             message.Importance = Importance.High;
-            message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+            message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);            
 
             if (file is FDLEVM)
             {
@@ -990,6 +1007,7 @@ namespace Great.Models
                 return false;
 
             EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.Message;            
             message.ToRecipients.Add(address);
                 
             return SendMessage(message, file);
@@ -1029,6 +1047,8 @@ namespace Great.Models
                 return false;
 
             EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.Cancellation_Request;
+            message.DataInfo = fdl;
             message.Subject = $"Cancellation Request for FDL {fdl.Id}";
             message.Body = $@"Please, cancel the following FDL because it's not applicable.<br>
                                 <br>

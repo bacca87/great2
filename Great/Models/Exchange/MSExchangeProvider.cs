@@ -473,13 +473,26 @@ namespace Great.Models
         {
             try
             {
-                using (var client = new WebClient())
-                using (client.OpenRead(exServiceUri))
+                if (exServiceUri == null)
+                    return false;
+
+                var request = (HttpWebRequest)WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
+                request.UserAgent = ApplicationSettings.General.UserAgent;
+                request.KeepAlive = false;
+                request.AllowAutoRedirect = true;
+                request.MaximumAutomaticRedirections = 100;
+                request.CookieContainer = new CookieContainer();
+                request.Method = "GET";
+
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    return true;
+                    if (response.StatusCode == HttpStatusCode.OK)
+                        return true;
+                    else
+                        return false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }
