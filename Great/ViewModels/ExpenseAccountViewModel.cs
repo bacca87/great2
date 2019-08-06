@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -243,7 +244,7 @@ namespace Great.ViewModels
 
             if (string.IsNullOrEmpty(ea.Currency))
             {
-                MessageBox.Show("Please select the currency before continue. Operation cancelled.", "Invalid Expense Account", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("Please select the currency before continue. Operation cancelled.", "Invalid Expense Account", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -272,12 +273,12 @@ namespace Great.ViewModels
         {
             if (!ea.IsCompiled)
             {
-                MessageBox.Show("The selected EA is not compiled! Compile the EA before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }   
 
             if (ea.EStatus == EFDLStatus.Waiting &&
-                MessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             using (new WaitCursor())
@@ -296,13 +297,13 @@ namespace Great.ViewModels
 
             if (!SelectedEA.IsCompiled)
             {
-                MessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }   
 
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
-                MessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -370,7 +371,7 @@ namespace Great.ViewModels
 
         public void MarkAsRefunded(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.IsRefunded = true;
@@ -379,7 +380,7 @@ namespace Great.ViewModels
 
         public void MarkAsAccepted(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as \"Accepted\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to mark as \"Accepted\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
@@ -388,7 +389,7 @@ namespace Great.ViewModels
 
         public void MarkAsCancelled(ExpenseAccountEVM ea)
         {
-            if (MessageBox.Show("Are you sure to mark as \"Cancelled\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to mark as \"Cancelled\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.EStatus = EFDLStatus.Cancelled;

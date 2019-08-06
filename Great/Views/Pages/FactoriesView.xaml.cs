@@ -237,7 +237,7 @@ namespace Great.Views
             catch
             {
                 factoriesMapControl.Manager.Mode = AccessMode.CacheOnly;
-                MessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "Factories Map", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("No internet connection avaible, going to CacheOnly mode.", "Factories Map", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

@@ -10,7 +10,6 @@ using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Great.Models.EventManager;
 
 namespace Great.ViewModels.Database
 {
@@ -136,6 +135,16 @@ namespace Great.ViewModels.Database
             }
         }
 
+        private bool _IsSent;
+        public bool IsSent
+        {
+            get => _IsSent;
+            set
+            {
+                Set(ref _IsSent, value);
+                 RaisePropertyChanged(nameof(IsSent));
+            }
+        }
         private long _Status;
         public long Status
         {
@@ -160,7 +169,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Status = (int)value;
-                IsNew = value == EEventStatus.New;
+                IsNew = value == EEventStatus.Pending && SharePointId ==0;
                 RaisePropertyChanged();
             }
         }
@@ -204,8 +213,8 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private DateTime _ApprovationDateTime;
-        public DateTime ApprovationDateTime
+        private DateTime? _ApprovationDateTime;
+        public DateTime? ApprovationDateTime
         {
             get => _ApprovationDateTime;
             set
@@ -225,6 +234,8 @@ namespace Great.ViewModels.Database
         {
             if (ev != null)
                 Global.Mapper.Map(ev, this);
+
+            if (Days ==null )Days = new ObservableCollectionEx<DayEVM>();
 
             Days.CollectionChanged += (sender, e) => UpdateInfo();
             Days.ItemPropertyChanged += (sender, e) => UpdateInfo();

@@ -12,6 +12,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.IO;
 using System.Windows;
 using System.Diagnostics;
+using Great.Controls;
 
 namespace Great.ViewModels
 {
@@ -220,7 +221,7 @@ namespace Great.ViewModels
 
         public void MigrateData()
         {
-            if (MessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             try
@@ -247,13 +248,13 @@ namespace Great.ViewModels
                     Directory.Delete(SourcePath, true);
                 }
 
-                MessageBox.Show("Migration Completed!\nThe application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
+                MetroMessageBox.Show("Migration Completed!\nThe application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
                 Process.Start(Application.ResourceAssembly.Location, "-m");
                 Application.Current.Shutdown();                
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

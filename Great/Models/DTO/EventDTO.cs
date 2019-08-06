@@ -1,10 +1,4 @@
 ﻿using Great.Models.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Great.Models.EventManager;
 
 namespace Great.Models.DTO
 {
@@ -20,6 +14,7 @@ namespace Great.Models.DTO
         public string Description { get; set; }
         public int Status { get; set; }
         public bool IsAllDay { get; set; }
+        public bool IsSent { get; set; }
 
         public EventStatusDTO Status1 { get; set; }
         public EventTypeDTO Type1 { get; set; }

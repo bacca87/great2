@@ -83,8 +83,8 @@
                 <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }"/>
                 <DataGridTextColumn Header="End Date" Binding="{Binding EndDate,StringFormat='dd/MM/yyyy'}"/>
                 <DataGridTextColumn Header="Description"  Binding="{Binding Description}" />
-                <DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />
-                <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDateTime}" />
+                <!--<DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />-->
+                <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDateTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
