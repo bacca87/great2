@@ -399,7 +399,7 @@
     <Compile Include="ViewModels\FactoriesViewModel.cs" />
     <Compile Include="ViewModels\TimesheetsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
-    <Compile Include="Views\Pages\SettingsView.xaml.cs">
+    <Compile Include="Views\Dialogs\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\StatisticsView.xaml.cs">
@@ -480,7 +480,7 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\Pages\SettingsView.xaml">
+    <Page Include="Views\Dialogs\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

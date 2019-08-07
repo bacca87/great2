@@ -178,6 +178,7 @@ namespace Great.ViewModels
         #region Commands Definitions
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand MigrateDataCommand { get; set; }
+        public RelayCommand ApplyChangesCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -187,6 +188,7 @@ namespace Great.ViewModels
         {
             SelectFolderCommand = new RelayCommand(SelectFolder);
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
+            ApplyChangesCommand = new RelayCommand(ApplyChanges);
 
             DataDirectory = ApplicationSettings.Directories.Data;
         }
@@ -215,7 +217,7 @@ namespace Great.ViewModels
             }
         }
 
-        public void MigrateData()
+        private void MigrateData()
         {
             if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
@@ -252,6 +254,11 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ApplyChanges()
+        {
+            MetroMessageBox.Show("TEST", "SUKA", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
