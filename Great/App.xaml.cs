@@ -134,17 +134,19 @@ namespace Great
 
             if (files.Count > 0)
             {
-                //on header byte 27 is stored the file change counter. It is updated every time database changes https://www.sqlite.org/fileformat.html -> compare it with last backup file
+                //on header byte 27 is stored the file change counter. It is updated every time database changes https://www.sqlite.org/fileformat.html
                 var dbversion = File.ReadAllBytes(dbFileName)[27];
                 var backupDbVersion = File.ReadAllBytes(files.FirstOrDefault().FullName)[27];
 
-                if (dbversion == backupDbVersion) copy = false;
-
+                copy = dbversion != backupDbVersion;
             }
 
             if (copy) File.Copy(dbFileName,dbDirectory+ "\\"+"archive_" + DateTime.Now.ToString("yyyyMMddHHmmss")+".db3");
             
-            files.Where(x => DateTime.Now.Subtract(x.CreationTime).TotalDays >= ApplicationSettings.Database.MaxBackupDays).ToList().ForEach(x => x.Delete());          
+            files.Where(x => DateTime.Now.Subtract(x.CreationTime).TotalDays >= ApplicationSettings.Database.MaxBackupDays)
+                 .Take(files.Count-1) //Leave last backup. If user does not start great for one week avoid to delete all backups
+                 .ToList()
+                 .ForEach(x => x.Delete());          
         }
 
         public void ApplySkin(ESkin newSkin)
