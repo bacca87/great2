@@ -303,11 +303,9 @@
     <Compile Include="Utils\AttachedProperties\TextBoxHelper.cs" />
     <Compile Include="Utils\AutomapperConfiguration.cs" />
     <Compile Include="Utils\Converters\DataGridItemConverter.cs" />
-    <Compile Include="Utils\Converters\EEventTypeToImageConverter.cs" />
-    <Compile Include="Utils\Converters\EEventTypeToTextConverter.cs" />
+    <Compile Include="Utils\Converters\EventToImageConverter.cs" />
+    <Compile Include="Utils\Converters\EventToTextConverter.cs" />
     <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
-    <Compile Include="Utils\Converters\EventStatusToImageConverter.cs" />
-    <Compile Include="Utils\Converters\EventStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
     <Compile Include="Utils\Converters\MessageBoxImageToImageConverter.cs" />

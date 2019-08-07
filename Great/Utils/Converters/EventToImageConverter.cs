@@ -1,4 +1,5 @@
 ﻿using Great.Models;
+using Great.ViewModels.Database;
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -7,18 +8,22 @@ using System.Windows.Media.Imaging;
 
 namespace Great.Utils.Converters
 {
-    class EEventTypeToImageConverter : IValueConverter
+    class EventToImageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             ImageSource result = null;
-            EEventType type = (EEventType)value;
+            EventEVM ev = (EventEVM)value;
 
-            switch (type)
+            switch (ev.EType)
             {
                 case EEventType.Vacations:
                 case EEventType.OldVacations:
-                    result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/star.png"));
+
+                    if (ev.EStatus == EEventStatus.Pending) result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/clock.png"));
+                    if (ev.EStatus == EEventStatus.Accepted) result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-check.png"));
+                    if (ev.EStatus == EEventStatus.Rejected) result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-ban.png"));
+
                     break;
 
                 default:

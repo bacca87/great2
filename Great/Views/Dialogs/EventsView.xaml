@@ -27,7 +27,7 @@
     <Grid Margin="10,0,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition  />
         </Grid.RowDefinitions>
 
         <Fluent:Ribbon  Grid.Row="0">
@@ -91,11 +91,11 @@
         </Fluent:Ribbon>
         <Grid Grid.Row="1" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="60*"/>
-                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="65*"/>
+                <ColumnDefinition Width="35*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition ></RowDefinition>
             </Grid.RowDefinitions>
 
             <DataGrid Name="vacationsDataGridView" Grid.Column="0"
@@ -134,10 +134,9 @@
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
-                    <conv:EventStatusToImageConverter x:Key="VacationStatusToImageConverter"/>
-                    <conv:EventStatusToTextConverter x:Key="VacationStatusToTextConverter"/>
-                    <conv:EEventTypeToImageConverter x:Key="EEventTypeToImageConverter"/>
-                    <conv:EEventTypeToTextConverter x:Key="EEventTypeToTextConverter"/>
+                    <conv:EventToImageConverter x:Key="EventToImageConverter"/>
+                    <conv:EventToTextConverter x:Key="EventToTextConverter"/>
+
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
@@ -145,18 +144,11 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding EType, Converter={StaticResource EEventTypeToImageConverter}}" Stretch="None">
+                                    <Image Source="{Binding Converter={StaticResource EventToImageConverter}}" Stretch="None">
                                         <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource EEventTypeToTextConverter}}"/>
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource EventToTextConverter}}"/>
                                         </Image.ToolTip>
                                     </Image>
-                                    <Image Source="{Binding Status, Converter={StaticResource VacationStatusToImageConverter}}" Stretch="None">
-                                        <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
-                                        </Image.ToolTip>
-                                    </Image>
-
-
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

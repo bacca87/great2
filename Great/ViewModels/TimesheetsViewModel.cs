@@ -381,17 +381,15 @@ namespace Great.ViewModels
 
         private void EventDeleted(DeletedItemMessage<EventEVM> ev)
         {
-            if (ev.Content.EType != EEventType.Vacations) return;
+            if (ev.Content.EType != EEventType.Vacations || WorkingDays ==null) return;
 
-            UpdateWorkingDays();
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             days.ForEach(x => SetDayType(x, EDayType.WorkDay));
         }
         private void EventChanged(ItemChangedMessage<EventEVM> ev)
         {
-            if (ev.Content.EType != EEventType.Vacations) return;
+            if (ev.Content.EType != EEventType.Vacations || WorkingDays ==null) return;
 
-            UpdateWorkingDays();
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             switch (ev.Content.EStatus)
             {
@@ -405,6 +403,8 @@ namespace Great.ViewModels
         }
         private void EventCreated(NewItemMessage<EventEVM> ev)
         {
+            if (WorkingDays == null)
+                return;
             var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
             days.ForEach(x => SetDayType(x, EDayType.VacationDay));
         }
