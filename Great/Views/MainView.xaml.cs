@@ -47,12 +47,22 @@ namespace Great.Views
         {
             EventsViewModel eventVM = SimpleIoc.Default.GetInstance<EventsViewModel>();
 
-
             if (eventVM == null)
                 return;
 
-
             EventsView view = new EventsView();
+            view.ShowDialog();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsViewModel settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+
+            if (settingsVM == null)
+                return;
+
+            SettingsView view = new SettingsView();
+            view.Owner = this;
             view.ShowDialog();
         }
     }

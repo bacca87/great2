@@ -1,11 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using MahApps.Metro.Controls;
 
-namespace Great.Views.Pages
+namespace Great.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class SettingsView : Page
+    public partial class SettingsView : MetroWindow
     {
         public SettingsView()
         {

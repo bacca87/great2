@@ -1,0 +1,146 @@
+﻿<mah:MetroWindow
+      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+      x:Class="Great.Views.Dialogs.SettingsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:System="clr-namespace:System;assembly=mscorlib"
+      xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:date="clr-namespace:Nager.Date;assembly=Nager.Date"
+      xmlns:enm="clr-namespace:Great.Models"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"      
+      xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+      mc:Ignorable="d" 
+      DataContext="{Binding Settings, Source={StaticResource Locator}}"
+      Title="SettingsView"
+      Width="800"
+      Height="600"
+      WindowStartupLocation="CenterOwner"
+      ResizeMode="CanResizeWithGrip"
+      ShowMinButton="False"
+      ShowMaxRestoreButton="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" TabStripPlacement="Left">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabPanel}">
+                    <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>                    
+                </Style>
+                <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroTabItem}">
+                    <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="General">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0" Header="Regional Settings" HorizontalAlignment="Left" Margin="0,5">
+                        <GroupBox.Resources>
+                            <ObjectDataProvider x:Key="enumCountries"
+                                MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                                <ObjectDataProvider.MethodParameters>
+                                    <x:Type TypeName="date:CountryCode"/>
+                                </ObjectDataProvider.MethodParameters>
+                            </ObjectDataProvider>
+                        </GroupBox.Resources>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="Country:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <ComboBox
+                                ItemsSource="{Binding Source={StaticResource enumCountries}}"
+                                SelectedValue="{Binding Country, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                                FontSize="15"
+                                IsEditable="True"
+                                Width="60"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="200"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
+                                <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"/>
+                                <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                            </Grid>
+                        </GroupBox>
+                    <GroupBox Grid.Row="2" Header="Advanced" HorizontalAlignment="Left" Margin="0,5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <TextBlock Text="Data Directory:" VerticalAlignment="Center"/>
+                            <TextBox Margin="5" Text="{Binding DataDirectory}" Width="300"/>
+                            <Button Margin="0,5" Content="..." Command="{Binding SelectFolderCommand}"/>
+                            <Button Margin="5,5" Content="Migrate Data" Command="{Binding MigrateDataCommand}"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="FDL">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Recipients" Margin="0,5">
+                        <StackPanel Grid.Row="0">
+                            <TextBlock Text="Cancellation request email recipients (separated by &quot;;&quot;): "/>
+                            <TextBox Text="{Binding FDLCancelRequestRecipients, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
+                        <StackPanel>
+                            <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}"/>
+                            <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Interface">
+                <Grid>
+                    <Grid.Resources>
+                        <ObjectDataProvider x:Key="enumSkins" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                            <ObjectDataProvider.MethodParameters>
+                                <x:Type TypeName="enm:ESkin"/>
+                            </ObjectDataProvider.MethodParameters>
+                        </ObjectDataProvider>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Theme" HorizontalAlignment="Left" Margin="0,5">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="Skin: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <ComboBox 
+                                ItemsSource="{Binding Source={StaticResource enumSkins}}" 
+                                SelectedValue="{Binding Skin, Mode=TwoWay}" 
+                                FontSize="15"
+                                Width="100"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid Grid.Row="1" Background="{DynamicResource GrayBrush10}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Save" Margin="5,10,5,10"/>
+                <Button Content="Cancel" Margin="5,10,10,10"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>
