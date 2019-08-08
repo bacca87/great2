@@ -1371,16 +1371,6 @@ namespace Great.Models
         Reminder
     }
 
-    public enum EProviderStatus
-    {
-        Offline,
-        Connecting,
-        Syncronizing,
-        Syncronized,
-        LoginError,
-        Error
-    }
-
     public enum EFDLStatus
     {
         New = 0,

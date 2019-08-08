@@ -26,8 +26,8 @@
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
         <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Name="txtEmailAddress" Text="{Binding EmailAddress, UpdateSourceTrigger=Explicit}"/>
-        <PasswordBox Grid.Row="1" Grid.Column="1"  Name="txtPassword" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Name="txtEmailAddress"/>
+        <PasswordBox Grid.Row="1" Grid.Column="1"  Name="txtPassword" ap:PasswordHelper.BindPassword="true"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Name="btnCancel" Content="Cancel" Click="btnCancel_Click"/>
             <Button Name="btnSave" Content="Save" Click="btnSave_Click"/>

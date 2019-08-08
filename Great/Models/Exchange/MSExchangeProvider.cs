@@ -101,10 +101,10 @@ namespace Great.Models
                     if (trace.Result == ETraceResult.LoginError)
                     {
                         Status = EProviderStatus.LoginError;
-                        WaitCredentialsChange();
+                        return;
                     }
                     else
-                        System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
+                        Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
                 }
             } while (exService.Url == null && !exitToken.IsCancellationRequested);
 
@@ -188,16 +188,16 @@ namespace Great.Models
                             if (trace.Result == ETraceResult.LoginError)
                             {
                                 Status = EProviderStatus.LoginError;
-                                WaitCredentialsChange();
+                                return;
                             }
                             else
-                                System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
+                                Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
                         }
                     }
                     while (!IsSent);
                 }
 
-                System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextEmailCheck, exitToken.Token).Wait();
+                Wait(ApplicationSettings.General.WaitForNextEmailCheck);
             }
         }
 
@@ -232,10 +232,10 @@ namespace Great.Models
                     if (trace.Result == ETraceResult.LoginError)
                     {
                         Status = EProviderStatus.LoginError;
-                        WaitCredentialsChange();
+                        return;
                     }
                     else
-                        System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
+                        Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
                 }
             } while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
         }
@@ -253,7 +253,8 @@ namespace Great.Models
             };
 
             bool IsSynced = false;
-            
+            Status = EProviderStatus.Syncronizing;
+
             do
             {
                 try
@@ -296,10 +297,10 @@ namespace Great.Models
                     if (trace.Result == ETraceResult.LoginError)
                     {
                         Status = EProviderStatus.LoginError;
-                        WaitCredentialsChange();
+                        return;
                     }
                     else
-                        System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForNextConnectionRetry, exitToken.Token).Wait();
+                        Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
                 }
             } while (!IsSynced && !exitToken.IsCancellationRequested);
         }
@@ -359,49 +360,13 @@ namespace Great.Models
         #endregion
 
         #region Private Methods
-        private void Connect()
+        private void Wait(int milliseconds)
         {
-            if(mainThread == null || !mainThread.IsAlive)
+            try
             {
-                mainThread = new Thread(MainThread);
-                mainThread.Name = "Exchange Autodiscover Thread";
-                mainThread.IsBackground = true;
-                mainThread.Start();
+                System.Threading.Tasks.Task.Delay(milliseconds, exitToken.Token).Wait();
             }
-        }
-
-        private void Disconnect()
-        {
-            if (subconn.IsOpen)
-                subconn.Close();
-
-            subconn.Dispose();
-
-            exitToken.Cancel();
-
-            if (!mainThread.Join(1000))
-            {
-                Debugger.Break();
-                mainThread.Abort();
-            }   
-
-            if (!subscribeThread.Join(1000))
-            {
-                Debugger.Break();
-                subscribeThread.Abort();
-            }
-
-            if (!syncThread.Join(3000))
-            {
-                Debugger.Break();
-                syncThread.Abort();
-            }   
-
-            mainThread = null;
-            subscribeThread = null;
-            syncThread = null;
-
-            exitToken = new CancellationTokenSource();
+            catch { }
         }
 
         private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
@@ -479,18 +444,66 @@ namespace Great.Models
         {
             OnMessageSent?.Invoke(this, new MessageEventArgs(e));
         }
-
-        private void WaitCredentialsChange()
-        {
-            string LastAddress = UserSettings.Email.EmailAddress;
-            string LastPassword = UserSettings.Email.EmailPassword;
-
-            while (LastAddress == UserSettings.Email.EmailAddress && LastPassword == UserSettings.Email.EmailPassword && !exitToken.IsCancellationRequested)
-                System.Threading.Tasks.Task.Delay(ApplicationSettings.General.WaitForCredentialsCheck, exitToken.Token).Wait();
-        }
         #endregion
 
         #region Public Methods
+        public void Connect()
+        {
+            if (mainThread == null || !mainThread.IsAlive)
+            {
+                mainThread = new Thread(MainThread);
+                mainThread.Name = "Exchange Autodiscover Thread";
+                mainThread.IsBackground = true;
+                mainThread.Start();
+            }
+        }
+
+        public void Disconnect()
+        {
+            if (subconn != null)
+            {
+                if (subconn.IsOpen)
+                    subconn.Close();
+
+                subconn.Dispose();
+                subconn = null;
+            }
+
+            if(exitToken != null)
+                exitToken.Cancel(false);
+
+            if (mainThread != null && !mainThread.Join(1000))
+            {
+                Debugger.Break();
+                mainThread.Abort();
+            }
+
+            if(emailSenderThread != null && !emailSenderThread.Join(1000))
+            {
+                Debugger.Break();
+                emailSenderThread.Abort();
+            }
+
+            if (subscribeThread != null && !subscribeThread.Join(1000))
+            {
+                Debugger.Break();
+                subscribeThread.Abort();
+            }
+
+            if (syncThread != null && !syncThread.Join(3000))
+            {
+                Debugger.Break();
+                syncThread.Abort();
+            }
+
+            mainThread = null;
+            subscribeThread = null;
+            syncThread = null;
+
+            exitToken.Dispose();
+            exitToken = new CancellationTokenSource();
+        }
+
         public NameResolutionCollection ResolveName(string filter)
         {
             if (exService.Url != null)

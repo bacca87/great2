@@ -12,6 +12,8 @@
       xmlns:enm="clr-namespace:Great.Models"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"      
       xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
       mc:Ignorable="d" 
       DataContext="{Binding Settings, Source={StaticResource Locator}}"
       Title="SettingsView"
@@ -21,6 +23,11 @@
       ResizeMode="CanResizeWithGrip"
       ShowMinButton="False"
       ShowMaxRestoreButton="False">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <mvvm:EventToCommand Command="{Binding LoadDataCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -73,8 +80,8 @@
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
                                 <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
-                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"/>
-                                <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EmailAddress}"/>
+                                <PasswordBox Grid.Row="1" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}"/>
                             </Grid>
                         </GroupBox>
                     <GroupBox Grid.Row="2" Header="Advanced" HorizontalAlignment="Left" Margin="0,5">
@@ -138,8 +145,8 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="Save" Margin="5,10,5,10"/>
-                <Button Content="Cancel" Margin="5,10,10,10"/>
+                <Button Content="Save" Margin="5,10,5,10" Command="{Binding ApplyChangesCommand}"/>
+                <Button Name="cancelButton" Content="Cancel" Margin="5,10,10,10" Click="CancelButton_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

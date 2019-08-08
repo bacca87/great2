@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.Interfaces;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using Great.Views.Dialogs;
