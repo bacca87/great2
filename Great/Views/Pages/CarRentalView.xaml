@@ -45,7 +45,7 @@
                 IsReadOnly="True"                  
                 SelectionMode="Single"
                 HeadersVisibility="Column"
-                ItemsSource="{Binding Source={StaticResource CarRentalCollectionView}}"
+                ItemsSource="{Binding FilteredRentals}"
                 SelectedItem="{Binding SelectedRent}"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">

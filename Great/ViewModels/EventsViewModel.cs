@@ -6,6 +6,7 @@ using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
+using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
@@ -14,12 +15,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-
+using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
     public class EventsViewModel : ViewModelBase, IDataErrorInfo
     {
+
         #region Properties
         MSSharepointProvider _provider;
 
@@ -42,7 +45,6 @@ namespace Great.ViewModels
             }
         }
 
-
         private bool _showContextualMenu = false;
         public bool ShowContextualMenu
         {
@@ -63,21 +65,29 @@ namespace Great.ViewModels
             }
         }
 
+        private bool _ShowHourTimeFields = true;
+        public bool ShowHourTimeFields
+        {
+            get => _ShowHourTimeFields;
+
+            set
+            {
+                _ShowHourTimeFields = value;
+                if (SelectedEvent != null)
+                    RaisePropertyChanged(nameof(ShowHourTimeFields));
+            }
+        }
+
         private bool _showOnlyVacations = false;
         public bool ShowOnlyVacations
         {
             get => _showOnlyVacations;
             set
             {
-                if (value == _showOnlyVacations) return;
-
                 _showOnlyVacations = value;
-                if (value)
-                    FilteredEvents = new ObservableCollectionEx<EventEVM>(Events.Where(x => x.EType == EEventType.Vacations).ToList().Select(v => v));
-                else
-                    FilteredEvents = new ObservableCollectionEx<EventEVM>(Events.ToList().Select(v => v));
-
+                _FilteredEvents.Refresh();
                 RaisePropertyChanged(nameof(ShowOnlyVacations));
+
             }
         }
 
@@ -85,14 +95,26 @@ namespace Great.ViewModels
         public ObservableCollectionEx<EventEVM> Events
         {
             get => _Events;
-            set => Set(ref _Events, value);
+            set
+            {
+                Set(ref _Events, value);
+            }
+
         }
 
-        private ObservableCollectionEx<EventEVM> _FilteredEvents;
-        public ObservableCollectionEx<EventEVM> FilteredEvents
+        private ICollectionView _FilteredEvents;
+        public ICollectionView FilteredEvents
         {
-            get => _FilteredEvents;
-            set => Set(ref _FilteredEvents, value);
+            get { return _FilteredEvents; }
+        }
+
+        public bool Filter(object ev)
+        {
+            EventEVM e = (EventEVM)ev;
+            bool result = e.EType != EEventType.Vacations && !ShowOnlyVacations;
+            result |= e.EType == EEventType.Vacations;
+            return result;
+
         }
 
         public ObservableCollection<EventTypeDTO> EventTypes { get; set; }
@@ -106,16 +128,28 @@ namespace Great.ViewModels
 
                 if (_SelectedEvent != null)
                 {
-
+                    _SelectedEvent.PropertyChanged -= _SelectedEvent_PropertyChanged;
+                    Set(ref _SelectedEvent, value);
+                    _SelectedEvent.PropertyChanged += _SelectedEvent_PropertyChanged;
                     BeginHour = _SelectedEvent.StartDate.Hour;
                     BeginMinutes = _SelectedEvent.StartDate.Minute;
                     EndHour = _SelectedEvent.EndDate.Hour;
                     EndMinutes = _SelectedEvent.EndDate.Minute;
+                    ShowHourTimeFields = !_SelectedEvent.IsAllDay;
 
                     ShowContextualMenu = false;
                 }
 
             }
+        }
+
+        private void _SelectedEvent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == (nameof(SelectedEvent.IsAllDay)))
+            {
+                ShowHourTimeFields = !SelectedEvent.IsAllDay;
+            }
+
         }
 
         public IList<int> Hours { get; set; }
@@ -189,11 +223,13 @@ namespace Great.ViewModels
             {
                 EventTypes = new ObservableCollection<EventTypeDTO>(db.EventTypes.ToList().Select(e => new EventTypeDTO(e)));
                 Events = new ObservableCollectionEx<EventEVM>(db.Events.ToList().Select(v => new EventEVM(v)));
-                FilteredEvents = new ObservableCollectionEx<EventEVM>(db.Events.ToList().Select(v => new EventEVM(v)));
             }
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
+
+            _FilteredEvents = CollectionViewSource.GetDefaultView(Events);
+            _FilteredEvents.Filter += Filter;
         }
         #endregion
 
@@ -217,17 +253,20 @@ namespace Great.ViewModels
 
             ev.StartDate = new DateTime(ev.StartDate.Year, ev.StartDate.Month, ev.StartDate.Day, BeginHour, BeginMinutes, 0);
             ev.EndDate = new DateTime(ev.EndDate.Year, ev.EndDate.Month, ev.EndDate.Day, EndHour, EndMinutes, 0);
-            ev.Days = null;
+
 
             if (ev.StartDate > ev.EndDate) return;
 
             ev.EStatus = EEventStatus.Pending;
-            ev.IsSent = false;
+
             ev.Save();
 
-            Events.Add(ev);
-            FilteredEvents.Add(ev);
-            Messenger.Default.Send(new NewItemMessage<EventEVM>(this, ev));
+            if (!Events.Any(x => x.Id == ev.Id))
+            {
+                Events.Add(ev);
+            }
+
+            AddOrUpdateEventRelations(ev);
 
         }
         public void RequestCancellation(EventEVM ev)
@@ -261,6 +300,8 @@ namespace Great.ViewModels
             ev.EStatus = EEventStatus.Accepted;
             ev.IsSent = true;
             ev.Save();
+            FilteredEvents.Refresh();
+            UpdateEventStatus(ev);
 
         }
         public void MarkAsCancelled(EventEVM ev)
@@ -274,27 +315,45 @@ namespace Great.ViewModels
             ev.EStatus = EEventStatus.Rejected;
             ev.IsSent = true;
             ev.Save();
+            FilteredEvents.Refresh();
+            UpdateEventStatus(ev);
 
         }
         public void EventChanged(ItemChangedMessage<EventEVM> item)
         {
-            if (item.Content != null)
-            {
-                EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+             new Action(() =>
+             {
+                 if (item.Content != null)
+                 {
+                     EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                //update also approver andd date of approval!
-                v.EStatus = item.Content.EStatus;
-                v.ApprovationDate = item.Content.ApprovationDate;
-                v.Approver = item.Content.Approver;
-                v.Save();
-            }
+                     v.EStatus = item.Content.EStatus;
+                     v.ApprovationDate = item.Content.ApprovationDate;
+                     v.Approver = item.Content.Approver;
+                     v.Save();
+
+                     FilteredEvents.Refresh();
+                     UpdateEventStatus(v);
+                 }
+             }));
         }
         public void EventImportedFromCalendar(NewItemMessage<EventEVM> item)
         {
-            if (item.Content != null)
-            {
-                Events.Add(item.Content);
-            }
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+              new Action(() =>
+              {
+
+                  if (item.Content != null)
+                  {
+                      if (!Events.Any(x => x.Id == item.Content.Id))
+                      {
+                          Events.Add(item.Content);
+                          FilteredEvents.Refresh();
+                      }
+                      AddOrUpdateEventRelations(item.Content);
+                  }
+              }));
         }
         public void AddEvent(EventEVM ev)
         {
@@ -336,6 +395,85 @@ namespace Great.ViewModels
 
                 return null;
             }
+        }
+
+        public void AddOrUpdateEventRelations(EventEVM ev)
+        {
+            List<DayEVM> currentDayEVM;
+            List<DayEVM> newDays = new List<DayEVM>();
+            using (DBArchive db = new DBArchive())
+            {
+                List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
+                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
+                currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
+
+                foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
+                {
+                    long timestamp = d.ToUnixTimestamp();
+                    Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
+
+                    if (currentDay == null)
+                        newDays.Add(new DayEVM { Date = d });
+
+                    else newDays.Add(new DayEVM(currentDay));
+
+                    relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
+                }
+
+                db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
+                newDays.ToList().ForEach(d => d.Save(db));
+                relationsToAdd.ToList().ForEach(r => r.Save(db));
+            }
+
+            if (ev.EType == EEventType.Vacations)
+            {
+                if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.VacationDay; });
+                if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.WorkDay; });
+                if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.SpecialLeave; });
+            }
+
+            var commonDays = newDays.Intersect(currentDayEVM).ToList();
+            var toReset = currentDayEVM.Except(commonDays).ToList();
+            toReset.ForEach(x => x.EType = EDayType.WorkDay);
+            var toadd = newDays.Except(commonDays).ToList();
+
+            var daysChanged = commonDays.Union(toReset).Union(toadd).ToList();
+            daysChanged.ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
+
+        }
+
+        public void UpdateEventStatus(EventEVM ev)
+        {
+            using (DBArchive db = new DBArchive())
+            {
+                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
+                List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
+
+                if (ev.EType == EEventType.Vacations)
+                {
+                    if (ev.EStatus == EEventStatus.Accepted) currentDayEVM.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.VacationDay; });
+                    if (ev.EStatus == EEventStatus.Rejected) currentDayEVM.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.WorkDay; });
+                    if (ev.EStatus == EEventStatus.Pending) currentDayEVM.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.SpecialLeave; });
+                }
+
+                currentDayEVM.ToList().ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
+            }
+        }
+        public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
+        {
+            List<DateTime> dates = new List<DateTime>();
+
+            DateTime pointer = startDate;
+
+            do
+            {
+                dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
+                pointer = pointer.AddDays(1);
+            }
+            while (pointer <= endDate);
+
+
+            return dates;
         }
         #endregion
     }

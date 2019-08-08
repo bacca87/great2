@@ -125,28 +125,18 @@ namespace Great
 
         private void DoBackup(string dbFileName, string dbDirectory)
         {
-            bool copy = true;
+
+            File.Copy(dbFileName, dbDirectory + "\\" + "archive_" + DateTime.Now.ToString("yyyyMMdd") + ".db3", true);
+
             // get files ordered by creationdatetime
             IList<FileInfo> files = new DirectoryInfo(dbDirectory).GetFiles("*.db3")
-                                                                  .Where(x=>x.FullName != dbFileName)
+                                                                  .Where(x => x.FullName != dbFileName)
                                                                   .OrderByDescending(x => x.CreationTime)
                                                                   .ToList();
 
-            if (files.Count > 0)
-            {
-                //on header byte 27 is stored the file change counter. It is updated every time database changes https://www.sqlite.org/fileformat.html
-                var dbversion = File.ReadAllBytes(dbFileName)[27];
-                var backupDbVersion = File.ReadAllBytes(files.FirstOrDefault().FullName)[27];
-
-                copy = dbversion != backupDbVersion;
-            }
-
-            if (copy) File.Copy(dbFileName,dbDirectory+ "\\"+"archive_" + DateTime.Now.ToString("yyyyMMddHHmmss")+".db3");
-            
-            files.Where(x => DateTime.Now.Subtract(x.CreationTime).TotalDays >= ApplicationSettings.Database.MaxBackupDays)
-                 .Take(files.Count-1) //Leave last backup. If user does not start great for one week avoid to delete all backups
-                 .ToList()
-                 .ForEach(x => x.Delete());          
+            files.Except(files.Take(ApplicationSettings.Database.MaxBackupCount))
+                  .ToList()
+                  .ForEach(x => x.Delete());
         }
 
         public void ApplySkin(ESkin newSkin)

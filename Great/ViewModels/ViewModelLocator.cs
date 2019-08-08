@@ -61,8 +61,8 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<CarRentalViewModel>();
             SimpleIoc.Default.Register<FDLImportWizardViewModel>();
 
+            SimpleIoc.Default.Register<MSSharepointProvider>();
             SimpleIoc.Default.Register<EventsViewModel>();
-            SimpleIoc.Default.Register<MSSharepointProvider>(true);
         }
 
         public TimesheetsViewModel Timesheets

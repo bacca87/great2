@@ -17,12 +17,14 @@
         Title="Events"
         DataContext="{Binding Events, Source={StaticResource Locator}}">
     <Window.Resources>
-        <CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding FilteredEvents}" IsLiveSortingRequested="True" >
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:CompareIntConverter x:Key="CompareIntConverter"/>
+        <!--<CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding FilteredEvents}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="StartDate" Direction="Descending" />
 
             </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+        </CollectionViewSource>-->
     </Window.Resources>
     <Grid Margin="10,0,10,0">
         <Grid.RowDefinitions>
@@ -31,10 +33,7 @@
         </Grid.RowDefinitions>
 
         <Fluent:Ribbon  Grid.Row="0">
-            <Fluent:Ribbon.Resources>
-                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-                <conv:CompareIntConverter x:Key="CompareIntConverter"/>
-            </Fluent:Ribbon.Resources>
+
             <!--Contextual Tab Groups-->
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup x:Name="EditEvents"
@@ -109,7 +108,7 @@
                 IsReadOnly="True"                  
                 SelectionMode="Single"
                 HeadersVisibility="Column"
-                ItemsSource="{Binding Source={StaticResource VacationsCollectionView}}"
+                ItemsSource="{Binding FilteredEvents}"
                 SelectedItem="{Binding SelectedEvent}"
                 ScrollViewer.CanContentScroll="True" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -183,8 +182,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock  Margin="5" Grid.Row="0" Text="Category:" VerticalAlignment="Center"/>
-                <ComboBox  Grid.Row="1"
+                <CheckBox   Grid.Row="0" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event"  IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock  Margin="5" Grid.Row="1" Text="Category:" VerticalAlignment="Center"/>
+                <ComboBox  Grid.Row="2"
                                   SelectedItem="{Binding SelectedEvent.Type1}" 
                                   SelectedValue="{Binding SelectedEvent.Type, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
@@ -200,12 +200,12 @@
                         </CompositeCollection>
                     </ComboBox.ItemsSource>
                 </ComboBox>
-                <TextBlock  Margin="5" Grid.Row="2" Text="Title:" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="3" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock   Margin="5" Grid.Row="4" Text="Location:" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="5" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock  Margin="5" Grid.Row="6" Text="Start Date:" VerticalAlignment="Center"/>
-                <Grid Grid.Row="7" VerticalAlignment="Center" >
+                <TextBlock  Margin="5" Grid.Row="3" Text="Title:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="4" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock   Margin="5" Grid.Row="5" Text="Location:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="6" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock  Margin="5" Grid.Row="7" Text="Start Date:" VerticalAlignment="Center"/>
+                <Grid Grid.Row="8" VerticalAlignment="Center" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
@@ -219,7 +219,8 @@
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding BeginHour}" 
                                   SelectedValue="{Binding BeginHour}" 
-                                  IsEnabled="{Binding IsInputEnabled}"              
+                                  IsEnabled="{Binding IsInputEnabled}"  
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
                     </ComboBox>
                     <ComboBox  Grid.Column="6"
@@ -227,13 +228,14 @@
                                   SelectedItem="{Binding BeginMinutes}" 
                                   SelectedValue="{Binding BeginMinutes}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
 
                     </ComboBox>
                 </Grid>
 
-                <TextBlock  Margin="5" Grid.Row="8" Text="End Date:" VerticalAlignment="Center"/>
-                <Grid Grid.Row="9" VerticalAlignment="Center" >
+                <TextBlock  Margin="5" Grid.Row="9" Text="End Date:" VerticalAlignment="Center"/>
+                <Grid Grid.Row="10" VerticalAlignment="Center" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
@@ -247,7 +249,8 @@
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding EndHour}" 
                                   SelectedValue="{Binding EndHour}" 
-                                  IsEnabled="{Binding IsInputEnabled}"              
+                                  IsEnabled="{Binding IsInputEnabled}" 
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
                     </ComboBox>
                     <ComboBox  Grid.Column="6"
@@ -255,13 +258,13 @@
                                   SelectedItem="{Binding EndMinutes}" 
                                   SelectedValue="{Binding EndMinutes}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
 
                     </ComboBox>
                 </Grid>
-                <TextBlock   Grid.Row="10" Margin="5" Text="Description:" VerticalAlignment="Center"/>
-                <TextBox    Grid.Row="11" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <CheckBox   Grid.Row="12" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event" IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock   Grid.Row="11" Margin="5" Text="Description:" VerticalAlignment="Center"/>
+                <TextBox    Grid.Row="12" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
             </Grid>
         </Grid>

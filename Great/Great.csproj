@@ -261,6 +261,7 @@
     <Compile Include="Models\Database\Car.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
+    <Compile Include="Models\Database\DayEvent.cs" />
     <Compile Include="Models\Database\Currency.cs" />
     <Compile Include="Models\Database\Day.cs" />
     <Compile Include="Models\Database\DayType.cs" />
@@ -343,6 +344,7 @@
     <Compile Include="ViewModels\CarRentalViewModel.cs" />
     <Compile Include="ViewModels\Database\CarEVM.cs" />
     <Compile Include="ViewModels\Database\CarRentalEVM.cs" />
+    <Compile Include="ViewModels\Database\DayEventEVM.cs" />
     <Compile Include="ViewModels\Database\DayEVM.cs" />
     <Compile Include="ViewModels\Database\EntityViewModelBase.cs" />
     <Compile Include="ViewModels\Database\EventEVM.cs" />
@@ -670,6 +672,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\4_29-07-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\7_06-08-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\6_06-08-2019_update .sql">

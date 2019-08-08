@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
@@ -166,9 +167,8 @@ namespace Great.ViewModels
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
-            MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventCreated);
-            MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
-            MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
+            MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, DayTypeChanged);
+
 
             UpdateWorkingDays();
         }
@@ -197,6 +197,37 @@ namespace Great.ViewModels
 
             WorkingDays = days;
         }
+        //private void AddOrUpdateEventDays(EventEVM ev)
+        //{
+        //    ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
+
+        //    using (DBArchive db = new DBArchive())
+        //    {
+        //        var allDays = AllDatesInRange(ev.StartDate, ev.EndDate);
+
+        //        foreach (DateTime d in  allDays)
+        //        {
+        //            long timestamp = d.ToUnixTimestamp();
+        //            Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
+
+        //            if (currentDay != null)
+        //                days.Add(new DayEVM(currentDay));
+        //            else
+        //                days.Add(new DayEVM { Date = d });
+
+        //            //update day type
+        //            if (ev.EType == EEventType.Vacations && ev.IsAllDay)
+        //            {
+        //                if (ev.EStatus == EEventStatus.Accepted) days.ToList().ForEach(x => SetDayType(x, EDayType.VacationDay));
+        //                else if (ev.EStatus == EEventStatus.Rejected) days.ToList().ForEach(x => SetDayType(x, EDayType.WorkDay));
+        //                else if (ev.EStatus == EEventStatus.Pending) days.ToList().ForEach(x => SetDayType(x, EDayType.SpecialLeave));
+        //            }
+
+        //        }
+        //        days.ToList().ForEach(x => x.Save(db));
+        //    }
+        //}
+
 
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
         {
@@ -206,6 +237,23 @@ namespace Great.ViewModels
                 yield return new DateTime(year, month, day);
             }
         }
+
+        //public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
+        //{
+        //    List<DateTime> dates = new List<DateTime>();
+
+        //    DateTime pointer = startDate;
+
+        //    do
+        //    {
+        //        dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
+        //        pointer = pointer.AddDays(1);
+        //    }
+        //    while (pointer <= endDate);
+
+
+        //    return dates;
+        //}
 
         public void SelectFirstDayInMonth(int month)
         {
@@ -379,34 +427,24 @@ namespace Great.ViewModels
             }
         }
 
-        private void EventDeleted(DeletedItemMessage<EventEVM> ev)
+        private void DayTypeChanged(ItemChangedMessage<DayEVM> day)
         {
-            if (ev.Content.EType != EEventType.Vacations || WorkingDays ==null) return;
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                  new Action(() =>
+                  {
 
-            var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
-            days.ForEach(x => SetDayType(x, EDayType.WorkDay));
-        }
-        private void EventChanged(ItemChangedMessage<EventEVM> ev)
-        {
-            if (ev.Content.EType != EEventType.Vacations || WorkingDays ==null) return;
+                      if (WorkingDays == null)
+                          return;
 
-            var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
-            switch (ev.Content.EStatus)
-            {
-                case EEventStatus.Accepted:
-                    days.ForEach(x => SetDayType(x, EDayType.VacationDay));
-                    break;
-                case EEventStatus.Rejected:
-                    days.ForEach(x => SetDayType(x, EDayType.WorkDay));
-                    break;
-            }
+                      DayEVM d = WorkingDays.SingleOrDefault(x => x.Timestamp == day.Content.Timestamp);
+
+                      if (d != null)
+                      {
+                          d.EType = day.Content.EType;
+                          d.Save();
+                      }
+                  }));
         }
-        private void EventCreated(NewItemMessage<EventEVM> ev)
-        {
-            if (WorkingDays == null)
-                return;
-            var days = WorkingDays.Where(x => x.Timestamp >= ev.Content.StartDateTimeStamp && x.Timestamp <= ev.Content.EndDateTimeStamp).ToList();
-            days.ForEach(x => SetDayType(x, EDayType.VacationDay));
-        }
+
     }
 }
