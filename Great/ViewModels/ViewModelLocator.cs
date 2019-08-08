@@ -43,26 +43,27 @@ namespace Great.ViewModels
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
-            SimpleIoc.Default.Register<IProvider, MSExchangeProvider>();
-            SimpleIoc.Default.Register<FDLManager>();
-            SimpleIoc.Default.Register<DBArchive>();
+            SimpleIoc.Default.Register<NotificationsViewModel>(true);
 
-            SimpleIoc.Default.Register<TimesheetsViewModel>();
-            SimpleIoc.Default.Register<FactoriesViewModel>();
-            SimpleIoc.Default.Register<InformationsViewModel>();
-            SimpleIoc.Default.Register<FDLViewModel>();
-            SimpleIoc.Default.Register<ExpenseAccountViewModel>();
-            SimpleIoc.Default.Register<SettingsViewModel>();
-            SimpleIoc.Default.Register<NotificationsViewModel>();
-            SimpleIoc.Default.Register<ImportExportViewModel>();
-            SimpleIoc.Default.Register<GreatImportWizardViewModel>();
-            SimpleIoc.Default.Register<OrderRecipientsViewModel>();
-            SimpleIoc.Default.Register<StatisticsViewModel>();
-            SimpleIoc.Default.Register<CarRentalViewModel>();
-            SimpleIoc.Default.Register<FDLImportWizardViewModel>();
-
-            SimpleIoc.Default.Register<EventsViewModel>();
+            SimpleIoc.Default.Register<IProvider, MSExchangeProvider>(true);
             SimpleIoc.Default.Register<MSSharepointProvider>(true);
+
+            SimpleIoc.Default.Register<FDLManager>(true);
+            SimpleIoc.Default.Register<DBArchive>(true);
+
+            SimpleIoc.Default.Register<TimesheetsViewModel>(true);
+            SimpleIoc.Default.Register<FactoriesViewModel>(true);
+            SimpleIoc.Default.Register<InformationsViewModel>(true);
+            SimpleIoc.Default.Register<FDLViewModel>(true);
+            SimpleIoc.Default.Register<ExpenseAccountViewModel>(true);
+            SimpleIoc.Default.Register<SettingsViewModel>(true);            
+            SimpleIoc.Default.Register<ImportExportViewModel>(true);
+            SimpleIoc.Default.Register<GreatImportWizardViewModel>(true);
+            SimpleIoc.Default.Register<OrderRecipientsViewModel>(true);
+            SimpleIoc.Default.Register<StatisticsViewModel>(true);
+            SimpleIoc.Default.Register<CarRentalViewModel>(true);
+            SimpleIoc.Default.Register<FDLImportWizardViewModel>(true);
+            SimpleIoc.Default.Register<EventsViewModel>(true);
         }
 
         public TimesheetsViewModel Timesheets

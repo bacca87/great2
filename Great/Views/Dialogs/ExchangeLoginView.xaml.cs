@@ -1,7 +1,9 @@
-﻿using Great.Utils.AttachedProperties;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Great.Models;
+using Great.Models.Interfaces;
+using Great.Utils.AttachedProperties;
 using MahApps.Metro.Controls;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Great.Views.Dialogs
 {
@@ -14,6 +16,9 @@ namespace Great.Views.Dialogs
         {
             InitializeComponent();
             Owner = Application.Current.MainWindow;
+
+            txtEmailAddress.Text = UserSettings.Email.EmailAddress;
+            PasswordHelper.SetBoundPassword(txtPassword, UserSettings.Email.EmailPassword);
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -23,9 +28,18 @@ namespace Great.Views.Dialogs
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            txtEmailAddress.GetBindingExpression(TextBox.TextProperty).UpdateSource();
-            txtPassword.GetBindingExpression(PasswordHelper.BoundPassword).UpdateSource();
-            Close();
+            using (new WaitCursor())
+            {
+                IProvider Exchange = SimpleIoc.Default.GetInstance<IProvider>();
+
+                UserSettings.Email.EmailAddress = txtEmailAddress.Text;
+                UserSettings.Email.EmailPassword = PasswordHelper.GetBoundPassword(txtPassword);
+
+                Exchange.Disconnect();
+                Exchange.Connect();
+
+                Close();
+            }   
         }
     }
 }

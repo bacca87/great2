@@ -1168,24 +1168,16 @@ namespace Great.Models
 
         public static class Themes
         {
-
             private static ESkin _skin;
             public static ESkin Skin
             {
-                get
-                {
-                    return (ESkin)Settings.Default.Skin;
-
-                }
-
+                get => (ESkin)Settings.Default.Skin;
                 set
                 {
-
                     _skin = value;
                     Settings.Default.Skin = (int)value;
                     Settings.Default.Save();
                     (App.Current as App).ApplySkin(value);
-
                 }
             }
         }

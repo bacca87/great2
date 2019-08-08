@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using Great.Controls;
 using Great.Models;
+using Great.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
@@ -21,146 +22,53 @@ namespace Great.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         #region Properties
-        /// <summary>
-        /// Sets and gets the Country property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private CountryCode _Country;
         public CountryCode Country
         {
-            get
-            {
-                return UserSettings.Localization.Country;
-            }
-
-            set
-            {
-                if (UserSettings.Localization.Country == value)
-                    return;
-
-                var oldValue = UserSettings.Localization.Country;
-                UserSettings.Localization.Country = value;
-
-                RaisePropertyChanged(nameof(Country), oldValue, value);
-            }
+            get => _Country;
+            set => Set(ref _Country, value);
         }
 
-        /// <summary>
-        /// Sets and gets the EmailAddress property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private string _EmailAddress;
         public string EmailAddress
         {
-            get
-            {
-                return UserSettings.Email.EmailAddress;
-            }
-
-            set
-            {
-                if (UserSettings.Email.EmailAddress == value)
-                    return;
-
-                var oldValue = UserSettings.Email.EmailAddress;
-                UserSettings.Email.EmailAddress = value;
-
-                RaisePropertyChanged(nameof(EmailAddress), oldValue, value);
-            }
+            get => _EmailAddress;
+            set => Set(ref _EmailAddress, value);
         }
 
-        /// <summary>
-        /// Sets and gets the EmailPassword property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private string _EmailPassword;
         public string EmailPassword
         {
-            get
-            {
-                return UserSettings.Email.EmailPassword;
-            }
-
-            set
-            {
-                UserSettings.Email.EmailPassword = value;
-                RaisePropertyChanged(nameof(EmailPassword));
-            }
+            get => _EmailPassword;
+            set => Set(ref _EmailPassword, value);
         }
 
-        /// <summary>
-        /// Sets and gets the AutoAddFactories property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private bool _AutoAddFactories;
         public bool AutoAddFactories
         {
-            get
-            {
-                return UserSettings.Advanced.AutoAddFactories;
-            }
-
-            set
-            {
-                UserSettings.Advanced.AutoAddFactories = value;
-                RaisePropertyChanged(nameof(AutoAddFactories));
-            }
+            get => _AutoAddFactories;
+            set => Set(ref _AutoAddFactories, value);
         }
 
-
-        /// <summary>
-        /// Sets and gets the VacationColor property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private ESkin _Skin;
         public ESkin Skin
         {
-            get
-            {
-                return UserSettings.Themes.Skin;
-            }
-
-            set
-            {
-                UserSettings.Themes.Skin = value;
-                RaisePropertyChanged(nameof(Skin));
-            }
+            get => _Skin;
+            set => Set(ref _Skin, value);
         }
 
-        /// <summary>
-        /// Sets and gets the AutoAssignFactories property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
+        private bool _AutoAssignFactories;
         public bool AutoAssignFactories
         {
-            get
-            {
-                return UserSettings.Advanced.AutoAssignFactories;
-            }
-
-            set
-            {
-                UserSettings.Advanced.AutoAssignFactories = value;
-                RaisePropertyChanged(nameof(AutoAssignFactories));
-            }
+            get => _AutoAssignFactories;
+            set => Set(ref _AutoAssignFactories, value);
         }
 
+        public string _FDLCancelRequestRecipients;
         public string FDLCancelRequestRecipients
         {
-            get
-            {
-                string recipients = string.Empty;
-
-                if (UserSettings.Email.Recipients.FDLCancelRequest != null)
-                {
-                    foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
-                        recipients += recipients == string.Empty ? address : "; " + address;
-                }
-                return recipients;
-            }
-            set
-            {
-                StringCollection recipients = new StringCollection();
-                string[] addresses = value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < addresses.Length; i++)
-                    recipients.Add(addresses[i].Trim());
-                UserSettings.Email.Recipients.FDLCancelRequest = recipients;
-            }
+            get => _FDLCancelRequestRecipients;
+            set => Set(ref _FDLCancelRequestRecipients, value);
         }
 
         private string _DataDirectory;
@@ -173,24 +81,32 @@ namespace Great.ViewModels
                 MigrateDataCommand.RaiseCanExecuteChanged();
             }
         }
+
+        private IProvider Exchange;
         #endregion
 
         #region Commands Definitions
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand MigrateDataCommand { get; set; }
         public RelayCommand ApplyChangesCommand { get; set; }
+        public RelayCommand LoadDataCommand { get; set; }
+        #endregion
+
+        #region Actions
+        public Action Close { get; set; }
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the SettingsViewModel class.
         /// </summary>
-        public SettingsViewModel()
+        public SettingsViewModel(IProvider exchange)
         {
+            Exchange = exchange;
+
             SelectFolderCommand = new RelayCommand(SelectFolder);
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
+            LoadDataCommand = new RelayCommand(LoadData);
             ApplyChangesCommand = new RelayCommand(ApplyChanges);
-
-            DataDirectory = ApplicationSettings.Directories.Data;
         }
 
         public void SelectFolder()
@@ -256,9 +172,57 @@ namespace Great.ViewModels
             }
         }
 
+        private void LoadData()
+        {
+            Country = UserSettings.Localization.Country;
+            DataDirectory = ApplicationSettings.Directories.Data;
+
+            EmailAddress = UserSettings.Email.EmailAddress;
+            EmailPassword = UserSettings.Email.EmailPassword;
+
+            AutoAddFactories = UserSettings.Advanced.AutoAddFactories;            
+            AutoAssignFactories = UserSettings.Advanced.AutoAssignFactories;
+
+            if (UserSettings.Email.Recipients.FDLCancelRequest != null)
+            {
+                FDLCancelRequestRecipients = string.Empty;
+
+                foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
+                    FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
+            }
+
+            Skin = UserSettings.Themes.Skin;
+        }
+
         private void ApplyChanges()
         {
-            MetroMessageBox.Show("TEST", "SUKA", MessageBoxButton.OK, MessageBoxImage.Error);
+            using (new WaitCursor())
+            {
+                UserSettings.Localization.Country = Country;
+
+                if (UserSettings.Email.EmailAddress != EmailAddress || UserSettings.Email.EmailPassword != EmailPassword)
+                {
+                    UserSettings.Email.EmailAddress = EmailAddress;
+                    UserSettings.Email.EmailPassword = EmailPassword;
+
+                    Exchange.Disconnect();
+                    Exchange.Connect();
+                }
+
+                UserSettings.Advanced.AutoAddFactories = AutoAddFactories;
+                UserSettings.Advanced.AutoAssignFactories = AutoAssignFactories;
+
+                StringCollection recipients = new StringCollection();
+                string[] addresses = FDLCancelRequestRecipients.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < addresses.Length; i++)
+                    recipients.Add(addresses[i].Trim());
+                UserSettings.Email.Recipients.FDLCancelRequest = recipients;
+
+                if(UserSettings.Themes.Skin != Skin)
+                    UserSettings.Themes.Skin = Skin;
+
+                Close();
+            }
         }
     }
 }
