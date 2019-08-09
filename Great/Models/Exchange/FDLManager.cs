@@ -364,7 +364,7 @@ namespace Great.Models
                                             IsNewFactory = true;
                                         }
 
-                                        if (UserSettings.Advanced.AutoAssignFactories)
+                                        if (factory != null && UserSettings.Advanced.AutoAssignFactories)
                                             fdl.Factory = factory.Id;
                                     }
                                 }
@@ -580,7 +580,7 @@ namespace Great.Models
                                             IsNewFactory = true;
                                         }
 
-                                        if (UserSettings.Advanced.AutoAssignFactories)
+                                        if (factory != null && UserSettings.Advanced.AutoAssignFactories)
                                             fdl.Factory = factory.Id;
                                     }
                                 }
