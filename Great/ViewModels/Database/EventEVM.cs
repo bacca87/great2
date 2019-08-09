@@ -138,7 +138,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _IsAllDay, value);
-                //       RaisePropertyChanged(nameof(IsAllDay));
+                RaisePropertyChanged();
             }
         }
 
@@ -177,7 +177,7 @@ namespace Great.ViewModels.Database
             {
                 Status = (int)value;
                 IsNew = value == EEventStatus.Pending && SharePointId == 0;
-                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Status));
             }
         }
 
@@ -241,21 +241,12 @@ namespace Great.ViewModels.Database
             }
         }
 
-        public ObservableCollectionEx<DayEVM> Days { get; set; }
-
         #endregion
-
-        public EventEVM() => Days = new ObservableCollectionEx<DayEVM>();
 
         public EventEVM(Event ev = null)
         {
             if (ev != null)
                 Global.Mapper.Map(ev, this);
-
-            if (Days == null) Days = new ObservableCollectionEx<DayEVM>();
-
-            Days.CollectionChanged += (sender, e) => UpdateInfo();
-            Days.ItemPropertyChanged += (sender, e) => UpdateInfo();
         }
 
         public override bool Save(DBArchive db)
@@ -312,7 +303,6 @@ namespace Great.ViewModels.Database
 
             RaisePropertyChanged(nameof(Status1));
             RaisePropertyChanged(nameof(EStatus));
-            RaisePropertyChanged(nameof(Days));
         }
     }
 }

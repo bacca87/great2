@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 
 namespace Great.ViewModels
 {
@@ -64,7 +65,12 @@ namespace Great.ViewModels
         }
 
         public ObservableCollectionEx<CarRentalHistoryEVM> Rentals { get; set; }
-        public ObservableCollectionEx<CarRentalHistoryEVM> FilteredRentals { get; set; }
+
+        private ICollectionView _FilteredRentals;
+        public ICollectionView FilteredRentals
+        {
+            get { return _FilteredRentals; }
+        }
         public ObservableCollectionEx<CarEVM> Cars { get; set; }
         public ObservableCollection<CarRentalCompanyDTO> RentalCompanies { get; set; }
 
@@ -208,37 +214,50 @@ namespace Great.ViewModels
                 RentalCompanies = new ObservableCollection<CarRentalCompanyDTO>(db.CarRentalCompanies.ToList().Select(c => new CarRentalCompanyDTO(c)));
             }
 
-            FilteredRentals = Rentals;
+            _FilteredRentals = CollectionViewSource.GetDefaultView(Rentals);
+            _FilteredRentals.Filter += Filter;
             SelectedCar = new CarEVM();
             SelectedRent = new CarRentalHistoryEVM();
+
+            RentStartDateFilter = new DateTime();
+            RentEndDateFilter = new DateTime();
 
         }
 
         private void RemoveFiltersCommand()
         {
-            FilteredRentals = Rentals;
             LicencePlateFilter = null;
             ModelBrandFilter = null;
             ModelBrandFilter = null;
             RentStartDateFilter = null;
             RentEndDateFilter = null;
+            FilteredRentals.Refresh();
 
         }
 
         private void ApplyFiltersCommand()
         {
-            if (RentStartDateFilter != null)
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.RentStartDate >= RentStartDateFilter.Value));
+            FilteredRentals.Refresh();
 
-            if (RentEndDateFilter != null)
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.RentEndDate >= RentEndDateFilter.Value));
+        }
 
-            if (ModelBrandFilter != null && ModelBrandFilter != string.Empty)
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.Car1.Model.ToUpper().Contains(ModelBrandFilter.ToUpper()) ||
-                                                                                                  r.Car1.Brand.ToUpper().Contains(ModelBrandFilter.ToUpper())));
 
-            if (LicencePlateFilter != null && LicencePlateFilter != string.Empty)
-                FilteredRentals = new ObservableCollectionEx<CarRentalHistoryEVM>(Rentals.Where(r => r.Car1.LicensePlate.ToUpper().Contains(_licensePlateFilter.ToUpper())));
+        public bool Filter(object cr)
+        {
+            CarRentalHistoryEVM crh = (CarRentalHistoryEVM)cr;
+
+            string model = ModelBrandFilter ?? string.Empty;
+            string plate = LicencePlateFilter ?? string.Empty;
+            DateTime start = RentStartDateFilter ?? DateTime.MinValue;
+            DateTime end = RentEndDateFilter ?? DateTime.MaxValue;
+
+            bool result = crh.Car1.Model.Contains(model) || model == string.Empty;
+            result |= crh.Car1.Brand.Contains(model) || model == string.Empty;
+            result &= crh.Car1.LicensePlate.Contains(plate) || plate == string.Empty;
+            result &= crh.RentStartDate >= start;
+            result &= crh.RentStartDate <= end;
+
+            return result;
 
         }
 
@@ -268,8 +287,8 @@ namespace Great.ViewModels
                     db.CarRentalHistories.Remove(rent);
 
                     Rentals.Remove(cr);
-                    FilteredRentals.Remove(cr);
                     db.SaveChanges();
+                    FilteredRentals.Refresh();
 
                 }
             }
@@ -310,8 +329,7 @@ namespace Great.ViewModels
                 db.SaveChanges();
             }
 
-            if (!FilteredRentals.Any(r => r.Id == rc.Id))
-                FilteredRentals.Add(rc);
+            FilteredRentals.Refresh();
         }
     }
 }

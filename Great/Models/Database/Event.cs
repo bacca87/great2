@@ -9,7 +9,7 @@ namespace Great.Models.Database
     {
         public Event()
         {
-            this.Days = new HashSet<Day>();
+           
         }
 
         public long Id { get; set; }
@@ -32,7 +32,6 @@ namespace Great.Models.Database
 
         [ForeignKey("Type")]
         public virtual EventType Type1 { get; set; }
-        public virtual ICollection<Day> Days { get; set; }
 
     }
 }

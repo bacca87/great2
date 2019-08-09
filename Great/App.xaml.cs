@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
@@ -82,9 +83,9 @@ namespace Great
             if (!File.Exists(dbFileName))
                 File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
             else
+                DoBackup(dbFileName, dbDirectory); //Backup before migrations
                 ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
 
-            //TODO: creare backup del db ogni giorno fino a un massimo di 7 giorni
         }
 
         private void ApplyMigrations()
@@ -120,6 +121,22 @@ namespace Great
                     }
                 }
             }
+        }
+
+        private void DoBackup(string dbFileName, string dbDirectory)
+        {
+
+            File.Copy(dbFileName, dbDirectory + "\\" + "archive_" + DateTime.Now.ToString("yyyyMMdd") + ".db3", true);
+
+            // get files ordered by creationdatetime
+            IList<FileInfo> files = new DirectoryInfo(dbDirectory).GetFiles("*.db3")
+                                                                  .Where(x => x.FullName != dbFileName)
+                                                                  .OrderByDescending(x => x.CreationTime)
+                                                                  .ToList();
+
+            files.Except(files.Take(ApplicationSettings.Database.MaxBackupCount))
+                  .ToList()
+                  .ForEach(x => x.Delete());
         }
 
         public void ApplySkin(ESkin newSkin)

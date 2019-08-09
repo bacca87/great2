@@ -18,6 +18,7 @@ namespace Great.Models
         #region Database
         public static class Database
         {
+            public const int MaxBackupCount = 7;
             public static string ConnectionString
             {
                 get

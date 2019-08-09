@@ -11,5 +11,6 @@ namespace Great.Views.Dialogs
         {
             InitializeComponent();
         }
+
     }
 }

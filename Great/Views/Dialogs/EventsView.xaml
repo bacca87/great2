@@ -17,28 +17,23 @@
         Title="Events"
         DataContext="{Binding Events, Source={StaticResource Locator}}">
     <Window.Resources>
-        <CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding FilteredEvents}" IsLiveSortingRequested="True" >
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:CompareIntConverter x:Key="CompareIntConverter"/>
+        <!--<CollectionViewSource x:Key="VacationsCollectionView" Source="{Binding FilteredEvents}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="StartDate" Direction="Descending" />
 
             </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+        </CollectionViewSource>-->
     </Window.Resources>
-
     <Grid Margin="10,0,10,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="60*"/>
-            <ColumnDefinition Width="40*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition  />
         </Grid.RowDefinitions>
-        <Fluent:Ribbon Grid.Row="0">
-            <Fluent:Ribbon.Resources>
-                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-                <conv:CompareIntConverter x:Key="CompareIntConverter"/>
-            </Fluent:Ribbon.Resources>
+
+        <Fluent:Ribbon  Grid.Row="0">
+
             <!--Contextual Tab Groups-->
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup x:Name="EditEvents"
@@ -92,10 +87,17 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-
         </Fluent:Ribbon>
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <DataGrid Name="vacationsDataGridView"
+        <Grid Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65*"/>
+                <ColumnDefinition Width="35*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition ></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <DataGrid Name="vacationsDataGridView" Grid.Column="0"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
                 AutoGenerateColumns="False" 
@@ -106,8 +108,11 @@
                 IsReadOnly="True"                  
                 SelectionMode="Single"
                 HeadersVisibility="Column"
-                ItemsSource="{Binding Source={StaticResource VacationsCollectionView}}"
+                ItemsSource="{Binding FilteredEvents}"
                 SelectedItem="{Binding SelectedEvent}"
+                ScrollViewer.CanContentScroll="True" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
@@ -128,10 +133,9 @@
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
-                    <conv:EventStatusToImageConverter x:Key="VacationStatusToImageConverter"/>
-                    <conv:EventStatusToTextConverter x:Key="VacationStatusToTextConverter"/>
-                    <conv:EEventTypeToImageConverter x:Key="EEventTypeToImageConverter"/>
-                    <conv:EEventTypeToTextConverter x:Key="EEventTypeToTextConverter"/>
+                    <conv:EventToImageConverter x:Key="EventToImageConverter"/>
+                    <conv:EventToTextConverter x:Key="EventToTextConverter"/>
+
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
@@ -139,18 +143,11 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding EType, Converter={StaticResource EEventTypeToImageConverter}}" Stretch="None">
+                                    <Image Source="{Binding Converter={StaticResource EventToImageConverter}}" Stretch="None">
                                         <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource EventToTextConverter}}"/>
                                         </Image.ToolTip>
                                     </Image>
-                                    <Image Source="{Binding Status, Converter={StaticResource VacationStatusToImageConverter}}" Stretch="None">
-                                        <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource VacationStatusToTextConverter}}"/>
-                                        </Image.ToolTip>
-                                    </Image>
-
-
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -163,109 +160,113 @@
                     <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDate, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
-        <Grid Grid.Column="1" Grid.Row="1" Margin="10,0,0,0">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="GotFocus">
-                    <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock  Margin="5" Grid.Row="0" Text="Category:" VerticalAlignment="Center"/>
-            <ComboBox  Grid.Row="1"
+            <Grid Grid.Column="1"  Margin="10,0,0,0">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <CheckBox   Grid.Row="0" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event"  IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock  Margin="5" Grid.Row="1" Text="Category:" VerticalAlignment="Center"/>
+                <ComboBox  Grid.Row="2"
                                   SelectedItem="{Binding SelectedEvent.Type1}" 
                                   SelectedValue="{Binding SelectedEvent.Type, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
                                   SelectedValuePath="Id">
-                <ComboBox.Resources>
-                    <CollectionViewSource x:Key="Items" Source="{Binding EventTypes}" />
-                </ComboBox.Resources>
-                <ComboBox.ItemsSource>
-                    <CompositeCollection>
-                        <m:EventTypeDTO/>
-                        <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                    </CompositeCollection>
-                </ComboBox.ItemsSource>
-            </ComboBox>
-            <TextBlock  Margin="5" Grid.Row="2" Text="Title:" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="3" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-            <TextBlock   Margin="5" Grid.Row="4" Text="Location:" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="5" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-            <TextBlock  Margin="5" Grid.Row="6" Text="Start Date:" VerticalAlignment="Center"/>
-            <Grid Grid.Row="7" VerticalAlignment="Center" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                    <ComboBox.Resources>
+                        <CollectionViewSource x:Key="Items" Source="{Binding EventTypes}" />
+                    </ComboBox.Resources>
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <m:EventTypeDTO/>
+                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+                <TextBlock  Margin="5" Grid.Row="3" Text="Title:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="4" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock   Margin="5" Grid.Row="5" Text="Location:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="6" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock  Margin="5" Grid.Row="7" Text="Start Date:" VerticalAlignment="Center"/>
+                <Grid Grid.Row="8" VerticalAlignment="Center" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate}"  />
-                <ComboBox  Grid.Column="2"
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate}"  />
+                    <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding BeginHour}" 
                                   SelectedValue="{Binding BeginHour}" 
-                                  IsEnabled="{Binding IsInputEnabled}"              
+                                  IsEnabled="{Binding IsInputEnabled}"  
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
-                </ComboBox>
-                <ComboBox  Grid.Column="6"
+                    </ComboBox>
+                    <ComboBox  Grid.Column="6"
                            ItemsSource="{Binding Minutes}"
                                   SelectedItem="{Binding BeginMinutes}" 
                                   SelectedValue="{Binding BeginMinutes}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
 
-                </ComboBox>
-            </Grid>
+                    </ComboBox>
+                </Grid>
 
-            <TextBlock  Margin="5" Grid.Row="8" Text="End Date:" VerticalAlignment="Center"/>
-            <Grid Grid.Row="9" VerticalAlignment="Center" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <TextBlock  Margin="5" Grid.Row="9" Text="End Date:" VerticalAlignment="Center"/>
+                <Grid Grid.Row="10" VerticalAlignment="Center" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate}"/>
-                <ComboBox  Grid.Column="2"
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate}"/>
+                    <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding EndHour}" 
                                   SelectedValue="{Binding EndHour}" 
-                                  IsEnabled="{Binding IsInputEnabled}"              
+                                  IsEnabled="{Binding IsInputEnabled}" 
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
-                </ComboBox>
-                <ComboBox  Grid.Column="6"
+                    </ComboBox>
+                    <ComboBox  Grid.Column="6"
                            ItemsSource="{Binding Minutes}"
                                   SelectedItem="{Binding EndMinutes}" 
                                   SelectedValue="{Binding EndMinutes}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
+                                  Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
 
-                </ComboBox>
+                    </ComboBox>
+                </Grid>
+                <TextBlock   Grid.Row="11" Margin="5" Text="Description:" VerticalAlignment="Center"/>
+                <TextBox    Grid.Row="12" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
             </Grid>
-            <TextBlock   Grid.Row="10" Margin="5" Text="Description:" VerticalAlignment="Center"/>
-            <TextBox    Grid.Row="11" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-            <CheckBox   Grid.Row="12" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event" IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-            <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
         </Grid>
     </Grid>
 

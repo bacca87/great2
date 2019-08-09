@@ -28,5 +28,6 @@ namespace Great.Models.Database
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<EventType> EventTypes { get; set; }
         public virtual DbSet<EventStatus> EventStatus { get; set; }
+        public virtual DbSet<DayEvent> DayEvents { get; set; }
     }
 }
