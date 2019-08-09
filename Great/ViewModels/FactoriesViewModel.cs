@@ -47,6 +47,7 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 Factories = new ObservableCollectionEx<FactoryEVM>(db.Factories.ToList().Select(f => new FactoryEVM(f)));
+                TransferTypes = new ObservableCollection<TransferTypeDTO>(db.TransferTypes.ToList().Select(t => new TransferTypeDTO(t)));
             }
 
             Factories.CollectionChanged += Factories_CollectionChanged;
