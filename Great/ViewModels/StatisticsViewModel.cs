@@ -24,6 +24,13 @@ namespace Great.ViewModels
             set => Set(ref _Factories, value);
         }
 
+        private SeriesCollection _Km;
+        public SeriesCollection Km
+        {
+            get => _Km;
+            set => Set(ref _Km, value);
+        }
+
         private SeriesCollection _Hours;
         public SeriesCollection Hours
         {
@@ -38,7 +45,12 @@ namespace Great.ViewModels
             set => Set(ref _days, value);
         }
 
-
+        private SeriesCollection _FactoryTypes;
+        public SeriesCollection FactoryTypes
+        {
+            get => _FactoryTypes;
+            set => Set(ref _FactoryTypes, value);
+        }
 
         private int _SelectedYear;
         public int SelectedYear
@@ -67,8 +79,10 @@ namespace Great.ViewModels
         public StatisticsViewModel()
         {
             Factories = new SeriesCollection();
+            FactoryTypes = new SeriesCollection();
             Hours = new SeriesCollection();
             Days = new SeriesCollection();
+            Km = new SeriesCollection();
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
@@ -91,6 +105,7 @@ namespace Great.ViewModels
                 LoadFactoriesData();
                 LoadHoursData();
                 LoadDayStatistic();
+                LoadCarStatistics();
             }
         }
 
@@ -257,6 +272,38 @@ namespace Great.ViewModels
                                    select d
                             ).Count();
 
+                //days in italy
+                var transferITA = (from d in db.Days
+                                   from ts in d.Timesheets
+                                   where ts.FDL1 != null
+                                   && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                   && ts.FDL1.Factory1.TransferType1.Id == 1
+                                   select d).Count();
+
+                //days in italy
+                var transferEU = (from d in db.Days
+                                  from ts in d.Timesheets
+                                  where ts.FDL1 != null
+                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                  && ts.FDL1.Factory1.TransferType1.Id == 2
+                                  select d).Count();
+
+                //days in italy
+                var transferExEU = (from d in db.Days
+                                    from ts in d.Timesheets
+                                    where ts.FDL1 != null
+                                    && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                    && ts.FDL1.Factory1.TransferType1.Id == 3
+                                    select d).Count();
+
+                //days no transf
+                var noTransfer = (from d in db.Days
+                                  from ts in d.Timesheets
+                                  where ts.FDL1 != null
+                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                  && ts.FDL1.Factory1.TransferType1.Id == 0
+                                  select d).Count();
+
                 if (officeDays > 0)
                 {
                     Days.Add(new PieSeries
@@ -316,8 +363,83 @@ namespace Great.ViewModels
                         DataLabels = true
                     });
                 }
+
+                if (noTransfer > 0)
+                {
+                    FactoryTypes?.Add(new PieSeries
+                    {
+                        Title = "No Transfer",
+                        Values = new ChartValues<int> { noTransfer },
+                        DataLabels = true
+                    });
+                }
+
+                if (transferITA > 0)
+                {
+                    FactoryTypes?.Add(new PieSeries
+                    {
+                        Title = "Italy",
+                        Values = new ChartValues<int> { transferITA },
+                        DataLabels = true
+                    });
+                }
+
+                if (transferEU > 0)
+                {
+                    FactoryTypes?.Add(new PieSeries
+                    {
+                        Title = "Europe",
+                        Values = new ChartValues<int> { transferEU },
+                        DataLabels = true
+                    });
+                }
+
+                if (transferExEU > 0)
+                {
+                    FactoryTypes?.Add(new PieSeries
+                    {
+                        Title = "Extra Europe",
+                        Values = new ChartValues<int> { transferExEU },
+                        DataLabels = true
+                    });
+                }
             }
         }
+
+        private void LoadCarStatistics()
+        {
+            using (DBArchive db = new DBArchive())
+            {
+                long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
+                long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
+                var Rents = db.CarRentalHistories.Where(cr => cr.StartDate >= startDate && cr.EndDate <= endDate && cr.Car1 != null).ToList().Select(cr => new CarRentalHistoryEVM(cr));
+
+                ChartValues<float> TotalKm = new ChartValues<float>();
+
+                var MonthlyKm = Rents?.GroupBy(d => d.RentStartDate.Month)
+                                       .Select(g => new
+                                       {
+                                           Km =  g.Sum(x => (x.EndKm-x.StartKm)),
+                                       });
+
+                foreach (var month in MonthlyKm)
+                {
+                    TotalKm.Add(month.Km);
+                }
+
+                Km = new SeriesCollection()
+                {
+                    new LineSeries()
+                    {
+                        Title = "Driven Km",
+                        Values = TotalKm,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    }
+                };
+            }
+        }
+
         private void RefreshTimesheet(ItemChangedMessage<TimesheetEVM> item)
         {
             RefreshAllData();
