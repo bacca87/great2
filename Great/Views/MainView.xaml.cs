@@ -1,10 +1,17 @@
-﻿using Fluent;
+﻿using AutoUpdaterDotNET;
+using Fluent;
 using GalaSoft.MvvmLight.Ioc;
+using Great.Models;
 using Great.ViewModels;
 using Great.Views.Dialogs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Great.Views
 {
@@ -13,9 +20,46 @@ namespace Great.Views
     /// </summary>
     public partial class MainView : RibbonWindow
     {
+        DispatcherTimer CheckForUpdatesTimer;
+
         public MainView()
         {
             InitializeComponent();
+
+            if (!Debugger.IsAttached)
+            {
+                AutoUpdater.HttpUserAgent = ApplicationSettings.General.UserAgent;
+                AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+
+                CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(2) };
+                CheckForUpdatesTimer.Tick += CheckForUpdatesTimer_Tick;
+                CheckForUpdatesTimer.Start();
+            }
+        }
+
+        private void CheckForUpdatesTimer_Tick(object sender, EventArgs e)
+        {
+            // check for updates            
+            AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress);
+        }
+
+        private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
+        {
+            var json = (JArray)JsonConvert.DeserializeObject(args.RemoteData);
+
+            Func<string, string> GetVersionFromTag = (tag) => { return tag.Remove(0, tag.IndexOf('v') + 1); };
+
+            var CurrentVersion = new Version(GetVersionFromTag(((JValue)json[0]["tag_name"]).Value as string));
+            var ChangelogUrl = string.Empty;
+            var DownloadUrl = ((JValue)json[0]["assets"][0]["browser_download_url"]).Value as string;
+
+            args.UpdateInfo = new UpdateInfoEventArgs
+            {
+                CurrentVersion = CurrentVersion,
+                ChangelogURL = ChangelogUrl,
+                Mandatory = false,
+                DownloadURL = DownloadUrl
+            };
         }
 
         private void exitButton_Click(object sender, RoutedEventArgs e)

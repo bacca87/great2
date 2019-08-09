@@ -266,7 +266,7 @@ namespace Great.Models
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
 
                     // try to get last week messages (high priority)
-                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem + " received:>=lastweek", folderView, itemView))
+                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:fdl received:>=lastweek", folderView, itemView))
                     {
                         if (exitToken.IsCancellationRequested) break;
 
@@ -278,7 +278,7 @@ namespace Great.Models
                     }
 
                     // then all the other messages
-                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:" + ApplicationSettings.EmailRecipients.FDLSystem, folderView, itemView))
+                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), "from:fdl", folderView, itemView))
                     {
                         if (exitToken.IsCancellationRequested) break;
 

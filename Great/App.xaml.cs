@@ -44,13 +44,6 @@ namespace Great
                 Settings.Default.Save();
             }
 
-            if (!Debugger.IsAttached)
-            {
-                // check for updates
-                AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
-                AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress);
-            }
-
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             InitializeDirectoryTree();
             InitializeDatabase();
@@ -148,25 +141,6 @@ namespace Great
                 else
                     dict.Source = dict.Source;
             }
-        }
-
-        private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
-        {
-            var json = (JArray)JsonConvert.DeserializeObject(args.RemoteData);
-
-            Func<string, string> GetVersionFromTag = (tag) => { return tag.Remove(0, tag.IndexOf('v') + 1); };
-
-            var CurrentVersion = new Version(GetVersionFromTag(((JValue)json[0]["tag_name"]).Value as string));
-            var ChangelogUrl = string.Empty;
-            var DownloadUrl = ((JValue)json[0]["assets"][0]["browser_download_url"]).Value as string;
-
-            args.UpdateInfo = new UpdateInfoEventArgs
-            {
-                CurrentVersion = CurrentVersion,
-                ChangelogURL = ChangelogUrl,
-                Mandatory = false,
-                DownloadURL = DownloadUrl
-            };
         }
     }
 }
