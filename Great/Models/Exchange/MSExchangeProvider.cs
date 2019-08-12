@@ -462,46 +462,82 @@ namespace Great.Models
         {
             if (subconn != null)
             {
-                if (subconn.IsOpen)
-                    subconn.Close();
+                try
+                {
+                    if (subconn.IsOpen)
+                        subconn.Close();
 
-                subconn.Dispose();
-                subconn = null;
+                    subconn.Dispose();
+                }
+                catch { }
+                finally
+                {
+                    subconn = null;
+                }
             }
 
             if(exitToken != null)
-                exitToken.Cancel(false);
-
-            if (mainThread != null && !mainThread.Join(1000))
             {
-                Debugger.Break();
-                mainThread.Abort();
+                try
+                {
+                    exitToken.Cancel(false);
+                }
+                catch { }
+            }   
+
+            if (mainThread != null && !mainThread.Join(3000))
+            {
+                try
+                {
+                    Debugger.Break();
+                    mainThread.Abort();
+                }
+                catch { }
             }
 
-            if(emailSenderThread != null && !emailSenderThread.Join(1000))
+            if(emailSenderThread != null && !emailSenderThread.Join(3000))
             {
-                Debugger.Break();
-                emailSenderThread.Abort();
+                try
+                {
+                    Debugger.Break();
+                    emailSenderThread.Abort();
+                }
+                catch { }
             }
 
-            if (subscribeThread != null && !subscribeThread.Join(1000))
+            if (subscribeThread != null && !subscribeThread.Join(3000))
             {
-                Debugger.Break();
-                subscribeThread.Abort();
+                try
+                {
+                    Debugger.Break();
+                    subscribeThread.Abort();
+                }
+                catch { }
             }
 
             if (syncThread != null && !syncThread.Join(3000))
             {
-                Debugger.Break();
-                syncThread.Abort();
+                try
+                {
+                    Debugger.Break();
+                    syncThread.Abort();
+                }
+                catch { }
             }
 
             mainThread = null;
             subscribeThread = null;
             syncThread = null;
 
-            exitToken.Dispose();
-            exitToken = new CancellationTokenSource();
+            try
+            {
+                exitToken.Dispose();
+            }
+            catch { }
+            finally
+            {
+                exitToken = new CancellationTokenSource();
+            }
         }
 
         public NameResolutionCollection ResolveName(string filter)
