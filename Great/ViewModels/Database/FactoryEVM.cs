@@ -103,8 +103,6 @@ namespace Great.ViewModels.Database
         {
             Factory factory = new Factory();
 
-            NotifyAsNew = false;
-
             Global.Mapper.Map(this, factory);
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();

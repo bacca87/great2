@@ -209,6 +209,7 @@ namespace Great.ViewModels
                 })
             );
         }
+
         public void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
@@ -228,6 +229,7 @@ namespace Great.ViewModels
                 })
             );
         }
+
         public void NewFactory(NewItemMessage<FactoryEVM> item)
         {
             if (!(item.Sender is FactoriesViewModel))
@@ -246,6 +248,7 @@ namespace Great.ViewModels
                 })
             );
         }
+
         public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             if (!(item.Sender is FactoriesViewModel))
@@ -393,6 +396,7 @@ namespace Great.ViewModels
                 {
                     Process.Start(filePath);
                     fdl.IsCompiled = true;
+                    fdl.NotifyAsNew = false;
                     fdl.Save();
                 }
             }
@@ -412,6 +416,7 @@ namespace Great.ViewModels
                 return;
 
             fdl.EStatus = EFDLStatus.Accepted;
+            fdl.NotifyAsNew = false;
             fdl.Save();
         }
 
@@ -421,6 +426,7 @@ namespace Great.ViewModels
                 return;
 
             fdl.EStatus = EFDLStatus.Cancelled;
+            fdl.NotifyAsNew = false;
             fdl.Save();
         }
 
@@ -475,6 +481,7 @@ namespace Great.ViewModels
             }
 
             fdl.IsCompiled = false;
+            fdl.NotifyAsNew = false;
             fdl.Save();
         }
     }

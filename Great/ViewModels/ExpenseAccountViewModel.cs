@@ -251,6 +251,7 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 ea.IsCompiled = false;
+                ea.NotifyAsNew = false;
                 ea.Save(db);
 
                 if (ea.Id == 0)
@@ -364,6 +365,7 @@ namespace Great.ViewModels
                 {
                     Process.Start(filePath);
                     ea.IsCompiled = true;
+                    ea.NotifyAsNew = false;
                     ea.Save();
                 }
             }
@@ -383,12 +385,13 @@ namespace Great.ViewModels
             {
                 MetroMessageBox.Show("Only accepted expense accounts can be marked as refounded.\nOperation cancelled!");
                 return;
-            }   
+            }
             
             if (MetroMessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             ea.IsRefunded = true;
+            ea.NotifyAsNew = false;
             ea.Save();
         }
 
@@ -398,6 +401,7 @@ namespace Great.ViewModels
                 return;
 
             ea.EStatus = EFDLStatus.Accepted;
+            ea.NotifyAsNew = false;
             ea.Save();
         }
 
@@ -407,6 +411,7 @@ namespace Great.ViewModels
                 return;
 
             ea.EStatus = EFDLStatus.Cancelled;
+            ea.NotifyAsNew = false;
             ea.Save();
         }
     }

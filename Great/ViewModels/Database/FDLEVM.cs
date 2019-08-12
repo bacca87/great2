@@ -264,8 +264,6 @@ namespace Great.ViewModels.Database
         {
             FDL fdl = new FDL();
 
-            NotifyAsNew = false;
-
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();

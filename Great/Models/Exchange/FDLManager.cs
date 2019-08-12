@@ -57,12 +57,14 @@ namespace Great.Models
                         {
                             FDLEVM fdl = e.Message.DataInfo as FDLEVM;
                             fdl.EStatus = EFDLStatus.Waiting;
+                            fdl.NotifyAsNew = false;
                             fdl.Save();
                         }
                         else if (e.Message.DataInfo is ExpenseAccountEVM)
                         {
                             ExpenseAccountEVM ea = e.Message.DataInfo as ExpenseAccountEVM;
                             ea.EStatus = EFDLStatus.Waiting;
+                            ea.NotifyAsNew = false;
                             ea.Save();
                         }
                     }
@@ -73,6 +75,7 @@ namespace Great.Models
                     {
                         FDLEVM fdl = e.Message.DataInfo as FDLEVM;
                         fdl.EStatus = EFDLStatus.Cancelled;
+                        fdl.NotifyAsNew = false;
                         fdl.Save();
 
                         using (DBArchive db = new DBArchive())
@@ -83,6 +86,7 @@ namespace Great.Models
                             {
                                 ExpenseAccountEVM eavm = new ExpenseAccountEVM(ea);
                                 eavm.EStatus = EFDLStatus.Cancelled;
+                                eavm.NotifyAsNew = false;
                                 eavm.Save(db);
 
                                 // notify status change on gui
