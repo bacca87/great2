@@ -448,7 +448,7 @@ namespace Great.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 fdlEVM = null;
             }
@@ -658,7 +658,7 @@ namespace Great.Models
                                 }
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             transaction.Rollback();
                             fdlEVM = null;

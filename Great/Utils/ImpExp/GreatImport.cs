@@ -479,19 +479,6 @@ namespace Great.Utils
             return result;
         }
 
-        private string FormatFDL(string fdl_Id)
-        {
-            if (string.IsNullOrEmpty(fdl_Id))
-                return string.Empty;
-
-            string[] parts = fdl_Id.Split('/');
-
-            for (int i = 0; i < parts.Length; i++)
-                parts[i] = parts[i].Trim();
-
-            return $"{parts[1]}/{parts[0]}";
-        }
-
         private bool CompileFdlTable()
         {
             bool result = false;
@@ -663,6 +650,19 @@ namespace Great.Utils
                 return virtualStorePath;
             else
                 return (Path.Combine(folder, "DB\\Archivio.mdb"));
+        }
+
+        private string FormatFDL(string fdl_Id)
+        {
+            if (string.IsNullOrEmpty(fdl_Id))
+                return string.Empty;
+
+            string[] parts = fdl_Id.Split('/');
+
+            for (int i = 0; i < parts.Length; i++)
+                parts[i] = parts[i].Trim();
+
+            return $"{parts[1]}/{parts[0]}";
         }
     }
 }
