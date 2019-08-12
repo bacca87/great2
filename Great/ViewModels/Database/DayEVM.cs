@@ -59,7 +59,7 @@ namespace Great.ViewModels.Database
         {
             get
             {
-                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(UserSettings.Localization.Country, Date, Date);
+                IEnumerable<PublicHoliday> holidays = DateSystem.GetPublicHoliday(Date, Date, UserSettings.Localization.Country);
                 return holidays?.Count() > 0 ? holidays.FirstOrDefault().LocalName : string.Empty;
             }
         }
