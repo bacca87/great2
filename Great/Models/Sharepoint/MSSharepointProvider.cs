@@ -117,13 +117,11 @@ namespace Great.Models
 
                                     break;
                             }
-
                         }
                         catch (Exception)
                         {
                             continue;
                         }
-
                     }
                 }
 
@@ -239,7 +237,6 @@ namespace Great.Models
                             }
                         }
                     }
-
                 }
                 catch (Exception)
                 {

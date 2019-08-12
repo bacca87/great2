@@ -33,7 +33,10 @@ namespace Great
                     p.ProcessName == proc.ProcessName).Count();
 
                 if (count > 1)
+                {
                     Current.Shutdown();
+                    return;
+                }   
             }
 
             // Upgrade Settings
@@ -77,8 +80,8 @@ namespace Great
                 File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
             else
                 DoBackup(dbFileName, dbDirectory); //Backup before migrations
-                ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
 
+            ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
         }
 
         private void ApplyMigrations()
@@ -108,7 +111,7 @@ namespace Great
                     {
                         transaction.Rollback();
 
-                        MetroMessageBox.Show($"Error during the database upgrade.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MetroMessageBox.Show($"Error upgrading the database.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         Current.Shutdown();
                     }

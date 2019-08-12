@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -76,7 +77,7 @@ namespace Great.ViewModels
                     break;
                 case NotifyCollectionChangedAction.Remove:
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (FactoryEVM f in e.NewItems)
+                    foreach (FactoryEVM f in e.OldItems)
                         Messenger.Default.Send(new DeletedItemMessage<FactoryEVM>(this, f));
                     break;
                 default:
@@ -123,11 +124,22 @@ namespace Great.ViewModels
 
         private void DeleteFactory(FactoryEVM factory)
         {
-            if (factory.Delete())
+            using (DBArchive db = new DBArchive())
             {
-                Factories.Remove(factory);
-                SelectedFactory = null;
-            }
+                int fdlCount = db.FDLs.Count(f => f.Factory.HasValue && f.Factory.Value == factory.Id);
+
+                if (fdlCount > 0)
+                {
+                    MetroMessageBox.Show($"The factory {factory.Name} is bound to {fdlCount} FDLs!\nBefore deleting a factory, you must unbound all the realted FDLs!\nOperation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (factory.Delete(db))
+                {
+                    Factories.Remove(factory);
+                    SelectedFactory = null;
+                }
+            }   
         }
 
         private void SaveFactory(FactoryEVM factory)
