@@ -4,6 +4,7 @@ using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -257,6 +258,7 @@ namespace Great.ViewModels.Database
             db.Events.AddOrUpdate(ev);
             db.SaveChanges();
             Id = ev.Id;
+            AddOrUpdateEventRelations(this, db);
 
             return true;
         }
@@ -286,6 +288,58 @@ namespace Great.ViewModels.Database
             return false;
         }
 
+        public void AddOrUpdateEventRelations(EventEVM ev, DBArchive db)
+        {
+            List<DayEVM> currentDayEVM;
+            List<DayEVM> newDays = new List<DayEVM>();
+
+            List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
+            IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
+            currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
+
+            foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
+            {
+                long timestamp = d.ToUnixTimestamp();
+                Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
+
+                if (currentDay == null)
+                    newDays.Add(new DayEVM { Date = d });
+
+                else newDays.Add(new DayEVM(currentDay));
+
+                relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
+            }
+
+            db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
+            newDays.ToList().ForEach(d => d.Save(db));
+            relationsToAdd.ToList().ForEach(r => r.Save(db));
+
+
+            if (ev.EType == EEventType.Vacations)
+            {
+                if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
+                if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay; d.Save(db); });
+                if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.SpecialLeave; d.Save(db); });
+            }
+
+        }
+
+        public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
+        {
+            List<DateTime> dates = new List<DateTime>();
+
+            DateTime pointer = startDate;
+
+            do
+            {
+                dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
+                pointer = pointer.AddDays(1);
+            }
+            while (pointer <= endDate);
+
+
+            return dates;
+        }
 
         private void UpdateInfo()
         {
