@@ -379,6 +379,12 @@ namespace Great.ViewModels
 
         public void MarkAsRefunded(ExpenseAccountEVM ea)
         {
+            if (ea.EStatus != EFDLStatus.Accepted)
+            {
+                MetroMessageBox.Show("Only accepted expense accounts can be marked as refounded.\nOperation cancelled!");
+                return;
+            }   
+            
             if (MetroMessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
