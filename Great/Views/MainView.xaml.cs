@@ -31,7 +31,7 @@ namespace Great.Views
                 AutoUpdater.HttpUserAgent = ApplicationSettings.General.UserAgent;
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
 
-                CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(2) };
+                CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
                 CheckForUpdatesTimer.Tick += CheckForUpdatesTimer_Tick;
                 CheckForUpdatesTimer.Start();
             }
