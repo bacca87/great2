@@ -1102,6 +1102,7 @@ namespace Great.Models
                         {
                             accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
+                            accepted.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, new FDLEVM(accepted)));
                         }
@@ -1115,6 +1116,7 @@ namespace Great.Models
                         {
                             rejected.Status = (long)EFDLStatus.Rejected;
                             rejected.LastError = message.Body?.Text;
+                            rejected.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, new FDLEVM(rejected)));
                         }
@@ -1140,6 +1142,7 @@ namespace Great.Models
                         {
                             accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
+                            accepted.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(accepted)));
                         }
@@ -1166,6 +1169,7 @@ namespace Great.Models
                         {
                             expenseAccount.Status = (long)EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text;
+                            expenseAccount.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(expenseAccount)));
                         }
