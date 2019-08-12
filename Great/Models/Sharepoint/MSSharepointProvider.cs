@@ -4,6 +4,7 @@ using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,7 +17,6 @@ namespace Great.Models
 
     public class MSSharepointProvider
     {
-        public event EventHandler<EventChangedEventArgs> OnEventChanged;
         private Thread eventUpdaterThread;
         private Thread eventSenderThred;
         private Int32 sharepointUserId;
@@ -32,6 +32,16 @@ namespace Great.Models
             eventSenderThred.Name = "Sharepoint sender thread";
             eventSenderThred.IsBackground = true;
             eventSenderThred.Start();
+        }
+
+        protected void NotifyEventChanged(EventEVM e)
+        {
+            Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, e));
+        }
+
+        protected void NotifyEventImported(EventEVM e)
+        {
+            Messenger.Default.Send(new NewItemMessage<EventEVM>(this, e));
         }
 
         private void SenderThread()
@@ -73,7 +83,8 @@ namespace Great.Models
                                             ev.SendDateTime = DateTime.Now;
                                             ev.IsSent = true;
                                             ev.Save(db);
-                                            Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, ev));
+
+                                            NotifyEventChanged(ev);
                                         }
                                     }
                                     break;
@@ -180,6 +191,13 @@ namespace Great.Models
                                     tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
                                     tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
 
+                                    //FIx 2:00 am on sharepoint calendar that broke timestamp relation!
+                                    if (tmp.IsAllDay)
+                                    {
+                                        tmp.StartDate = new DateTime(tmp.StartDate.Year, tmp.StartDate.Month, tmp.StartDate.Day, 0, 0, 0);
+                                        tmp.EndDate = new DateTime(tmp.EndDate.Year, tmp.EndDate.Month, tmp.EndDate.Day, 0, 0, 0);
+                                    }
+
                                     if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
                                     else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
                                     else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
@@ -195,22 +213,27 @@ namespace Great.Models
 
                                     tmp.Save(db);
 
-                                    if(tmp.EStatus != EEventStatus.Rejected)
-                                        Messenger.Default.Send(new NewItemMessage<EventEVM>(this, tmp));
+                                    if (tmp.EStatus != EEventStatus.Rejected)
+                                        NotifyEventImported(tmp);
                                 }
                                 else
                                 {
-                                    //Great handling. Just update status and approvation date
                                     EventEVM tmp = new EventEVM(existing);
+
+                                    //if event does not have relations create it this is to patch error on previous releases
+                                    if (!db.DayEvents.Any(x => x.EventId == tmp.Id))
+
+
                                     if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
 
-                                    if (tmp.EStatus != (EEventStatus)status)
+                                    if ((EEventStatus)status < tmp.EStatus)
                                     {
                                         tmp.EStatus = (EEventStatus)status;
                                         tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
 
                                         tmp.Save(db);
-                                        Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, tmp));
+                                        NotifyEventChanged(tmp);
+
                                     }
                                 }
                             }
@@ -225,11 +248,6 @@ namespace Great.Models
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);
             }
-        }
-
-        protected void NotifyEventChanged(EventEVM e)
-        {
-            OnEventChanged?.Invoke(this, new EventChangedEventArgs(e));
         }
 
         private static XmlDocument GenerateBatchInsertXML(EventEVM ev)
@@ -295,6 +313,68 @@ namespace Great.Models
             d.LoadXml(doc.ToString());
             return d;
         }
+
+        //public void AddOrUpdateEventRelations(EventEVM ev, DBArchive db)
+        //{
+        //    List<DayEVM> currentDayEVM;
+        //    List<DayEVM> newDays = new List<DayEVM>();
+
+        //    List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
+        //    IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
+        //    currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
+
+        //    foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
+        //    {
+        //        long timestamp = d.ToUnixTimestamp();
+        //        Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
+
+        //        if (currentDay == null)
+        //            newDays.Add(new DayEVM { Date = d });
+
+        //        else newDays.Add(new DayEVM(currentDay));
+
+        //        relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
+        //    }
+
+        //    db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
+        //    newDays.ToList().ForEach(d => d.Save(db));
+        //    relationsToAdd.ToList().ForEach(r => r.Save(db));
+
+
+        //    if (ev.EType == EEventType.Vacations)
+        //    {
+        //        if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday) d.EType = EDayType.VacationDay; d.Save(db); });
+        //        if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday) d.EType = EDayType.WorkDay; d.Save(db); });
+        //        if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday) d.EType = EDayType.SpecialLeave; d.Save(db); });
+        //    }
+
+        //    //var commonDays = newDays.Intersect(currentDayEVM).ToList();
+        //    //var toReset = currentDayEVM.Except(commonDays).ToList();
+        //    //toReset.ForEach(x => x.EType = EDayType.WorkDay);
+        //    //var toadd = newDays.Except(commonDays).ToList();
+
+        //    //var daysChanged = commonDays.Union(toReset).Union(toadd).ToList();
+        //    //daysChanged.ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
+
+        //}
+
+        //public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
+        //{
+        //    List<DateTime> dates = new List<DateTime>();
+
+        //    DateTime pointer = startDate;
+
+        //    do
+        //    {
+        //        dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
+        //        pointer = pointer.AddDays(1);
+        //    }
+        //    while (pointer <= endDate);
+
+
+        //    return dates;
+        //}
+
     }
 
     public class EventChangedEventArgs : EventArgs
