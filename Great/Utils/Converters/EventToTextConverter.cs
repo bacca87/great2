@@ -13,7 +13,7 @@ namespace Great.Utils.Converters
             string result = string.Empty;
             EventEVM ev = (EventEVM)value;
 
-            switch (ev.EType)
+            switch (ev?.EType)
             {
                 case EEventType.Vacations:
                 case EEventType.OldVacations:
@@ -25,10 +25,10 @@ namespace Great.Utils.Converters
                     break;
 
                 default:
-                    if (ev.EType == EEventType.BusinessTrip) result = "Business Trip";
-                    if (ev.EType == EEventType.CustomerVisit) result = "Customer Visit";
-                    if (ev.EType == EEventType.Education) result = "Education";
-                    if (ev.EType == EEventType.Other) result = "Other";
+                    if (ev?.EType == EEventType.BusinessTrip) result = "Business Trip";
+                    if (ev?.EType == EEventType.CustomerVisit) result = "Customer Visit";
+                    if (ev?.EType == EEventType.Education) result = "Education";
+                    if (ev?.EType == EEventType.Other) result = "Other";
                     break;
             }
 

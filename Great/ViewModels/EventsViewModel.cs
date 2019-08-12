@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using AutoMapper;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
@@ -133,6 +134,8 @@ namespace Great.ViewModels
                     _SelectedEvent.PropertyChanged += _SelectedEvent_PropertyChanged;
                     BeginHour = _SelectedEvent.StartDate.Hour;
                     BeginMinutes = _SelectedEvent.StartDate.Minute;
+
+
                     EndHour = _SelectedEvent.EndDate.Hour;
                     EndMinutes = _SelectedEvent.EndDate.Minute;
                     ShowHourTimeFields = !_SelectedEvent.IsAllDay;
@@ -240,6 +243,7 @@ namespace Great.ViewModels
             SelectedEvent.EndDate = DateTime.Now;
             SelectedEvent.Description = string.Empty;
         }
+
         public void SaveEvent(EventEVM ev)
         {
             if (ev == null || ev.EStatus != EEventStatus.Pending)
@@ -258,6 +262,7 @@ namespace Great.ViewModels
             if (ev.StartDate > ev.EndDate) return;
 
             ev.EStatus = EEventStatus.Pending;
+            ev.IsSent = false;
 
             ev.Save();
 
@@ -266,9 +271,10 @@ namespace Great.ViewModels
                 Events.Add(ev);
             }
 
-            AddOrUpdateEventRelations(ev);
+            //AddOrUpdateEventRelations(ev);
 
         }
+
         public void RequestCancellation(EventEVM ev)
         {
             if (ev == null || ev.EStatus == EEventStatus.Rejected)
@@ -286,6 +292,7 @@ namespace Great.ViewModels
             ev.Save();
 
         }
+
         public void MarkAsAccepted(EventEVM ev)
         {
             if (ev == null || ev.EStatus == EEventStatus.Accepted)
@@ -304,6 +311,7 @@ namespace Great.ViewModels
             UpdateEventStatus(ev);
 
         }
+
         public void MarkAsCancelled(EventEVM ev)
         {
             if (ev == null || ev.EStatus == EEventStatus.Rejected)
@@ -319,6 +327,7 @@ namespace Great.ViewModels
             UpdateEventStatus(ev);
 
         }
+
         public void EventChanged(ItemChangedMessage<EventEVM> item)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -328,9 +337,7 @@ namespace Great.ViewModels
                  {
                      EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                     v.EStatus = item.Content.EStatus;
-                     v.ApprovationDate = item.Content.ApprovationDate;
-                     v.Approver = item.Content.Approver;
+                     Mapper.Map(item.Content, v);
                      v.Save();
 
                      FilteredEvents.Refresh();
@@ -338,6 +345,7 @@ namespace Great.ViewModels
                  }
              }));
         }
+
         public void EventImportedFromCalendar(NewItemMessage<EventEVM> item)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -351,10 +359,11 @@ namespace Great.ViewModels
                           Events.Add(item.Content);
                           FilteredEvents.Refresh();
                       }
-                      AddOrUpdateEventRelations(item.Content);
+                      UpdateEventStatus(item.Content);
                   }
               }));
         }
+
         public void AddEvent(EventEVM ev)
         {
             IsInputEnabled = true;
@@ -364,7 +373,9 @@ namespace Great.ViewModels
             SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
         }
+
         public string Error => throw new NotImplementedException();
+
         public string this[string columnName]
         {
             get
@@ -397,51 +408,6 @@ namespace Great.ViewModels
             }
         }
 
-        public void AddOrUpdateEventRelations(EventEVM ev)
-        {
-            List<DayEVM> currentDayEVM;
-            List<DayEVM> newDays = new List<DayEVM>();
-            using (DBArchive db = new DBArchive())
-            {
-                List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
-                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
-                currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
-
-                foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
-                {
-                    long timestamp = d.ToUnixTimestamp();
-                    Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
-
-                    if (currentDay == null)
-                        newDays.Add(new DayEVM { Date = d });
-
-                    else newDays.Add(new DayEVM(currentDay));
-
-                    relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
-                }
-
-                db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
-                newDays.ToList().ForEach(d => d.Save(db));
-                relationsToAdd.ToList().ForEach(r => r.Save(db));
-            }
-
-            if (ev.EType == EEventType.Vacations)
-            {
-                if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.VacationDay; });
-                if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.WorkDay; });
-                if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.SpecialLeave; });
-            }
-
-            var commonDays = newDays.Intersect(currentDayEVM).ToList();
-            var toReset = currentDayEVM.Except(commonDays).ToList();
-            toReset.ForEach(x => x.EType = EDayType.WorkDay);
-            var toadd = newDays.Except(commonDays).ToList();
-
-            var daysChanged = commonDays.Union(toReset).Union(toadd).ToList();
-            daysChanged.ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
-
-        }
-
         public void UpdateEventStatus(EventEVM ev)
         {
             using (DBArchive db = new DBArchive())
@@ -449,32 +415,11 @@ namespace Great.ViewModels
                 IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
                 List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
 
-                if (ev.EType == EEventType.Vacations)
-                {
-                    if (ev.EStatus == EEventStatus.Accepted) currentDayEVM.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.VacationDay; });
-                    if (ev.EStatus == EEventStatus.Rejected) currentDayEVM.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.WorkDay; });
-                    if (ev.EStatus == EEventStatus.Pending) currentDayEVM.ToList().ForEach(d => { if (d.WorkTime == 0) d.EType = EDayType.SpecialLeave; });
-                }
-
                 currentDayEVM.ToList().ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
             }
         }
-        public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
-        {
-            List<DateTime> dates = new List<DateTime>();
-
-            DateTime pointer = startDate;
-
-            do
-            {
-                dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
-                pointer = pointer.AddDays(1);
-            }
-            while (pointer <= endDate);
 
 
-            return dates;
-        }
         #endregion
     }
 }

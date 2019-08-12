@@ -145,7 +145,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding Converter={StaticResource EventToImageConverter}}" Stretch="None">
                                         <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource EventToTextConverter}}"/>
+                                            <TextBlock Text="{Binding Converter={StaticResource EventToTextConverter}}"/>
                                         </Image.ToolTip>
                                     </Image>
                                 </StackPanel>
