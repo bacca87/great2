@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
@@ -175,7 +176,7 @@ namespace Great.ViewModels
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null)
+                    if (item.Sender != this && item.Content != null)
                     {
                         FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.Id);
 
@@ -202,8 +203,11 @@ namespace Great.ViewModels
                         if (fdl != null)
                         {
                             var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
-                            ts = item.Content;
 
+                            if (ts != null)
+                                ts = item.Content;
+                            else
+                                fdl.Timesheets.Add(item.Content);
                         }
                     }
                 })
@@ -483,6 +487,9 @@ namespace Great.ViewModels
             fdl.IsCompiled = false;
             fdl.NotifyAsNew = false;
             fdl.Save();
+
+            // update timesheets
+            Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
         }
     }
 }

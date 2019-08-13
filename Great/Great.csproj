@@ -681,6 +681,9 @@
     <Content Include="UpgradeScripts\6_06-08-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="UpgradeScripts\8_13-08-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\16\file-pdf.png" />
     <Resource Include="Images\32\build-ea.png" />
     <Resource Include="Images\32\folder.png" />
@@ -693,9 +696,6 @@
     <Content Include="UpgradeScripts\1_12-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UpgradeScripts\Template\X_TemplateMigration.sql" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
