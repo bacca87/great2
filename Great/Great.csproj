@@ -668,6 +668,7 @@
     <Resource Include="Images\32\build-fdl.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\32\events.png" />
     <Content Include="UpgradeScripts\5_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
