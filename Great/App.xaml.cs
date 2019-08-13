@@ -1,9 +1,12 @@
 ﻿using AutoUpdaterDotNET;
+using GalaSoft.MvvmLight.Ioc;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
 using Great.Utils;
+using Great.ViewModels;
+using Great.Views.Pages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
@@ -144,6 +147,7 @@ namespace Great
                 else
                     dict.Source = dict.Source;
             }
+
         }
     }
 }

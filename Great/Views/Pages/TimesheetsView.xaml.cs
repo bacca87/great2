@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 
+
 namespace Great.Views.Pages
 {
     /// <summary>
@@ -141,5 +142,11 @@ namespace Great.Views.Pages
             return false;
         }
         #endregion
+
+
+        private void OnResourceChanged(object sender, EventArgs e)
+        {
+            _viewModel?.SelectLastTimesheet();
+        }
     }
 }
