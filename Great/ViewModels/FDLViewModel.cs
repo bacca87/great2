@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
@@ -483,6 +484,8 @@ namespace Great.ViewModels
             fdl.IsCompiled = false;
             fdl.NotifyAsNew = false;
             fdl.Save();
+
+            Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
         }
     }
 }

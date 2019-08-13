@@ -338,7 +338,7 @@ namespace Great.ViewModels.Database
 
         }
 
-        private void UpdateInfo()
+        public void UpdateInfo()
         {
             RaisePropertyChanged(nameof(IsWorkDay));
             RaisePropertyChanged(nameof(IsVacationDay));

@@ -168,7 +168,7 @@ namespace Great.ViewModels
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
             MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, DayTypeChanged);
-
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FdlChanged);
 
             UpdateWorkingDays();
         }
@@ -397,6 +397,29 @@ namespace Great.ViewModels
                           d.Save();
                       }
                   }));
+        }
+
+        private void FdlChanged(ItemChangedMessage<FDLEVM> f)
+        {
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+
+                    FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == f.Content.Id);
+
+                    if (fdl != null)
+                    {
+                        fdl.Factory1 = f.Content.Factory1;
+
+                        var days = (from wd in WorkingDays
+                                    from ts in wd.Timesheets
+                                    where ts.FDL1?.Id == fdl.Id
+                                    select wd).ToList();
+
+                        days.ForEach(ed => ed.Refresh());
+
+                    }
+                }));
         }
 
     }
