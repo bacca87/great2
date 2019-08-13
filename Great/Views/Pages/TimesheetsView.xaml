@@ -46,13 +46,6 @@
                   VirtualizingPanel.ScrollUnit ="Item"                    
                   RowStyle="{DynamicResource timeSheetDatagridStyle}"
                   VirtualizingPanel.VirtualizationMode="Standard">
-            <i:Interaction.Behaviors>
-                <Behaviours:ResourceChangeNotifierBehavior 
-                Resource="{DynamicResource timeSheetDatagridStyle}"
-                  
-                ResourceChanged="OnResourceChanged"/>
-            </i:Interaction.Behaviors>
-            
             <DataGrid.Resources>
 
                 <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">

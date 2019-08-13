@@ -143,10 +143,5 @@ namespace Great.Views.Pages
         }
         #endregion
 
-
-        private void OnResourceChanged(object sender, EventArgs e)
-        {
-            _viewModel?.SelectLastTimesheet();
-        }
     }
 }

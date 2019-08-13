@@ -124,7 +124,6 @@ namespace Great.ViewModels
         public RelayCommand PreviousYearCommand { get; set; }
         public RelayCommand<int> SelectFirstDayInMonthCommand { get; set; }
         public RelayCommand SelectTodayCommand { get; set; }
-        public RelayCommand SelectLastTimesheetCommand { get; set; }
 
         public RelayCommand<DayEVM> SetVacationDayCommand { get; set; }
         public RelayCommand<DayEVM> SetSickLeaveCommand { get; set; }
@@ -152,7 +151,6 @@ namespace Great.ViewModels
             PreviousYearCommand = new RelayCommand(() => CurrentYear--);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
             SelectTodayCommand = new RelayCommand(SelectToday);
-            SelectLastTimesheetCommand = new RelayCommand(SelectLastTimesheet);
 
             SetVacationDayCommand = new RelayCommand<DayEVM>(SetVacationDay);
             SetSickLeaveCommand = new RelayCommand<DayEVM>(SetSickLeave);
@@ -224,11 +222,6 @@ namespace Great.ViewModels
             CurrentYear = DateTime.Now.Year;
             //SelectFirstDayInMonth(DateTime.Now.Month);            
             SelectedWorkingDay = WorkingDays.Where(day => day.Date.DayOfYear == DateTime.Now.DayOfYear).FirstOrDefault();
-            OnSelectToday?.Invoke(SelectedWorkingDay);
-        }
-
-        public void SelectLastTimesheet()
-        {
             OnSelectToday?.Invoke(SelectedWorkingDay);
         }
 
