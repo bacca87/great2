@@ -199,36 +199,6 @@ namespace Great.ViewModels
 
             WorkingDays = days;
         }
-        //private void AddOrUpdateEventDays(EventEVM ev)
-        //{
-        //    ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
-
-        //    using (DBArchive db = new DBArchive())
-        //    {
-        //        var allDays = AllDatesInRange(ev.StartDate, ev.EndDate);
-
-        //        foreach (DateTime d in  allDays)
-        //        {
-        //            long timestamp = d.ToUnixTimestamp();
-        //            Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
-
-        //            if (currentDay != null)
-        //                days.Add(new DayEVM(currentDay));
-        //            else
-        //                days.Add(new DayEVM { Date = d });
-
-        //            //update day type
-        //            if (ev.EType == EEventType.Vacations && ev.IsAllDay)
-        //            {
-        //                if (ev.EStatus == EEventStatus.Accepted) days.ToList().ForEach(x => SetDayType(x, EDayType.VacationDay));
-        //                else if (ev.EStatus == EEventStatus.Rejected) days.ToList().ForEach(x => SetDayType(x, EDayType.WorkDay));
-        //                else if (ev.EStatus == EEventStatus.Pending) days.ToList().ForEach(x => SetDayType(x, EDayType.SpecialLeave));
-        //            }
-
-        //        }
-        //        days.ToList().ForEach(x => x.Save(db));
-        //    }
-        //}
 
 
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
@@ -239,23 +209,6 @@ namespace Great.ViewModels
                 yield return new DateTime(year, month, day);
             }
         }
-
-        //public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
-        //{
-        //    List<DateTime> dates = new List<DateTime>();
-
-        //    DateTime pointer = startDate;
-
-        //    do
-        //    {
-        //        dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
-        //        pointer = pointer.AddDays(1);
-        //    }
-        //    while (pointer <= endDate);
-
-
-        //    return dates;
-        //}
 
         public void SelectFirstDayInMonth(int month)
         {
