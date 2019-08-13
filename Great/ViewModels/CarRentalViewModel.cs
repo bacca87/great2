@@ -44,24 +44,11 @@ namespace Great.ViewModels
             }
         }
 
-        private bool _showContextualMenu = false;
-        public bool ShowContextualMenu
+        private bool _showEditMenu;
+        public bool ShowEditMenu
         {
-            get => _showContextualMenu;
-
-            set
-            {
-                if (_showContextualMenu == value)
-                {
-                    return;
-                }
-
-                var oldValue = _showContextualMenu;
-                _showContextualMenu = value;
-
-                RaisePropertyChanged(nameof(ShowContextualMenu), oldValue, value);
-
-            }
+            get => _showEditMenu;
+            set => Set(ref _showEditMenu, value);
         }
 
         public ObservableCollectionEx<CarRentalHistoryEVM> Rentals { get; set; }
@@ -83,7 +70,6 @@ namespace Great.ViewModels
             {
                 Set(ref _selectedRent, value);
                 SelectedCar = _selectedRent?.Car1;
-                ShowContextualMenu = false;
             }
         }
 
@@ -155,7 +141,8 @@ namespace Great.ViewModels
         public RelayCommand<CarRentalHistoryEVM> SaveCommand { get; set; }
         public RelayCommand<CarRentalHistoryEVM> DeleteCommand { get; set; }
         public RelayCommand<CarRentalHistoryEVM> NewCommand { get; set; }
-        public RelayCommand ShowContextualMenuCommand { get; set; }
+        public RelayCommand GotFocusCommand { get; set; }
+        public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand ApplyFilters { get; set; }
         public RelayCommand RemoveFilters { get; set; }
 
@@ -203,7 +190,8 @@ namespace Great.ViewModels
             SaveCommand = new RelayCommand<CarRentalHistoryEVM>(SaveRent);
             DeleteCommand = new RelayCommand<CarRentalHistoryEVM>(DeleteRent);
             NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
-            ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
+            GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
+            LostFocusCommand = new RelayCommand(() => { ShowEditMenu = false ; });
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
 

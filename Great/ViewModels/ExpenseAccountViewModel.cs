@@ -165,10 +165,7 @@ namespace Great.ViewModels
             MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() =>
-            {
-                //TODO: vedere se serve
-            });
+            LostFocusCommand = new RelayCommand(() => {ShowEditMenu = false; });
 
             using (DBArchive db = new DBArchive())
             {

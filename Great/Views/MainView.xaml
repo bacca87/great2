@@ -49,7 +49,7 @@
                 <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
                                      Header="RENT" 
                                      DataContext="{Binding CarRental, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
@@ -463,7 +463,7 @@
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="EDIT" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
-                                  IsSelected="{Binding ShowContextualMenu}"                                   
+                                  IsSelected="{Binding ShowEditMenu}"                                   
                                   Group="{Binding Source={x:Reference EditRentalGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
                     <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">

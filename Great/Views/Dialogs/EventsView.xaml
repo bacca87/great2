@@ -39,7 +39,7 @@
                 <Fluent:RibbonContextualTabGroup x:Name="EditEvents"
                                      Header="Events" 
                                      DataContext="{Binding Events, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
@@ -77,7 +77,7 @@
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="EDIT" 
                                   DataContext="{Binding Events, Source={StaticResource Locator}}"                              
-                                  IsSelected="{Binding ShowContextualMenu}"                                   
+                                  IsSelected="{Binding ShowEditMenu}"                                   
                                   Group="{Binding Source={x:Reference EditEvents}}">
                 <Fluent:RibbonGroupBox Header="Edit">
                     <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
@@ -163,7 +163,10 @@
             <Grid Grid.Column="1"  Margin="10,0,0,0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="GotFocus">
-                        <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
+                        <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="LostFocus">
+                        <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Grid.RowDefinitions>
