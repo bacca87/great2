@@ -150,7 +150,12 @@
                           DisplayMemberPath="Name" 
                           SelectedValuePath="Id">
                         <ComboBox.Resources>
-                            <CollectionViewSource x:Key="Items" Source="{Binding Factories}" />
+
+                            <CollectionViewSource x:Key="Items" Source="{Binding Factories}" >
+                                <CollectionViewSource.SortDescriptions>
+                                    <scm:SortDescription  PropertyName="Name"></scm:SortDescription>
+                                </CollectionViewSource.SortDescriptions>
+                            </CollectionViewSource>
                         </ComboBox.Resources>
                         <ComboBox.ItemsSource>
                             <CompositeCollection>
