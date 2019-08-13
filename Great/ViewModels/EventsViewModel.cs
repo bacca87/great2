@@ -127,7 +127,7 @@ namespace Great.ViewModels
                     EndMinutes = _SelectedEvent.EndDate.Minute;
                     ShowHourTimeFields = !_SelectedEvent.IsAllDay;
 
-
+                    ShowEditMenu = false;
                 }
 
             }
@@ -208,9 +208,8 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<EventEVM>(MarkAsCancelled);
             DeleteCommand = new RelayCommand<EventEVM>(RequestCancellation);
             NewCommand = new RelayCommand<EventEVM>(AddEvent);
-            //ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() => { ShowEditMenu = false; });
+            LostFocusCommand = new RelayCommand(() => { });
 
             using (DBArchive db = new DBArchive())
             {

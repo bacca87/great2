@@ -60,6 +60,13 @@
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
+                <Fluent:RibbonContextualTabGroup x:Name="EditFdlGroup"
+                                     Header="FDL" 
+                                     DataContext="{Binding FDL, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="TIMESHEETS"
@@ -484,7 +491,19 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>            
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding FDL, Source={StaticResource Locator}}"
+                                  IsSelected="{Binding ShowEditMenu}"
+                                  Group="{Binding Source={x:Reference EditFdlGroup}}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save fdl" Text="Save the current FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">

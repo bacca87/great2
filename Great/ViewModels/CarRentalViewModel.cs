@@ -70,6 +70,8 @@ namespace Great.ViewModels
             {
                 Set(ref _selectedRent, value);
                 SelectedCar = _selectedRent?.Car1;
+
+                ShowEditMenu = false;
             }
         }
 
@@ -191,7 +193,7 @@ namespace Great.ViewModels
             DeleteCommand = new RelayCommand<CarRentalHistoryEVM>(DeleteRent);
             NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() => { ShowEditMenu = false ; });
+            LostFocusCommand = new RelayCommand(() => {  });
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
 

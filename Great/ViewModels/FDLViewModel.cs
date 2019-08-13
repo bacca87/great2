@@ -44,6 +44,13 @@ namespace Great.ViewModels
             }
         }
 
+        private bool _showEditMenu;
+        public bool ShowEditMenu
+        {
+            get => _showEditMenu;
+            set => Set(ref _showEditMenu, value);
+        }
+
         private ObservableCollectionEx<FDLEVM> _FDLs;
         public ObservableCollectionEx<FDLEVM> FDLs
         {
@@ -67,6 +74,8 @@ namespace Great.ViewModels
                 }
                 else
                     IsInputEnabled = false;
+
+                ShowEditMenu = false;
             }
         }
 
@@ -110,6 +119,9 @@ namespace Great.ViewModels
         public RelayCommand<FDLEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand<FDLEVM> SendCancellationRequestCommand { get; set; }
 
+        public RelayCommand GotFocusCommand { get; set; }
+        public RelayCommand LostFocusCommand { get; set; }
+
         public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
 
@@ -131,6 +143,11 @@ namespace Great.ViewModels
             MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted);
             MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled);
             SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest);
+
+
+            GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
+            LostFocusCommand = new RelayCommand(() => {  });
+
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
