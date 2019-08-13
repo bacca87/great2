@@ -37,7 +37,7 @@ namespace Great
 
                 if (count > 1)
                 {
-                    Current.Shutdown();
+                    Environment.Exit(1);
                     return;
                 }   
             }
@@ -116,7 +116,7 @@ namespace Great
 
                         MetroMessageBox.Show($"Error upgrading the database.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                        Current.Shutdown();
+                        Environment.Exit(2);
                     }
                 }
             }

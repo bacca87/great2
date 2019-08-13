@@ -168,8 +168,7 @@ namespace Great.ViewModels
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
             MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, DayTypeChanged);
-
-
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
             UpdateWorkingDays();
         }
 
@@ -383,21 +382,52 @@ namespace Great.ViewModels
         private void DayTypeChanged(ItemChangedMessage<DayEVM> day)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                  new Action(() =>
-                  {
+                new Action(() =>
+                {
 
-                      if (WorkingDays == null)
-                          return;
+                    if (WorkingDays == null)
+                        return;
 
-                      DayEVM d = WorkingDays.SingleOrDefault(x => x.Timestamp == day.Content.Timestamp);
+                    DayEVM d = WorkingDays.SingleOrDefault(x => x.Timestamp == day.Content.Timestamp);
 
-                      if (d != null)
-                      {
-                          d.EType = day.Content.EType;
-                          d.Save();
-                      }
-                  }));
+                    if (d != null)
+                    {
+                        d.EType = day.Content.EType;
+                        d.Save();
+                    }
+                }));
         }
 
+        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {                        
+                        var days = item.Content.Timesheets.Select(t => t.Timestamp).Distinct();
+                        var daysToRefresh = WorkingDays.Where(x => days.Contains(x.Timestamp));
+                        var fdl = FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
+
+                        using (DBArchive db = new DBArchive())
+                        {
+                            // update days and timesheets
+                            if (daysToRefresh != null)
+                            {
+                                foreach (var day in daysToRefresh)
+                                    day.Refresh(db);
+                            }
+
+                            // update fdls combo
+                            if (fdl != null)
+                                fdl.Refresh(db);
+
+                            db.SaveChanges();
+                        }   
+                    }
+                })
+            );
+        }
     }
 }
