@@ -7,6 +7,9 @@
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:e="clr-namespace:Great.ViewModels.Database" 
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
+      xmlns:Behaviours="clr-namespace:Great.Utils.Extensions"
       mc:Ignorable="d"
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet"
@@ -40,10 +43,11 @@
                   ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
-                  VirtualizingPanel.ScrollUnit ="Item" 
+                  VirtualizingPanel.ScrollUnit ="Item"                    
                   RowStyle="{DynamicResource timeSheetDatagridStyle}"
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
+
                 <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
                         <Setter Property="TextBlock.FontSize" Value="15" />
