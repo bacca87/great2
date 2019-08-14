@@ -669,34 +669,37 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\32\events.png" />
-    <Content Include="UpgradeScripts\5_31-07-2019_update .sql">
+    <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\4_29-07-2019_update.sql">
+    <Content Include="UpgradeScripts\0004_29-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\7_06-08-2019_update.sql">
+    <Content Include="UpgradeScripts\0007_06-08-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\6_06-08-2019_update .sql">
+    <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\9_14-08-2019_update.sql">
+    <Content Include="UpgradeScripts\0010_14-08-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\8_13-08-2019_update.sql">
+    <Content Include="UpgradeScripts\0009_14-08-2019_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0008_13-08-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\16\file-pdf.png" />
     <Resource Include="Images\32\build-ea.png" />
     <Resource Include="Images\32\folder.png" />
-    <Content Include="UpgradeScripts\3_19-07-2019_update .sql">
+    <Content Include="UpgradeScripts\0003_19-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\2_12-07-2019_update.sql">
+    <Content Include="UpgradeScripts\0002_12-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UpgradeScripts\1_12-07-2019_update.sql">
+    <Content Include="UpgradeScripts\0001_12-07-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
