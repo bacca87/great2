@@ -27,7 +27,7 @@
     <Grid Name="MainContentControl" x:FieldModifier="public">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition  Height="*" />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -40,19 +40,17 @@
             <materialDesign:PackIcon Kind="MessageText" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="6,0,6,0"/>
             <TextBlock Name="TxtTitle" x:FieldModifier="public" Grid.Column="1"  Text="Title" VerticalAlignment="Center" FontWeight="Medium" Margin="0,6,6,6"/>
         </Grid>
-
-        <StackPanel  Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="center" VerticalAlignment="Top">
-            <Image Visibility="Visible"  
-            Margin="10,10,0,1"
+        <Image Visibility="Visible"  
+            Grid.Row="1" Grid.Column="0"
+               Margin="10,10,10,60"
             Stretch="Uniform"
             MaxHeight="40"
-            VerticalAlignment="Top"
+            VerticalAlignment="Center"
             HorizontalAlignment="Left"
             Source="{Binding Converter={StaticResource MessageBoxImageToImageConverter}, ConverterParameter=Information}"/>
-            <ScrollViewer Name="MessageControl" x:FieldModifier="public" VerticalScrollBarVisibility="Auto">
-            <TextBlock x:FieldModifier="public" Name="TxtMessage" MinHeight="100" Text="Message" TextWrapping="Wrap" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Normal" Margin="24,12" />
+        <ScrollViewer Name="MessageControl" x:FieldModifier="public" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1" >
+            <TextBlock x:FieldModifier="public" Name="TxtMessage" MinHeight="100" Text="Message" TextWrapping="Wrap" Padding="3" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Normal" Margin="50,10,10,10" />
         </ScrollViewer>
-        </StackPanel>
 
         <Grid Grid.Row="2" Margin="24,12">
             <Grid.ColumnDefinitions>

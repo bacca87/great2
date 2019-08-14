@@ -227,6 +227,7 @@ namespace Great.ViewModels
         private void LoadDayStatistic()
         {
             Days.Clear();
+            FactoryTypes.Clear();
 
             using (DBArchive db = new DBArchive())
             {
