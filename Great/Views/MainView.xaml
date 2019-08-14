@@ -72,7 +72,7 @@
             <Fluent:RibbonTabItem Header="TIMESHEETS"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
-                                  IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Clipboard">
                     <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Copy.png">
                         <Fluent:Button.ToolTip>
@@ -228,7 +228,7 @@
             <Fluent:RibbonTabItem Header="FDL" 
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
