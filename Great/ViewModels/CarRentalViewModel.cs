@@ -209,8 +209,7 @@ namespace Great.ViewModels
             SelectedCar = new CarEVM();
             SelectedRent = new CarRentalHistoryEVM();
 
-            RentStartDateFilter = new DateTime();
-            RentEndDateFilter = new DateTime();
+
 
         }
 
