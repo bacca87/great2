@@ -315,7 +315,7 @@
             <Fluent:RibbonTabItem Header="CAR RENTAL" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
                     <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
@@ -362,7 +362,7 @@
             <Fluent:RibbonTabItem Header="EXPENSE ACCOUNT" 
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
@@ -442,12 +442,12 @@
             </Fluent:RibbonTabItem>            
             <Fluent:RibbonTabItem Header="FACTORIES" 
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected,UpdateSourceTrigger=Explicit}">
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="STATISTICS" 
                                   DataContext="{Binding Statistics, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=statsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=statsTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=statsTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Year">
                     <Fluent:TextBox Text="{Binding SelectedYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
                         <Fluent:TextBox.ToolTip>
