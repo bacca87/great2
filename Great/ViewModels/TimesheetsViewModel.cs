@@ -140,6 +140,7 @@ namespace Great.ViewModels
         public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
         public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
+
         #endregion
 
         /// <summary>

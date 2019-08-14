@@ -79,9 +79,12 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Vertical" Margin="2">
-                <i:Interaction.Triggers>
+            <i:Interaction.Triggers>
                     <i:EventTrigger EventName="GotFocus">
-                        <mvvm:EventToCommand Command="{Binding ShowContextualMenuCommand}"/>
+                        <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="LostFocus">
+                        <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 

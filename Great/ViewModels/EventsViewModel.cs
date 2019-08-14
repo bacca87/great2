@@ -46,24 +46,11 @@ namespace Great.ViewModels
             }
         }
 
-        private bool _showContextualMenu = false;
-        public bool ShowContextualMenu
+        private bool _showEditMenu;
+        public bool ShowEditMenu
         {
-            get => _showContextualMenu;
-
-            set
-            {
-                if (_showContextualMenu == value)
-                {
-                    return;
-                }
-
-                var oldValue = _showContextualMenu;
-                _showContextualMenu = value;
-
-                RaisePropertyChanged(nameof(ShowContextualMenu), oldValue, value);
-
-            }
+            get => _showEditMenu;
+            set => Set(ref _showEditMenu, value);
         }
 
         private bool _ShowHourTimeFields = true;
@@ -140,7 +127,7 @@ namespace Great.ViewModels
                     EndMinutes = _SelectedEvent.EndDate.Minute;
                     ShowHourTimeFields = !_SelectedEvent.IsAllDay;
 
-                    ShowContextualMenu = false;
+                    ShowEditMenu = false;
                 }
 
             }
@@ -195,7 +182,8 @@ namespace Great.ViewModels
         public RelayCommand<EventEVM> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<EventEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand<EventEVM> DeleteCommand { get; set; }
-        public RelayCommand ShowContextualMenuCommand { get; set; }
+        public RelayCommand GotFocusCommand { get; set; }
+        public RelayCommand LostFocusCommand { get; set; }
 
         #endregion
 
@@ -220,7 +208,8 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<EventEVM>(MarkAsCancelled);
             DeleteCommand = new RelayCommand<EventEVM>(RequestCancellation);
             NewCommand = new RelayCommand<EventEVM>(AddEvent);
-            ShowContextualMenuCommand = new RelayCommand(() => { ShowContextualMenu = true; });
+            GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
+            LostFocusCommand = new RelayCommand(() => { });
 
             using (DBArchive db = new DBArchive())
             {

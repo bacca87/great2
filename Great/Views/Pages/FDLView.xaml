@@ -8,6 +8,8 @@
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       xmlns:m="clr-namespace:Great.Models.DTO" 
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView"
@@ -55,11 +57,11 @@
                     <Style.Setters>
                         <Setter Property="TextBlock.TextAlignment" Value="Center" />
                     </Style.Setters>
-                </Style>               
+                </Style>
                 <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
-                
+
                 <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
                 <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
             </DataGrid.Resources>
@@ -77,10 +79,10 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">                    
+                <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">                                
+                            <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None">
                                     <Image.ToolTip>
                                         <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
@@ -122,10 +124,18 @@
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="GotFocus">
+                    <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="LostFocus">
+                    <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>                
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -180,7 +190,7 @@
                       Height="160">
                 <DataGrid.Resources>
                     <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
-                        <Style.Setters>                            
+                        <Style.Setters>
                             <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -293,10 +303,6 @@
                     <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.PerformanceDescriptionDetails}" MaxLength="{Binding PerfDescDetMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </Grid>
-            <StackPanel Grid.Row="4" Orientation="Horizontal">
-                <Button Margin="10" Content="Clear" Command="{Binding ClearCommand}" />
-                <Button Margin="10" Content="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedFDL}" />
-            </StackPanel>
         </Grid>
     </Grid>
 </Page>

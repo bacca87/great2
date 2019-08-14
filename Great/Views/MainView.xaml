@@ -49,7 +49,7 @@
                 <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
                                      Header="RENT" 
                                      DataContext="{Binding CarRental, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowContextualMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
@@ -60,12 +60,19 @@
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
+                <Fluent:RibbonContextualTabGroup x:Name="EditFdlGroup"
+                                     Header="FDL" 
+                                     DataContext="{Binding FDL, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="TIMESHEETS"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
-                                  IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Clipboard">
                     <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Copy.png">
                         <Fluent:Button.ToolTip>
@@ -221,7 +228,7 @@
             <Fluent:RibbonTabItem Header="FDL" 
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
@@ -308,7 +315,7 @@
             <Fluent:RibbonTabItem Header="CAR RENTAL" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
                     <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
@@ -355,7 +362,7 @@
             <Fluent:RibbonTabItem Header="EXPENSE ACCOUNT" 
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="E-Mail">
                     <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
@@ -435,12 +442,12 @@
             </Fluent:RibbonTabItem>            
             <Fluent:RibbonTabItem Header="FACTORIES" 
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected,UpdateSourceTrigger=Explicit}">
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="STATISTICS" 
                                   DataContext="{Binding Statistics, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=statsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  IsSelected="{Binding ElementName=statsTab, Path=IsSelected, Mode=OneWay}">
+                                  IsSelected="{Binding ElementName=statsTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Year">
                     <Fluent:TextBox Text="{Binding SelectedYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
                         <Fluent:TextBox.ToolTip>
@@ -463,7 +470,7 @@
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="EDIT" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
-                                  IsSelected="{Binding ShowContextualMenu}"                                   
+                                  IsSelected="{Binding ShowEditMenu}"                                   
                                   Group="{Binding Source={x:Reference EditRentalGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
                     <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
@@ -484,7 +491,19 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>            
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding FDL, Source={StaticResource Locator}}"
+                                  IsSelected="{Binding ShowEditMenu}"
+                                  Group="{Binding Source={x:Reference EditFdlGroup}}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save fdl" Text="Save the current FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="NavigationTabControl" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"                     
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
