@@ -4,7 +4,7 @@
 -- Author: Marco Baccarani
 --=========================================================================
 
-UPDATE ExpenseAccount SET [IsRefunded] = 0 WHERE [Status] <> 4;
+UPDATE ExpenseAccount SET [IsRefunded] = 0 WHERE [Status] <> 2;
 
 --=========================================================================
 -- MANDATORY: Increment internal db version
