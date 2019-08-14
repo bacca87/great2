@@ -51,10 +51,7 @@ namespace Great.ViewModels.Database
         public long? Factory
         {
             get => _Factory;
-            set
-            {
-                Set(ref _Factory, value);
-            }
+            set => Set(ref _Factory, value);
         }
 
         private bool _OutwardCar;
@@ -191,7 +188,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Factory1, value);
-                Factory = value.Id;
                 RaisePropertyChanged(nameof(FDL_Factory_Display));
             }
         }
