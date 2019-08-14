@@ -331,7 +331,6 @@
     <Compile Include="Utils\CurrencyCodeMapper.cs" />
     <Compile Include="Utils\Extensions\DateTimeExtensions.cs" />
     <Compile Include="Utils\AttachedProperties\PasswordHelper.cs" />
-    <Compile Include="Utils\Extensions\GridViewSort.cs" />
     <Compile Include="Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Utils\Extensions\TimePeriodCollectionExtensions.cs" />
     <Compile Include="Utils\Extensions\TimeSpanExtensions.cs" />
