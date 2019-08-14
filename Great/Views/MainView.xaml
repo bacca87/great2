@@ -346,9 +346,9 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <DatePicker Grid.Row="0" Grid.Column="1" DisplayDate="{Binding RentStartDateFilter}" SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5"/>
+                        <DatePicker Grid.Row="0" Grid.Column="1" DisplayDate="{Binding RentStartDateFilter, TargetNullValue=''}" SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="End Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <DatePicker Grid.Row="1" Grid.Column="1" DisplayDate="{Binding RentEndDateFilter}" SelectedDate="{Binding RentEndDateFilter}" Margin="5,3,5,5"/>
+                        <DatePicker Grid.Row="1" Grid.Column="1" DisplayDate="{Binding RentEndDateFilter, TargetNullValue=''}" SelectedDate="{Binding RentEndDateFilter}" Margin="5,3,5,5"/>
                         <TextBlock Grid.Row="0" Grid.Column="2" Text="Brand:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                         <Fluent:TextBox Grid.Row="0" Grid.Column="3" Width="100" Text="{Binding ModelBrandFilter}" Margin="0,3,3,5"/>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="License Plate:" VerticalAlignment="Center" HorizontalAlignment="Right"/>

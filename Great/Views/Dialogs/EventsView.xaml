@@ -104,7 +104,7 @@
                 CanUserReorderColumns="False" 
                 CanUserResizeColumns="False" 
                 CanUserResizeRows="False" 
-                CanUserSortColumns="False" 
+                CanUserSortColumns="True" 
                 IsReadOnly="True"                  
                 SelectionMode="Single"
                 HeadersVisibility="Column"
@@ -112,7 +112,7 @@
                 SelectedItem="{Binding SelectedEvent}"
                 ScrollViewer.CanContentScroll="True" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
