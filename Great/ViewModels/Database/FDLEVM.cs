@@ -54,7 +54,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Factory, value);
-                RaisePropertyChanged(nameof(Factory));
             }
         }
 
