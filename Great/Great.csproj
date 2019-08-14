@@ -52,6 +52,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Great2.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.8.1.1\lib\net461\AutoMapper.dll</HintPath>
@@ -669,6 +672,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\32\events.png" />
+    <Resource Include="Great2.ico" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
