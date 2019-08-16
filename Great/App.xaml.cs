@@ -1,14 +1,9 @@
-﻿using AutoUpdaterDotNET;
-using GalaSoft.MvvmLight.Ioc;
-using Great.Controls;
+﻿using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
 using Great.Utils;
-using Great.ViewModels;
-using Great.Views.Pages;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Great.Views;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -17,7 +12,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
+using SplashScreen = Great.Views.SplashScreen;
 
 namespace Great
 {
@@ -28,33 +25,54 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // Multiple istance check
-            if (!e.Args.Contains("-m") && !e.Args.Contains("/m"))
-            {
-                Process proc = Process.GetCurrentProcess();
-                int count = Process.GetProcesses().Where(p =>
-                    p.ProcessName == proc.ProcessName).Count();
-
-                if (count > 1)
-                {
-                    Environment.Exit(1);
-                    return;
-                }   
-            }
-
-            // Upgrade Settings
-            if (Settings.Default.UpgradeSettings)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeSettings = false;
-                Settings.Default.Save();
-            }
-
-            GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
-            InitializeDirectoryTree();
-            InitializeDatabase();
-
             ApplySkin(UserSettings.Themes.Skin);
+
+            SplashScreen splash = new SplashScreen();
+            MainWindow = splash;
+            splash.Show();
+
+            //in order to ensure the UI stays responsive, we need to
+            //do the work on a different thread
+            Task.Factory.StartNew(() =>
+            {
+                // Multiple istance check
+                if (!e.Args.Contains("-m") && !e.Args.Contains("/m"))
+                {
+                    Process proc = Process.GetCurrentProcess();
+                    int count = Process.GetProcesses().Where(p =>
+                        p.ProcessName == proc.ProcessName).Count();
+
+                    if (count > 1)
+                    {
+                        Environment.Exit(1);
+                        return;
+                    }
+                }
+
+                // Upgrade Settings
+                if (Settings.Default.UpgradeSettings)
+                {
+                    Settings.Default.Upgrade();
+                    Settings.Default.UpgradeSettings = false;
+                    Settings.Default.Save();
+                }
+
+                GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
+                InitializeDirectoryTree();
+                InitializeDatabase();
+
+                //once we're done we need to use the Dispatcher
+                //to create and show the main window
+                Dispatcher.Invoke(() =>
+                {
+                    //initialize the main window, set it as the application main window
+                    //and close the splash screen
+                    MainView window = new MainView();
+                    MainWindow = window;
+                    window.Show();
+                    splash.Close();
+                });
+            });            
         }
 
         private void InitializeDirectoryTree()

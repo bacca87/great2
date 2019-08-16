@@ -1004,6 +1004,7 @@ namespace Great.Models
             public const int WaitForCredentialsCheck = 1000;
 
             public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
+            public const string IntranetAddress = "https://intranet.elettric80.it";
 
             public static string UserAgent
             {

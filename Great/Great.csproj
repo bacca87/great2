@@ -412,6 +412,9 @@
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\SkinResourceDictionary.cs" />
+    <Compile Include="Views\SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Wizards\FDLImportWizardView.xaml.cs">
       <DependentUpon>FDLImportWizardView.xaml</DependentUpon>
     </Compile>
@@ -503,6 +506,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SplashScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Wizards\FDLImportWizardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -543,9 +550,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
+    <Content Include="App.config">
       <SubType>Designer</SubType>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -663,9 +670,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\32\pdf-file.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <SplashScreen Include="Images\SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\32\build-fdl.png" />

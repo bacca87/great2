@@ -144,7 +144,7 @@ namespace Great.Models
                         // try to get user Id
                         if (sharepointUserId == 0)
                         {
-                            request = (HttpWebRequest)WebRequest.Create("https://intranet.elettric80.it/_api/web/currentuser");
+                            request = (HttpWebRequest)WebRequest.Create($"{ApplicationSettings.General.IntranetAddress}/_api/web/currentuser");
                             request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
                             request.Method = "GET";
 
@@ -157,7 +157,7 @@ namespace Great.Models
                         if (sharepointUserId > 0)
                         {
                             // try to get all submitted events
-                            string req = string.Format("https://intranet.elettric80.it/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {0}", sharepointUserId);
+                            string req = string.Format($"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {0}", sharepointUserId);
 
                             request = (HttpWebRequest)WebRequest.Create(req);
                             request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
