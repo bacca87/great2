@@ -6,7 +6,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-    Title="GREAT 2" 
+    Title="GREAT²" 
     Width="1024" 
     Height="768"
     MinWidth="800"

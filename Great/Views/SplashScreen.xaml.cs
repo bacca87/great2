@@ -1,7 +1,9 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +24,12 @@ namespace Great.Views
     {
         public SplashScreen()
         {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
             InitializeComponent();
+
+            VersionTextBlock.Text = "v" + FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
+            //(assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0] as AssemblyCopyrightAttribute).Copyright;
         }
     }
 }

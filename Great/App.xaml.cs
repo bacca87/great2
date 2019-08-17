@@ -68,9 +68,9 @@ namespace Great
                     //initialize the main window, set it as the application main window
                     //and close the splash screen
                     MainView window = new MainView();
+                    window.ContentRendered += (s, args) => splash.Close();
                     MainWindow = window;
                     window.Show();
-                    splash.Close();
                 });
             });            
         }

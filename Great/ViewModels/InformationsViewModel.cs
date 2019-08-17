@@ -35,7 +35,7 @@ namespace Great.ViewModels
         /// <summary>
         /// Gets the Copyright property.
         /// </summary>
-        public string Copyright
+        public string Copyleft
         {
             get => (assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0] as AssemblyCopyrightAttribute).Copyright;
         }

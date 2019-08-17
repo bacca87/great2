@@ -326,7 +326,7 @@ namespace Great.ViewModels
                  {
                      EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                     Mapper.Map(item.Content, v);
+                     Global.Mapper.Map(item.Content, v);
                      v.Save();
 
                      FilteredEvents.Refresh();

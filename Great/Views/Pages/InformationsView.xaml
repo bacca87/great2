@@ -26,7 +26,7 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="40" FontWeight="Bold"/>
             <TextBlock Grid.Row="1" Text="{Binding Version, StringFormat='Version {0}'}" FontSize="15" FontStyle="Italic"/>
-            <TextBlock Grid.Row="2" Text="{Binding Copyright}" FontSize="15" FontStyle="Italic"/>
+            <TextBlock Grid.Row="2" Text="{Binding Copyleft}" FontSize="15" FontStyle="Italic"/>
             <StackPanel Grid.Row="3" Orientation="Horizontal">
                 <TextBlock Grid.Row="0" Text="Website:" FontSize="15" Margin="0,0,5,0"/>
                 <TextBlock FontSize="15"><Hyperlink NavigateUri="https://github.com/bacca87/great2" RequestNavigate="Hyperlink_RequestNavigate">github.com/bacca87/great2</Hyperlink></TextBlock>
