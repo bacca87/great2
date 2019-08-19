@@ -126,7 +126,7 @@ namespace Great.Models
                     }
                 }
 
-                Thread.Sleep(ApplicationSettings.General.WaitForNextEventChek);
+                Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
             }
         }
 
