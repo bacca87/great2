@@ -25,8 +25,6 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            ApplySkin(UserSettings.Themes.Skin);
-
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
             splash.Show();
@@ -56,6 +54,8 @@ namespace Great
                     Settings.Default.UpgradeSettings = false;
                     Settings.Default.Save();
                 }
+
+                ApplySkin(UserSettings.Themes.Skin);
 
                 GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
                 InitializeDirectoryTree();
