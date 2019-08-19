@@ -45,6 +45,7 @@
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item"                    
                   RowStyle="{DynamicResource timeSheetDatagridStyle}"
+                  MouseDoubleClick="WorkingDaysDataGrid_MouseDoubleClick"   
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
 
@@ -151,18 +152,19 @@
                 <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Grid.Row="0">
+        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="True">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <DataGrid Grid.Column="0"
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Grid.Column="0"
                       ItemsSource="{Binding SelectedWorkingDay.Timesheets}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
                       AutoGenerateColumns="False" 
@@ -173,132 +175,133 @@
                       HeadersVisibility="Column"
                       BorderThickness="0.5"
                      IsReadOnly="True">
-                    <DataGrid.Resources>
-                        <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
-                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="FontSize" Value="15"/>
-                        </Style>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
-                            <Setter Property="ContentTemplate">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.Resources>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
-                        <DataGridTextColumn Header="Working Time" Binding="{Binding WorkTime, StringFormat=N2}" Width="100"/>
-                        <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" Width="100"/>
-                        <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" Width="100"/>
-                        <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.FDL_Display}" Width="100"/>
-                        <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-            <Grid Grid.Column="2" Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Column="0" Grid.Row="1" Margin="5">
-                    <GroupBox Header="TIMESHEET INFO" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}" Margin="5" >
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" Margin="0.2,0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                                <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="FontSize" Value="15"/>
+                            </Style>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100" />
+                            <DataGridTextColumn Header="Working Time" Binding="{Binding WorkTime, StringFormat=N2}" Width="100"/>
+                            <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" Width="100"/>
+                            <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" Width="100"/>
+                            <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.FDL_Display}" Width="100"/>
+                            <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <Grid Grid.Column="2" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Grid.Row="1" Margin="5">
+                        <Expander x:Name="editTimesheetPanel" Header="EDIT" ExpandDirection="Left" MinHeight="200" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}" Margin="5" >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" Margin="0.2,0">
 
-                                <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                                    <Grid.Resources>                                        
-                                        <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
-                                    </Grid.Resources>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Center">Travel<LineBreak/>Start Time</TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">FDL</TextBlock>
-                                    <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">Notes</TextBlock>
+                                    <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                                        <Grid.Resources>
+                                            <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Center">Travel<LineBreak/>Start Time</TextBlock>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
+                                        <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
+                                        <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
+                                        <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">FDL</TextBlock>
+                                        <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">Notes</TextBlock>
 
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                    <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
-                                    <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
 
-                                    <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"
+                                        <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"
                                           SelectedItem="{Binding SelectedTimesheet.FDL1}" 
                                           SelectedValue="{Binding SelectedTimesheet.FDL}" 
                                           IsEnabled="{Binding IsInputEnabled}" 
                                           DisplayMemberPath="FDL_Factory_Display" 
                                           SelectedValuePath="Id" 
-                                          SelectedIndex="0">    
-                                        <ComboBox.Resources>
-                                            <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
-                                        </ComboBox.Resources>
-                                        <ComboBox.ItemsSource>
-                                            <CompositeCollection>
-                                                <e:FDLEVM/>
-                                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                                            </CompositeCollection>
-                                        </ComboBox.ItemsSource>
-                                    </ComboBox>
-                                    <TextBox Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="295" Text="{Binding SelectedTimesheet.Notes}"></TextBox>
-                                    <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
-                                        <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
-                                        <Button Margin="2" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
-                                        <Button Margin="2" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
+                                          SelectedIndex="0">
+                                            <ComboBox.Resources>
+                                                <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
+                                            </ComboBox.Resources>
+                                            <ComboBox.ItemsSource>
+                                                <CompositeCollection>
+                                                    <e:FDLEVM/>
+                                                    <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                                                </CompositeCollection>
+                                            </ComboBox.ItemsSource>
+                                        </ComboBox>
+                                        <TextBox Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="295" Text="{Binding SelectedTimesheet.Notes}"></TextBox>
+                                        <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
+                                            <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
+                                            <Button Margin="2" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
+                                            <Button Margin="2" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Expander>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="1" Margin="5"/>
                 </Grid>
-                <Grid Grid.Column="1" Grid.Row="1" Margin="5"/>
             </Grid>
-        </Grid>
+        </Expander>
     </Grid>
 </Page>
