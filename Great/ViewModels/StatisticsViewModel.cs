@@ -69,6 +69,8 @@ namespace Great.ViewModels
             get => _MonthsLabels;
             set => Set(ref _MonthsLabels, value);
         }
+
+        private bool IsRefreshEnabled = false;
         #endregion
 
         #region Commands Definitions
@@ -90,16 +92,16 @@ namespace Great.ViewModels
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
 
             SelectedYear = DateTime.Now.Year;
+            IsRefreshEnabled = true;
 
             MonthsLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-
-            MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, RefreshTimesheet);
-            MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, RefreshTimesheet);
-            MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, RefreshDay);
         }
 
-        private void RefreshAllData()
+        public void RefreshAllData()
         {
+            if (!IsRefreshEnabled)
+                return;
+
             using (new WaitCursor())
             {
                 LoadFactoriesData();
@@ -439,19 +441,6 @@ namespace Great.ViewModels
                     }
                 };
             }
-        }
-
-        private void RefreshTimesheet(ItemChangedMessage<TimesheetEVM> item)
-        {
-            RefreshAllData();
-        }
-        private void RefreshTimesheet(DeletedItemMessage<TimesheetEVM> item)
-        {
-            RefreshAllData();
-        }
-        private void RefreshDay(ItemChangedMessage<DayEVM> item)
-        {
-            RefreshAllData();
         }
     }
 }

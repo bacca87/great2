@@ -34,9 +34,9 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="GREAT²" FontFamily="Segoe Script Bold" FontSize="72"/>
-            <TextBlock Grid.Row="0" Text="v1.0.0.0" Name="VersionTextBlock" FontSize="15" FontStyle="Italic" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,10"/>
-            <TextBlock Grid.Row="2" Text="Loading..." FontSize="20" FontFamily="Segoe Script Bold" HorizontalAlignment="Center"/>            
+            <TextBlock Grid.Row="0" Text="GREAT²" FontFamily="Segoe Script Bold" FontSize="72" Foreground="White"/>
+            <TextBlock Grid.Row="0" Text="v1.0.0.0" Name="VersionTextBlock" FontSize="15" FontStyle="Italic" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,10"/>
+            <TextBlock Grid.Row="2" Text="Loading..." FontSize="20" FontFamily="Segoe Script Bold" Foreground="White" HorizontalAlignment="Center"/>            
         </Grid>
         <Image Grid.Column="1" Source="pack://application:,,,/Great2;component/Images/Logos/Great2Logo.png" Stretch="None"/>
     </Grid>

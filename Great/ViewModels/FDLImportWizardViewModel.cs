@@ -147,8 +147,6 @@ namespace Great.ViewModels
         /// </summary>
         public FDLImportWizardViewModel()
         {
-            _fdlImport = new FDLImport();
-
             StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
             CancelCommand = new RelayCommand(Cancel);
@@ -156,12 +154,11 @@ namespace Great.ViewModels
 
             Reset();
 
-            refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-            refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
-            refreshTimer.Start();
+            refreshTimer.Tick += (s, e) => Refresh();
+            refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);            
         }
 
-        private void refreshTimer_Tick(object sender, EventArgs e)
+        private void Refresh()
         {
             string newText = string.Empty;
 
@@ -221,19 +218,29 @@ namespace Great.ViewModels
 
         public void StartImport()
         {
+            _fdlImport = new FDLImport();
             _fdlImport.FDLFolder = FDLFolder;
             _fdlImport.Start();
+
+            refreshTimer.Start();
+
             CanSelectPreviousPage = false;
         }
 
         public void Cancel()
         {
             _fdlImport.Cancel();
+            refreshTimer.Stop();
+
+            Refresh();
             Reset();
         }
 
         public void Finish()
         {
+            refreshTimer.Stop();
+            Refresh();
+
             MessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
             Process.Start(Application.ResourceAssembly.Location, "-m");
             Application.Current.Shutdown();

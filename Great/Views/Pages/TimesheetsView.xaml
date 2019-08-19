@@ -23,7 +23,7 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </Page.Resources>
-    <Grid Margin="10,0,10,0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
@@ -40,6 +40,7 @@
                   SelectionMode="Single"
                   HeadersVisibility="Column"           
                   HorizontalContentAlignment="Center"
+                  HorizontalScrollBarVisibility="Hidden"
                   ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
@@ -152,7 +153,7 @@
                 <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="True">
+        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -219,7 +220,7 @@
                         <RowDefinition Height="10"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Column="0" Grid.Row="1" Margin="5">
-                        <Expander x:Name="editTimesheetPanel" Header="EDIT" ExpandDirection="Left" MinHeight="200" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}" Margin="5" >
+                        <Expander x:Name="editTimesheetPanel" Header="EDIT" ExpandDirection="Left" MinHeight="200" HorizontalAlignment="Left" IsEnabled="{Binding IsInputEnabled}" Margin="5" IsExpanded="True">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>

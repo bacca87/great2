@@ -14,7 +14,6 @@ using System.Xml.Linq;
 
 namespace Great.Models
 {
-
     public class MSSharepointProvider
     {
         private Thread eventUpdaterThread;
@@ -37,11 +36,13 @@ namespace Great.Models
         protected void NotifyEventChanged(EventEVM e)
         {
             Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, e));
+            UpdateEventStatus(e);
         }
 
         protected void NotifyEventImported(EventEVM e)
         {
             Messenger.Default.Send(new NewItemMessage<EventEVM>(this, e));
+            UpdateEventStatus(e);
         }
 
         private void SenderThread()
@@ -157,7 +158,7 @@ namespace Great.Models
                         if (sharepointUserId > 0)
                         {
                             // try to get all submitted events
-                            string req = string.Format($"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq "+ sharepointUserId);
+                            string req = $"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {sharepointUserId}";
 
                             request = (HttpWebRequest)WebRequest.Create(req);
                             request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
@@ -179,21 +180,23 @@ namespace Great.Models
                                     //manually added to calendar. Import it!
                                     EventEVM tmp = new EventEVM();
                                     tmp.IsSent = true; // the event is on calendar. Not necessary to send it
-                                    tmp.SharePointId = shpid;
+                                    tmp.SharePointId = shpid;                                    
                                     tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
-                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
-                                    tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
-                                    tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
-                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
+                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;                                    
+                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;                                    
                                     tmp.Status = status;
                                     tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
                                     tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
 
-                                    //FIx 2:00 am on sharepoint calendar that broke timestamp relation!
                                     if (tmp.IsAllDay)
+                                    {  
+                                        tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText.TrimEnd('Z'));
+                                        tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText.TrimEnd('Z'));
+                                    }
+                                    else
                                     {
-                                        tmp.StartDate = new DateTime(tmp.StartDate.Year, tmp.StartDate.Month, tmp.StartDate.Day, 0, 0, 0);
-                                        tmp.EndDate = new DateTime(tmp.EndDate.Year, tmp.EndDate.Month, tmp.EndDate.Day, 0, 0, 0);
+                                        tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
+                                        tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
                                     }
 
                                     if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
@@ -309,6 +312,17 @@ namespace Great.Models
             XmlDocument d = new XmlDocument();
             d.LoadXml(doc.ToString());
             return d;
+        }
+
+        public void UpdateEventStatus(EventEVM ev)
+        {
+            using (DBArchive db = new DBArchive())
+            {
+                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
+                List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
+
+                currentDayEVM.ToList().ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
+            }
         }
 
         //public void AddOrUpdateEventRelations(EventEVM ev, DBArchive db)
