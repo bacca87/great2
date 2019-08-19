@@ -23,7 +23,7 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </Page.Resources>
-    <Grid Margin="10,0,10,0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
@@ -40,6 +40,7 @@
                   SelectionMode="Single"
                   HeadersVisibility="Column"           
                   HorizontalContentAlignment="Center"
+                  HorizontalScrollBarVisibility="Hidden"
                   ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 

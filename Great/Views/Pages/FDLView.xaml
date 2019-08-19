@@ -22,7 +22,7 @@
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Page.Resources>
-    <Grid Margin="10,0,10,0">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
