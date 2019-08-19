@@ -157,7 +157,7 @@ namespace Great.Models
                         if (sharepointUserId > 0)
                         {
                             // try to get all submitted events
-                            string req = string.Format($"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {0}", sharepointUserId);
+                            string req = string.Format($"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq "+ sharepointUserId);
 
                             request = (HttpWebRequest)WebRequest.Create(req);
                             request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
