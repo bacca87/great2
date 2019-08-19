@@ -314,10 +314,12 @@ namespace Great.ViewModels
                 SelectedCar.Save(db);
 
                 rc.Car = SelectedCar.Id;
+                rc.Car1 = SelectedCar;
                 rc.Save(db);
                 db.SaveChanges();
             }
 
+            Rentals.Add(rc);
             FilteredRentals.Refresh();
         }
     }

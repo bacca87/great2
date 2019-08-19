@@ -143,5 +143,10 @@ namespace Great.Views.Pages
         }
         #endregion
 
+        private void WorkingDaysDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            timesheetPanel.IsExpanded = true;
+            editTimesheetPanel.IsExpanded = true;
+        }
     }
 }
