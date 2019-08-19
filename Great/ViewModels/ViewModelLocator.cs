@@ -14,7 +14,6 @@
 
 using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
-using Great.Models.Database;
 using Great.Models.Interfaces;
 
 namespace Great.ViewModels
@@ -30,39 +29,29 @@ namespace Great.ViewModels
         /// </summary>
         public ViewModelLocator()
         {
-            //ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
+            // Prioritary
             SimpleIoc.Default.Register<NotificationsViewModel>(true);
 
-            SimpleIoc.Default.Register<IProvider, MSExchangeProvider>(true);
-            SimpleIoc.Default.Register<MSSharepointProvider>(true);
-
-            SimpleIoc.Default.Register<FDLManager>(true);
-            SimpleIoc.Default.Register<DBArchive>(true);
-
+            // Indipendent
             SimpleIoc.Default.Register<TimesheetsViewModel>(true);
             SimpleIoc.Default.Register<FactoriesViewModel>(true);
-            SimpleIoc.Default.Register<InformationsViewModel>(true);
-            SimpleIoc.Default.Register<FDLViewModel>(true);
-            SimpleIoc.Default.Register<ExpenseAccountViewModel>(true);
-            SimpleIoc.Default.Register<SettingsViewModel>(true);            
+            SimpleIoc.Default.Register<InformationsViewModel>(true);            
             SimpleIoc.Default.Register<ImportExportViewModel>(true);
             SimpleIoc.Default.Register<GreatImportWizardViewModel>(true);
             SimpleIoc.Default.Register<OrderRecipientsViewModel>(true);
             SimpleIoc.Default.Register<StatisticsViewModel>(true);
             SimpleIoc.Default.Register<CarRentalViewModel>(true);
             SimpleIoc.Default.Register<FDLImportWizardViewModel>(true);
+
+            // Exchange
+            SimpleIoc.Default.Register<IProvider, MSExchangeProvider>(true);
+            SimpleIoc.Default.Register<FDLManager>(true);
+            SimpleIoc.Default.Register<FDLViewModel>(true);
+            SimpleIoc.Default.Register<ExpenseAccountViewModel>(true);
+            SimpleIoc.Default.Register<SettingsViewModel>(true);
+
+            // Sharepoint
+            SimpleIoc.Default.Register<MSSharepointProvider>(true);
             SimpleIoc.Default.Register<EventsViewModel>(true);
         }
 

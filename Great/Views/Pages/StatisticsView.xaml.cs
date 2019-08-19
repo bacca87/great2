@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Great.ViewModels;
+using System.Windows.Controls;
 
 namespace Great.Views.Pages
 {
@@ -7,9 +8,17 @@ namespace Great.Views.Pages
     /// </summary>
     public partial class StatisticsView : Page
     {
+        private StatisticsViewModel _viewModel { get { return DataContext as StatisticsViewModel; } }
+
         public StatisticsView()
         {
             InitializeComponent();
+        }
+
+        private void Page_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == true)
+                _viewModel.RefreshAllData();
         }
     }
 }

@@ -17,106 +17,40 @@ namespace Great.ViewModels
     /// </summary>
     public class OrderRecipientsViewModel : ViewModelBase
     {
-        #region Properties
-        /// <summary>
-        /// The <see cref="Recipients" /> property's name.
-        /// </summary>
+        #region Properties        
         private ObservableCollection<OrderEmailRecipient> _Recipients;
-
-        /// <summary>
-        /// Sets and gets the Recipients property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>        
         public ObservableCollection<OrderEmailRecipient> Recipients
         {
-            get
-            {
-                return _Recipients;
-            }
-            set
-            {
-                _Recipients = value;
-                RaisePropertyChanged(nameof(Recipients), true);
-            }
+            get =>_Recipients;
+            set => Set(ref _Recipients, value);
         }
 
-        /// <summary>
-        /// The <see cref="SelectedRecipient" /> property's name.
-        /// </summary>
         private OrderEmailRecipient _selectedRecipient;
-
-        /// <summary>
-        /// Sets and gets the SelectedRecipient property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public OrderEmailRecipient SelectedRecipient
         {
-            get
-            {
-                return _selectedRecipient;
-            }
-
-            set
-            {
-                var oldValue = _selectedRecipient;
-                _selectedRecipient = value;
-
-                RaisePropertyChanged(nameof(SelectedRecipient), oldValue, value);
-            }
+            get => _selectedRecipient;
+            set => Set(ref _selectedRecipient, value);
         }
 
-        /// <summary>
-        /// The <see cref="Order" /> property's name.
-        /// </summary>
         private long _order;
-
-        /// <summary>
-        /// Sets and gets the Order property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public long Order
         {
-            get
-            {
-                return _order;
-            }
-
+            get => _order;
             set
             {
-                var oldValue = _order;
-                _order = value;
+                Set(ref _order, value);
 
-                Recipients = new ObservableCollection<OrderEmailRecipient>(_db.OrderEmailRecipients.Where(r => r.Order == _order).ToList());
-
-                RaisePropertyChanged(nameof(Order), oldValue, value);
+                using (DBArchive db = new DBArchive())
+                    Recipients = new ObservableCollection<OrderEmailRecipient>(db.OrderEmailRecipients.Where(r => r.Order == _order).ToList());
             }
         }
 
-        /// <summary>
-        /// The <see cref="InputAddress" /> property's name.
-        /// </summary>
         private string _inputAddress;
-
-        /// <summary>
-        /// Sets and gets the InputAddress property.
-        /// Changes to that property's value raise the PropertyChanged event.         
-        /// </summary>
         public string InputAddress
         {
-            get
-            {
-                return _inputAddress;
-            }
-
-            set
-            {
-                var oldValue = _inputAddress;
-                _inputAddress = value;
-                RaisePropertyChanged(nameof(InputAddress), oldValue, value);
-            }
+            get => _inputAddress;
+            set => Set(ref _inputAddress, value);
         }
-
-        private DBArchive _db;
         #endregion
 
         #region Command Definitions
@@ -124,13 +58,8 @@ namespace Great.ViewModels
         public RelayCommand<OrderEmailRecipient> RemoveCommand { get; set; }
         #endregion
 
-        /// <summary>
-        /// Initializes a new instance of the SettingsViewModel class.
-        /// </summary>
-        public OrderRecipientsViewModel(DBArchive db)
+        public OrderRecipientsViewModel()
         {
-            _db = db;
-
             AddCommand = new RelayCommand<string>(AddRecipient);
             RemoveCommand = new RelayCommand<OrderEmailRecipient>(RemoveRecipient);
 
@@ -151,8 +80,11 @@ namespace Great.ViewModels
             recipient.Address = address;
             recipient.Order = Order;
 
-            _db.OrderEmailRecipients.Add(recipient);
-            _db.SaveChanges();
+            using (DBArchive db = new DBArchive())
+            {
+                db.OrderEmailRecipients.Add(recipient);
+                db.SaveChanges();
+            }   
 
             Recipients.Add(recipient);
             InputAddress = string.Empty;
@@ -160,8 +92,11 @@ namespace Great.ViewModels
 
         public void RemoveRecipient(OrderEmailRecipient recipient)
         {
-            _db.OrderEmailRecipients.Remove(recipient);
-            _db.SaveChanges();
+            using (DBArchive db = new DBArchive())
+            {
+                db.OrderEmailRecipients.Remove(recipient);
+                db.SaveChanges();
+            }
 
             Recipients.Remove(recipient);
         }

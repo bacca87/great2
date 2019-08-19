@@ -7,7 +7,8 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       mc:Ignorable="d"
       DataContext="{Binding Statistics, Source={StaticResource Locator}}"
-      Style="{DynamicResource MetroPage}">
+      Style="{DynamicResource MetroPage}"
+      IsVisibleChanged="Page_IsVisibleChanged">
     <Page.Resources>
         <Style x:Key="DefaultToolTip" TargetType="lvc:DefaultTooltip">
             <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />

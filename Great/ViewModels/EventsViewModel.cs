@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
-using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
@@ -23,7 +20,6 @@ namespace Great.ViewModels
 {
     public class EventsViewModel : ViewModelBase, IDataErrorInfo
     {
-
         #region Properties
         MSSharepointProvider _provider;
 
@@ -297,7 +293,7 @@ namespace Great.ViewModels
             ev.IsSent = true;
             ev.Save();
             FilteredEvents.Refresh();
-            UpdateEventStatus(ev);
+            _provider.UpdateEventStatus(ev);
 
         }
 
@@ -313,8 +309,7 @@ namespace Great.ViewModels
             ev.IsSent = true;
             ev.Save();
             FilteredEvents.Refresh();
-            UpdateEventStatus(ev);
-
+            _provider.UpdateEventStatus(ev);
         }
 
         public void EventChanged(ItemChangedMessage<EventEVM> item)
@@ -330,7 +325,6 @@ namespace Great.ViewModels
                      v.Save();
 
                      FilteredEvents.Refresh();
-                     UpdateEventStatus(v);
                  }
              }));
         }
@@ -348,7 +342,6 @@ namespace Great.ViewModels
                           Events.Add(item.Content);
                           FilteredEvents.Refresh();
                       }
-                      UpdateEventStatus(item.Content);
                   }
               }));
         }
@@ -396,18 +389,6 @@ namespace Great.ViewModels
                 return null;
             }
         }
-
-        public void UpdateEventStatus(EventEVM ev)
-        {
-            using (DBArchive db = new DBArchive())
-            {
-                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
-                List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
-
-                currentDayEVM.ToList().ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
-            }
-        }
-
 
         #endregion
     }

@@ -147,8 +147,6 @@ namespace Great.ViewModels
         /// </summary>
         public GreatImportWizardViewModel()
         {
-            _greatMigra = new GreatImport();
-
             StartImportCommand = new RelayCommand(StartImport);
             SelectFolderCommand = new RelayCommand(SelectFolder);
             CancelCommand = new RelayCommand(Cancel);
@@ -156,12 +154,18 @@ namespace Great.ViewModels
 
             Reset();
 
-            refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
+            refreshTimer.Tick += (s, e) => Refresh();
             refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
-            refreshTimer.Start();
         }
 
-        private void refreshTimer_Tick(object sender, EventArgs e)
+        private void Reset()
+        {
+            Completed = false;
+            InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
+            CanSelectPreviousPage = true;
+        }
+
+        private void Refresh()
         {
             string newText = string.Empty;
 
@@ -186,13 +190,6 @@ namespace Great.ViewModels
 
             if (CanSelectPreviousPage != _greatMigra.IsCancelled)
                 CanSelectPreviousPage = _greatMigra.IsCancelled;
-        }
-
-        private void Reset()
-        {
-            Completed = false;
-            InstallationFolder = GreatImport.sGreatDefaultInstallationFolder;
-            CanSelectPreviousPage = true;
         }
 
         public void SelectFolder()
@@ -221,19 +218,29 @@ namespace Great.ViewModels
 
         public void StartImport()
         {
+            _greatMigra = new GreatImport();
             _greatMigra.GreatPath = InstallationFolder;
             _greatMigra.Start();
+
+            refreshTimer.Start();
+
             CanSelectPreviousPage = false;
         }
 
         public void Cancel()
         {
             _greatMigra.Cancel();
+            refreshTimer.Stop();
+
+            Refresh();
             Reset();
         }
 
         public void Finish()
         {
+            refreshTimer.Stop();
+            Refresh();
+
             MetroMessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
             Process.Start(Application.ResourceAssembly.Location, "-m");
             Application.Current.Shutdown();
