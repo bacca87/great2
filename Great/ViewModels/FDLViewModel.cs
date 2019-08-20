@@ -144,10 +144,8 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled);
             SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest);
 
-
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => {  });
-
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
@@ -189,11 +187,14 @@ namespace Great.ViewModels
 
         public void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
+            if (item.Sender == this)
+                return;
+
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Sender != this && item.Content != null)
+                    if (item.Content != null)
                     {
                         FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.Id);
 
@@ -253,9 +254,6 @@ namespace Great.ViewModels
 
         public void NewFactory(NewItemMessage<FactoryEVM> item)
         {
-            if (!(item.Sender is FactoriesViewModel))
-                return;
-
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -272,9 +270,6 @@ namespace Great.ViewModels
 
         public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
-            if (!(item.Sender is FactoriesViewModel))
-                return;
-
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -285,6 +280,11 @@ namespace Great.ViewModels
 
                         if (factory != null)
                             Global.Mapper.Map(item.Content, factory);
+
+                        var fdlToUpdate = FDLs.Where(f => f.Factory.HasValue && f.Factory.Value == item.Content.Id);
+
+                        foreach(var fdl in fdlToUpdate)
+                            fdl.Factory1 = factory;
                     }
                 })
             );
@@ -292,9 +292,6 @@ namespace Great.ViewModels
 
         public void FactoryDeleted(DeletedItemMessage<FactoryEVM> item)
         {
-            if (!(item.Sender is FactoriesViewModel))
-                return;
-
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -505,7 +502,7 @@ namespace Great.ViewModels
             fdl.NotifyAsNew = false;
             fdl.Save();
 
-            // update timesheets
+            // update timesheets and notifications
             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
         }
     }

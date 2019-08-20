@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
@@ -178,6 +179,7 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, NewEA);
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
+            MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -201,6 +203,9 @@ namespace Great.ViewModels
 
         public void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
         {
+            if (item.Sender == this)
+                return;
+
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -213,6 +218,31 @@ namespace Great.ViewModels
                         {
                             ea.Status = item.Content.Status;
                             ea.LastError = item.Content.LastError;
+                        }
+                    }
+                })
+            );
+        }
+
+        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        FactoryDTO factory = Global.Mapper.Map<FactoryDTO>(item.Content);
+
+                        if (factory != null)
+                        {
+                            var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1.Factory.HasValue && e.FDL1.Factory.Value == item.Content.Id);
+
+                            foreach (var ea in eaToUpdate)
+                            {
+                                ea.FDL1.Factory1 = factory;
+                                ea.FDL1 = ea.FDL1; // hack to force the View to update the factory name
+                            }   
                         }
                     }
                 })
@@ -267,6 +297,9 @@ namespace Great.ViewModels
 
                 db.SaveChanges();
             }
+
+            // update notifications
+            Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, ea));
         }
 
         public void SendToSAP(ExpenseAccountEVM ea)

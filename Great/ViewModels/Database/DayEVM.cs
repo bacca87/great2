@@ -313,7 +313,6 @@ namespace Great.ViewModels.Database
                     {
                         factories += timesheet?.Notes + "; ";
                     }
-
                 }
 
                 if (!string.IsNullOrEmpty(factories))
@@ -335,7 +334,6 @@ namespace Great.ViewModels.Database
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
-
         }
 
         private void UpdateInfo()
