@@ -51,8 +51,6 @@ namespace Great.Views
 
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
             _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
-
-            factoriesMapControl.ZoomAndCenterMarkers(null);
         }
 
         private void LatLngSelectionMode(bool enable)
@@ -227,6 +225,8 @@ namespace Great.Views
                     factoriesMapControl.Markers.Add(marker);
                 }
             }
+
+            factoriesMapControl.ZoomAndCenterMarkers(null);
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
