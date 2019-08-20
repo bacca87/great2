@@ -9,9 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using SplashScreen = Great.Views.SplashScreen;
@@ -25,6 +27,10 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            // set the current thread culture to force the AutoUpdater.NET language in english
+            Thread.CurrentThread.CurrentCulture =
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
+
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
             splash.Show();
