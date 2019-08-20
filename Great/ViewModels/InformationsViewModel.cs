@@ -79,9 +79,9 @@ namespace Great.ViewModels
         public InformationsViewModel()
         {
             ProductDescription = "This software has been designed to facilitate the traveler's tasks.\n" +
-                "Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about all your activities.\n" +
+                "Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about your activities.\n" +
                 "All of this in automatic way!" +
-                "Please feel free to crontribute to this project helping us to add new feature and keep everithing up to date, just visit our website for download the source code and start to improve it!\n\n" +
+                "Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just visit our website for download the source code and start to improve it!\n\n" +
                 "A special thanks to Andrea 'Cina' Ghinelli, the original author of this very useful software!";
         }
     }
