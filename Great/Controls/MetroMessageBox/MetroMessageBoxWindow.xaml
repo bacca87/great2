@@ -19,11 +19,6 @@
     Width="600"
     Height="250">
 
-    <metro:MetroWindow.Resources>
-        <conv:MessageBoxImageToImageConverter x:Key="MessageBoxImageToImageConverter"/>
-
-    </metro:MetroWindow.Resources>
-
     <Grid Name="MainContentControl" x:FieldModifier="public">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,14 +35,13 @@
             <materialDesign:PackIcon Kind="MessageText" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="6,0,6,0"/>
             <TextBlock Name="TxtTitle" x:FieldModifier="public" Grid.Column="1"  Text="Title" VerticalAlignment="Center" FontWeight="Medium" Margin="0,6,6,6"/>
         </Grid>
-        <Image Visibility="Visible"  
+        <Image Visibility="Visible" x:Name="IconImage"  
             Grid.Row="1" Grid.Column="0"
                Margin="10,10,10,60"
             Stretch="Uniform"
             MaxHeight="40"
             VerticalAlignment="Center"
-            HorizontalAlignment="Left"
-            Source="{Binding Converter={StaticResource MessageBoxImageToImageConverter}, ConverterParameter=Information}"/>
+            HorizontalAlignment="Left"/>
         <ScrollViewer Name="MessageControl" x:FieldModifier="public" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1" >
             <TextBlock x:FieldModifier="public" Name="TxtMessage" MinHeight="100" Text="Message" TextWrapping="Wrap" Padding="3" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Normal" Margin="50,10,10,10" />
         </ScrollViewer>

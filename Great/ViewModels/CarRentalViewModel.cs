@@ -252,7 +252,7 @@ namespace Great.ViewModels
 
         private void NewRent(CarRentalHistoryEVM obj)
         {
-
+            MetroMessageBox.Show("", "", MessageBoxButton.OK, MessageBoxImage.Question);
             SelectedRent = new CarRentalHistoryEVM();
             SelectedCar = new CarEVM();
         }
