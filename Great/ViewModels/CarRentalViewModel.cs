@@ -193,7 +193,7 @@ namespace Great.ViewModels
             DeleteCommand = new RelayCommand<CarRentalHistoryEVM>(DeleteRent);
             NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() => {  });
+            LostFocusCommand = new RelayCommand(() => { });
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
 
@@ -292,7 +292,8 @@ namespace Great.ViewModels
                 return;
             }
 
-            var existingCar = Cars.Where(c => c.Id == SelectedCar.Id).FirstOrDefault();
+            var existingCar = Cars.SingleOrDefault(c => c.Id == SelectedCar.Id);
+            var existingRent = Rentals.SingleOrDefault(r => r.Id == SelectedRent.Id);
 
             //avoid update existing car
             if (existingCar?.Model != SelectedCar.Model
@@ -319,8 +320,10 @@ namespace Great.ViewModels
                 db.SaveChanges();
             }
 
-            Rentals.Add(rc);
+            if (existingRent == null)
+                Rentals.Add(rc);
             FilteredRentals.Refresh();
+            ShowEditMenu = false;
         }
     }
 }

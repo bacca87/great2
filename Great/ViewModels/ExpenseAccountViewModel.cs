@@ -267,6 +267,7 @@ namespace Great.ViewModels
 
                 db.SaveChanges();
             }
+            ShowEditMenu = false;
         }
 
         public void SendToSAP(ExpenseAccountEVM ea)

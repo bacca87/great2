@@ -256,6 +256,7 @@ namespace Great.ViewModels
                 Events.Add(ev);
             }
 
+            ShowEditMenu = false;
             //AddOrUpdateEventRelations(ev);
 
         }
