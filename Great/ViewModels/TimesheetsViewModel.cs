@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
+using Great.Models.DTO;
 using Great.Utils;
 using Great.Utils.Extensions;
 using Great.Utils.Messages;
@@ -170,6 +171,8 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, DayTypeChanged);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
+            MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
+
             UpdateWorkingDays();
         }
 
@@ -426,6 +429,33 @@ namespace Great.ViewModels
 
                             db.SaveChanges();
                         }   
+                    }
+                })
+            );
+        }
+
+        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        FactoryDTO factory = Global.Mapper.Map<FactoryDTO>(item.Content);
+
+                        if (factory != null)
+                        {
+                            var dayToUpdate = WorkingDays.Where(d => d.Timesheets.Any(t => t.FDL1 != null && t.FDL1.Factory.HasValue && t.FDL1.Factory.Value == item.Content.Id));
+
+                            foreach (var day in dayToUpdate)
+                            {
+                                foreach(var timesheet in day.Timesheets)
+                                    timesheet.FDL1.Factory1 = factory;
+
+                                day.RaisePropertyChanged(nameof(day.Factories_Display)); // hack to force the View to update the factory name
+                            }
+                        }
                     }
                 })
             );

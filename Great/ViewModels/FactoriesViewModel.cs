@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using Great.Controls;
-using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
@@ -10,7 +9,6 @@ using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -51,45 +49,15 @@ namespace Great.ViewModels
                 TransferTypes = new ObservableCollection<TransferTypeDTO>(db.TransferTypes.ToList().Select(t => new TransferTypeDTO(t)));
             }
 
-            Factories.CollectionChanged += Factories_CollectionChanged;
-            Factories.ItemPropertyChanged += Factories_ItemPropertyChanged;
-
             DeleteFactoryCommand = new RelayCommand<FactoryEVM>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<FactoryEVM>(SaveFactory);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
             MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
-            MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
-        }
-
-        private void Factories_ItemPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
-        {
-            Messenger.Default.Send(new ItemChangedMessage<FactoryEVM>(this, Factories[e.CollectionIndex]));
-        }
-
-        private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (FactoryEVM f in e.NewItems)
-                        Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, f));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                case NotifyCollectionChangedAction.Reset:
-                    foreach (FactoryEVM f in e.OldItems)
-                        Messenger.Default.Send(new DeletedItemMessage<FactoryEVM>(this, f));
-                    break;
-                default:
-                    break;
-            }
         }
 
         public void NewFactory(NewItemMessage<FactoryEVM> item)
         {
-            if (!(item.Sender is FDLManager))
-                return;
-
             // Using the dispatcher for preventing thread conflicts
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
@@ -98,18 +66,6 @@ namespace Great.ViewModels
                         Factories.Add(item.Content);
                 })
             );
-        }
-
-        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
-        {
-            // NOT USED
-            // Using the dispatcher for preventing thread conflicts   
-            //Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-            //    new Action(() =>
-            //    {
-            //        //Do something
-            //    })
-            //);
         }
 
         public void ZoomOnFactoryRequest(FactoryEVM factory)
@@ -138,6 +94,8 @@ namespace Great.ViewModels
                 {
                     Factories.Remove(factory);
                     SelectedFactory = null;
+
+                    Messenger.Default.Send(new DeletedItemMessage<FactoryEVM>(this, factory));
                 }
             }   
         }
@@ -150,9 +108,11 @@ namespace Great.ViewModels
             {
                 if (!Factories.Contains(factory))
                 {
-                    factory.NotifyAsNew = false;
                     Factories.Add(factory);
+                    Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, factory));
                 }
+                else
+                    Messenger.Default.Send(new ItemChangedMessage<FactoryEVM>(this, factory));
 
                 SelectedFactory = factory;
             }
