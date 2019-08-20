@@ -4,8 +4,7 @@
 
 This software has been designed to facilitate the traveler's tasks.  
 Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about your activities.  
-All of this in automatic way!  
-Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just visit our website for download the source code and start to improve it!
+Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just download the source code and start to improve it!
 
 A special thanks to Andrea _'Cina'_ Ghinelli, the original author of this very useful software!
 
