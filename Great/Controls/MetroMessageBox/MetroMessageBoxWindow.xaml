@@ -25,7 +25,6 @@
             <RowDefinition  Height="*" />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <Grid Grid.Row="0" x:Name="TitleBackgroundPanel" x:FieldModifier="public" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
