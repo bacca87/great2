@@ -300,6 +300,7 @@ namespace Great.ViewModels
 
             // update notifications
             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, ea));
+            ShowEditMenu = false;
         }
 
         public void SendToSAP(ExpenseAccountEVM ea)

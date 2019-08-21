@@ -312,7 +312,6 @@
     <Compile Include="Utils\Converters\EmptyStringToTrueConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToImageConverter.cs" />
     <Compile Include="Utils\Converters\FDLStatusToTextConverter.cs" />
-    <Compile Include="Utils\Converters\MessageBoxImageToImageConverter.cs" />
     <Compile Include="Utils\Converters\NegateBoolConverter.cs" />
     <Compile Include="Utils\Converters\StringToTimeSpanConverter.cs" />
     <Compile Include="Utils\Converters\IntToMonthConverter.cs" />
@@ -678,6 +677,10 @@
     <Resource Include="Images\32\events.png" />
     <Resource Include="Great2.ico" />
     <Resource Include="Images\Logos\Great2Logo.png" />
+    <Resource Include="Images\32\MessageBoxError.png" />
+    <Resource Include="Images\32\MessageBoxInfo.png" />
+    <Resource Include="Images\32\MessageBoxQuestion.png" />
+    <Resource Include="Images\32\MessageBoxWarning.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
