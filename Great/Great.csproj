@@ -257,9 +257,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\MetroMessageBox\MetroMessageBox.cs" />
-    <Compile Include="Controls\MetroMessageBox\MetroMessageBoxWindow.xaml.cs">
-      <DependentUpon>MetroMessageBoxWindow.xaml</DependentUpon>
+    <Compile Include="Utils\MetroMessageBox.cs" />
+    <Compile Include="Views\Dialogs\MetroMessageBoxView.xaml.cs">
+      <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Database\Car.cs" />
     <Compile Include="Models\Database\CarRentalCompany.cs" />
@@ -425,7 +425,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <Page Include="Controls\MetroMessageBox\MetroMessageBoxWindow.xaml">
+    <Page Include="Views\Dialogs\MetroMessageBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -557,12 +557,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\16\CollapseArrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\16\ExpandArrow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\24\sign-left.png" />
     <Resource Include="Images\24\sign-right.png" />
   </ItemGroup>
@@ -681,6 +675,7 @@
     <Resource Include="Images\32\MessageBoxInfo.png" />
     <Resource Include="Images\32\MessageBoxQuestion.png" />
     <Resource Include="Images\32\MessageBoxWarning.png" />
+    <Resource Include="Images\72\sign-error.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -691,6 +686,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0011_21-08-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0010_14-08-2019_update.sql">

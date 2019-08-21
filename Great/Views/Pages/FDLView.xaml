@@ -26,9 +26,14 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <DataGrid Name="fdlDataGridView"
-                Grid.Column="0"
+        </Grid.ColumnDefinitions>        
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <DataGrid Grid.Row="0"
+                Name="fdlDataGridView"                
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
                 AutoGenerateColumns="False" 
@@ -44,69 +49,69 @@
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard"
                 Loaded="fdlDataGridView_Loaded">
-            <DataGrid.Resources>
-                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
-                    <Style.Setters>
-                        <Setter Property="TextBlock.FontSize" Value="15" />
-                        <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                    </Style.Setters>
-                </Style>
-                <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
-                    <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                    </Style.Setters>
-                </Style>
-                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
-                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                </Style>
+                <DataGrid.Resources>
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.FontSize" Value="15" />
+                            <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style.Setters>
+                    </Style>
+                    <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                        <Style.Setters>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style.Setters>
+                    </Style>
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
 
-                <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
-                <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
-            </DataGrid.Resources>
-            <!--<DataGrid.ContextMenu>
+                    <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
+                    <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
+                </DataGrid.Resources>
+                <!--<DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Vacation Day" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />                        
                     <Separator/>
                     <MenuItem Header="Day of Work" IsCheckable="True" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>-->
-            <!--<DataGrid.InputBindings>
+                <!--<DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding ResetDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
                 <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
                 <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None">
-                                    <Image.ToolTip>
-                                        <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
-                                    </Image.ToolTip>
-                                </Image>
-                                <Image Source="pack://application:,,,/Great2;component/Images/16/file-pdf.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsCompiled}">
-                                    <Image.ToolTip>
-                                        <TextBlock Text="Compiled"/>
-                                    </Image.ToolTip>
-                                </Image>
-                                <Image Source="pack://application:,,,/Great2;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsExtra}">
-                                    <Image.ToolTip>
-                                        <TextBlock Text="Extra"/>
-                                    </Image.ToolTip>
-                                </Image>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTemplateColumn Header="Factory" CellStyle="{StaticResource BaseCellStyle}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Status" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image Source="pack://application:,,,/Great2;component/Images/16/file-pdf.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsCompiled}">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Compiled"/>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image Source="pack://application:,,,/Great2;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsExtra}">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Extra"/>
+                                        </Image.ToolTip>
+                                    </Image>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="FDL Number" Binding="{Binding Id}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTemplateColumn Header="Factory" CellStyle="{StaticResource BaseCellStyle}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
                                 <Hyperlink NavigateUri="{Binding Factory1.Name}" RequestNavigate="FactoryHyperlink_OnNavigate">
                                     <Hyperlink.InputBindings>
                                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.FactoryLinkCommand}"/>
@@ -114,15 +119,44 @@
                                     <TextBlock Text="{Binding Factory1.Name}"/>
                                 </Hyperlink>
                             </TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Order" Binding="{Binding Order}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" CellStyle="{StaticResource BaseCellStyle}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Order" Binding="{Binding Order}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" CellStyle="{StaticResource BaseCellStyle}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Image">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=LastErrorTextBlock}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Text, ElementName=LastErrorTextBlock}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Resources>
+                <Image Source="pack://application:,,,/Great2;component/Images/72/sign-error.png" ToolTip="ERROR" Width="72" Height="72" VerticalAlignment="Top"/>
+                <TextBlock x:Name="LastErrorTextBlock" Text="{Binding SelectedFDL.LastError}" FontSize="15" FontWeight="Bold" FontStyle="Italic" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
