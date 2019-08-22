@@ -1031,16 +1031,25 @@ namespace Great.Models
             {
                 FDLEVM fdl = file as FDLEVM;
                 message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+
+                if (fdl.SendTimeStamp != null)
+                    message.Subject = string.Concat(message.Subject, " - FIXED");
             }
             else if (file is ExpenseAccountEVM)
             {
                 ExpenseAccountEVM ea = file as ExpenseAccountEVM;
                 message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+
+                if (ea.SendTimeStamp != null)
+                    message.Subject = string.Concat(message.Subject, " - FIXED");
             }
             else
                 return false;
 
             exchange.SendEmail(message);
+
+            if (file is ExpenseAccountEVM) { ExpenseAccountEVM ea = file as ExpenseAccountEVM; ea.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); ea.Save(); }
+            if (file is FDLEVM) { FDLEVM fdl = file as FDLEVM; fdl.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); fdl.Save(); }
             return true;
         }
 
@@ -1102,6 +1111,9 @@ namespace Great.Models
                     using (DBArchive db = new DBArchive())
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.SendTimeStamp ?? 0)) break;
+
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
                             accepted.Status = (long)EFDLStatus.Accepted;
@@ -1116,6 +1128,9 @@ namespace Great.Models
                     using (DBArchive db = new DBArchive())
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
+
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.SendTimeStamp ?? 0)) break;
+
                         if (rejected != null && rejected.Status != (long)EFDLStatus.Rejected && rejected.Status != (long)EFDLStatus.Accepted)
                         {
                             rejected.Status = (long)EFDLStatus.Rejected;
@@ -1142,6 +1157,9 @@ namespace Great.Models
                         }
 
                         ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
+
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.SendTimeStamp ?? 0)) break;
+
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
                             accepted.Status = (long)EFDLStatus.Accepted;
@@ -1169,6 +1187,9 @@ namespace Great.Models
                         }
 
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
+
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.SendTimeStamp ?? 0)) break;
+
                         if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
                         {
                             expenseAccount.Status = (long)EFDLStatus.Rejected;

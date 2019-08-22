@@ -38,6 +38,7 @@ namespace Great.Models.Database
         public bool NotifyAsNew { get; set; }
         public bool IsCompiled { get; set; }
         public bool IsReadOnly { get; set; }
+        public long? SendTimeStamp { get; set; }
 
         public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
         [ForeignKey("Factory")]

@@ -23,6 +23,7 @@ namespace Great.Models.Database
         public bool NotifyAsNew { get; set; }
         public bool IsCompiled { get; set; }
         public bool IsReadOnly { get; set; }
+        public long? SendTimeStamp { get; set; }
 
         [ForeignKey("Currency")]
         public virtual Currency Currency1 { get; set; }

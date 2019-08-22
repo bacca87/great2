@@ -103,6 +103,13 @@ namespace Great.ViewModels.Database
             set => Set(ref _IsReadOnly, value);
         }
 
+        private long? _SendTimeStamp;
+        public long? SendTimeStamp
+        {
+            get => _SendTimeStamp;
+            set => Set(ref _SendTimeStamp, value);
+        }
+
         private CurrencyDTO _Currency1;
         public CurrencyDTO Currency1
         {
