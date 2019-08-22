@@ -8,7 +8,7 @@ Please feel free to contribute to this project helping us to add new feature and
 
 A special thanks to Andrea _'Cina'_ Ghinelli, the original author of this very useful software!
 
-[![Download](https://img.shields.io/badge/Download-Latest-green)](https://github.com/bacca87/great2/releases/latest)
+[![Download](https://img.shields.io/badge/Download-Latest-blue)](https://github.com/bacca87/great2/releases/latest)
 
 ## Developers [![Build status](https://ci.appveyor.com/api/projects/status/github/bacca87/great2?branch=master&svg=true)](https://ci.appveyor.com/project/bacca87/great2/branch/master)
 
