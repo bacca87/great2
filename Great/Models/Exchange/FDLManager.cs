@@ -1004,17 +1004,11 @@ namespace Great.Models
                         message.CcRecipients.Add(r);
                 }
 
-                if (fdl.LastSAPSendTimestamp != null)
-                    message.Subject = string.Concat(message.Subject, " - RESEND");
-
             }
             else if (file is ExpenseAccountEVM)
             {
                 ExpenseAccountEVM ea = file as ExpenseAccountEVM;
                 message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
-
-                if (ea.LastSAPSendTimestamp != null)
-                    message.Subject = string.Concat(message.Subject, " - RESEND");
             }
 
             return SendMessage(message, file);
