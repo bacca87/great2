@@ -1001,7 +1001,7 @@ namespace Great.Models
                 }
             }
 
-            return SendMessage(message, file);
+            return SendMessage(message, file, false);
         }
 
         public bool SendTo(string address, IFDLFile file)
@@ -1013,10 +1013,10 @@ namespace Great.Models
             message.Type = EEmailMessageType.Message;
             message.ToRecipients.Add(address);
 
-            return SendMessage(message, file);
+            return SendMessage(message, file,true);
         }
 
-        private bool SendMessage(EmailMessageDTO message, IFDLFile file)
+        private bool SendMessage(EmailMessageDTO message, IFDLFile file, bool ignoreSendTimeStamp)
         {
             if (file == null)
                 return false;
@@ -1032,7 +1032,7 @@ namespace Great.Models
                 FDLEVM fdl = file as FDLEVM;
                 message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
 
-                if (fdl.SendTimeStamp != null)
+                if (fdl.SendTimeStamp != null && !ignoreSendTimeStamp)
                     message.Subject = string.Concat(message.Subject, " - FIXED");
             }
             else if (file is ExpenseAccountEVM)
@@ -1040,7 +1040,7 @@ namespace Great.Models
                 ExpenseAccountEVM ea = file as ExpenseAccountEVM;
                 message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
 
-                if (ea.SendTimeStamp != null)
+                if (ea.SendTimeStamp != null && !ignoreSendTimeStamp)
                     message.Subject = string.Concat(message.Subject, " - FIXED");
             }
             else
@@ -1048,8 +1048,8 @@ namespace Great.Models
 
             exchange.SendEmail(message);
 
-            if (file is ExpenseAccountEVM) { ExpenseAccountEVM ea = file as ExpenseAccountEVM; ea.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); ea.Save(); }
-            if (file is FDLEVM) { FDLEVM fdl = file as FDLEVM; fdl.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); fdl.Save(); }
+            if (file is ExpenseAccountEVM && !ignoreSendTimeStamp) { ExpenseAccountEVM ea = file as ExpenseAccountEVM; ea.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); ea.Save(); }
+            if (file is FDLEVM && !ignoreSendTimeStamp) { FDLEVM fdl = file as FDLEVM; fdl.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); fdl.Save(); }
             return true;
         }
 
