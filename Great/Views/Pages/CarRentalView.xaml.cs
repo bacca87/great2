@@ -13,9 +13,5 @@ namespace Great.Views.Pages
             InitializeComponent();
 
         }
-
-
-
-
     }
 }

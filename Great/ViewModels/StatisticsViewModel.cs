@@ -128,11 +128,14 @@ namespace Great.ViewModels
 
                 foreach (KeyValuePair<string, int> entry in factoriesData)
                 {
+
+
                     PieSeries factory = new PieSeries
                     {
                         Title = entry.Key,
-                        Values = new ChartValues<int> { entry.Value },
-                        DataLabels = true
+                        Values = new ChartValues<int> { entry.Value},
+                        DataLabels = true,
+                         
                     };
 
                     Factories.Add(factory);

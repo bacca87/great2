@@ -123,7 +123,11 @@ namespace Great.ViewModels.Database
         public DateTime RentStartDate
         {
             get => DateTime.Now.FromUnixTimestamp(StartDate);
-            set => StartDate = value.ToUnixTimestamp();
+            set
+            {
+                StartDate = value.ToUnixTimestamp();
+                RaisePropertyChanged(nameof(RentStartDate));
+            }
         }
 
         public DateTime? RentEndDate
@@ -141,11 +145,38 @@ namespace Great.ViewModels.Database
                 if (value != null)
                 {
                     EndDate = ((DateTime)value).ToUnixTimestamp();
-
+                    RaisePropertyChanged(nameof(RentEndDate));
                 }
 
             }
 
+        }
+
+        public double? RentDuration
+        {
+            get
+            {
+                if (RentEndDate != null)
+                {
+                    DateTime dt = (DateTime)RentEndDate;
+                    return dt.Subtract(RentStartDate).TotalDays + 1;
+                }
+
+                return null;
+            }
+        }
+
+        public long TotalDrivenKm
+        {
+            get
+            {
+                if (EndKm > 0)
+                {
+                    return EndKm - StartKm;
+                }
+                else return StartKm;
+
+            }
         }
 
         private CarEVM _car1;
@@ -159,6 +190,11 @@ namespace Great.ViewModels.Database
 
         public CarRentalHistoryEVM(CarRentalHistory rent = null)
         {
+            StartFuelLevel = 8;
+            EndFuelLevel = 8;
+            RentStartDate = DateTime.Now;
+            RentEndDate = DateTime.Now;
+
             if (rent != null)
                 Global.Mapper.Map(rent, this);
         }
