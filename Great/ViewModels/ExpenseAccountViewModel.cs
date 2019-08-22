@@ -242,7 +242,7 @@ namespace Great.ViewModels
                             {
                                 ea.FDL1.Factory1 = factory;
                                 ea.FDL1 = ea.FDL1; // hack to force the View to update the factory name
-                            }   
+                            }
                         }
                     }
                 })
@@ -387,6 +387,34 @@ namespace Great.ViewModels
 
         public void Compile(ExpenseAccountEVM ea)
         {
+            List<DateTime> timesheetDates = new List<DateTime>();
+
+            using (DBArchive db = new DBArchive())
+            {
+                db.Timesheets.Where(x => x.FDL == ea.FDL).ToList().ForEach(x => timesheetDates.Add(DateTime.Now.FromUnixTimestamp(x.Timestamp)));
+            }
+
+            bool showWarning = false;
+
+            foreach (var exp in ea.Expenses)
+            {
+                showWarning = exp.MondayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Monday);
+                showWarning |= exp.TuesdayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Tuesday);
+                showWarning |= exp.WednesdayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Wednesday);
+                showWarning |= exp.ThursdayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Thursday);
+                showWarning |= exp.FridayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Friday);
+                showWarning |= exp.SaturdayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Saturday);
+                showWarning |= exp.SundayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Sunday);
+
+                if (showWarning)
+                {
+                    if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                        return;
+                }
+
+            }
+
+
             if (ea == null)
                 return;
 
@@ -419,7 +447,7 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("Only accepted expense accounts can be marked as refounded.\nOperation cancelled!");
                 return;
             }
-            
+
             if (MetroMessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
