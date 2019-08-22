@@ -250,9 +250,11 @@ namespace Great.ViewModels
             ev.IsSent = false;
 
             ev.Save();
-
+            
+            //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
             {
+                ev.AddOrUpdateEventRelations();
                 Events.Add(ev);
             }
 
@@ -340,6 +342,7 @@ namespace Great.ViewModels
                   {
                       if (!Events.Any(x => x.Id == item.Content.Id))
                       {
+                          item.Content.AddOrUpdateEventRelations();
                           Events.Add(item.Content);
                           FilteredEvents.Refresh();
                       }

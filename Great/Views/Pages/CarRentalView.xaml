@@ -57,7 +57,7 @@
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
                         <Style.Setters>
-                            <Setter Property="HorizontalAlignment" Value="Center" />
+       
                             <Setter Property="TextBlock.TextAlignment" Value="Left" />
                             <Setter Property="TextBlock.FontSize" Value="15" />
                             <Setter Property="BorderThickness" Value="0" />
