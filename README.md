@@ -2,13 +2,13 @@
 
 ![Logo](https://raw.github.com/bacca87/great2/master/Great/Images/Logos/Great2Logo.png)
 
-This software has been designed to facilitate the traveler's tasks.  
+This software has been designed to facilitate the business traveler's tasks.  
 Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about your activities.  
 Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just download the source code and start to improve it!
 
 A special thanks to Andrea _'Cina'_ Ghinelli, the original author of this very useful software!
 
-[![Download](https://img.shields.io/badge/Download-Latest-blue)](https://github.com/bacca87/great2/releases/latest)
+[![Download](https://img.shields.io/github/downloads/bacca87/great2/total.svg?color=blue)](https://github.com/bacca87/great2/releases/latest)
 
 ## Developers [![Build status](https://ci.appveyor.com/api/projects/status/github/bacca87/great2?branch=master&svg=true)](https://ci.appveyor.com/project/bacca87/great2/branch/master)
 
