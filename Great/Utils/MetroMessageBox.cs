@@ -1,12 +1,9 @@
 ﻿
 using System;
-using System.Drawing;
-using System.Reflection;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace Great.Controls
+namespace Great
 {
     public sealed class MetroMessageBox
     {
