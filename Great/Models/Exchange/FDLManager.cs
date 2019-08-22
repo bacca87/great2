@@ -58,6 +58,7 @@ namespace Great.Models
                             FDLEVM fdl = e.Message.DataInfo as FDLEVM;
                             fdl.EStatus = EFDLStatus.Waiting;
                             fdl.NotifyAsNew = false;
+                            fdl.LastSAPSendTimestamp = DateTime.Now.ToUnixTimestamp();
                             fdl.Save();
                         }
                         else if (e.Message.DataInfo is ExpenseAccountEVM)
@@ -65,6 +66,7 @@ namespace Great.Models
                             ExpenseAccountEVM ea = e.Message.DataInfo as ExpenseAccountEVM;
                             ea.EStatus = EFDLStatus.Waiting;
                             ea.NotifyAsNew = false;
+                            ea.LastSAPSendTimestamp = DateTime.Now.ToUnixTimestamp();
                             ea.Save();
                         }
                     }
@@ -992,6 +994,8 @@ namespace Great.Models
                 FDLEVM fdl = file as FDLEVM;
                 message.CcRecipients.Add(ApplicationSettings.EmailRecipients.HR);
 
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+
                 using (DBArchive db = new DBArchive())
                 {
                     var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
@@ -999,9 +1003,21 @@ namespace Great.Models
                     foreach (var r in recipients)
                         message.CcRecipients.Add(r);
                 }
+
+                if (fdl.LastSAPSendTimestamp != null)
+                    message.Subject = string.Concat(message.Subject, " - RESEND");
+
+            }
+            else if (file is ExpenseAccountEVM)
+            {
+                ExpenseAccountEVM ea = file as ExpenseAccountEVM;
+                message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+
+                if (ea.LastSAPSendTimestamp != null)
+                    message.Subject = string.Concat(message.Subject, " - RESEND");
             }
 
-            return SendMessage(message, file, false);
+            return SendMessage(message, file);
         }
 
         public bool SendTo(string address, IFDLFile file)
@@ -1013,10 +1029,10 @@ namespace Great.Models
             message.Type = EEmailMessageType.Message;
             message.ToRecipients.Add(address);
 
-            return SendMessage(message, file,true);
+            return SendMessage(message, file);
         }
 
-        private bool SendMessage(EmailMessageDTO message, IFDLFile file, bool ignoreSendTimeStamp)
+        private bool SendMessage(EmailMessageDTO message, IFDLFile file)
         {
             if (file == null)
                 return false;
@@ -1027,29 +1043,8 @@ namespace Great.Models
             message.Attachments.Clear();
             message.Attachments.Add(file.FilePath);
 
-            if (file is FDLEVM)
-            {
-                FDLEVM fdl = file as FDLEVM;
-                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
-
-                if (fdl.SendTimeStamp != null && !ignoreSendTimeStamp)
-                    message.Subject = string.Concat(message.Subject, " - FIXED");
-            }
-            else if (file is ExpenseAccountEVM)
-            {
-                ExpenseAccountEVM ea = file as ExpenseAccountEVM;
-                message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
-
-                if (ea.SendTimeStamp != null && !ignoreSendTimeStamp)
-                    message.Subject = string.Concat(message.Subject, " - FIXED");
-            }
-            else
-                return false;
-
             exchange.SendEmail(message);
 
-            if (file is ExpenseAccountEVM && !ignoreSendTimeStamp) { ExpenseAccountEVM ea = file as ExpenseAccountEVM; ea.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); ea.Save(); }
-            if (file is FDLEVM && !ignoreSendTimeStamp) { FDLEVM fdl = file as FDLEVM; fdl.SendTimeStamp = DateTime.Now.ToUnixTimestamp(); fdl.Save(); }
             return true;
         }
 
@@ -1112,7 +1107,7 @@ namespace Great.Models
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.SendTimeStamp ?? 0)) break;
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0)) break;
 
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
@@ -1129,7 +1124,7 @@ namespace Great.Models
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.SendTimeStamp ?? 0)) break;
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.LastSAPSendTimestamp ?? 0)) break;
 
                         if (rejected != null && rejected.Status != (long)EFDLStatus.Rejected && rejected.Status != (long)EFDLStatus.Accepted)
                         {
@@ -1158,7 +1153,7 @@ namespace Great.Models
 
                         ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.SendTimeStamp ?? 0)) break;
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0)) break;
 
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
@@ -1188,7 +1183,7 @@ namespace Great.Models
 
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.SendTimeStamp ?? 0)) break;
+                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.LastSAPSendTimestamp ?? 0)) break;
 
                         if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
                         {
