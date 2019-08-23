@@ -258,7 +258,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
-    <Compile Include="Utils\Converters\CaseConverter.cs" />
     <Compile Include="Utils\MetroMessageBox.cs" />
     <Compile Include="Views\Dialogs\MetroMessageBoxView.xaml.cs">
       <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>

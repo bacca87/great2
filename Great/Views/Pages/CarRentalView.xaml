@@ -16,7 +16,6 @@
        Style="{DynamicResource MetroPage}">
 
     <Page.Resources>
-        <conv:CaseConverter x:Key="CaseConverter"/>
         <CollectionViewSource x:Key="CarRentalCollectionView" Source="{Binding FilteredRentals}" IsLiveSortingRequested="True" />
         <DataTemplate x:Key="AutoCompleteLicensePlate">
             <StackPanel Orientation="Horizontal">
@@ -138,8 +137,8 @@
                     ItemsSource="{Binding Cars }" 
                     ItemTemplate="{StaticResource AutoCompleteLicensePlate}"
                     ValueMemberPath="LicensePlate"
-                    SelectedItem="{Binding SelectedCar}"
-                    Text="{Binding SelectedCar.LicensePlate, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true, Converter ={StaticResource CaseConverter}}"/>
+                    SelectedItem="{Binding SelectedCar, Mode=TwoWay}"
+                    Text="{Binding SelectedCar.LicensePlate,Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
                 <toolkit:AutoCompleteBox 
                     Grid.Row="3"
