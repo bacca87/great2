@@ -798,14 +798,14 @@ namespace Great.Models
             {
                 TimesheetEVM timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
-                fields.Add(entry.Value["TravelStartTimeAM"], timesheet != null && timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["WorkStartTimeAM"], timesheet != null && timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["WorkEndTimeAM"], timesheet != null && timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["TravelEndTimeAM"], timesheet != null && timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["TravelStartTimePM"], timesheet != null && timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["WorkStartTimePM"], timesheet != null && timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["WorkEndTimePM"], timesheet != null && timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : null);
-                fields.Add(entry.Value["TravelEndTimePM"], timesheet != null && timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : null);
+                fields.Add(entry.Value["TravelStartTimeAM"], timesheet != null && timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkStartTimeAM"], timesheet != null && timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkEndTimeAM"], timesheet != null && timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["TravelEndTimeAM"], timesheet != null && timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["TravelStartTimePM"], timesheet != null && timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkStartTimePM"], timesheet != null && timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkEndTimePM"], timesheet != null && timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["TravelEndTimePM"], timesheet != null && timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
             }
 
             //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
@@ -850,21 +850,26 @@ namespace Great.Models
 
             var expenses = ea.Expenses.ToList();
 
-            for (int i = 0; i < expenses.Count() && i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
+            for (int i = 0; i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
             {
                 var entry = ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix[i];
 
-                fields.Add(entry["Type"], expenses[i].ExpenseType.Description);
-                fields.Add(entry["Mon_Amount"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Tue_Amount"], expenses[i].TuesdayAmount.HasValue ? expenses[i].TuesdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Wed_Amount"], expenses[i].WednesdayAmount.HasValue ? expenses[i].WednesdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Thu_Amount"], expenses[i].ThursdayAmount.HasValue ? expenses[i].ThursdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
+                ExpenseEVM expense = null;
+
+                if (i < expenses.Count())
+                    expense = expenses[i];
+
+                fields.Add(entry["Type"], expense != null ? expense.ExpenseType.Description : string.Empty);
+                fields.Add(entry["Mon_Amount"], expense != null && expense.MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Tue_Amount"], expense != null && expense.TuesdayAmount.HasValue ? expenses[i].TuesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Wed_Amount"], expense != null && expense.WednesdayAmount.HasValue ? expenses[i].WednesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Thu_Amount"], expense != null && expense.ThursdayAmount.HasValue ? expenses[i].ThursdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Fri_Amount"], expense != null && expense.FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sat_Amount"], expense != null && expense.SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sun_Amount"], expense != null && expense.SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
 
                 if (IsReadonly)
-                    fields.Add(entry["Total"], expenses[i].TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
+                    fields.Add(entry["Total"], expense.TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
             }
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1 != null ? ea.Currency1.Description : string.Empty);
