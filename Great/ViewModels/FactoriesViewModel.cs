@@ -54,6 +54,8 @@ namespace Great.ViewModels
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
             MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
+
+            SelectedFactory = null;
         }
 
         public void NewFactory(NewItemMessage<FactoryEVM> item)
