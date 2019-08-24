@@ -195,7 +195,6 @@ namespace Great.Views
 
             factory.Latitude = point.Lat;
             factory.Longitude = point.Lng;
-            factory.Save();
 
             return marker;
         }

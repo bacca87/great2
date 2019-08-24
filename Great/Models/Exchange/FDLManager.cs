@@ -798,36 +798,27 @@ namespace Great.Models
             {
                 TimesheetEVM timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
 
-                if (timesheet != null)
-                {
-                    fields.Add(entry.Value["TravelStartTimeAM"], timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["WorkStartTimeAM"], timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["WorkEndTimeAM"], timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["TravelEndTimeAM"], timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["TravelStartTimePM"], timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["WorkStartTimePM"], timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["WorkEndTimePM"], timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-                    fields.Add(entry.Value["TravelEndTimePM"], timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
-                }
+                fields.Add(entry.Value["TravelStartTimeAM"], timesheet != null && timesheet.TravelStartTimeAM_t.HasValue ? timesheet.TravelStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkStartTimeAM"], timesheet != null && timesheet.WorkStartTimeAM_t.HasValue ? timesheet.WorkStartTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkEndTimeAM"], timesheet != null && timesheet.WorkEndTimeAM_t.HasValue ? timesheet.WorkEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["TravelEndTimeAM"], timesheet != null && timesheet.TravelEndTimeAM_t.HasValue ? timesheet.TravelEndTimeAM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["TravelStartTimePM"], timesheet != null && timesheet.TravelStartTimePM_t.HasValue ? timesheet.TravelStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkStartTimePM"], timesheet != null && timesheet.WorkStartTimePM_t.HasValue ? timesheet.WorkStartTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["WorkEndTimePM"], timesheet != null && timesheet.WorkEndTimePM_t.HasValue ? timesheet.WorkEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
+                fields.Add(entry.Value["TravelEndTimePM"], timesheet != null && timesheet.TravelEndTimePM_t.HasValue ? timesheet.TravelEndTimePM_t.Value.ToString("hh\\:mm") : string.Empty);
             }
 
             //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
             //fields.Add(ApplicationSettings.FDL.FieldNames.Cars1,
             //fields.Add(ApplicationSettings.FDL.FieldNames.Cars2,
+                        
+            fields.Add(ApplicationSettings.FDL.FieldNames.OutwardCar, fdl.OutwardCar ? "1" : "0");
+            fields.Add(ApplicationSettings.FDL.FieldNames.OutwardTaxi, fdl.OutwardTaxi ? "1" : "0");
+            fields.Add(ApplicationSettings.FDL.FieldNames.OutwardAircraft, fdl.OutwardAircraft ? "1" : "0");
 
-            if (fdl.OutwardCar)
-                fields.Add(ApplicationSettings.FDL.FieldNames.OutwardCar, "1");
-            if (fdl.OutwardTaxi)
-                fields.Add(ApplicationSettings.FDL.FieldNames.OutwardTaxi, "1");
-            if (fdl.OutwardAircraft)
-                fields.Add(ApplicationSettings.FDL.FieldNames.OutwardAircraft, "1");
-
-            if (fdl.ReturnCar)
-                fields.Add(ApplicationSettings.FDL.FieldNames.ReturnCar, "1");
-            if (fdl.ReturnTaxi)
-                fields.Add(ApplicationSettings.FDL.FieldNames.ReturnTaxi, "1");
-            if (fdl.ReturnAircraft)
-                fields.Add(ApplicationSettings.FDL.FieldNames.ReturnAircraft, "1");
+            fields.Add(ApplicationSettings.FDL.FieldNames.ReturnCar, fdl.ReturnCar ? "1" : "0");
+            fields.Add(ApplicationSettings.FDL.FieldNames.ReturnTaxi, fdl.ReturnTaxi ? "1" : "0");
+            fields.Add(ApplicationSettings.FDL.FieldNames.ReturnAircraft, fdl.ReturnAircraft ? "1" : "0");
 
             fields.Add(ApplicationSettings.FDL.FieldNames.PerformanceDescription, fdl.PerformanceDescription != null ? fdl.PerformanceDescription : string.Empty);
             fields.Add(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails, fdl.PerformanceDescriptionDetails != null ? fdl.PerformanceDescriptionDetails : string.Empty);
@@ -859,25 +850,29 @@ namespace Great.Models
 
             var expenses = ea.Expenses.ToList();
 
-            for (int i = 0; i < expenses.Count() && i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
+            for (int i = 0; i < ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix.Count(); i++)
             {
                 var entry = ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix[i];
 
-                fields.Add(entry["Type"], expenses[i].ExpenseType.Description);
-                fields.Add(entry["Mon_Amount"], expenses[i].MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Tue_Amount"], expenses[i].TuesdayAmount.HasValue ? expenses[i].TuesdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Wed_Amount"], expenses[i].WednesdayAmount.HasValue ? expenses[i].WednesdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Thu_Amount"], expenses[i].ThursdayAmount.HasValue ? expenses[i].ThursdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
-                fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
+                ExpenseEVM expense = null;
+
+                if (i < expenses.Count())
+                    expense = expenses[i];
+
+                fields.Add(entry["Type"], expense != null ? expense.ExpenseType.Description : string.Empty);
+                fields.Add(entry["Mon_Amount"], expense != null && expense.MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Tue_Amount"], expense != null && expense.TuesdayAmount.HasValue ? expenses[i].TuesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Wed_Amount"], expense != null && expense.WednesdayAmount.HasValue ? expenses[i].WednesdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Thu_Amount"], expense != null && expense.ThursdayAmount.HasValue ? expenses[i].ThursdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Fri_Amount"], expense != null && expense.FridayAmount.HasValue ? expenses[i].FridayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sat_Amount"], expense != null && expense.SaturdayAmount.HasValue ? expenses[i].SaturdayAmount.Value.ToString() : string.Empty);
+                fields.Add(entry["Sun_Amount"], expense != null && expense.SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
 
                 if (IsReadonly)
-                    fields.Add(entry["Total"], expenses[i].TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
+                    fields.Add(entry["Total"], expense.TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
             }
 
-            if (ea.Currency1 != null)
-                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1.Description);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1 != null ? ea.Currency1.Description : string.Empty);
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Notes, ea.Notes ?? string.Empty);
 
@@ -937,6 +932,7 @@ namespace Great.Models
         private void CompileXFDF(IFDLFile file, string FDLfileName, string XFDFFileName)
         {
             XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.PreserveWhitespace = true;
 
             XmlNode docNode = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
             XmlNode xfdfNode = xmlDoc.CreateElement("xfdf", "http://ns.adobe.com/xfdf/");
@@ -959,9 +955,6 @@ namespace Great.Models
 
             foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file))
             {
-                if (entry.Value == string.Empty)
-                    continue;
-
                 XmlNode fieldNode = xmlDoc.CreateElement("field", xfdfNode.NamespaceURI);
                 XmlNode valueNode = xmlDoc.CreateElement("value", xfdfNode.NamespaceURI);
 
@@ -969,6 +962,7 @@ namespace Great.Models
                 name.Value = entry.Key;
 
                 fieldNode.Attributes.Append(name);
+
                 valueNode.InnerText = entry.Value;
 
                 fieldNode.AppendChild(valueNode);
@@ -1101,10 +1095,11 @@ namespace Great.Models
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0)) break;
-
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
+                            if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0))
+                                break;
+
                             accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
                             accepted.NotifyAsNew = false;
@@ -1118,10 +1113,11 @@ namespace Great.Models
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.LastSAPSendTimestamp ?? 0)) break;
-
                         if (rejected != null && rejected.Status != (long)EFDLStatus.Rejected && rejected.Status != (long)EFDLStatus.Accepted)
                         {
+                            if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.LastSAPSendTimestamp ?? 0))
+                                break;
+
                             rejected.Status = (long)EFDLStatus.Rejected;
                             rejected.LastError = message.Body?.Text.Trim();
                             rejected.NotifyAsNew = false;
@@ -1147,10 +1143,11 @@ namespace Great.Models
 
                         ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0)) break;
-
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
+                            if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0))
+                                break;
+
                             accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
                             accepted.NotifyAsNew = false;
@@ -1177,10 +1174,11 @@ namespace Great.Models
 
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
 
-                        if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.LastSAPSendTimestamp ?? 0)) break;
-
                         if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
                         {
+                            if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.LastSAPSendTimestamp ?? 0))
+                                break;
+
                             expenseAccount.Status = (long)EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text.Trim();
                             expenseAccount.NotifyAsNew = false;

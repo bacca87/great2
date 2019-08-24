@@ -88,8 +88,14 @@ namespace Great.ViewModels.Database
 
         public override bool Delete(DBArchive db)
         {
-            db.Factories.Remove(db.Factories.SingleOrDefault(f => f.Id == Id));
-            db.SaveChanges();
+            Factory factoryToDelete = db.Factories.SingleOrDefault(f => f.Id == Id);
+
+            if(factoryToDelete != null)
+            {
+                db.Factories.Remove(factoryToDelete);
+                db.SaveChanges();
+            }
+                
             Id = 0;
             return true;
         }
