@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Controls;
 using Great.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;

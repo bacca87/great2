@@ -117,7 +117,7 @@ namespace Great.Views
                     if (marker != null)
                         marker.PlayBounce();
                 }
-            }   
+            }
         }
 
         public async Task<PointLatLng?> GetFactoryCoordsAsync(FactoryEVM factory)

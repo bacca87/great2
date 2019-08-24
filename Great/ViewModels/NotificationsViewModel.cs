@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using Great.Models;
 using Great.Models.Database;
 using Great.Models.Interfaces;
 using Great.Utils.Messages;
@@ -135,7 +134,7 @@ namespace Great.ViewModels
 
             MessengerInstance.Register(this, (ItemChangedMessage<FDLEVM> x) => { using (DBArchive db = new DBArchive()) NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew); });
             MessengerInstance.Register(this, (ItemChangedMessage<ExpenseAccountEVM> x) => { using (DBArchive db = new DBArchive()) NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); });
-            MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); });            
+            MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); });
 
             MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }

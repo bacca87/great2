@@ -1,7 +1,6 @@
 ﻿using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
-using System;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 
@@ -83,11 +82,11 @@ namespace Great.ViewModels.Database
 
         #region Errors Validation
 
-        public string Error =>  
-            this["LicensePlate"] != null 
+        public string Error =>
+            this["LicensePlate"] != null
             || this["Brand"] != null
             || this["Model"] != null
-            || this["CarRentalCompany1"] != null ? "Error":null;
+            || this["CarRentalCompany1"] != null ? "Error" : null;
 
 
 
@@ -112,7 +111,7 @@ namespace Great.ViewModels.Database
                             return "Model not valid";
                         break;
                     case "CarRentalCompany1":
-                        if (CarRentalCompany1==null || CarRentalCompany1?.Id==0)
+                        if (CarRentalCompany1 == null || CarRentalCompany1?.Id == 0)
                             return "Rental company not valid";
                         break;
 

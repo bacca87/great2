@@ -454,7 +454,7 @@ namespace Great.Models
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 fdlEVM = null;
             }
@@ -664,7 +664,7 @@ namespace Great.Models
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             transaction.Rollback();
                             fdlEVM = null;
@@ -811,7 +811,7 @@ namespace Great.Models
             //TODO: pensare a come compilare i campi delle auto, se farlo in automatico oppure se farle selezionare dall'utente
             //fields.Add(ApplicationSettings.FDL.FieldNames.Cars1,
             //fields.Add(ApplicationSettings.FDL.FieldNames.Cars2,
-                        
+
             fields.Add(ApplicationSettings.FDL.FieldNames.OutwardCar, fdl.OutwardCar ? "1" : "0");
             fields.Add(ApplicationSettings.FDL.FieldNames.OutwardTaxi, fdl.OutwardTaxi ? "1" : "0");
             fields.Add(ApplicationSettings.FDL.FieldNames.OutwardAircraft, fdl.OutwardAircraft ? "1" : "0");

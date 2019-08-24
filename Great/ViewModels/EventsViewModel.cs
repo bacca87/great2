@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -250,7 +249,7 @@ namespace Great.ViewModels
             ev.IsSent = false;
 
             ev.Save();
-            
+
             //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
             {

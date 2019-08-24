@@ -1,5 +1,4 @@
-﻿using Great.Controls;
-using Great.Models;
+﻿using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
 using Great.Utils;
@@ -33,7 +32,7 @@ namespace Great
 
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
-           // splash.Show();
+            // splash.Show();
 
             //in order to ensure the UI stays responsive, we need to
             //do the work on a different thread
@@ -78,7 +77,7 @@ namespace Great
                     MainWindow = window;
                     window.Show();
                 });
-            });            
+            });
         }
 
         private void InitializeDirectoryTree()

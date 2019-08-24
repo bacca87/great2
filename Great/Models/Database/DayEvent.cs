@@ -22,7 +22,7 @@ namespace Great.Models.Database
         public long EventId { get; set; }
 
         [ForeignKey("Timestamp")]
-        public virtual Day Day1 {get; set; }
+        public virtual Day Day1 { get; set; }
 
         [ForeignKey("EventId")]
         public virtual Event Event1 { get; set; }

@@ -1,13 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Controls;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
-using Great.Utils.Extensions;
 using Great.ViewModels.Database;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -270,10 +267,10 @@ namespace Great.ViewModels
 
         public void SaveRent(CarRentalHistoryEVM rc)
         {
-            if (rc == null || SelectedCar == null)          
-               return;
-            
-            if (rc.Error!=null || SelectedCar.Error != null)
+            if (rc == null || SelectedCar == null)
+                return;
+
+            if (rc.Error != null || SelectedCar.Error != null)
             {
                 MetroMessageBox.Show("Error found on provided data, cannot save", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

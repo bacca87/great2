@@ -39,7 +39,7 @@ namespace Great.Views.Dialogs
                 Exchange.Connect();
 
                 Close();
-            }   
+            }
         }
     }
 }

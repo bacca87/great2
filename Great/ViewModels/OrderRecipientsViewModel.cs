@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using System.Collections.ObjectModel;
@@ -21,7 +20,7 @@ namespace Great.ViewModels
         private ObservableCollection<OrderEmailRecipient> _Recipients;
         public ObservableCollection<OrderEmailRecipient> Recipients
         {
-            get =>_Recipients;
+            get => _Recipients;
             set => Set(ref _Recipients, value);
         }
 
@@ -84,7 +83,7 @@ namespace Great.ViewModels
             {
                 db.OrderEmailRecipients.Add(recipient);
                 db.SaveChanges();
-            }   
+            }
 
             Recipients.Add(recipient);
             InputAddress = string.Empty;
