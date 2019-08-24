@@ -26,4 +26,15 @@
         <Setter Property="AutoSelectBehavior" Value="OnFocus" />
         <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
     </Style>
+
+    <Style x:Key="CellErrorStyle" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}">
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={RelativeSource Self},
+                                Path=(Validation.Errors)[0].ErrorContent}"/>
+                <Setter Property="Background" Value="Yellow"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
