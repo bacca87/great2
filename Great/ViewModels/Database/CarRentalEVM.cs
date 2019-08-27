@@ -167,7 +167,7 @@ namespace Great.ViewModels.Database
                         break;
                     case "RentStartDate":
                     case "RentEndDate":
-                        if (RentStartDate != null && RentStartDate < RentEndDate)
+                        if (RentStartDate != null && RentEndDate < RentStartDate)
                             return "Dates not valid";
                         break;
 

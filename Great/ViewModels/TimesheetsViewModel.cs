@@ -450,6 +450,7 @@ namespace Great.ViewModels
                             foreach (var day in dayToUpdate)
                             {
                                 foreach (var timesheet in day.Timesheets)
+                                    if (timesheet.FDL1 != null)
                                     timesheet.FDL1.Factory1 = factory;
 
                                 day.RaisePropertyChanged(nameof(day.Factories_Display)); // hack to force the View to update the factory name
