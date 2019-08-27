@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Controls;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
@@ -99,7 +98,7 @@ namespace Great.ViewModels
 
                     Messenger.Default.Send(new DeletedItemMessage<FactoryEVM>(this, factory));
                 }
-            }   
+            }
         }
 
         private void SaveFactory(FactoryEVM factory)

@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -145,7 +144,7 @@ namespace Great.ViewModels
             SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest);
 
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
-            LostFocusCommand = new RelayCommand(() => {  });
+            LostFocusCommand = new RelayCommand(() => { });
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
@@ -283,7 +282,7 @@ namespace Great.ViewModels
 
                         var fdlToUpdate = FDLs.Where(f => f.Factory.HasValue && f.Factory.Value == item.Content.Id);
 
-                        foreach(var fdl in fdlToUpdate)
+                        foreach (var fdl in fdlToUpdate)
                             fdl.Factory1 = factory;
                     }
                 })

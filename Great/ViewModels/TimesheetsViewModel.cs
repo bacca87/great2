@@ -1,7 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -409,7 +408,7 @@ namespace Great.ViewModels
                 new Action(() =>
                 {
                     if (item.Content != null)
-                    {                        
+                    {
                         var days = item.Content.Timesheets.Select(t => t.Timestamp).Distinct();
                         var daysToRefresh = WorkingDays.Where(x => days.Contains(x.Timestamp));
                         var fdl = FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
@@ -428,7 +427,7 @@ namespace Great.ViewModels
                                 fdl.Refresh(db);
 
                             db.SaveChanges();
-                        }   
+                        }
                     }
                 })
             );
@@ -450,7 +449,7 @@ namespace Great.ViewModels
 
                             foreach (var day in dayToUpdate)
                             {
-                                foreach(var timesheet in day.Timesheets)
+                                foreach (var timesheet in day.Timesheets)
                                     timesheet.FDL1.Factory1 = factory;
 
                                 day.RaisePropertyChanged(nameof(day.Factories_Display)); // hack to force the View to update the factory name

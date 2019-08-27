@@ -180,16 +180,16 @@ namespace Great.Models
                                     //manually added to calendar. Import it!
                                     EventEVM tmp = new EventEVM();
                                     tmp.IsSent = true; // the event is on calendar. Not necessary to send it
-                                    tmp.SharePointId = shpid;                                    
+                                    tmp.SharePointId = shpid;
                                     tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
-                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;                                    
-                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;                                    
+                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
+                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
                                     tmp.Status = status;
                                     tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
                                     tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
 
                                     if (tmp.IsAllDay)
-                                    {  
+                                    {
                                         tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText.TrimEnd('Z'));
                                         tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText.TrimEnd('Z'));
                                     }
@@ -225,7 +225,7 @@ namespace Great.Models
                                     if (!db.DayEvents.Any(x => x.EventId == tmp.Id))
 
 
-                                    if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
+                                        if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
 
                                     if ((EEventStatus)status < tmp.EStatus)
                                     {

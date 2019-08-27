@@ -1,16 +1,16 @@
 ﻿using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
-using Great.Utils;
 using Great.Utils.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public partial class EventEVM : EntityViewModelBase
+    public partial class EventEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
 
@@ -244,6 +244,77 @@ namespace Great.ViewModels.Database
 
         #endregion
 
+        #region Error Validation
+        public string Error => 
+            this["Type"] != null
+            || this["Title"] != null
+            || this["Location"] != null
+            || this["StartDate"] != null
+            || this["EndDate"] != null
+            || this["BeginHour"] != null
+            || this["BeginMinutes"] != null
+            || this["EndHour"] != null
+            || this["EndMinutes"] != null
+            || this["Description"] != null
+            ? "Error" : null;
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case "Type":
+                        if (Type ==0)
+                            return "Type of event must be set";
+
+                        break;
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title))
+                            return "Title of event must be set";
+
+                        break;
+
+                    case "Location":
+
+                        break;
+
+                    case "StartDate":
+                    case "EndDate":
+                        if (StartDate > EndDate)
+                            return "Time interval not valid";
+
+                        break;
+                    case "BeginHour":
+
+                        break;
+
+                    case "EndHour":
+
+                        break;
+
+                    case "BeginMinutes":
+
+                        break;
+
+                    case "EndMinutes":
+
+                        break;
+
+                    case "Description":
+
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return null;
+            }
+        }
+        #endregion
+
         public EventEVM(Event ev = null)
         {
             if (ev != null)
@@ -258,7 +329,6 @@ namespace Great.ViewModels.Database
             db.Events.AddOrUpdate(ev);
             db.SaveChanges();
             Id = ev.Id;
-            AddOrUpdateEventRelations(this, db);
 
             return true;
         }
@@ -288,16 +358,16 @@ namespace Great.ViewModels.Database
             return false;
         }
 
-        public void AddOrUpdateEventRelations(EventEVM ev, DBArchive db)
+        public void AddOrUpdateEventRelations(DBArchive db)
         {
             List<DayEVM> currentDayEVM;
             List<DayEVM> newDays = new List<DayEVM>();
 
             List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
-            IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
+            IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == Id select d);
             currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
 
-            foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
+            foreach (DateTime d in AllDatesInRange(StartDate, EndDate))
             {
                 long timestamp = d.ToUnixTimestamp();
                 Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
@@ -307,19 +377,57 @@ namespace Great.ViewModels.Database
 
                 else newDays.Add(new DayEVM(currentDay));
 
-                relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
+                relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
             }
 
-            db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
+            db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == Id));
             newDays.ToList().ForEach(d => d.Save(db));
             relationsToAdd.ToList().ForEach(r => r.Save(db));
 
 
-            if (ev.EType == EEventType.Vacations)
+            if (EType == EEventType.Vacations)
             {
-                if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
-                if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay; d.Save(db); });
-                if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.SpecialLeave; d.Save(db); });
+                if (EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
+                if (EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay; d.Save(db); });
+                if (EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
+            }
+
+        }
+
+        public void AddOrUpdateEventRelations()
+        {
+            List<DayEVM> currentDayEVM;
+            List<DayEVM> newDays = new List<DayEVM>();
+            using (DBArchive db = new DBArchive())
+            {
+                List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
+                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == Id select d);
+                currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
+
+                foreach (DateTime d in AllDatesInRange(StartDate, EndDate))
+                {
+                    long timestamp = d.ToUnixTimestamp();
+                    Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
+
+                    if (currentDay == null)
+                        newDays.Add(new DayEVM { Date = d });
+
+                    else newDays.Add(new DayEVM(currentDay));
+
+                    relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
+                }
+
+                db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == Id));
+                newDays.ToList().ForEach(d => d.Save(db));
+                relationsToAdd.ToList().ForEach(r => r.Save(db));
+
+                if (EType == EEventType.Vacations)
+                {
+                    if (EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
+                    if (EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay; d.Save(db); });
+                    if (EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
+                }
+
             }
 
         }

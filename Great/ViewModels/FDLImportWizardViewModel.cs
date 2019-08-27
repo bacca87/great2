@@ -155,7 +155,7 @@ namespace Great.ViewModels
             Reset();
 
             refreshTimer.Tick += (s, e) => Refresh();
-            refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);            
+            refreshTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
         }
 
         private void Refresh()

@@ -90,12 +90,12 @@ namespace Great.ViewModels.Database
         {
             Factory factoryToDelete = db.Factories.SingleOrDefault(f => f.Id == Id);
 
-            if(factoryToDelete != null)
+            if (factoryToDelete != null)
             {
                 db.Factories.Remove(factoryToDelete);
                 db.SaveChanges();
             }
-                
+
             Id = 0;
             return true;
         }

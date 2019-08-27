@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
 using Great.Utils.Extensions;
-using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -128,11 +127,14 @@ namespace Great.ViewModels
 
                 foreach (KeyValuePair<string, int> entry in factoriesData)
                 {
+
+
                     PieSeries factory = new PieSeries
                     {
                         Title = entry.Key,
                         Values = new ChartValues<int> { entry.Value },
-                        DataLabels = true
+                        DataLabels = true,
+
                     };
 
                     Factories.Add(factory);
@@ -422,7 +424,7 @@ namespace Great.ViewModels
                 var MonthlyKm = Rents?.GroupBy(d => d.RentStartDate.Month)
                                        .Select(g => new
                                        {
-                                           Km =  g.Sum(x => (x.EndKm-x.StartKm)),
+                                           Km = g.Sum(x => (x.EndKm - x.StartKm)),
                                        });
 
                 foreach (var month in MonthlyKm)

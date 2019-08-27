@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -180,7 +179,7 @@ namespace Great.ViewModels
             EmailAddress = UserSettings.Email.EmailAddress;
             EmailPassword = UserSettings.Email.EmailPassword;
 
-            AutoAddFactories = UserSettings.Advanced.AutoAddFactories;            
+            AutoAddFactories = UserSettings.Advanced.AutoAddFactories;
             AutoAssignFactories = UserSettings.Advanced.AutoAssignFactories;
 
             if (UserSettings.Email.Recipients.FDLCancelRequest != null)
@@ -218,7 +217,7 @@ namespace Great.ViewModels
                     recipients.Add(addresses[i].Trim());
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
 
-                if(UserSettings.Themes.Skin != Skin)
+                if (UserSettings.Themes.Skin != Skin)
                     UserSettings.Themes.Skin = Skin;
 
                 Close();

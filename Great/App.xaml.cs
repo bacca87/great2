@@ -1,5 +1,4 @@
-﻿using Great.Controls;
-using Great.Models;
+﻿using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
 using Great.Utils;
@@ -78,7 +77,7 @@ namespace Great
                     MainWindow = window;
                     window.Show();
                 });
-            });            
+            });
         }
 
         private void InitializeDirectoryTree()

@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -18,7 +17,7 @@ using System.Windows.Threading;
 
 namespace Great.ViewModels
 {
-    public class EventsViewModel : ViewModelBase, IDataErrorInfo
+    public class EventsViewModel : ViewModelBase
     {
         #region Properties
         MSSharepointProvider _provider;
@@ -231,12 +230,18 @@ namespace Great.ViewModels
 
         public void SaveEvent(EventEVM ev)
         {
-            if (ev == null || ev.EStatus != EEventStatus.Pending)
+            if (ev == null) return;
+            if (ev.EStatus != EEventStatus.Pending)
             {
                 MetroMessageBox.Show("Cannot save/edit the event because it is approved", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
+            if (ev.Error != null)
+            {
+                MetroMessageBox.Show("Cannot save/edit the event. Please check the errors", "Save Event",MessageBoxButton.OK,MessageBoxImage.Error);
+                return;
+            }
             if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
@@ -251,8 +256,10 @@ namespace Great.ViewModels
 
             ev.Save();
 
+            //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
             {
+                ev.AddOrUpdateEventRelations();
                 Events.Add(ev);
             }
 
@@ -340,6 +347,7 @@ namespace Great.ViewModels
                   {
                       if (!Events.Any(x => x.Id == item.Content.Id))
                       {
+                          item.Content.AddOrUpdateEventRelations();
                           Events.Add(item.Content);
                           FilteredEvents.Refresh();
                       }
@@ -357,39 +365,6 @@ namespace Great.ViewModels
             SelectedEvent.EndDate = DateTime.Now;
         }
 
-        public string Error => throw new NotImplementedException();
-
-        public string this[string columnName]
-        {
-            get
-            {
-                switch (columnName)
-                {
-                    case "Title":
-                        if (string.IsNullOrEmpty(SelectedEvent.Title) || string.IsNullOrWhiteSpace(SelectedEvent.Title))
-                            return "Title of event must be set";
-
-                        break;
-
-                    case "StartDate":
-                    case "EndDate":
-                        if (SelectedEvent.StartDate > SelectedEvent.EndDate)
-                            return "Time interval not valid";
-
-                        break;
-
-                    //case "ExpenseTypeText":
-                    //    if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
-                    //        return "Select a valid expense type from the combo list!";
-                    //    break;
-
-                    default:
-                        break;
-                }
-
-                return null;
-            }
-        }
 
         #endregion
     }
