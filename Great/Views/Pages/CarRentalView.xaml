@@ -27,8 +27,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="70*"/>
+            <ColumnDefinition Width="30*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
@@ -51,8 +51,7 @@
                 ScrollViewer.CanContentScroll="True" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                VirtualizingPanel.ScrollUnit ="Item" 
-                SelectedIndex="0"
+                VirtualizingPanel.ScrollUnit ="Item"   
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
@@ -78,9 +77,6 @@
                     <DataGridTextColumn  Header="Duration" Binding="{Binding RentDuration}"/>
                     <DataGridTextColumn  Header="Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy' }" />
                     <DataGridTextColumn  Header="End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy'}"/>
-
-
-
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -179,8 +175,7 @@
                                   SelectedValue="{Binding SelectedCar.CarRentalCompany}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
-                                  SelectedValuePath="Id" 
-                                  SelectedIndex="0">
+                                  SelectedValuePath="Id" >
                     <ComboBox.Resources>
                         <CollectionViewSource x:Key="Items" Source="{Binding RentalCompanies}" />
                     </ComboBox.Resources>
@@ -218,7 +213,7 @@
                     SelectedItem="{Binding SelectedRent.EndLocation, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>
-                <Slider Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <Slider  Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="22">End Fuel Level</TextBlock>
                 <Slider Grid.Row="23" Minimum="0" Maximum="8" Value="{Binding SelectedRent.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
 
