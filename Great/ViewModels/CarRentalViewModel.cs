@@ -193,6 +193,8 @@ namespace Great.ViewModels
             _FilteredRentals.SortDescriptions.Add(sd);
             _FilteredRentals.Filter += Filter;
 
+            FilteredRentals.MoveCurrentToFirst();
+            SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem ;
         }
 
         private void RemoveFiltersCommand()

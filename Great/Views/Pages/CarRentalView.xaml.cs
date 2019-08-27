@@ -23,5 +23,10 @@ namespace Great.Views.Pages
         {
             cmbLicenxePlate.Text = cmbLicenxePlate.Text?.ToUpper();
         }
+
+        private void CarRentalHistoryView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }
