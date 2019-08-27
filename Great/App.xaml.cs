@@ -32,7 +32,7 @@ namespace Great
 
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
-            // splash.Show();
+            splash.Show();
 
             //in order to ensure the UI stays responsive, we need to
             //do the work on a different thread
