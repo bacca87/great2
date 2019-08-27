@@ -14,7 +14,7 @@ ALTER TABLE [ExpenseAccount] ADD COLUMN LastSAPSendTimestamp INTEGER  NULL DEFAU
 Update Day SET Type = 1 where TimeStamp in 
 ( SELECT Day.Timestamp FROM Day inner join DayEvent on Day.Timestamp = DayEvent.Timestamp 
 inner Join Event on Event.Id = DayEvent.EventId 
-where Event.Status = 2 and Day.Type= 4)
+where Event.Status = 2 and Day.Type= 4);
 
 --=========================================================================
 -- MANDATORY: Increment internal db version
