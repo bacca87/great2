@@ -9,6 +9,7 @@ UPDATE ExpenseAccount SET LastError = TRIM(TRIM(TRIM(LastError, CHAR(13)), CHAR(
 
 ALTER TABLE [FDL] ADD COLUMN LastSAPSendTimestamp INTEGER  NULL DEFAULT NULL;
 ALTER TABLE [ExpenseAccount] ADD COLUMN LastSAPSendTimestamp INTEGER  NULL DEFAULT NULL;
+ALTER TABLE [Factory] ADD COLUMN OverrideAddressOnFDL BOOL  NOT NULL DEFAULT 0;
 
 -- fix day types
 Update Day SET Type = 1 where TimeStamp in 

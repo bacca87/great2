@@ -794,6 +794,12 @@ namespace Great.Models
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
+            if (fdl.Factory1?.OverrideAddressOnFDL == true)
+            {
+                fields.Add(ApplicationSettings.FDL.FieldNames.Address, fdl.Factory1.Address);
+                fields.Add(ApplicationSettings.FDL.FieldNames.Address2, fdl.Factory1.Address);
+            }
+
             foreach (var entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
             {
                 TimesheetEVM timesheet = fdl.Timesheets.SingleOrDefault(t => t.Date.DayOfWeek == entry.Key);
@@ -875,6 +881,11 @@ namespace Great.Models
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1 != null ? ea.Currency1.Description : string.Empty);
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Notes, ea.Notes ?? string.Empty);
+
+            if (ea.FDL1.Factory1?.OverrideAddressOnFDL == true)
+            {
+                fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Address, ea.FDL1.Factory1.Address);
+            }
 
             if (IsReadonly)
             {

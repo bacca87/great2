@@ -17,6 +17,22 @@ namespace Great.ViewModels
     public class FactoriesViewModel : ViewModelBase
     {
         #region Properties
+
+        private bool _showEditMenu;
+        public bool ShowEditMenu
+        {
+            get => _showEditMenu;
+            set => Set(ref _showEditMenu, value);
+        }
+
+
+        private bool _ShowExpandable;
+        public bool ShowExpandable
+        {
+            get => _ShowExpandable;
+            set => Set(ref _ShowExpandable, value);
+
+        }
         public ObservableCollection<TransferTypeDTO> TransferTypes { get; set; }
 
         public ObservableCollectionEx<FactoryEVM> Factories { get; set; }
@@ -25,7 +41,11 @@ namespace Great.ViewModels
         public FactoryEVM SelectedFactory
         {
             get => _selectedFactory;
-            set => Set(ref _selectedFactory, value ?? new FactoryEVM());
+            set
+            {
+                Set(ref _selectedFactory, value ?? new FactoryEVM());
+                ShowEditMenu = false;
+            }
         }
 
         public Action<FactoryEVM> OnZoomOnFactoryRequest { get; set; }
@@ -34,6 +54,11 @@ namespace Great.ViewModels
         #region Commands
         public RelayCommand<FactoryEVM> DeleteFactoryCommand { get; set; }
         public RelayCommand<FactoryEVM> SaveFactoryCommand { get; set; }
+        public RelayCommand<FactoryEVM> NewFactoryCommand { get; set; }
+        public RelayCommand GotFocusCommand { get; set; }
+        public RelayCommand LostFocusCommand { get; set; }
+
+
         public RelayCommand ClearSelectionCommand { get; set; }
         #endregion
 
@@ -50,11 +75,20 @@ namespace Great.ViewModels
 
             DeleteFactoryCommand = new RelayCommand<FactoryEVM>(DeleteFactory);
             SaveFactoryCommand = new RelayCommand<FactoryEVM>(SaveFactory);
-            ClearSelectionCommand = new RelayCommand(ClearSelection);
+            NewFactoryCommand = new RelayCommand<FactoryEVM>(NewFactory);
+            //ClearSelectionCommand = new RelayCommand(ClearSelection);
+            GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
+            LostFocusCommand = new RelayCommand(() => { });
 
             MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
 
-            SelectedFactory = null;
+            SelectedFactory = Factories.FirstOrDefault();
+        }
+
+        private void NewFactory(FactoryEVM obj)
+        {
+            SelectedFactory = new FactoryEVM();
+            ShowExpandable = true;
         }
 
         public void NewFactory(NewItemMessage<FactoryEVM> item)
@@ -103,6 +137,13 @@ namespace Great.ViewModels
 
         private void SaveFactory(FactoryEVM factory)
         {
+            if (factory == null) return;
+
+            if (factory.Error != null)
+            {
+                MetroMessageBox.Show("Cannot save/edit the factory. Please check the errors", "Save Factory", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             factory.NotifyAsNew = false;
 
             if (factory.Save())
@@ -116,6 +157,8 @@ namespace Great.ViewModels
                     Messenger.Default.Send(new ItemChangedMessage<FactoryEVM>(this, factory));
 
                 SelectedFactory = factory;
+
+                ShowEditMenu = false;
             }
         }
     }

@@ -69,6 +69,13 @@
                                      Background="Green" 
                                      BorderBrush="Green" >
                 </Fluent:RibbonContextualTabGroup>
+                <Fluent:RibbonContextualTabGroup x:Name="EditFactoryGroup"
+                                     Header="FACTORIES" 
+                                     DataContext="{Binding Factories, Source={StaticResource Locator}}"
+                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
+                                     Background="Green" 
+                                     BorderBrush="Green" >
+                </Fluent:RibbonContextualTabGroup>
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="TIMESHEETS"
@@ -446,8 +453,21 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>            
             <Fluent:RibbonTabItem Header="FACTORIES" 
+                                  DataContext="{Binding Factories, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected,UpdateSourceTrigger=Explicit}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="New" Command="{Binding NewFactoryCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/factory.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Add new Factory" Text="Add a new factory" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteFactoryCommand}" CommandParameter="{Binding SelectedFactory}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Delete Factory" Text="Delete the selected factory" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="STATISTICS" 
                                   DataContext="{Binding Statistics, Source={StaticResource Locator}}"
@@ -505,6 +525,18 @@
                     <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save fdl" Text="Save the current FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="EDIT" 
+                                  DataContext="{Binding Factories, Source={StaticResource Locator}}"
+                                  IsSelected="{Binding ShowEditMenu}"
+                                  Group="{Binding Source={x:Reference EditFactoryGroup}}">
+                <Fluent:RibbonGroupBox Header="Edit">
+                    <Fluent:Button Header="Save" Command="{Binding SaveFactoryCommand}" CommandParameter="{Binding SelectedFactory}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Save factory" Text="Save the current Factory." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
