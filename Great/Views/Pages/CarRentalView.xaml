@@ -52,11 +52,12 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 VirtualizingPanel.ScrollUnit ="Item" 
+                SelectedIndex="0"
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
                         <Style.Setters>
-       
+
                             <Setter Property="TextBlock.TextAlignment" Value="Left" />
                             <Setter Property="TextBlock.FontSize" Value="15" />
                             <Setter Property="BorderThickness" Value="0" />
@@ -152,8 +153,8 @@
                     DisplayMemberPath="LicensePlate" 
                     LostFocus="CmbLicenxePlate_LostFocus"
                     Text="{Binding SelectedCar.LicensePlate, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
-                 
-                
+
+
                 <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
                 <ComboBox
                     Grid.Row="3"
@@ -161,8 +162,8 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarBrands }" 
-                    SelectedItem="{Binding SelectedCar.Brand,UpdateSourceTrigger=LostFocus}"
-                    Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                    SelectedItem="{Binding SelectedCar.Brand, UpdateSourceTrigger=LostFocus}"
+                    Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
                 <ComboBox
                     Grid.Row="5"
@@ -170,8 +171,8 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarModels }" 
-                    SelectedItem="{Binding SelectedCar.Model}"
-                    Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                    SelectedItem="{Binding SelectedCar.Model, UpdateSourceTrigger=LostFocus}"
+                    Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
                 <ComboBox Grid.Row="7"
                                   SelectedItem="{Binding SelectedCar.CarRentalCompany1,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
@@ -204,8 +205,8 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding StartLocations }" 
-                    SelectedItem="{Binding SelectedRent.StartLocation}"
-                    Text="{Binding SelectedRent.StartLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                    SelectedItem="{Binding SelectedRent.StartLocation, UpdateSourceTrigger=LostFocus}"
+                    Text="{Binding SelectedRent.StartLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
                 <TextBlock VerticalAlignment="Center" Grid.Row="18">Rent End Location</TextBlock>
@@ -214,15 +215,15 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding EndLocations }" 
-                    SelectedItem="{Binding SelectedRent.EndLocation}"
-                    Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                    SelectedItem="{Binding SelectedRent.EndLocation, UpdateSourceTrigger=LostFocus}"
+                    Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>
                 <Slider Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="22">End Fuel Level</TextBlock>
                 <Slider Grid.Row="23" Minimum="0" Maximum="8" Value="{Binding SelectedRent.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
 
                 <TextBlock VerticalAlignment="Center" Grid.Row="24">Notes</TextBlock>
-                <TextBox MinHeight="50" Grid.Row="25" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding SelectedRent.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBox MinHeight="50" Grid.Row="25" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding SelectedRent.Notes}" IsEnabled="{Binding IsInputEnabled}"/>
             </Grid>
 
 

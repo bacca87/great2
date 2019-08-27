@@ -152,8 +152,7 @@ namespace Great.ViewModels.Database
             || this["EndKm"] != null
             || this["RentStartDate"] != null
             || this["StartLocation"] != null
-            || this["RentEndDate"] != null ? "Error" : null
-            ;
+            || this["RentEndDate"] != null ? "Error" : null;
 
         public string this[string columnName]
         {

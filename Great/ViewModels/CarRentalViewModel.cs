@@ -193,8 +193,6 @@ namespace Great.ViewModels
             _FilteredRentals.SortDescriptions.Add(sd);
             _FilteredRentals.Filter += Filter;
 
-            SelectedRent = Rentals.FirstOrDefault() ?? new CarRentalHistoryEVM();
-
         }
 
         private void RemoveFiltersCommand()
@@ -272,7 +270,7 @@ namespace Great.ViewModels
 
             if (rc.Error != null || SelectedCar.Error != null)
             {
-                MetroMessageBox.Show("Error found on provided data, cannot save", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show("Cannot save/edit the rent. Please check the errors", "Save Rent", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

@@ -4,12 +4,13 @@ using Great.Models.DTO;
 using Great.Utils.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public partial class EventEVM : EntityViewModelBase
+    public partial class EventEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
 
@@ -241,6 +242,77 @@ namespace Great.ViewModels.Database
             }
         }
 
+        #endregion
+
+        #region Error Validation
+        public string Error => 
+            this["Type"] != null
+            || this["Title"] != null
+            || this["Location"] != null
+            || this["StartDate"] != null
+            || this["EndDate"] != null
+            || this["BeginHour"] != null
+            || this["BeginMinutes"] != null
+            || this["EndHour"] != null
+            || this["EndMinutes"] != null
+            || this["Description"] != null
+            ? "Error" : null;
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case "Type":
+                        if (Type ==0)
+                            return "Type of event must be set";
+
+                        break;
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title))
+                            return "Title of event must be set";
+
+                        break;
+
+                    case "Location":
+
+                        break;
+
+                    case "StartDate":
+                    case "EndDate":
+                        if (StartDate > EndDate)
+                            return "Time interval not valid";
+
+                        break;
+                    case "BeginHour":
+
+                        break;
+
+                    case "EndHour":
+
+                        break;
+
+                    case "BeginMinutes":
+
+                        break;
+
+                    case "EndMinutes":
+
+                        break;
+
+                    case "Description":
+
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return null;
+            }
+        }
         #endregion
 
         public EventEVM(Event ev = null)
