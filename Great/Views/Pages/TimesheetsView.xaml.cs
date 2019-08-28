@@ -1,4 +1,5 @@
 ﻿using Great.Utils;
+using Great.Utils.Extensions;
 using Great.ViewModels;
 using Great.ViewModels.Database;
 using System;
@@ -62,85 +63,15 @@ namespace Great.Views.Pages
         #region Time MaskedTextBox Autocomplete Methods 
         private void MaskedTextBox_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
-            int? hours;
-            int? minutes;
-
-            MaskedTextBox textbox = (sender as MaskedTextBox);
-
-            if (!ParseTimeSpanMask(textbox.Text, textbox.PromptChar, out hours, out minutes))
-                return;
-
-            if (hours.HasValue && hours.Value < 10)
-                textbox.Text = hours.Value.ToString().PadLeft(2, '0') + textbox.Text.Substring(2);
-
-            if (minutes.HasValue && minutes.Value < 10)
-                textbox.Text = textbox.Text.Substring(0, 3) + minutes.Value.ToString().PadLeft(2, '0');
-
-            if (hours.HasValue || minutes.HasValue)
-                textbox.Text = textbox.Text.Replace(textbox.PromptChar, '0');
+            MaskedTextBoxHelper.PreviewLostKeyboardFocus(sender, e);
         }
 
         private void MaskedTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            int? hours;
-            int? minutes;
+            MaskedTextBoxHelper.PreviewTextInput(sender, e);
 
-            MaskedTextBox textbox = (sender as MaskedTextBox);
-
-            if (e.Text == ":" || e.Text == ".")
-            {
-                if (!ParseTimeSpanMask(textbox.Text, textbox.PromptChar, out hours, out minutes))
-                    return;
-
-                if (hours.HasValue && hours.Value < 10)
-                    textbox.Text = hours.Value.ToString().PadLeft(2, '0') + textbox.Text.Substring(2);
-
-                return;
-            }
-
-            if (textbox.CaretIndex >= textbox.MaxLength)
-                return;
-
-            if (!ParseTimeSpanMask(textbox.Text.Remove(textbox.CaretIndex, 1).Insert(textbox.CaretIndex, e.Text), textbox.PromptChar, out hours, out minutes))
-                return;
-
-            if (hours.HasValue && (hours.Value < 0 || hours.Value > 23))
-                e.Handled = true;
-
-            if (minutes.HasValue && (minutes.Value < 0 || minutes.Value > 59))
-                e.Handled = true;
         }
 
-        private bool ParseTimeSpanMask(string mask, char promptChar, out int? hours, out int? minutes)
-        {
-            hours = null;
-            minutes = null;
-
-            try
-            {
-                if (mask.Length < 5)
-                    return false;
-
-                string[] digits = mask.Split(':');
-
-                if (digits.Length != 2)
-                    return false;
-
-                string hoursString = digits[0].Replace(promptChar.ToString(), string.Empty);
-                string minutesString = digits[1].Replace(promptChar.ToString(), string.Empty);
-
-                if (hoursString != string.Empty)
-                    hours = Convert.ToInt32(hoursString);
-
-                if (minutesString != string.Empty)
-                    minutes = Convert.ToInt32(minutesString);
-
-                return true;
-            }
-            catch { }
-
-            return false;
-        }
         #endregion
 
         private void WorkingDaysDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
