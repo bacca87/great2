@@ -139,7 +139,7 @@ namespace Great.ViewModels
         {
             if (factory == null) return;
 
-            if (factory.Error != null)
+            if (!factory.IsValid)
             {
                 MetroMessageBox.Show("Cannot save/edit the factory. Please check the errors", "Save Factory", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

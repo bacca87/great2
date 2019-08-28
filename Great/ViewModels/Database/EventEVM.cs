@@ -245,18 +245,9 @@ namespace Great.ViewModels.Database
         #endregion
 
         #region Error Validation
-        public string Error => 
-            this["Type"] != null
-            || this["Title"] != null
-            || this["Location"] != null
-            || this["StartDate"] != null
-            || this["EndDate"] != null
-            || this["BeginHour"] != null
-            || this["BeginMinutes"] != null
-            || this["EndHour"] != null
-            || this["EndMinutes"] != null
-            || this["Description"] != null
-            ? "Error" : null;
+        public string Error => throw new NotImplementedException();
+
+        public bool IsValid =>  Title?.Length > 0 && Location.Length > 0 && StartDate > EndDate;
 
         public string this[string columnName]
         {
@@ -265,7 +256,7 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "Type":
-                        if (Type ==0)
+                        if (Type == 0)
                             return "Type of event must be set";
 
                         break;

@@ -91,11 +91,8 @@ namespace Great.ViewModels.Database
 
         #region Error Validation
 
-        public string Error =>
-            this["Name"] != null
-            || this["CompanyName"] != null
-            || this["Address"] != null
-            ? "Error" : null;
+        public string Error => throw new NotImplementedException();
+        public bool IsValid => Name?.Length > 0 && CompanyName?.Length > 0 && Address?.Length > 0;
 
         public string this[string columnName]
         {

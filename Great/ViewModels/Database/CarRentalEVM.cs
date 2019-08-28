@@ -159,12 +159,9 @@ namespace Great.ViewModels.Database
 
         #region Errors Validation
 
-        public string Error =>
-            this["StartKm"] != null
-            || this["EndKm"] != null
-            || this["RentStartDate"] != null
-            || this["StartLocation"] != null
-            || this["RentEndDate"] != null ? "Error" : null;
+        public string Error => throw new NotImplementedException();
+
+        public bool IsValid => StartKm > 0 && EndKm > 0 && RentStartDate != null && RentEndDate.Value.Date < RentStartDate && StartLocation.Length > 0;
 
         public string this[string columnName]
         {

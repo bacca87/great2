@@ -85,9 +85,5 @@ namespace Great.Views.Pages
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
         }
 
-        private void MaskedTextBox_Error(object sender, ValidationErrorEventArgs e)
-        {
-
-        }
     }
 }
