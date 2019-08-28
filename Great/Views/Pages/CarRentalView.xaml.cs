@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Great.Utils.Extensions;
+using System.Windows.Controls;
 
 namespace Great.Views.Pages
 {
@@ -24,9 +25,15 @@ namespace Great.Views.Pages
             cmbLicenxePlate.Text = cmbLicenxePlate.Text?.ToUpper();
         }
 
-        private void CarRentalHistoryView_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
 
+        private void MaskedTextBox_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            MaskedTextBoxHelper.PreviewLostKeyboardFocus(sender, e);
+        }
+
+        private void MaskedTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            MaskedTextBoxHelper.PreviewTextInput(sender, e);
         }
     }
 }

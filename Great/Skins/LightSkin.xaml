@@ -64,16 +64,16 @@
             </Style>
 
             <!--TODO allineare con material palette -->
-            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
+            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
                 <Setter Property="Background" Value="#b3e5fc" />
             </Style>
-            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
+            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
                 <Setter Property="Background" Value="#b3e5fc" />
             </Style>
-            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
+            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
                 <Setter Property="Background" Value="#dcedc8" />
             </Style>
-            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
+            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
                 <Setter Property="Background" Value="#dcedc8" />
             </Style>
         </ResourceDictionary>

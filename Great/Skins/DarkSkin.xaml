@@ -67,19 +67,19 @@
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}" >
+            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
                 <!--Light Blue 50 -->
                 <Setter Property="Background" Value="#01579B" />
             </Style>
-            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}">
+            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}">
                 <!--Light Blue 50 -->
                 <Setter Property="Background" Value="#01579B" />
             </Style>
-            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}">
+            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}">
                 <!--Light Green 50 -->
                 <Setter Property="Background" Value="#33691E" />
             </Style>
-            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}">
+            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}">
                 <!--Light Green 50 -->
                 <Setter Property="Background" Value="#33691E" />
             </Style>

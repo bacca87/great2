@@ -108,14 +108,26 @@ namespace Great.ViewModels.Database
             set { if (value != null) EndDate = ((DateTime)value).ToUnixTimestamp(); }
         }
 
-        public double? RentDuration
+        public TimeSpan RentStartTime
+        {
+            get => RentStartDate.TimeOfDay;
+            set { RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes,0); }
+        }
+
+        public TimeSpan? RentEndTime
+        {
+            get {if (RentEndDate.HasValue) return RentEndDate.Value.TimeOfDay; return null; }
+            set { if (value.HasValue) RentEndDate = new DateTime(RentEndDate.Value.Year, RentEndDate.Value.Month, RentEndDate.Value.Day, value.Value.Hours, value.Value.Minutes, 0); }
+        }
+
+        public TimeSpan? RentDuration
         {
             get
             {
-                if (RentEndDate != null)
+
+                if (RentEndDate.HasValue)
                 {
-                    DateTime dt = (DateTime)RentEndDate;
-                    return dt.Subtract(RentStartDate).TotalDays + 1;
+                    return RentEndDate.Value.Subtract(RentStartDate);
                 }
 
                 return null;
@@ -167,7 +179,9 @@ namespace Great.ViewModels.Database
                         break;
                     case "RentStartDate":
                     case "RentEndDate":
-                        if (RentStartDate != null && RentEndDate < RentStartDate)
+                    case "RentStartTime":
+                    case "RentEndTime":
+                        if (RentStartDate != null && RentEndDate.Value.Date < RentStartDate)
                             return "Dates not valid";
                         break;
 
