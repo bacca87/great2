@@ -1201,6 +1201,8 @@ namespace Great.Models
                 case EMessageType.FDL_EA_New:
                     if (message.HasAttachments)
                     {
+                        bool deleteMessage = false;
+
                         foreach (Attachment attachment in message.Attachments)
                         {
                             if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
@@ -1213,21 +1215,63 @@ namespace Great.Models
                                 case EFileType.FDL:
                                     if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
                                     {
+                                        bool exist = false;
+
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
-                                        ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
+
+                                        using (DBArchive db = new DBArchive())
+                                        {
+                                            if (db.FDLs.SingleOrDefault(f => f.FileName.ToLower() == fileAttachment.Name.ToLower()) != null)
+                                                exist = true;
+                                        }
+
+                                        if(!exist)
+                                        {
+                                            FDLEVM fdl = ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
+
+                                            if (fdl == null)
+                                            {
+                                                File.Delete(ApplicationSettings.Directories.FDL + fileAttachment.Name);
+                                                deleteMessage = true;
+                                            }
+                                        }
                                     }
                                     break;
                                 case EFileType.ExpenseAccount:
                                     if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
                                     {
+                                        bool exist = false;
+
                                         fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
-                                        ImportEAFromFile(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name, true, true);
+
+                                        using (DBArchive db = new DBArchive())
+                                        {
+                                            if (db.ExpenseAccounts.SingleOrDefault(e => e.FileName.ToLower() == fileAttachment.Name.ToLower()) != null)
+                                                exist = true;
+                                        }
+
+                                        if (!exist)
+                                        {
+                                            ExpenseAccountEVM ea = ImportEAFromFile(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name, true, true);
+
+                                            if (ea == null)
+                                            {
+                                                File.Delete(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
+                                                deleteMessage = true;
+                                            }
+                                        }
                                     }
                                     break;
                                 default:
                                     break;
                             }
+
+                            if (deleteMessage)
+                                break;
                         }
+
+                        if(deleteMessage)
+                            message.Delete(DeleteMode.MoveToDeletedItems);
                     }
                     break;
 

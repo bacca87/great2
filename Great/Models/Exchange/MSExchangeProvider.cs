@@ -265,7 +265,15 @@ namespace Great.Models
 
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
 
-                    string aqsQuery = $"from:(\"{ApplicationSettings.EmailRecipients.FDLSystem}\" OR \"fdl\" OR \"SAP MAIL\" OR \"Sistema FDL\" OR \"fdl_chk\" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\")";
+                    string aqsQuery = $"from:(" +
+                        $"\"{ApplicationSettings.EmailRecipients.FDLSystem}\"" +
+                        $" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\"" +
+                        $" OR \"{ApplicationSettings.EmailRecipients.SAP}\"" +
+                        $" OR \"fdl\"" +
+                        $" OR \"SAP MAIL\"" +
+                        $" OR \"Sistema FDL\"" +
+                        $" OR \"fdl_chk\"" +
+                        ")";
 
                     // try to get last week messages (high priority)
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery + " received:>=lastweek", folderView, itemView))
