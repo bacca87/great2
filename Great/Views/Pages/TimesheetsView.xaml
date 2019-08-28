@@ -153,7 +153,7 @@
                 <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="False">
+        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="False" Expanded="TimesheetPanel_Expanded"   >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -240,19 +240,19 @@
                                         </Grid.Resources>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="50"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -263,14 +263,14 @@
                                         <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">FDL</TextBlock>
                                         <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">Notes</TextBlock>
 
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"/>
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter}}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
 
                                         <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"
                                           SelectedItem="{Binding SelectedTimesheet.FDL1}" 

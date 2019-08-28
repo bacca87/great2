@@ -79,5 +79,15 @@ namespace Great.Views.Pages
             timesheetPanel.IsExpanded = true;
             editTimesheetPanel.IsExpanded = true;
         }
+
+        private void TimesheetPanel_Expanded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
+        }
+
+        private void MaskedTextBox_Error(object sender, ValidationErrorEventArgs e)
+        {
+
+        }
     }
 }

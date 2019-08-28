@@ -10,11 +10,25 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <!--<Style TargetType="{x:Type TabPanel}">
-        <Setter Property="Background" Value=""/>
-    </Style>-->
 
-    <Style x:Key="MaskedTextBoxBase" TargetType="xctk:MaskedTextBox">
+    <Style x:Key="DefaultErrorStyle" TargetType="xctk:MaskedTextBox">
+        <Setter Property="Validation.ErrorTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border BorderBrush="Red" BorderThickness="1" >
+                        <AdornedElementPlaceholder/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="ToolTip"  Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MaskedTextBoxBase" BasedOn="{StaticResource DefaultErrorStyle}" TargetType="xctk:MaskedTextBox">
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Mask" Value="00\:00" />
@@ -32,14 +46,4 @@
         <Setter Property="Width" Value="70" />
     </Style>
 
-    <Style x:Key="CellErrorStyle" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBase}">
-        <Style.Triggers>
-            <Trigger Property="Validation.HasError" Value="true">
-                <Setter Property="ToolTip"
-                        Value="{Binding RelativeSource={RelativeSource Self},
-                                Path=(Validation.Errors)[0].ErrorContent}"/>
-                <Setter Property="Background" Value="Yellow"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
 </ResourceDictionary>

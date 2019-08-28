@@ -4,12 +4,13 @@ using Great.Utils.Extensions;
 using Itenso.TimePeriod;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class TimesheetEVM : EntityViewModelBase
+    public class TimesheetEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
         private long _Id;
@@ -312,7 +313,53 @@ namespace Great.ViewModels.Database
         }
         #endregion
 
-        #region Validation
+
+
+        #endregion
+
+        #region Error Validation
+        public string Error => throw new NotImplementedException();
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case "WorkStartTimeAM_t":
+                    case "WorkEndTimeAM_t":
+                        if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
+                            return "Work time AM interval not correct";
+                        break;
+
+                    case "WorkStartTimePM_t":
+                    case "WorkEndTimePM_t":
+                        if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
+                            return "Work time PM interval not correct";
+                        break;
+
+                    case "TravelStartTimeAM_t":
+                    case "TravelEndTimeAM_t":
+                        if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
+                            (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
+                            return "Travel time AM interval not correct";
+                        break;
+
+                    case "TravelStartTimePM_t":
+                    case "TravelEndTimePM_t":
+                        if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
+                            (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
+                            return "Travel time PM interval not correct";
+                        break;
+                    default:
+
+                        break;
+                }
+
+                return null;
+            }
+        }
+
         public bool IsValid
         {
             get
@@ -331,7 +378,7 @@ namespace Great.ViewModels.Database
                     (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
                     return false;
 
-                if (TimePeriods == null && FDL == string.Empty)
+                if (TimePeriods == null && FDL == null)
                     return false;
 
                 if (TimePeriods != null && TimePeriods.HasOverlaps())
@@ -357,8 +404,6 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-        #endregion
-
         #endregion
 
         public TimesheetEVM(Timesheet timesheet = null)
