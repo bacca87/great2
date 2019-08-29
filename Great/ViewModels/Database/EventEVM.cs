@@ -247,7 +247,11 @@ namespace Great.ViewModels.Database
         #region Error Validation
         public string Error => throw new NotImplementedException();
 
-        public bool IsValid =>  Title?.Length > 0 && Location.Length > 0 && StartDate > EndDate;
+        public bool IsValid =>
+            this["Type"] == null
+            && this["Title"] == null
+            && this["StartDate"] == null
+            && this["EndDate"] == null;
 
         public string this[string columnName]
         {
@@ -273,7 +277,7 @@ namespace Great.ViewModels.Database
                     case "StartDate":
                     case "EndDate":
                         if (StartDate > EndDate)
-                            return "Time interval not valid";
+                            return "Time interval not valid: Start Date > End Date";
 
                         break;
                     case "BeginHour":

@@ -361,8 +361,9 @@ namespace Great.ViewModels
             SelectedEvent = new EventEVM();
             SelectedEvent.EType = EEventType.Vacations;
             SelectedEvent.EStatus = EEventStatus.Pending;
-            SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
+            SelectedEvent.StartDate = DateTime.Now;
+
         }
 
 

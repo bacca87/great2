@@ -217,7 +217,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  />
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  />
                     <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding BeginHour}" 
@@ -247,7 +247,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true,UpdateSourceTrigger=PropertyChanged}"/>
                     <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding EndHour}" 
