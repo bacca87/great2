@@ -47,6 +47,8 @@ namespace Great
                     .ForMember(x => x.Status1, opt => opt.Ignore())
                     .ForMember(x => x.Type1, opt => opt.Ignore());
 
+                cfg.CreateMap<EventEVM, EventEVM>();
+
                 cfg.CreateMap<DayEvent, DayEventEVM>()
                     .ForMember(x => x.Event1, opt => opt.Ignore())
                     .ForMember(x => x.Day1, opt => opt.Ignore());

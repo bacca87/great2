@@ -221,20 +221,15 @@ namespace Great.Models
                                 {
                                     EventEVM tmp = new EventEVM(existing);
 
-                                    //if event does not have relations create it this is to patch error on previous releases
-                                    if (!db.DayEvents.Any(x => x.EventId == tmp.Id))
-
-
-                                        if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
+                                    if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
 
                                     if ((EEventStatus)status < tmp.EStatus)
                                     {
                                         tmp.EStatus = (EEventStatus)status;
                                         tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
-
+                                        tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
                                         tmp.Save(db);
                                         NotifyEventChanged(tmp);
-
                                     }
                                 }
                             }
