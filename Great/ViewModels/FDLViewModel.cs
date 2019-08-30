@@ -225,7 +225,11 @@ namespace Great.ViewModels
                                 ts = item.Content;
                             else
                                 fdl.Timesheets.Add(item.Content);
+
+                            fdl.IsCompiled = false;
+                            fdl.Save();
                         }
+
                     }
                 })
             );
@@ -245,6 +249,9 @@ namespace Great.ViewModels
                         {
                             var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
                             fdl.Timesheets.Remove(ts);
+
+                            fdl.IsCompiled = false;
+                            fdl.Save();
                         }
                     }
                 })

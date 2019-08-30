@@ -388,9 +388,6 @@ namespace Great.ViewModels
 
                     timesheet.FDL1?.Refresh(db);
 
-                    //if (timesheet.FDL1 != null)
-                    //    Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));
-
                     Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
             }

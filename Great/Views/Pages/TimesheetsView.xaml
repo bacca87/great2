@@ -140,6 +140,7 @@
             </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                <DataGridTextColumn Header="Jullian Day" Binding="{Binding JullianDay}" FontWeight="Regular" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Day" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
