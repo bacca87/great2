@@ -93,7 +93,8 @@ namespace Great.ViewModels
         {
             using (DBArchive db = new DBArchive())
             {
-                db.OrderEmailRecipients.Remove(recipient);
+                OrderEmailRecipient recipientToDelete = db.OrderEmailRecipients.Where(o => o.Address == recipient.Address && o.Order == recipient.Order).FirstOrDefault();
+                db.OrderEmailRecipients.Remove(recipientToDelete);
                 db.SaveChanges();
             }
 

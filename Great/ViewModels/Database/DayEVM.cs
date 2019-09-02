@@ -54,8 +54,6 @@ namespace Great.ViewModels.Database
             }
         }
 
-        public int JullianDay => new JulianCalendar().GetDayOfYear(DateTime.Now.FromUnixTimestamp(Timestamp));
-
         public int WeekNr => Date.WeekNr();
         public bool IsHoliday => DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country);
         public string HolidayLocalName
