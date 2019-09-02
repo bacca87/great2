@@ -8,6 +8,7 @@ using Nager.Date.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Globalization;
 using System.Linq;
 using Day = Great.Models.Database.Day;
 
@@ -52,6 +53,8 @@ namespace Great.ViewModels.Database
                 RaisePropertyChanged();
             }
         }
+
+        public int JullianDay => new JulianCalendar().GetDayOfYear(DateTime.Now.FromUnixTimestamp(Timestamp));
 
         public int WeekNr => Date.WeekNr();
         public bool IsHoliday => DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country);

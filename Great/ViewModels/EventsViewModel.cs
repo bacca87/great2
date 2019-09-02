@@ -237,7 +237,7 @@ namespace Great.ViewModels
                 return;
             }
 
-            if (ev.Error != null)
+            if (!ev.IsValid)
             {
                 MetroMessageBox.Show("Cannot save/edit the event. Please check the errors", "Save Event",MessageBoxButton.OK,MessageBoxImage.Error);
                 return;
@@ -361,8 +361,9 @@ namespace Great.ViewModels
             SelectedEvent = new EventEVM();
             SelectedEvent.EType = EEventType.Vacations;
             SelectedEvent.EStatus = EEventStatus.Pending;
-            SelectedEvent.StartDate = DateTime.Now;
             SelectedEvent.EndDate = DateTime.Now;
+            SelectedEvent.StartDate = DateTime.Now;
+
         }
 
 

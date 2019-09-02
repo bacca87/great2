@@ -111,12 +111,12 @@ namespace Great.ViewModels.Database
         public TimeSpan RentStartTime
         {
             get => RentStartDate.TimeOfDay;
-            set { RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes,0); }
+            set { RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0); }
         }
 
         public TimeSpan? RentEndTime
         {
-            get {if (RentEndDate.HasValue) return RentEndDate.Value.TimeOfDay; return null; }
+            get { if (RentEndDate.HasValue) return RentEndDate.Value.TimeOfDay; return null; }
             set { if (value.HasValue) RentEndDate = new DateTime(RentEndDate.Value.Year, RentEndDate.Value.Month, RentEndDate.Value.Day, value.Value.Hours, value.Value.Minutes, 0); }
         }
 
@@ -159,12 +159,17 @@ namespace Great.ViewModels.Database
 
         #region Errors Validation
 
-        public string Error =>
-            this["StartKm"] != null
-            || this["EndKm"] != null
-            || this["RentStartDate"] != null
-            || this["StartLocation"] != null
-            || this["RentEndDate"] != null ? "Error" : null;
+        public string Error => throw new NotImplementedException();
+
+        public bool IsValid =>
+            this["StartKm"] == null
+            && this["EndKm"] == null
+            && this["RentStartDate"] == null
+            && this["RentEndDate"] == null
+            && this["RentStartTime"] == null
+            && this["StartLocation"] == null
+            && this["RentEndTime"] == null;
+
 
         public string this[string columnName]
         {
@@ -181,8 +186,8 @@ namespace Great.ViewModels.Database
                     case "RentEndDate":
                     case "RentStartTime":
                     case "RentEndTime":
-                        if (RentStartDate != null && RentEndDate.Value.Date < RentStartDate)
-                            return "Dates not valid";
+                        if (RentStartDate != null && RentEndDate.Value< RentStartDate)
+                            return "Dates not valid: End Date < Start Date";
                         break;
 
                     case "StartLocation":

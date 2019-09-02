@@ -1,6 +1,7 @@
 ﻿using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
+using System;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 
@@ -82,13 +83,9 @@ namespace Great.ViewModels.Database
 
         #region Errors Validation
 
-        public string Error =>
-            this["LicensePlate"] != null
-            || this["Brand"] != null
-            || this["Model"] != null
-            || this["CarRentalCompany1"] != null ? "Error" : null;
+        public string Error => throw new NotImplementedException();
 
-
+        public bool IsValid => LicensePlate?.Length > 0 && Brand?.Length > 0 && Model?.Length > 0 && CarRentalCompany > 0;
 
         public string this[string columnName]
         {

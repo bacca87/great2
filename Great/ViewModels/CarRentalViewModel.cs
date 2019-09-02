@@ -270,7 +270,7 @@ namespace Great.ViewModels
             if (rc == null || SelectedCar == null)
                 return;
 
-            if (rc.Error != null || SelectedCar.Error != null)
+            if (!rc.IsValid || !SelectedCar.IsValid)
             {
                 MetroMessageBox.Show("Cannot save/edit the rent. Please check the errors", "Save Rent", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
