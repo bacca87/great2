@@ -1026,6 +1026,18 @@ namespace Great.Models
 
             EmailMessageDTO message = new EmailMessageDTO();
             message.Type = EEmailMessageType.Message;
+
+            if (file is FDLEVM)
+            {
+                FDLEVM fdl = file as FDLEVM;
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            }
+            else if (file is ExpenseAccountEVM)
+            {
+                ExpenseAccountEVM ea = file as ExpenseAccountEVM;
+                message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+            }
+
             message.ToRecipients.Add(address);
 
             return SendMessage(message, file);
