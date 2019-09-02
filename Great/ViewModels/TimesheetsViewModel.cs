@@ -91,6 +91,8 @@ namespace Great.ViewModels
                         FDLs = new ObservableCollection<FDLEVM>(db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList().Select(fdl => new FDLEVM(fdl)));
                     }
                     RaisePropertyChanged(nameof(FDLs));
+
+                    SelectedFDL = FDLs.SingleOrDefault(f => f.Id == SelectedTimesheet.FDL);
                 }
                 else
                 {
@@ -113,8 +115,15 @@ namespace Great.ViewModels
             }
         }
 
-        public ObservableCollection<FDLEVM> FDLs { get; set; }
+        private FDLEVM _selectedFDL;
+        public FDLEVM SelectedFDL
+        {
+            get => _selectedFDL;
+            set => Set(ref _selectedFDL, value);
+        }
 
+        public ObservableCollection<FDLEVM> FDLs { get; set; }
+        
         public Action<DayEVM> OnSelectFirstDayInMonth;
         public Action<DayEVM> OnSelectToday;
         #endregion
@@ -373,9 +382,17 @@ namespace Great.ViewModels
                 return;
             }
 
-            // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
-            if (timesheet.FDL == null)
+            if(SelectedFDL != null)
+            {
+                timesheet.FDL1 = SelectedFDL;
+                timesheet.FDL = SelectedFDL.Id;
+            }
+            else
+            {
+                // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
                 timesheet.FDL1 = null;
+                timesheet.FDL = null;
+            }
 
             using (DBArchive db = new DBArchive())
             {

@@ -274,8 +274,7 @@
                                         <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
 
                                         <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"
-                                          SelectedItem="{Binding SelectedTimesheet.FDL1}" 
-                                          SelectedValue="{Binding SelectedTimesheet.FDL}" 
+                                          SelectedItem="{Binding SelectedFDL}"                                           
                                           IsEnabled="{Binding IsInputEnabled}" 
                                           DisplayMemberPath="FDL_Factory_Display" 
                                           SelectedValuePath="Id" 
