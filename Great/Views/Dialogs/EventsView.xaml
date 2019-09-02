@@ -171,19 +171,19 @@
                 </i:Interaction.Triggers>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
                 <CheckBox   Grid.Row="0" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event"  IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock  Margin="5" Grid.Row="1" Text="Category:" VerticalAlignment="Center"/>
@@ -217,11 +217,11 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate}"  />
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  />
                     <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding BeginHour}" 
-                                  SelectedValue="{Binding BeginHour}" 
+                                  SelectedValue="{Binding BeginHour,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}"  
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
@@ -229,7 +229,7 @@
                     <ComboBox  Grid.Column="6"
                            ItemsSource="{Binding Minutes}"
                                   SelectedItem="{Binding BeginMinutes}" 
-                                  SelectedValue="{Binding BeginMinutes}" 
+                                  SelectedValue="{Binding BeginMinutes,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
@@ -247,11 +247,11 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate}"/>
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true,UpdateSourceTrigger=PropertyChanged}"/>
                     <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding EndHour}" 
-                                  SelectedValue="{Binding EndHour}" 
+                                  SelectedValue="{Binding EndHour,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
@@ -259,7 +259,7 @@
                     <ComboBox  Grid.Column="6"
                            ItemsSource="{Binding Minutes}"
                                   SelectedItem="{Binding EndMinutes}" 
-                                  SelectedValue="{Binding EndMinutes}" 
+                                  SelectedValue="{Binding EndMinutes,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">

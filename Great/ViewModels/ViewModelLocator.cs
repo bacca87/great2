@@ -35,7 +35,7 @@ namespace Great.ViewModels
             // Indipendent
             SimpleIoc.Default.Register<TimesheetsViewModel>(true);
             SimpleIoc.Default.Register<FactoriesViewModel>(true);
-            SimpleIoc.Default.Register<InformationsViewModel>(true);            
+            SimpleIoc.Default.Register<InformationsViewModel>(true);
             SimpleIoc.Default.Register<ImportExportViewModel>(true);
             SimpleIoc.Default.Register<GreatImportWizardViewModel>(true);
             SimpleIoc.Default.Register<OrderRecipientsViewModel>(true);

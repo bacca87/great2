@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -180,6 +179,7 @@ namespace Great.ViewModels
             MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, NewEA);
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -244,6 +244,21 @@ namespace Great.ViewModels
                                 ea.FDL1 = ea.FDL1; // hack to force the View to update the factory name
                             }
                         }
+                    }
+                })
+            );
+        }
+
+        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        var eaToUpdate = ExpenseAccounts.SingleOrDefault(e => e.FDL1.Id == item.Content.Id);
+                        eaToUpdate.FDL1.Factory1 = item.Content.Factory1;
                     }
                 })
             );

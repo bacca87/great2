@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Great.Utils.Extensions;
+using System.Windows.Controls;
 
 namespace Great.Views.Pages
 {
@@ -12,6 +13,27 @@ namespace Great.Views.Pages
         {
             InitializeComponent();
 
+        }
+
+        private void ComboBox_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+        }
+
+        private void CmbLicenxePlate_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            cmbLicenxePlate.Text = cmbLicenxePlate.Text?.ToUpper();
+        }
+
+
+        private void MaskedTextBox_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            MaskedTextBoxHelper.PreviewLostKeyboardFocus(sender, e);
+        }
+
+        private void MaskedTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            MaskedTextBoxHelper.PreviewTextInput(sender, e);
         }
     }
 }

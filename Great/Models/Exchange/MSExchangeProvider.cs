@@ -50,7 +50,7 @@ namespace Great.Models
             {
                 lock (this)
                 {
-                    if(exchangeStatus != value)
+                    if (exchangeStatus != value)
                     {
                         exchangeStatus = value;
                         Messenger.Default.Send(new StatusChangeMessage<EProviderStatus>(this, exchangeStatus));
@@ -115,7 +115,7 @@ namespace Great.Models
 
             exServiceUri = exService.Url;
 
-            if((emailSenderThread == null || !emailSenderThread.IsAlive) && !exitToken.IsCancellationRequested)
+            if ((emailSenderThread == null || !emailSenderThread.IsAlive) && !exitToken.IsCancellationRequested)
             {
                 emailSenderThread = new Thread(EmailSenderThread);
                 emailSenderThread.Name = "Email Sender";
@@ -141,7 +141,7 @@ namespace Great.Models
         }
 
         private void EmailSenderThread()
-        {   
+        {
             ExchangeTraceListener trace = new ExchangeTraceListener();
             ExchangeService service = new ExchangeService
             {
@@ -265,7 +265,15 @@ namespace Great.Models
 
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
 
-                    string aqsQuery = $"from:(\"{ApplicationSettings.EmailRecipients.FDLSystem}\" OR \"fdl\" OR \"SAP MAIL\" OR \"Sistema FDL\" OR \"fdl_chk\" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\")";
+                    string aqsQuery = $"from:(" +
+                        $"\"{ApplicationSettings.EmailRecipients.FDLSystem}\"" +
+                        $" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\"" +
+                        $" OR \"{ApplicationSettings.EmailRecipients.SAP}\"" +
+                        $" OR \"fdl\"" +
+                        $" OR \"SAP MAIL\"" +
+                        $" OR \"Sistema FDL\"" +
+                        $" OR \"fdl_chk\"" +
+                        ")";
 
                     // try to get last week messages (high priority)
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery + " received:>=lastweek", folderView, itemView))
@@ -333,10 +341,10 @@ namespace Great.Models
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
             try
-            {   
+            {
                 connection.Open();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (Status != EProviderStatus.Error)
                     Status = EProviderStatus.Offline;
@@ -352,7 +360,7 @@ namespace Great.Models
 
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
-            if(!connection.IsOpen)
+            if (!connection.IsOpen)
                 connection.Close();
 
             connection.Dispose();
@@ -478,14 +486,14 @@ namespace Great.Models
                 }
             }
 
-            if(exitToken != null)
+            if (exitToken != null)
             {
                 try
                 {
                     exitToken.Cancel(false);
                 }
                 catch { }
-            }   
+            }
 
             if (mainThread != null && !mainThread.Join(3000))
             {
@@ -497,7 +505,7 @@ namespace Great.Models
                 catch { }
             }
 
-            if(emailSenderThread != null && !emailSenderThread.Join(3000))
+            if (emailSenderThread != null && !emailSenderThread.Join(3000))
             {
                 try
                 {
@@ -594,7 +602,7 @@ namespace Great.Models
                         return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

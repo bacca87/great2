@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Great.Models.Database
@@ -9,7 +8,7 @@ namespace Great.Models.Database
     {
         public Event()
         {
-           
+
         }
 
         public long Id { get; set; }

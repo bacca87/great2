@@ -1,11 +1,13 @@
 ﻿using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
+using System;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 
 namespace Great.ViewModels.Database
 {
-    public class CarEVM : EntityViewModelBase
+    public class CarEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
 
@@ -53,6 +55,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _carRentalCompany, value);
                 RaisePropertyChanged(nameof(CarRentalCompany));
+                RaisePropertyChanged(nameof(CarRentalCompany1));
             }
 
         }
@@ -61,7 +64,11 @@ namespace Great.ViewModels.Database
         public CarRentalCompanyDTO CarRentalCompany1
         {
             get => _carRentalCompany1;
-            set => Set(ref _carRentalCompany1, value);
+            set
+            {
+                Set(ref _carRentalCompany1, value);
+                RaisePropertyChanged(nameof(CarRentalCompany1));
+            }
         }
 
         private ObservableCollectionEx<CarRentalHistoryEVM> _carRentalHistories;
@@ -73,6 +80,47 @@ namespace Great.ViewModels.Database
 
         #endregion
 
+
+        #region Errors Validation
+
+        public string Error => throw new NotImplementedException();
+
+        public bool IsValid => LicensePlate?.Length > 0 && Brand?.Length > 0 && Model?.Length > 0 && CarRentalCompany > 0;
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case "LicensePlate":
+                        if (string.IsNullOrEmpty(LicensePlate) || string.IsNullOrWhiteSpace(LicensePlate))
+                            return "License Plate not valid";
+                        break;
+
+                    case "Brand":
+                        if (string.IsNullOrEmpty(Brand) || string.IsNullOrWhiteSpace(Brand))
+                            return "Brand not valid";
+                        break;
+
+                    case "Model":
+                        if (string.IsNullOrEmpty(Model) || string.IsNullOrWhiteSpace(Model))
+                            return "Model not valid";
+                        break;
+                    case "CarRentalCompany1":
+                        if (CarRentalCompany1 == null || CarRentalCompany1?.Id == 0)
+                            return "Rental company not valid";
+                        break;
+
+                    default:
+
+                        break;
+                }
+
+                return null;
+            }
+        }
+        #endregion
         public CarEVM(Car car = null)
         {
             if (car != null)

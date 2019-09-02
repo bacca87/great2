@@ -1,7 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Controls;
 using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
@@ -82,7 +81,7 @@ namespace Great.ViewModels
 
                 if (_selectedWorkingDay != null)
                 {
-                    SelectedTimesheet = null;
+                    SelectedTimesheet = _selectedWorkingDay.Timesheets?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
                     CurrentMonth = _selectedWorkingDay.Date.Month;
                     IsInputEnabled = _selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay;
 
@@ -325,11 +324,18 @@ namespace Great.ViewModels
                     }
                 }
             }
+
+            foreach (var timesheet in destinationDay.Timesheets)
+                Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
         }
         public void ResetDay(DayEVM day)
         {
+            day.Timesheets?.ToList().ForEach(x => DeleteTimesheet(x));
+
             if (day.Delete())
+            {
                 day.EType = EDayType.WorkDay;
+            }
         }
         public void DeleteTimesheet(TimesheetEVM timesheet)
         {
@@ -351,12 +357,19 @@ namespace Great.ViewModels
 
             if (!timesheet.IsValid)
             {
-                MetroMessageBox.Show("Each time period requires a beginning and an end, and these periods can't overlap between them!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MetroMessageBox.Show("Cannot save/edit the Timesheet. It must have a FDL connected or valid time periods", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
             {
                 MetroMessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
+            {
+                MetroMessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -374,9 +387,6 @@ namespace Great.ViewModels
                     SelectedTimesheet = null;
 
                     timesheet.FDL1?.Refresh(db);
-
-                    //if (timesheet.FDL1 != null)
-                    //    Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, timesheet.FDL1));
 
                     Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
@@ -409,7 +419,7 @@ namespace Great.ViewModels
                 new Action(() =>
                 {
                     if (item.Content != null)
-                    {                        
+                    {
                         var days = item.Content.Timesheets.Select(t => t.Timestamp).Distinct();
                         var daysToRefresh = WorkingDays.Where(x => days.Contains(x.Timestamp));
                         var fdl = FDLs.SingleOrDefault(f => f.Id == item.Content.Id);
@@ -428,7 +438,7 @@ namespace Great.ViewModels
                                 fdl.Refresh(db);
 
                             db.SaveChanges();
-                        }   
+                        }
                     }
                 })
             );
@@ -450,8 +460,9 @@ namespace Great.ViewModels
 
                             foreach (var day in dayToUpdate)
                             {
-                                foreach(var timesheet in day.Timesheets)
-                                    timesheet.FDL1.Factory1 = factory;
+                                foreach (var timesheet in day.Timesheets)
+                                    if (timesheet.FDL1 != null)
+                                        timesheet.FDL1.Factory1 = factory;
 
                                 day.RaisePropertyChanged(nameof(day.Factories_Display)); // hack to force the View to update the factory name
                             }
