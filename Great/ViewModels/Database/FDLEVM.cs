@@ -51,57 +51,57 @@ namespace Great.ViewModels.Database
         public long? Factory
         {
             get => _Factory;
-            set => Set(ref _Factory, value);
+            set { Set(ref _Factory, value); IsChanged = true; }
         }
 
         private bool _OutwardCar;
         public bool OutwardCar
         {
             get => _OutwardCar;
-            set => Set(ref _OutwardCar, value);
+            set { Set(ref _OutwardCar, value); IsChanged = true; }
         }
 
         private bool _ReturnCar;
         public bool ReturnCar
         {
             get => _ReturnCar;
-            set => Set(ref _ReturnCar, value);
+            set { Set(ref _ReturnCar, value); IsChanged = true; }
         }
 
         private bool _OutwardTaxi;
         public bool OutwardTaxi
         {
             get => _OutwardTaxi;
-            set => Set(ref _OutwardTaxi, value);
+            set { Set(ref _OutwardTaxi, value); IsChanged = true; }
         }
 
         private bool _ReturnTaxi;
         public bool ReturnTaxi
         {
             get => _ReturnTaxi;
-            set => Set(ref _ReturnTaxi, value);
-        }
+            set { Set(ref _ReturnTaxi, value); IsChanged = true; }
+            }
 
         private bool _OutwardAircraft;
         public bool OutwardAircraft
         {
             get => _OutwardAircraft;
-            set => Set(ref _OutwardAircraft, value);
-        }
+            set { Set(ref _OutwardAircraft, value); IsChanged = true; }
+            }
 
         private bool _ReturnAircraft;
         public bool ReturnAircraft
         {
             get => _ReturnAircraft;
-            set => Set(ref _ReturnAircraft, value);
-        }
+            set { Set(ref _ReturnAircraft, value); IsChanged = true; }
+            }
 
         private string _PerformanceDescription;
         public string PerformanceDescription
         {
             get => _PerformanceDescription;
-            set => Set(ref _PerformanceDescription, value);
-        }
+            set { Set(ref _PerformanceDescription, value); IsChanged = true; }
+            }
 
         private long _Result;
         public long Result
@@ -111,6 +111,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _Result, value);
                 RaisePropertyChanged(nameof(EResult));
+                IsChanged = true;
             }
         }
 
@@ -118,22 +119,22 @@ namespace Great.ViewModels.Database
         public string ResultNotes
         {
             get => _ResultNotes;
-            set => Set(ref _ResultNotes, value);
-        }
+            set { Set(ref _ResultNotes, value); IsChanged = true; }
+            }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
-        }
+            set { Set(ref _Notes, value); IsChanged = true; }
+            }
 
         private string _PerformanceDescriptionDetails;
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
-            set => Set(ref _PerformanceDescriptionDetails, value);
-        }
+            set { Set(ref _PerformanceDescriptionDetails, value); IsChanged = true; }
+            }
 
         private long _Status;
         public long Status
@@ -197,6 +198,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _Factory1, value);
                 RaisePropertyChanged(nameof(FDL_Factory_Display));
+                IsChanged = true;
             }
         }
 
@@ -275,6 +277,7 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();
+            AcceptChanges();
 
             return true;
         }

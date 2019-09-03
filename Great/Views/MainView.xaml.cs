@@ -95,6 +95,7 @@ namespace Great.Views
                 return;
 
             EventsView view = new EventsView();
+            view.Owner = this;
             view.ShowDialog();
         }
 

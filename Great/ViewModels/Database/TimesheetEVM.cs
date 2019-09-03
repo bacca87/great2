@@ -40,6 +40,7 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelStartTimeAM, value);
                 RaisePropertyChanged(nameof(TravelStartTimeAM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -52,6 +53,7 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelEndTimeAM, value);
                 RaisePropertyChanged(nameof(TravelEndTimeAM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -64,6 +66,7 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelStartTimePM, value);
                 RaisePropertyChanged(nameof(TravelStartTimePM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -76,6 +79,7 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelEndTimePM, value);
                 RaisePropertyChanged(nameof(TravelEndTimePM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -88,6 +92,7 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkStartTimeAM, value);
                 RaisePropertyChanged(nameof(WorkStartTimeAM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -100,6 +105,7 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkEndTimeAM, value);
                 RaisePropertyChanged(nameof(WorkEndTimeAM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -112,6 +118,7 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkStartTimePM, value);
                 RaisePropertyChanged(nameof(WorkStartTimePM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -124,6 +131,7 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkEndTimePM, value);
                 RaisePropertyChanged(nameof(WorkEndTimePM_t));
                 UpdateTotals();
+                IsChanged = true;
             }
         }
 
@@ -131,14 +139,14 @@ namespace Great.ViewModels.Database
         public string FDL
         {
             get => _FDL;
-            set => Set(ref _FDL, value);
+            set { Set(ref _FDL, value); IsChanged = true; }
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
+            set { Set(ref _Notes, value); IsChanged = true; }
         }
 
         private DayDTO _Day;
@@ -152,7 +160,7 @@ namespace Great.ViewModels.Database
         public FDLEVM FDL1
         {
             get => _FDL1;
-            set => Set(ref _FDL1, value);
+            set { Set(ref _FDL1, value); IsChanged = true; }
         }
 
         #region Converted Properties
@@ -313,8 +321,6 @@ namespace Great.ViewModels.Database
         }
         #endregion
 
-
-
         #endregion
 
         #region Error Validation
@@ -420,15 +426,8 @@ namespace Great.ViewModels.Database
             db.Timesheets.AddOrUpdate(timesheet);
             db.SaveChanges();
             Id = timesheet.Id;
-
+            AcceptChanges();
             return true;
-        }
-
-        private void UpdateTotals()
-        {
-            RaisePropertyChanged(nameof(TotalTime));
-            RaisePropertyChanged(nameof(WorkTime));
-            RaisePropertyChanged(nameof(TravelTime));
         }
 
         public override bool Delete(DBArchive db)
@@ -453,5 +452,13 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
+        private void UpdateTotals()
+        {
+            RaisePropertyChanged(nameof(TotalTime));
+            RaisePropertyChanged(nameof(WorkTime));
+            RaisePropertyChanged(nameof(TravelTime));
+        }
+
     }
 }

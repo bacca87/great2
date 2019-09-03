@@ -15,7 +15,14 @@
       DataContext="{Binding CarRental, Source={StaticResource Locator}}"
       Title="CarRental"
        Style="{DynamicResource MetroPage}">
-
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Page.Resources>
         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
         <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
@@ -78,8 +85,10 @@
                     <DataGridTextColumn  Header="Start Location" Binding="{Binding StartLocation}"/>
                     <DataGridTextColumn  Header="End Location" Binding="{Binding EndLocation}"/>
                     <DataGridTextColumn  Header="Duration" Binding="{Binding RentDuration, Converter={StaticResource TimeSpanToStringConverter}}"/>
-                    <DataGridTextColumn  Header="Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy HH:mm' }" />
-                    <DataGridTextColumn  Header="End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy HH:mm'}"/>
+                    <DataGridTextColumn  Header="Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy' }" />
+                    <DataGridTextColumn  Header="" Binding="{Binding RentStartTime}" />
+                    <DataGridTextColumn  Header="End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy'}"/>
+                    <DataGridTextColumn  Header="" Binding="{Binding RentEndTime }" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -121,10 +130,10 @@
                 </Grid.RowDefinitions>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="GotFocus">
-                        <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="LostFocus">
-                        <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
@@ -200,7 +209,7 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="70" />
                     </Grid.ColumnDefinitions>
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedRent.RentStartDate,StringFormat='dd/MM/yyyy',ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <DatePicker Grid.Column="0"  SelectedDate="{Binding SelectedRent.RentStartDate, StringFormat=dd/MM/yyyy,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}" />
                     <xctk:MaskedTextBox Grid.Column="2"  Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentStartTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
                 </Grid>
                 <TextBlock VerticalAlignment="Center" Grid.Row="14">Rent End Date</TextBlock>
@@ -210,7 +219,7 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="70" />
                     </Grid.ColumnDefinitions>
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedRent.RentEndDate,StringFormat='dd/MM/yyyy',ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedRent.RentEndDate,StringFormat='dd/MM/yyyy',ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}"/>
                     <xctk:MaskedTextBox  Grid.Column="2" Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentEndTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
                 </Grid>
                 <TextBlock VerticalAlignment="Center" Grid.Row="16">Rent Start Location</TextBlock>

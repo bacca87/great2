@@ -116,6 +116,8 @@ namespace Great.ViewModels
         public RelayCommand<ExpenseAccountEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
+        public RelayCommand PageLoadedCommand { get; set; }
+        public RelayCommand PageUnloadedCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -168,6 +170,9 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
+            PageLoadedCommand = new RelayCommand(PageLoaded);
+            PageUnloadedCommand = new RelayCommand(PageUnloaded);
+
 
             using (DBArchive db = new DBArchive())
             {
@@ -187,6 +192,25 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
+        }
+
+        private void PageUnloaded()
+        {
+            var changed = ExpenseAccounts.Where(x => x.IsChanged);
+            if (changed.Count() == 0) return;
+
+
+            if (MetroMessageBox.Show("You changed page without saving.Do you want to save it?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                changed.ToList().ForEach(x => x.Save());
+
+            else
+                changed.ToList().ForEach(x => x.RejectChanges());
+
+        }
+
+        private void PageLoaded()
+        {
+            ExpenseAccounts.ToList().ForEach(x => x.IsChanged = false);
         }
 
         public void NewEA(NewItemMessage<ExpenseAccountEVM> item)

@@ -39,8 +39,8 @@ namespace Great.ViewModels.Database
         public DayType DayType
         {
             get => _DayType;
-            set => Set(ref _DayType, value);
-        }
+            set { Set(ref _DayType, value); }
+            }
 
         public ObservableCollectionEx<TimesheetEVM> Timesheets { get; set; }
 
@@ -365,7 +365,7 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
             db.SaveChanges();
-
+            AcceptChanges();
             return true;
         }
 

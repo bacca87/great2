@@ -17,6 +17,14 @@
       MinHeight="600"
       IsVisibleChanged="Page_IsVisibleChanged"
       Style="{DynamicResource MetroPage}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Page.Resources>
         <CollectionViewSource x:Key="FactoriesCollectionView" Source="{Binding Factories}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>

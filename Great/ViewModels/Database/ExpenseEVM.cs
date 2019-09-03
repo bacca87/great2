@@ -26,8 +26,8 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set => Set(ref _Type, value);
-        }
+            set { Set(ref _Type, value); IsChanged = true; }
+            }
 
         private double? _MondayAmount;
         public double? MondayAmount
@@ -37,6 +37,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _MondayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -48,6 +49,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _TuesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -59,6 +61,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _WednesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -70,6 +73,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _ThursdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -81,6 +85,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _FridayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -92,6 +97,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _SaturdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -103,6 +109,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _SundayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+                IsChanged = true;
             }
         }
 
@@ -112,8 +119,8 @@ namespace Great.ViewModels.Database
         public ExpenseTypeDTO ExpenseType
         {
             get => _ExpenseType;
-            set => Set(ref _ExpenseType, value);
-        }
+            set { Set(ref _ExpenseType, value); IsChanged = true; }
+            }
         #endregion
 
         // hack because XAML didnt support default parameters
@@ -133,7 +140,7 @@ namespace Great.ViewModels.Database
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;
-
+            AcceptChanges();
             return true;
         }
 

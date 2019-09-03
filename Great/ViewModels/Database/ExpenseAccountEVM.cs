@@ -40,6 +40,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _Currency, value);
                 CurrencyCode = CurrencyCodeMapper.GetSymbol(_Currency);
+                IsChanged = true;
             }
         }
 
@@ -47,7 +48,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
+            set { Set(ref _Notes, value); IsChanged = true; }
         }
 
         private long _Status;
@@ -114,7 +115,7 @@ namespace Great.ViewModels.Database
         public CurrencyDTO Currency1
         {
             get => _Currency1;
-            set => Set(ref _Currency1, value);
+            set { Set(ref _Currency1, value); IsChanged = true; }
         }
 
         private ObservableCollectionEx<ExpenseEVM> _Expenses;
@@ -151,7 +152,7 @@ namespace Great.ViewModels.Database
         public string CurrencyCode
         {
             get => _CurrencyCode;
-            set => Set(ref _CurrencyCode, value);
+            set { Set(ref _CurrencyCode, value); IsChanged = true; }
         }
 
         public EFDLStatus EStatus
@@ -213,7 +214,7 @@ namespace Great.ViewModels.Database
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;
-
+            AcceptChanges();
             return true;
         }
 
@@ -224,7 +225,13 @@ namespace Great.ViewModels.Database
 
         public override bool Refresh(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            var exp = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
+            if (exp != null)
+            {
+                Global.Mapper.Map(exp, this);
+                return true;
+            }
+            return false;
         }
     }
 }

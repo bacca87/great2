@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
+using Great.Utils.Extensions;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.ObjectModel;
@@ -156,6 +157,8 @@ namespace Great.ViewModels
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand ApplyFilters { get; set; }
         public RelayCommand RemoveFilters { get; set; }
+        public RelayCommand PageLoadedCommand { get; set; }
+        public RelayCommand PageUnloadedCommand { get; set; }
 
         #endregion
 
@@ -176,6 +179,8 @@ namespace Great.ViewModels
             LostFocusCommand = new RelayCommand(() => { });
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
+            PageLoadedCommand = new RelayCommand(PageLoaded);
+            PageUnloadedCommand = new RelayCommand(PageUnloaded);
 
             //by default initialize filter on last year 
             RentStartDateFilter = DateTime.Now;
@@ -194,7 +199,33 @@ namespace Great.ViewModels
             _FilteredRentals.Filter += Filter;
 
             FilteredRentals.MoveCurrentToFirst();
-            SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem ;
+            SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem;
+        }
+
+
+        private void PageUnloaded()
+        {
+            var changed = (from r in Rentals let car = r.Car1 where car != null && car.IsChanged || r.IsChanged select r);
+            if (changed.Count() == 0) return;
+
+            if (MetroMessageBox.Show("You changed page without saving. Do you want to commit changes?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                changed.ToList().ForEach(x => x.Save());
+                if (SelectedRent.IsChanged) SelectedRent.Save();
+            }
+
+            else
+            {
+                changed.ToList().ForEach(x => { x.RejectChanges(); x.Car1.RejectChanges(); });
+                SelectedRent.RejectChanges();
+            }
+
+
+        }
+
+        private void PageLoaded()
+        {
+            Rentals.ToList().ForEach(x => { x.IsChanged = false; x.Car1.IsChanged = false; });
         }
 
         private void RemoveFiltersCommand()
@@ -240,6 +271,7 @@ namespace Great.ViewModels
 
         private void DeleteRent(CarRentalHistoryEVM cr)
         {
+            if (cr.Id == 0) return;
             if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
                 using (DBArchive db = new DBArchive())
@@ -275,7 +307,6 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("Cannot save/edit the rent. Please check the errors", "Save Rent", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
             var existingRent = Rentals.SingleOrDefault(r => r.Id == SelectedRent.Id);
 
             using (DBArchive db = new DBArchive())

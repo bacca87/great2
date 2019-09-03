@@ -285,7 +285,7 @@ namespace Great.Views
                     if (tempMarker != null)
                         factoriesMapControl.Markers.Remove(tempMarker);
 
-                    FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
+                    FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, CompanyName = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
                     GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
                     tempMarker = marker;
                     factoriesMapControl.Markers.Add(marker);

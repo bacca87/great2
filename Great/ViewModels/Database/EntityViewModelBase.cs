@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using Great.Models.Database;
+using System.ComponentModel;
 
 namespace Great.ViewModels.Database
 {
-    public abstract class EntityViewModelBase : ViewModelBase
+    public abstract class EntityViewModelBase : ViewModelBase, IRevertibleChangeTracking
     {
         public bool Refresh()
         {
@@ -28,5 +29,23 @@ namespace Great.ViewModels.Database
         }
 
         public abstract bool Delete(DBArchive db);
+
+        #region IRevertibleChangesTracking
+
+        public bool IsChanged { get; set; }
+        public void AcceptChanges()
+        {
+            IsChanged = false;
+        }
+
+        public void RejectChanges()
+        {
+            using (DBArchive DB = new DBArchive())
+            {
+                Refresh();
+                IsChanged = false;
+            }
+        }
+        #endregion
     }
 }

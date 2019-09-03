@@ -150,6 +150,9 @@ namespace Great.ViewModels
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
         public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
 
+        public RelayCommand PageLoadedCommand { get; set; }
+        public RelayCommand PageUnloadedCommand { get; set; }
+
         #endregion
 
         /// <summary>
@@ -172,6 +175,8 @@ namespace Great.ViewModels
             CopyDayCommand = new RelayCommand<DayEVM>(CopyDay);
             CutDayCommand = new RelayCommand<DayEVM>(CutDay);
             PasteDayCommand = new RelayCommand<DayEVM>(PasteDay);
+            PageLoadedCommand = new RelayCommand(PageLoaded);
+            PageUnloadedCommand = new RelayCommand(PageUnloaded);
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
@@ -182,6 +187,16 @@ namespace Great.ViewModels
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
 
             UpdateWorkingDays();
+        }
+
+        private void PageUnloaded()
+        {
+            var a = WorkingDays.Where(x => x.IsChanged);
+        }
+
+        private void PageLoaded()
+        {
+            WorkingDays.ToList().ForEach(x => x.IsChanged = false);
         }
 
         private void UpdateWorkingDays()

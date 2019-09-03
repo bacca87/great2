@@ -4,6 +4,7 @@ using Great.Utils;
 using System;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
@@ -21,6 +22,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _licencePlate, value);
                 RaisePropertyChanged(nameof(LicensePlate));
+                IsChanged = true;
             }
         }
 
@@ -32,6 +34,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _brand, value);
                 RaisePropertyChanged(nameof(Brand));
+                IsChanged = true;
             }
         }
 
@@ -43,6 +46,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _model, value);
                 RaisePropertyChanged(nameof(Model));
+                IsChanged = true;
             }
         }
 
@@ -56,6 +60,7 @@ namespace Great.ViewModels.Database
                 Set(ref _carRentalCompany, value);
                 RaisePropertyChanged(nameof(CarRentalCompany));
                 RaisePropertyChanged(nameof(CarRentalCompany1));
+                IsChanged = true;
             }
 
         }
@@ -68,6 +73,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _carRentalCompany1, value);
                 RaisePropertyChanged(nameof(CarRentalCompany1));
+                IsChanged = true;
             }
         }
 
@@ -135,7 +141,7 @@ namespace Great.ViewModels.Database
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
             Id = car.Id;
-
+            AcceptChanges();
             return true;
         }
 
@@ -146,7 +152,13 @@ namespace Great.ViewModels.Database
 
         public override bool Refresh(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            var car = db.Cars.SingleOrDefault(x => x.Id == Id);
+            if (car != null)
+            {
+                Global.Mapper.Map(car, this);
+                return true;
+            }
+            return false;
         }
     }
 }
