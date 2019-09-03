@@ -66,7 +66,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
-            <ListView Name="factoriesListView" 
+            <ListView Name="factoriesListView" MouseDoubleClick="FactoriesListView_MouseDoubleClick"    
                       ItemsSource="{Binding Source={StaticResource FactoriesCollectionView}}" 
                       SelectedItem="{Binding SelectedFactory}" Grid.Column="0">
                 <ListView.Resources>
@@ -86,7 +86,7 @@
                 </ListView.View>
             </ListView>
 
-            <Expander Grid.Column="1" ExpandDirection="Left" IsExpanded="{Binding ShowExpandable,Mode=TwoWay}">
+            <Expander Name="ExpanderEdit" Grid.Column="1" ExpandDirection="Left" IsExpanded="{Binding ShowExpandable,Mode=TwoWay}">
                 <Expander.Header>
                     <TextBlock Text="Add / Edit" Margin="0,10,0,0">
                         <TextBlock.LayoutTransform>
@@ -97,10 +97,10 @@
                 <Grid Margin="5,5,5,5" Width="500">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="GotFocus">
-                            <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                            <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
                         </i:EventTrigger>
                         <i:EventTrigger EventName="LostFocus">
-                            <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                            <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <Grid.Resources>

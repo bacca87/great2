@@ -29,11 +29,7 @@ namespace Great.ViewModels.Database
         public long SharePointId
         {
             get => _SharePointId;
-            set
-            {
-                Set(ref _SharePointId, value);
-                RaisePropertyChanged(nameof(SharePointId));
-            }
+            set => Set(ref _SharePointId, value);
         }
 
         private long _Type;
@@ -43,9 +39,21 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Type, value);
-                //         RaisePropertyChanged(nameof(Location));
+                IsChanged = true;
             }
         }
+
+        public EEventType EType
+        {
+            get => (EEventType)Type;
+            set
+            {
+                Type = (int)value;
+                RaisePropertyChanged(nameof(Type));
+                IsChanged = true;
+            }
+        }
+
 
         private string _Title;
         public string Title
@@ -54,6 +62,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Title, value);
+                IsChanged = true;
             }
         }
 
@@ -64,7 +73,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Location, value);
-                //         RaisePropertyChanged(nameof(Location));
+                IsChanged = true;
             }
         }
 
@@ -72,22 +81,22 @@ namespace Great.ViewModels.Database
         public DateTime? SendDateTime
         {
             get => _SendDateTime;
-            set
-            {
-                Set(ref _SendDateTime, value);
-                RaisePropertyChanged(nameof(SendDateTime));
-            }
+            set => Set(ref _SendDateTime, value);
         }
 
         private long _StartDateTimestamp;
         public long StartDateTimeStamp
         {
             get => _StartDateTimestamp;
-            set
-            {
-                Set(ref _StartDateTimestamp, value);
-                //RaisePropertyChanged(nameof(StartDate));
-            }
+            set => Set(ref _StartDateTimestamp, value);
+        }
+
+
+        private long _EndDateTimestamp;
+        public long EndDateTimeStamp
+        {
+            get => _EndDateTimestamp;
+            set => Set(ref _EndDateTimestamp, value);
         }
 
         public DateTime StartDate
@@ -96,30 +105,19 @@ namespace Great.ViewModels.Database
             set
             {
                 StartDateTimeStamp = value.ToUnixTimestamp();
-                RaisePropertyChanged();
+                IsChanged = true;
             }
         }
-
         public DateTime EndDate
         {
             get => DateTime.Now.FromUnixTimestamp(EndDateTimeStamp);
             set
             {
                 EndDateTimeStamp = value.ToUnixTimestamp();
-                RaisePropertyChanged();
+                IsChanged = true;
             }
         }
 
-        private long _EndDateTimestamp;
-        public long EndDateTimeStamp
-        {
-            get => _EndDateTimestamp;
-            set
-            {
-                Set(ref _EndDateTimestamp, value);
-                //RaisePropertyChanged(nameof(EndDate));
-            }
-        }
 
         private string _Description;
         public string Description
@@ -128,9 +126,10 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Description, value);
-                //     RaisePropertyChanged(nameof(Description));
+                IsChanged = true;
             }
         }
+
 
         private bool _IsAllDay;
         public bool IsAllDay
@@ -139,20 +138,19 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _IsAllDay, value);
-                RaisePropertyChanged();
+                IsChanged = true;
             }
         }
+
 
         private bool _IsSent;
         public bool IsSent
         {
             get => _IsSent;
-            set
-            {
-                Set(ref _IsSent, value);
-                RaisePropertyChanged(nameof(IsSent));
-            }
+            set => Set(ref _IsSent, value);
         }
+
+
         private long _Status;
         public long Status
         {
@@ -163,6 +161,7 @@ namespace Great.ViewModels.Database
                 RaisePropertyChanged(nameof(EStatus));
             }
         }
+
 
         private bool _IsNew;
         public bool IsNew
@@ -182,15 +181,6 @@ namespace Great.ViewModels.Database
             }
         }
 
-        public EEventType EType
-        {
-            get => (EEventType)Type;
-            set
-            {
-                Type = (int)value;
-                RaisePropertyChanged();
-            }
-        }
 
         private EventStatusDTO _Status1;
         public EventStatusDTO Status1
@@ -199,9 +189,11 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Status1, value);
-                RaisePropertyChanged(nameof(Status1));
+                RaisePropertyChanged(nameof(Status));
+                RaisePropertyChanged(nameof(EStatus));
             }
         }
+
 
         private EventTypeDTO _Type1;
         public EventTypeDTO Type1
@@ -210,8 +202,12 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Type1, value);
+                IsChanged = true;
+                RaisePropertyChanged(nameof(Type));
+                RaisePropertyChanged(nameof(EType));
             }
         }
+
 
         private bool _IsReadOnly;
         public bool IsReadOnly
@@ -220,39 +216,31 @@ namespace Great.ViewModels.Database
             set => Set(ref _IsReadOnly, value);
         }
 
+
         private string _Approver;
         public string Approver
         {
             get => _Approver;
-            set
-            {
-                Set(ref _Approver, value);
-                RaisePropertyChanged(nameof(Approver));
-            }
+            set => Set(ref _Approver, value);
         }
+
 
         private DateTime? _ApprovationDate;
         public DateTime? ApprovationDate
         {
             get => _ApprovationDate;
-            set
-            {
-                Set(ref _ApprovationDate, value);
-                RaisePropertyChanged(nameof(_ApprovationDate));
-            }
+            set => Set(ref _ApprovationDate, value);
         }
 
         #endregion
 
         #region Error Validation
         public string Error => throw new NotImplementedException();
-
         public bool IsValid =>
             this["Type"] == null
             && this["Title"] == null
             && this["StartDate"] == null
             && this["EndDate"] == null;
-
         public string this[string columnName]
         {
             get
@@ -315,7 +303,6 @@ namespace Great.ViewModels.Database
             if (ev != null)
                 Global.Mapper.Map(ev, this);
         }
-
         public override bool Save(DBArchive db)
         {
             Event ev = new Event();
@@ -327,15 +314,18 @@ namespace Great.ViewModels.Database
 
             return true;
         }
-
         public override bool Delete(DBArchive db)
         {
-            var ev = db.Events.Where(x => x.Id == this.Id).FirstOrDefault();
-            db.Events.Remove(ev);
-            db.SaveChanges();
-            return true;
-        }
+            var ev = db.Events.SingleOrDefault(x => x.Id == this.Id);
+            if (ev != null)
+            {
+                db.Events.Remove(ev);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
 
+        }
         public override bool Refresh(DBArchive db)
         {
             Event ev = db.Events.SingleOrDefault(e => e.Id == Id);
@@ -343,16 +333,11 @@ namespace Great.ViewModels.Database
             if (ev != null)
             {
                 Global.Mapper.Map(ev, this);
-
-                //foreach (TimesheetEVM timesheet in Timesheets)
-                //    timesheet.Refresh(db);
-
                 return true;
             }
 
             return false;
         }
-
         public void AddOrUpdateEventRelations(DBArchive db)
         {
             List<DayEVM> currentDayEVM;
@@ -388,7 +373,6 @@ namespace Great.ViewModels.Database
             }
 
         }
-
         public void AddOrUpdateEventRelations()
         {
             List<DayEVM> currentDayEVM;
@@ -426,7 +410,6 @@ namespace Great.ViewModels.Database
             }
 
         }
-
         public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
         {
             List<DateTime> dates = new List<DateTime>();
@@ -444,22 +427,5 @@ namespace Great.ViewModels.Database
             return dates;
         }
 
-        private void UpdateInfo()
-        {
-            RaisePropertyChanged(nameof(Id));
-            RaisePropertyChanged(nameof(SharePointId));
-            RaisePropertyChanged(nameof(Type));
-            RaisePropertyChanged(nameof(Location));
-            RaisePropertyChanged(nameof(Title));
-            RaisePropertyChanged(nameof(StartDate));
-
-            RaisePropertyChanged(nameof(EndDate));
-            RaisePropertyChanged(nameof(Description));
-            RaisePropertyChanged(nameof(IsAllDay));
-            RaisePropertyChanged(nameof(Status));
-
-            RaisePropertyChanged(nameof(Status1));
-            RaisePropertyChanged(nameof(EStatus));
-        }
     }
 }

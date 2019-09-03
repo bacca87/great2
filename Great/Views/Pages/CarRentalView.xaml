@@ -156,7 +156,7 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding Cars }" 
-                    SelectedItem="{Binding SelectedCar, UpdateSourceTrigger=LostFocus}" 
+                    SelectedItem="{Binding LicensePlate, UpdateSourceTrigger=LostFocus}" 
                     SelectedValuePath="LicensePlate" 
                     DisplayMemberPath="LicensePlate" 
                     LostFocus="CmbLicenxePlate_LostFocus"
@@ -171,6 +171,7 @@
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarBrands }" 
                     SelectedItem="{Binding SelectedCar.Brand, UpdateSourceTrigger=LostFocus}"
+ 
                     Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
                 <ComboBox
@@ -227,7 +228,7 @@
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding StartLocations }" 
+                    ItemsSource="{Binding Locations }" 
                     SelectedItem="{Binding SelectedRent.StartLocation, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedRent.StartLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
@@ -237,7 +238,7 @@
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding EndLocations }" 
+                    ItemsSource="{Binding Locations }" 
                     SelectedItem="{Binding SelectedRent.EndLocation, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>

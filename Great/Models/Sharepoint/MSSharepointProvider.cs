@@ -316,7 +316,14 @@ namespace Great.Models
                 IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
                 List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
 
-                currentDayEVM.ToList().ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
+                foreach (var day in currentDayEVM)
+                {
+                    if (ev.EStatus == EEventStatus.Accepted && day.TotalTime == null && !day.IsHoliday && day.Date.DayOfWeek != DayOfWeek.Saturday && day.Date.DayOfWeek != DayOfWeek.Sunday) day.EType = EDayType.VacationDay;
+                    else day.EType = EDayType.WorkDay;
+                    Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, day));
+                }
+
+
             }
         }
 

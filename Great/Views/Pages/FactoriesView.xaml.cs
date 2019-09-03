@@ -377,5 +377,10 @@ namespace Great.Views
         {
             ZoomOnFactory(factory);
         }
+
+        private void FactoriesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ExpanderEdit.IsExpanded = true;
+        }
     }
 }

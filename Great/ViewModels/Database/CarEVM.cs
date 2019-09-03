@@ -21,7 +21,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _licencePlate, value);
-                RaisePropertyChanged(nameof(LicensePlate));
                 IsChanged = true;
             }
         }
@@ -33,7 +32,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _brand, value);
-                RaisePropertyChanged(nameof(Brand));
                 IsChanged = true;
             }
         }
@@ -45,7 +43,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _model, value);
-                RaisePropertyChanged(nameof(Model));
                 IsChanged = true;
             }
         }
@@ -58,7 +55,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _carRentalCompany, value);
-                RaisePropertyChanged(nameof(CarRentalCompany));
                 RaisePropertyChanged(nameof(CarRentalCompany1));
                 IsChanged = true;
             }
@@ -72,7 +68,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _carRentalCompany1, value);
-                RaisePropertyChanged(nameof(CarRentalCompany1));
+                RaisePropertyChanged(nameof(CarRentalCompany));
                 IsChanged = true;
             }
         }
@@ -140,14 +136,21 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, car);
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
-            Id = car.Id;
             AcceptChanges();
+            Id = car.Id;
             return true;
         }
 
         public override bool Delete(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            var car = db.Cars.SingleOrDefault(x => x.Id == Id);
+            if (car != null)
+            {
+                db.Cars.Remove(car);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public override bool Refresh(DBArchive db)

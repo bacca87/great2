@@ -200,7 +200,7 @@ namespace Great.ViewModels
             if (changed.Count() == 0) return;
 
 
-            if (MetroMessageBox.Show("You changed page without saving.Do you want to save it?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MetroMessageBox.Show("You changed page without saving. Do you want to save it?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 changed.ToList().ForEach(x => x.Save());
 
             else

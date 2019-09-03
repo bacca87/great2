@@ -180,6 +180,9 @@ namespace Great.ViewModels
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
 
+        public RelayCommand PageLoadedCommand { get; set; }
+        public RelayCommand PageUnloadedCommand { get; set; }
+
         #endregion
 
         #region Constructors
@@ -205,6 +208,8 @@ namespace Great.ViewModels
             NewCommand = new RelayCommand<EventEVM>(AddEvent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
+            PageLoadedCommand = new RelayCommand(PageLoaded);
+            PageUnloadedCommand = new RelayCommand(PageUnloaded);
 
             using (DBArchive db = new DBArchive())
             {
@@ -221,6 +226,33 @@ namespace Great.ViewModels
         #endregion
 
         #region Methods
+
+        private void PageUnloaded()
+        {
+            var changed = Events.Where(x => x.IsChanged).ToList();
+            //add also new not saved valid entities
+            if (SelectedEvent != null && SelectedEvent.Id == 0)
+                changed.Add(SelectedEvent);
+
+            if (changed.Count() == 0) return;
+
+            if (MetroMessageBox.Show("You changed page without saving. Do you want to commit changes?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                changed.ToList().ForEach(x => { if (x.IsValid) x.Save(); else x.RejectChanges(); });
+            }
+
+            else
+            {
+                changed.ToList().ForEach(x => { x.RejectChanges(); });
+            }
+
+        }
+
+        private void PageLoaded()
+        {
+            Events.ToList().ForEach(x => x.IsChanged = false);
+        }
+
         public void ClearEvent()
         {
             SelectedEvent.StartDate = DateTime.Now;

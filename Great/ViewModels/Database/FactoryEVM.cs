@@ -21,50 +21,79 @@ namespace Great.ViewModels.Database
         public string Name
         {
             get => _Name;
-            set { Set(ref _Name, value); IsChanged = true; }
+            set
+            {
+                Set(ref _Name, value);
+                IsChanged = true;
             }
+
+        }
 
         private string _CompanyName;
         public string CompanyName
         {
             get => _CompanyName;
-            set { Set(ref _CompanyName, value); IsChanged = true; }
+            set
+            {
+                Set(ref _CompanyName, value);
+                IsChanged = true;
             }
+        }
 
         private string _Address;
         public string Address
         {
             get => _Address;
-            set { Set(ref _Address, value); IsChanged = true; }
+            set
+            {
+                Set(ref _Address, value);
+                IsChanged = true;
             }
+        }
 
         private double? _Latitude;
         public double? Latitude
         {
             get => _Latitude;
-            set { Set(ref _Latitude, value); IsChanged = true; }
+            set
+            {
+                Set(ref _Latitude, value);
+                IsChanged = true;
             }
+        }
 
         private double? _Longitude;
         public double? Longitude
         {
             get => _Longitude;
-            set { Set(ref _Longitude, value); IsChanged = true; }
+            set
+            {
+                Set(ref _Longitude, value);
+                IsChanged = true;
             }
+        }
 
         private long _TransferType;
         public long TransferType
         {
             get => _TransferType;
-            set { Set(ref _TransferType, value); IsChanged = true; }
+            set
+            {
+                Set(ref _TransferType, value);
+                IsChanged = true;
             }
+        }
 
         private bool _IsForfait;
         public bool IsForfait
         {
             get => _IsForfait;
-            set { Set(ref _IsForfait, value); IsChanged = true; }
+            set
+            {
+                Set(ref _IsForfait, value);
+                IsChanged = true;
             }
+        }
 
         private bool _NotifyAsNew;
         public bool NotifyAsNew
@@ -77,15 +106,23 @@ namespace Great.ViewModels.Database
         public bool OverrideAddressOnFDL
         {
             get => _OverrideAddressOnFDL;
-            set { Set(ref _OverrideAddressOnFDL, value); IsChanged = true; }
+            set
+            {
+                Set(ref _OverrideAddressOnFDL, value);
+                IsChanged = true;
             }
+        }
 
         private TransferTypeDTO _TransferType1;
         public TransferTypeDTO TransferType1
         {
             get => _TransferType1;
-            set { Set(ref _TransferType1, value); IsChanged = true; }
+            set
+            {
+                Set(ref _TransferType1, value);
+                IsChanged = true;
             }
+        }
 
         #endregion
 
@@ -104,19 +141,17 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "Name":
-                        if (string.IsNullOrEmpty(Name)||string.IsNullOrWhiteSpace(Name))
+                        if (string.IsNullOrEmpty(Name) || string.IsNullOrWhiteSpace(Name))
                             return "Name of the factory must be set";
 
                         break;
                     case "CompanyName":
-                        //if (string.IsNullOrEmpty(CompanyName) || string.IsNullOrWhiteSpace(CompanyName))
-                        //    return "Company Name factory must be set";
 
                         break;
 
                     case "Address":
                         if (string.IsNullOrEmpty(Address) || string.IsNullOrWhiteSpace(Address))
-                            return "Company Name factory must be set";
+                            return "Address must be set";
 
                         break;
                     default:
@@ -145,13 +180,20 @@ namespace Great.ViewModels.Database
                 db.SaveChanges();
             }
 
-            Id = 0;
             return true;
         }
 
         public override bool Refresh(DBArchive db)
         {
-            throw new NotImplementedException();
+            var f = db.Factories.SingleOrDefault(x => x.Id == Id);
+
+            if (f != null)
+            {
+                Global.Mapper.Map(f, this);
+                return true;
+            }
+
+            return false;
         }
 
         public override bool Save(DBArchive db)
@@ -161,8 +203,8 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, factory);
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();
-            Id = factory.Id;
             AcceptChanges();
+            Id = factory.Id;
             return true;
         }
     }

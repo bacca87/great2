@@ -22,7 +22,12 @@ namespace Great.Views.Pages
 
         private void CmbLicenxePlate_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            cmbLicenxePlate.Text = cmbLicenxePlate.Text?.ToUpper();
+            if (e.Source is ComboBox)
+            {
+                ComboBox cb = (ComboBox)e.Source;
+                cb.Text = cb.Text?.ToUpper();
+
+            }
         }
 
 

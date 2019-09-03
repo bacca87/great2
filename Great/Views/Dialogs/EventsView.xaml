@@ -16,6 +16,14 @@
     mc:Ignorable="d"
         Title="Events"
         DataContext="{Binding Events, Source={StaticResource Locator}}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <conv:CompareIntConverter x:Key="CompareIntConverter"/>
@@ -163,10 +171,10 @@
             <Grid Grid.Column="1"  Margin="10,0,0,0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="GotFocus">
-                        <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="LostFocus">
-                        <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Grid.RowDefinitions>
