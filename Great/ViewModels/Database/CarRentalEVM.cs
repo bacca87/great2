@@ -55,6 +55,9 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _endKm, value);
                 RaisePropertyChanged(nameof(StartKm));
+                RaisePropertyChanged(nameof(EndLocation));
+                RaisePropertyChanged(nameof(RentEndTime));
+                RaisePropertyChanged(nameof(RentEndDate));
                 IsChanged = true;
             }
         }
@@ -77,6 +80,8 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _endLocation, value);
+                RaisePropertyChanged(nameof(EndKm));
+                RaisePropertyChanged(nameof(RentEndDate));
                 IsChanged = true;
             }
         }
@@ -158,12 +163,15 @@ namespace Great.ViewModels.Database
             }
             set
             {
-
-                EndDate = ((DateTime)value).ToUnixTimestamp();
+                if (value == null) EndDate = 0;
+                else
+                    EndDate = ((DateTime)value).ToUnixTimestamp();
+                RaisePropertyChanged(nameof(EndKm));
                 RaisePropertyChanged(nameof(RentStartDate));
                 RaisePropertyChanged(nameof(RentStartTime));
                 RaisePropertyChanged(nameof(RentEndDate));
                 RaisePropertyChanged(nameof(RentEndTime));
+                RaisePropertyChanged(nameof(EndLocation));
 
             }
         }
@@ -222,6 +230,7 @@ namespace Great.ViewModels.Database
             && this["RentEndDate"] == null
             && this["RentStartTime"] == null
             && this["StartLocation"] == null
+            && this["EndLocation"] == null
             && this["RentEndTime"] == null;
 
         public string this[string columnName]
@@ -231,21 +240,53 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "StartKm":
-                    case "EndKm":
                         if (EndKm < StartKm && EndKm > 0)
                             return "Start Km must be lower than End Km";
                         break;
+
+                    case "EndKm":
+                        if (EndKm < StartKm && EndKm > 0)
+                            return "Start Km must be lower than End Km";
+
+                        if (EndKm == 0 && RentEndDate.HasValue)
+                            return "End Km must be set when defining end date";
+
+                        if (!String.IsNullOrWhiteSpace(EndLocation) && EndKm == 0)
+                            return "End Km must be set when defining end location";
+                        break;
+
                     case "RentStartDate":
-                    case "RentEndDate":
                     case "RentStartTime":
-                    case "RentEndTime":
+
                         if (RentStartDate != null && RentEndDate < RentStartDate)
                             return "Dates not valid: End Date < Start Date";
+                        break;
+
+                    case "RentEndDate":
+                    case "RentEndTime":
+
+                        if (RentStartDate != null && RentEndDate < RentStartDate)
+                            return "Dates not valid: End Date < Start Date";
+
+                        if (!RentEndDate.HasValue && EndKm > StartKm)
+                            return "End Date must be set when defining end km";
+
+                        if (!RentEndDate.HasValue && !String.IsNullOrWhiteSpace(EndLocation))
+                            return "End Date must be set when defining end location";
                         break;
 
                     case "StartLocation":
                         if (string.IsNullOrEmpty(StartLocation) || string.IsNullOrWhiteSpace(StartLocation))
                             return "Start Location not valid";
+                        break;
+
+                    case "EndLocation":
+                        if (RentEndDate.HasValue && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
+                            return "End location is required when setting End Date";
+
+                        if (EndKm > StartKm && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
+                            return "End location is required when setting End Km";
+
                         break;
 
                     default:

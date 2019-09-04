@@ -105,6 +105,12 @@ namespace Great.ViewModels.Database
             set
             {
                 StartDateTimeStamp = value.ToUnixTimestamp();
+                RaisePropertyChanged(nameof(BeginHour));
+                RaisePropertyChanged(nameof(BeginMinutes));
+                RaisePropertyChanged(nameof(EndHour));
+                RaisePropertyChanged(nameof(EndMinutes));
+                RaisePropertyChanged(nameof(StartDate));
+                RaisePropertyChanged(nameof(EndDate));
                 IsChanged = true;
             }
         }
@@ -114,7 +120,66 @@ namespace Great.ViewModels.Database
             set
             {
                 EndDateTimeStamp = value.ToUnixTimestamp();
+                RaisePropertyChanged(nameof(BeginHour));
+                RaisePropertyChanged(nameof(BeginMinutes));
+                RaisePropertyChanged(nameof(EndHour));
+                RaisePropertyChanged(nameof(EndMinutes));
+                RaisePropertyChanged(nameof(StartDate));
+                RaisePropertyChanged(nameof(EndDate));
                 IsChanged = true;
+            }
+        }
+
+        public int BeginHour
+        {
+            get => StartDate.Hour;
+            set
+            {
+                StartDate = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day, value, StartDate.Minute, 0);
+                RaisePropertyChanged(nameof(BeginHour));
+                RaisePropertyChanged(nameof(BeginMinutes));
+                RaisePropertyChanged(nameof(EndHour));
+                RaisePropertyChanged(nameof(EndMinutes));
+
+            }
+        }
+
+        public int EndHour
+        {
+            get => EndDate.Hour;
+            set
+            {
+                EndDate = new DateTime(EndDate.Year, EndDate.Month, EndDate.Day, value, EndDate.Minute, 0);
+                RaisePropertyChanged(nameof(BeginHour));
+                RaisePropertyChanged(nameof(BeginMinutes));
+                RaisePropertyChanged(nameof(EndHour));
+                RaisePropertyChanged(nameof(EndMinutes));
+            }
+        }
+
+        public int BeginMinutes
+        {
+            get => StartDate.Round(new TimeSpan(0, 5, 0)).Minute;
+            set
+            {
+                StartDate = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day, StartDate.Hour, value, 0);
+                RaisePropertyChanged(nameof(BeginHour));
+                RaisePropertyChanged(nameof(BeginMinutes));
+                RaisePropertyChanged(nameof(EndHour));
+                RaisePropertyChanged(nameof(EndMinutes));
+            }
+        }
+
+        public int EndMinutes
+        {
+            get => EndDate.Round(new TimeSpan(0, 5, 0)).Minute;
+            set
+            {
+                EndDate = new DateTime(EndDate.Year, EndDate.Month, EndDate.Day, EndDate.Hour, value, 0);
+                RaisePropertyChanged(nameof(BeginHour));
+                RaisePropertyChanged(nameof(BeginMinutes));
+                RaisePropertyChanged(nameof(EndHour));
+                RaisePropertyChanged(nameof(EndMinutes));
             }
         }
 
@@ -240,7 +305,11 @@ namespace Great.ViewModels.Database
             this["Type"] == null
             && this["Title"] == null
             && this["StartDate"] == null
-            && this["EndDate"] == null;
+            && this["EndDate"] == null
+            && this["EndHour"] == null
+            && this["EndMinutes"] == null
+            && this["BeginHour"] == null
+            && this["BeginMinutes"] == null;
         public string this[string columnName]
         {
             get
@@ -263,30 +332,14 @@ namespace Great.ViewModels.Database
                         break;
 
                     case "StartDate":
-                    case "EndDate":
-                        if (StartDate > EndDate)
-                            return "Time interval not valid: Start Date > End Date";
-
-                        break;
                     case "BeginHour":
-
-                        break;
-
-                    case "EndHour":
-
-                        break;
-
                     case "BeginMinutes":
-
-                        break;
-
+                    case "EndDate":
+                    case "EndHour":
                     case "EndMinutes":
 
-                        break;
-
-                    case "Description":
-
-
+                        if (EndDate < StartDate)
+                            return "Dates not valid: End Date < Start Date";
                         break;
 
                     default:
@@ -300,6 +353,8 @@ namespace Great.ViewModels.Database
 
         public EventEVM(Event ev = null)
         {
+            StartDate = DateTime.Now;
+            EndDate = DateTime.Now;
             if (ev != null)
                 Global.Mapper.Map(ev, this);
         }

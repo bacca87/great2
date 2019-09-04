@@ -26,19 +26,7 @@ namespace Great.ViewModels
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
-            set
-            {
-                if (_isInputEnabled == value)
-                {
-                    return;
-                }
-
-                var oldValue = _isInputEnabled;
-                _isInputEnabled = value;
-
-                RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
-
-            }
+            set =>  Set(ref _isInputEnabled, value);
         }
 
         private bool _showEditMenu;
@@ -55,9 +43,8 @@ namespace Great.ViewModels
 
             set
             {
-                _ShowHourTimeFields = value;
                 if (SelectedEvent != null)
-                    RaisePropertyChanged(nameof(ShowHourTimeFields));
+                    Set(ref _ShowHourTimeFields, value);
             }
         }
 
@@ -67,10 +54,8 @@ namespace Great.ViewModels
             get => _showOnlyVacations;
             set
             {
-                _showOnlyVacations = value;
+                 Set(ref _ShowHourTimeFields, value);
                 _FilteredEvents.Refresh();
-                RaisePropertyChanged(nameof(ShowOnlyVacations));
-
             }
         }
 
@@ -78,17 +63,13 @@ namespace Great.ViewModels
         public ObservableCollectionEx<EventEVM> Events
         {
             get => _Events;
-            set
-            {
-                Set(ref _Events, value);
-            }
-
+            set => Set(ref _Events, value);
         }
 
         private ICollectionView _FilteredEvents;
         public ICollectionView FilteredEvents
         {
-            get { return _FilteredEvents; }
+            get => _FilteredEvents;
         }
 
         public bool Filter(object ev)
@@ -97,7 +78,6 @@ namespace Great.ViewModels
             bool result = e.EType != EEventType.Vacations && !ShowOnlyVacations;
             result |= e.EType == EEventType.Vacations;
             return result;
-
         }
 
         public ObservableCollection<EventTypeDTO> EventTypes { get; set; }
@@ -114,12 +94,7 @@ namespace Great.ViewModels
                     _SelectedEvent.PropertyChanged -= _SelectedEvent_PropertyChanged;
                     Set(ref _SelectedEvent, value);
                     _SelectedEvent.PropertyChanged += _SelectedEvent_PropertyChanged;
-                    BeginHour = _SelectedEvent.StartDate.Hour;
-                    BeginMinutes = _SelectedEvent.StartDate.Minute;
-
-
-                    EndHour = _SelectedEvent.EndDate.Hour;
-                    EndMinutes = _SelectedEvent.EndDate.Minute;
+                
                     ShowHourTimeFields = !_SelectedEvent.IsAllDay;
 
                     ShowEditMenu = false;
@@ -140,33 +115,6 @@ namespace Great.ViewModels
         public IList<int> Hours { get; set; }
         public IList<int> Minutes { get; set; }
 
-        private int _BeginHour;
-        public int BeginHour
-        {
-            get => _BeginHour;
-            set => Set(ref _BeginHour, value);
-        }
-
-        private int _EndHour;
-        public int EndHour
-        {
-            get => _EndHour;
-            set => Set(ref _EndHour, value);
-        }
-
-        private int _BeginMinutes;
-        public int BeginMinutes
-        {
-            get => _BeginMinutes;
-            set => Set(ref _BeginMinutes, value);
-        }
-
-        private int _EndMinutes;
-        public int EndMinutes
-        {
-            get => _EndMinutes;
-            set => Set(ref _EndMinutes, value);
-        }
 
         #endregion
 
@@ -265,7 +213,7 @@ namespace Great.ViewModels
             if (ev == null) return;
             if (ev.EStatus != EEventStatus.Pending)
             {
-                MetroMessageBox.Show("Cannot save/edit the event because it is approved", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show("Cannot save/edit the event because it is not in pending state", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -276,9 +224,6 @@ namespace Great.ViewModels
             }
             if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
-
-            ev.StartDate = new DateTime(ev.StartDate.Year, ev.StartDate.Month, ev.StartDate.Day, BeginHour, BeginMinutes, 0);
-            ev.EndDate = new DateTime(ev.EndDate.Year, ev.EndDate.Month, ev.EndDate.Day, EndHour, EndMinutes, 0);
 
 
             if (ev.StartDate > ev.EndDate) return;
