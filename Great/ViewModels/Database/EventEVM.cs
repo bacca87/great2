@@ -322,9 +322,8 @@ namespace Great.ViewModels.Database
 
                         break;
                     case "Title":
-                        if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title))
-                            return "Title of event must be set";
-
+                        //if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title))
+                        //    return "Title of event must be set";
                         break;
 
                     case "Location":
@@ -430,13 +429,11 @@ namespace Great.ViewModels.Database
         }
         public void AddOrUpdateEventRelations()
         {
-            List<DayEVM> currentDayEVM;
             List<DayEVM> newDays = new List<DayEVM>();
             using (DBArchive db = new DBArchive())
             {
                 List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
                 IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == Id select d);
-                currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
 
                 foreach (DateTime d in AllDatesInRange(StartDate, EndDate))
                 {
@@ -480,6 +477,20 @@ namespace Great.ViewModels.Database
 
 
             return dates;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is EventEVM)) return false;
+
+            EventEVM baseEv = (EventEVM)obj;
+
+            return this.Title == baseEv.Title
+                && this.Location == baseEv.Location
+                && this.IsAllDay == baseEv.IsAllDay
+                && this.StartDate == baseEv.StartDate
+                &&this.Status == baseEv.Status
+                && this.EndDate == baseEv.EndDate;
         }
 
     }

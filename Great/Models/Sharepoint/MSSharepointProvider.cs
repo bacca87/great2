@@ -172,62 +172,61 @@ namespace Great.Models
                                 Int64 shpid = Convert.ToInt64(el.GetElementsByTagName("content")[0]?.FirstChild["d:Id"].InnerText);
                                 int status = Convert.ToInt32(el.GetElementsByTagName("content")[0]?.FirstChild["d:OData__ModerationStatus"].InnerText);
 
-                                var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
-
                                 if (shpid == 0) continue;
-                                if (existing == null)
+
+                                EventEVM tmp = new EventEVM();
+                                tmp.IsSent = true; // the event is on calendar. Not necessary to send it
+                                tmp.SharePointId = shpid;
+                                tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
+                                tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
+                                tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
+                                tmp.Status = status;
+                                tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
+                                tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
+
+                                if (tmp.IsAllDay)
                                 {
-                                    //manually added to calendar. Import it!
-                                    EventEVM tmp = new EventEVM();
-                                    tmp.IsSent = true; // the event is on calendar. Not necessary to send it
-                                    tmp.SharePointId = shpid;
-                                    tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
-                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
-                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
-                                    tmp.Status = status;
-                                    tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
-                                    tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
-
-                                    if (tmp.IsAllDay)
-                                    {
-                                        tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText.TrimEnd('Z'));
-                                        tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText.TrimEnd('Z'));
-                                    }
-                                    else
-                                    {
-                                        tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
-                                        tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
-                                    }
-
-                                    if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education") tmp.EType = EEventType.Education;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other") tmp.EType = EEventType.Other;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations") tmp.EType = EEventType.OldVacations;
-
-                                    if (tmp.EStatus == EEventStatus.Accepted)
-                                    {
-                                        tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
-                                        tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
-                                    }
-
-                                    tmp.Save(db);
-
-                                    if (tmp.EStatus != EEventStatus.Rejected)
-                                        NotifyEventImported(tmp);
+                                    tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText.TrimEnd('Z'));
+                                    tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText.TrimEnd('Z'));
                                 }
                                 else
                                 {
-                                    EventEVM tmp = new EventEVM(existing);
+                                    tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
+                                    tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
+                                }
 
-                                    if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
+                                if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education") tmp.EType = EEventType.Education;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other") tmp.EType = EEventType.Other;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations") tmp.EType = EEventType.OldVacations;
 
-                                    if ((EEventStatus)status < tmp.EStatus)
+                                if (tmp.EStatus == EEventStatus.Accepted)
+                                {
+                                    tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                    tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
+                                }
+
+                                var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
+
+                                if (existing == null)
+                                {
+                                    tmp.Save(db);
+                                    NotifyEventImported(tmp);
+                                }
+
+                                else
+                                {
+                                    var actual = new Event();
+                                    Global.Mapper.Map(tmp, actual);
+
+                                    if (!actual.Equals(existing))
                                     {
-                                        tmp.EStatus = (EEventStatus)status;
-                                        tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
-                                        tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
+                                        tmp = new EventEVM(existing);
+                                        tmp.AddOrUpdateEventRelations();
+
+                                        if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
                                         tmp.Save(db);
                                         NotifyEventChanged(tmp);
                                     }
