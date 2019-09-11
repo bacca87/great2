@@ -5,21 +5,21 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    class DayEventEVM : EntityViewModelBase
+    public class DayEventEVM : EntityViewModelBase
     {
         private long _TimeStamp;
         public long TimeStamp
         {
             get => _TimeStamp;
-            set =>  Set(ref _TimeStamp, value);
-            
+            set => Set(ref _TimeStamp, value);
+
         }
 
         private long _EventId;
         public long EventId
         {
             get => _EventId;
-            set=>  Set(ref _EventId, value);
+            set => Set(ref _EventId, value);
         }
 
 
@@ -56,8 +56,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, di);
             db.DayEvents.AddOrUpdate(di);
             db.SaveChanges();
-
-
             return true;
         }
 

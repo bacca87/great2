@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Great.Models.Database
@@ -20,11 +21,13 @@ namespace Great.Models.Database
         public long StartDateTimeStamp { get; set; }
         public long EndDateTimeStamp { get; set; }
         public string Description { get; set; }
+        public string Notes { get; set; }
         public long Status { get; set; }
         public bool IsSent { get; set; }
         public bool IsAllDay { get; set; }
         public string Approver { get; set; }
         public DateTime? ApprovationDate { get; set; }
+        public bool IsCancelRequested { get; set; }
 
         [ForeignKey("Status")]
         public virtual EventStatus Status1 { get; set; }

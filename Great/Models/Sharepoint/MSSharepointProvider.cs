@@ -35,14 +35,31 @@ namespace Great.Models
 
         protected void NotifyEventChanged(EventEVM e)
         {
+            List<DayEVM> DaysToClear = new List<DayEVM>();
+            List<DayEVM> DaysInEvent = new List<DayEVM>();
+            e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
             Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, e));
-            UpdateEventStatus(e);
+            DaysToClear.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
+            DaysInEvent.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
+        }
+
+        protected void NotifyEventDeleted(EventEVM e)
+        {
+            List<DayEVM> DaysToClear = new List<DayEVM>();
+            List<DayEVM> DaysInEvent = new List<DayEVM>();
+            e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
+            Messenger.Default.Send(new DeletedItemMessage<EventEVM>(this, e));
+            DaysToClear.ForEach(x=> { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x));} );
+
         }
 
         protected void NotifyEventImported(EventEVM e)
         {
+            List<DayEVM> DaysToClear = new List<DayEVM>();
+            List<DayEVM> DaysInEvent = new List<DayEVM>();
+            e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
             Messenger.Default.Send(new NewItemMessage<EventEVM>(this, e));
-            UpdateEventStatus(e);
+            DaysInEvent.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
         }
 
         private void SenderThread()
@@ -57,47 +74,13 @@ namespace Great.Models
                     {
                         try
                         {
-
                             XmlDocument xdoc;
                             XmlNode request = null;
 
-                            switch (ev.EStatus)
+                            if (ev.IsCancelRequested)
                             {
-                                case EEventStatus.Pending:
-
-                                    if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
-                                    else request = GenerateBatchInsertXML(ev);
-
-                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
-                                    {
-                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        xdoc = new XmlDocument();
-
-                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                        xdoc.LoadXml(response.OuterXml);
-                                        var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
-                                        var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
-
-                                        if (eventId > 0 && ecode == 0)
-                                        {
-                                            ev.SharePointId = eventId;
-                                            ev.SendDateTime = DateTime.Now;
-                                            ev.IsSent = true;
-                                            ev.Save(db);
-
-                                            NotifyEventChanged(ev);
-                                        }
-                                    }
-                                    break;
-
-                                case EEventStatus.Rejected:
-
-                                    if (ev.SharePointId == 0)
-                                    {
-                                        ev.IsSent = true;
-                                        ev.Save(db);
-                                        continue;
-                                    }
+                                if (ev.SharePointId > 0)
+                                {
                                     request = GenerateBatchDeletetXML(ev);
                                     using (SharepointReference.Lists l = new SharepointReference.Lists())
                                     {
@@ -110,13 +93,36 @@ namespace Great.Models
 
                                         if (ecode == 0)
                                         {
-                                            ev.IsSent = true;
-                                            ev.Save(db);
-                                            NotifyEventChanged(ev);
+                                            NotifyEventDeleted(ev);
+                                            ev.Delete();
                                         }
                                     }
+                                }
+                            }
+                            else
+                            {
+                                if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
+                                else request = GenerateBatchInsertXML(ev);
 
-                                    break;
+                                using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                {
+                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                    xdoc = new XmlDocument();
+
+                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                    xdoc.LoadXml(response.OuterXml);
+                                    var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
+                                    var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
+
+                                    if (eventId > 0 && ecode == 0)
+                                    {
+                                        ev.SharePointId = eventId;
+                                        ev.SendDateTime = DateTime.Now;
+                                        ev.IsSent = true;
+                                        ev.Save(db);
+                                        NotifyEventChanged(ev);
+                                    }
+                                }
                             }
                         }
                         catch (Exception)
@@ -212,7 +218,7 @@ namespace Great.Models
 
                                 if (existing == null)
                                 {
-                                    tmp.Save(db);
+                                    tmp.Save(db);              
                                     NotifyEventImported(tmp);
                                 }
 
@@ -221,12 +227,9 @@ namespace Great.Models
                                     var actual = new Event();
                                     Global.Mapper.Map(tmp, actual);
 
-                                    if (!actual.Equals(existing))
+                                    if (!actual.Equals(existing) && !existing.IsCancelRequested)
                                     {
                                         tmp = new EventEVM(existing);
-                                        tmp.AddOrUpdateEventRelations();
-
-                                        if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
                                         tmp.Save(db);
                                         NotifyEventChanged(tmp);
                                     }
@@ -307,85 +310,6 @@ namespace Great.Models
             d.LoadXml(doc.ToString());
             return d;
         }
-
-        public void UpdateEventStatus(EventEVM ev)
-        {
-            using (DBArchive db = new DBArchive())
-            {
-                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
-                List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
-
-                foreach (var day in currentDayEVM)
-                {
-                    if (ev.EStatus == EEventStatus.Accepted && day.TotalTime == null && !day.IsHoliday && day.Date.DayOfWeek != DayOfWeek.Saturday && day.Date.DayOfWeek != DayOfWeek.Sunday) day.EType = EDayType.VacationDay;
-                    else day.EType = EDayType.WorkDay;
-                    Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, day));
-                }
-
-
-            }
-        }
-
-        //public void AddOrUpdateEventRelations(EventEVM ev, DBArchive db)
-        //{
-        //    List<DayEVM> currentDayEVM;
-        //    List<DayEVM> newDays = new List<DayEVM>();
-
-        //    List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
-        //    IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
-        //    currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
-
-        //    foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
-        //    {
-        //        long timestamp = d.ToUnixTimestamp();
-        //        Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
-
-        //        if (currentDay == null)
-        //            newDays.Add(new DayEVM { Date = d });
-
-        //        else newDays.Add(new DayEVM(currentDay));
-
-        //        relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
-        //    }
-
-        //    db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
-        //    newDays.ToList().ForEach(d => d.Save(db));
-        //    relationsToAdd.ToList().ForEach(r => r.Save(db));
-
-
-        //    if (ev.EType == EEventType.Vacations)
-        //    {
-        //        if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday) d.EType = EDayType.VacationDay; d.Save(db); });
-        //        if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday) d.EType = EDayType.WorkDay; d.Save(db); });
-        //        if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday) d.EType = EDayType.SpecialLeave; d.Save(db); });
-        //    }
-
-        //    //var commonDays = newDays.Intersect(currentDayEVM).ToList();
-        //    //var toReset = currentDayEVM.Except(commonDays).ToList();
-        //    //toReset.ForEach(x => x.EType = EDayType.WorkDay);
-        //    //var toadd = newDays.Except(commonDays).ToList();
-
-        //    //var daysChanged = commonDays.Union(toReset).Union(toadd).ToList();
-        //    //daysChanged.ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
-
-        //}
-
-        //public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
-        //{
-        //    List<DateTime> dates = new List<DateTime>();
-
-        //    DateTime pointer = startDate;
-
-        //    do
-        //    {
-        //        dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
-        //        pointer = pointer.AddDays(1);
-        //    }
-        //    while (pointer <= endDate);
-
-
-        //    return dates;
-        //}
 
     }
 

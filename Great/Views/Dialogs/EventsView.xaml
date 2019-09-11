@@ -65,16 +65,6 @@
                             <Fluent:ScreenTip Title="Require cancellation" Text="Require the current event cancellation" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Marked current event as accepted" Text="Marked current event as accepted" />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Mark as Rejected" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEvent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Marked current event as Rejected" Text="Marked current event as Rejected" />
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Filters">
                     <Fluent:CheckBox Header="Show only vacations" IsChecked="{Binding ShowOnlyVacations}">
@@ -164,6 +154,7 @@
                     <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }"/>
                     <DataGridTextColumn Header="End Date" Binding="{Binding EndDate,StringFormat='dd/MM/yyyy'}"/>
                     <DataGridTextColumn Header="Description"  Binding="{Binding Description}" />
+                    <DataGridTextColumn Header="Description"  Binding="{Binding Notes}" />
                     <DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />
                     <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDate, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
                 </DataGrid.Columns>
@@ -178,6 +169,8 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="Auto"/>
@@ -225,7 +218,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  />
+                    <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  />
                     <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding SelectedEvent.BeginHour}" 
@@ -255,7 +248,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true,UpdateSourceTrigger=PropertyChanged}"/>
+                    <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true,UpdateSourceTrigger=PropertyChanged}"/>
                     <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding SelectedEvent.EndHour}" 
@@ -276,6 +269,8 @@
                 </Grid>
                 <TextBlock   Grid.Row="11" Margin="5" Text="Description:" VerticalAlignment="Center"/>
                 <TextBox    Grid.Row="12" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                <TextBlock   Grid.Row="13" Margin="5" Text="Notes:" VerticalAlignment="Center"/>
+                <TextBox    Grid.Row="14" Text="{Binding SelectedEvent.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
                 <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
             </Grid>
         </Grid>

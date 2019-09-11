@@ -26,7 +26,7 @@ namespace Great.ViewModels
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
-            set =>  Set(ref _isInputEnabled, value);
+            set => Set(ref _isInputEnabled, value);
         }
 
         private bool _showEditMenu;
@@ -54,7 +54,7 @@ namespace Great.ViewModels
             get => _showOnlyVacations;
             set
             {
-                 Set(ref _ShowHourTimeFields, value);
+                Set(ref _ShowHourTimeFields, value);
                 _FilteredEvents.Refresh();
             }
         }
@@ -92,9 +92,8 @@ namespace Great.ViewModels
                 if (_SelectedEvent != null)
                 {
                     _SelectedEvent.PropertyChanged -= _SelectedEvent_PropertyChanged;
-                    Set(ref _SelectedEvent, value);
                     _SelectedEvent.PropertyChanged += _SelectedEvent_PropertyChanged;
-                
+
                     ShowHourTimeFields = !_SelectedEvent.IsAllDay;
 
                     ShowEditMenu = false;
@@ -122,8 +121,6 @@ namespace Great.ViewModels
         public RelayCommand ClearCommand { get; set; }
         public RelayCommand<EventEVM> SaveCommand { get; set; }
         public RelayCommand<EventEVM> NewCommand { get; set; }
-        public RelayCommand<EventEVM> MarkAsAcceptedCommand { get; set; }
-        public RelayCommand<EventEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand<EventEVM> DeleteCommand { get; set; }
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
@@ -150,9 +147,7 @@ namespace Great.ViewModels
 
             ClearCommand = new RelayCommand(ClearEvent, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<EventEVM>(SaveEvent, (EventEVM v) => { return IsInputEnabled; });
-            MarkAsAcceptedCommand = new RelayCommand<EventEVM>(MarkAsAccepted);
-            MarkAsCancelledCommand = new RelayCommand<EventEVM>(MarkAsCancelled);
-            DeleteCommand = new RelayCommand<EventEVM>(RequestCancellation);
+            DeleteCommand = new RelayCommand<EventEVM>(DeleteEvent);
             NewCommand = new RelayCommand<EventEVM>(AddEvent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
@@ -167,6 +162,7 @@ namespace Great.ViewModels
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
+            MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
 
             _FilteredEvents = CollectionViewSource.GetDefaultView(Events);
             _FilteredEvents.Filter += Filter;
@@ -211,90 +207,49 @@ namespace Great.ViewModels
         public void SaveEvent(EventEVM ev)
         {
             if (ev == null) return;
-            if (ev.EStatus != EEventStatus.Pending)
-            {
-                MetroMessageBox.Show("Cannot save/edit the event because it is not in pending state", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             if (!ev.IsValid)
             {
-                MetroMessageBox.Show("Cannot save/edit the event. Please check the errors", "Save Event",MessageBoxButton.OK,MessageBoxImage.Error);
+                MetroMessageBox.Show("Cannot save/edit the event. Please check the errors", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-
-            if (ev.StartDate > ev.EndDate) return;
-
             ev.EStatus = EEventStatus.Pending;
-            ev.IsSent = false;
-
+            ev.IsSent = false;    
             ev.Save();
+           // ev.AddOrUpdateEventRelations();
 
             //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
-            {
-                ev.AddOrUpdateEventRelations();
+
                 Events.Add(ev);
-            }
 
             ShowEditMenu = false;
-            //AddOrUpdateEventRelations(ev);
+            FilteredEvents.Refresh();
 
         }
 
-        public void RequestCancellation(EventEVM ev)
+        public void DeleteEvent(EventEVM ev)
         {
-            if (ev == null || ev.EStatus == EEventStatus.Rejected)
-            {
-                MetroMessageBox.Show("Cannot cancel the event because it is already cancelled", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
 
             if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
-
-            ev.IsSent = false;
-            ev.EStatus = EEventStatus.Rejected;
-            ev.Save();
-
-        }
-
-        public void MarkAsAccepted(EventEVM ev)
-        {
-            if (ev == null || ev.EStatus == EEventStatus.Accepted)
+            if (ev.SharePointId > 0)
             {
-                MetroMessageBox.Show("Cannot set to Accepted the event because it is already accepted", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                ev.IsSent = false;
+                ev.EStatus = EEventStatus.Pending;
+                ev.IsCancelRequested = true;
+                ev.Save();
             }
 
-            if (MetroMessageBox.Show("Are you sure to mark as accepted the selected Vacation?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                return;
-
-            ev.EStatus = EEventStatus.Accepted;
-            ev.IsSent = true;
-            ev.Save();
+            else
+            {
+                ev.Delete();
+                Events.Remove(ev);
+            }
             FilteredEvents.Refresh();
-            _provider.UpdateEventStatus(ev);
-
-        }
-
-        public void MarkAsCancelled(EventEVM ev)
-        {
-            if (ev == null || ev.EStatus == EEventStatus.Rejected)
-                return;
-
-            if (MetroMessageBox.Show("Are you sure to mark as Cancelled the selected Vacation?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                return;
-
-            ev.EStatus = EEventStatus.Rejected;
-            ev.IsSent = true;
-            ev.Save();
-            FilteredEvents.Refresh();
-            _provider.UpdateEventStatus(ev);
         }
 
         public void EventChanged(ItemChangedMessage<EventEVM> item)
@@ -324,13 +279,27 @@ namespace Great.ViewModels
                   {
                       if (!Events.Any(x => x.Id == item.Content.Id))
                       {
-                          item.Content.AddOrUpdateEventRelations();
                           Events.Add(item.Content);
                           FilteredEvents.Refresh();
                       }
                   }
               }));
         }
+
+        public void EventDeleted(DeletedItemMessage<EventEVM> item)
+        {
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+             new Action(() =>
+             {
+                 if (item.Content != null)
+                 {
+                     EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
+                     Events.Remove(v);
+                     FilteredEvents.Refresh();
+                 }
+             }));
+        }
+
 
         public void AddEvent(EventEVM ev)
         {

@@ -38,6 +38,28 @@
         <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
     </Style>
 
+    <Style TargetType="{x:Type Control}" x:Key="DatePickerTextBoxStyle">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Background" Value="{x:Null}"/>
+    </Style>
+    
+    <Style x:Key="FormattedDatePicker"  TargetType="DatePicker">
+        <Style.Resources>
+            <Style TargetType="{x:Type DatePickerTextBox}">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBox x:Name="PART_TextBox"
+                             Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" Style="{StaticResource DatePickerTextBoxStyle}" >
+                            </TextBox>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Style.Resources>
+    </Style>
+
 
     <Style x:Key="MaskedTextBoxBaseTimeSheet" BasedOn="{StaticResource MaskedTextBoxBase}" TargetType="xctk:MaskedTextBox">
         <Setter Property="Margin" Value="2.5" />
