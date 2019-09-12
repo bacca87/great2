@@ -18,33 +18,22 @@ namespace Great.ViewModels.Database
         public string LicensePlate
         {
             get => _licencePlate;
-            set
-            {
-                Set(ref _licencePlate, value);
-                IsChanged = true;
-            }
+            set =>SetAndCheckChanged(ref _licencePlate, value);
         }
 
         private string _brand;
         public string Brand
         {
             get => _brand;
-            set
-            {
-                Set(ref _brand, value);
-                IsChanged = true;
-            }
+            set =>  SetAndCheckChanged(ref _brand, value);
+
         }
 
         private string _model;
         public string Model
         {
             get => _model;
-            set
-            {
-                Set(ref _model, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _model, value);
         }
 
         private long _carRentalCompany;
@@ -54,9 +43,8 @@ namespace Great.ViewModels.Database
             get => _carRentalCompany;
             set
             {
-                Set(ref _carRentalCompany, value);
+                SetAndCheckChanged(ref _carRentalCompany, value);
                 RaisePropertyChanged(nameof(CarRentalCompany1));
-                IsChanged = true;
             }
 
         }
@@ -67,9 +55,8 @@ namespace Great.ViewModels.Database
             get => _carRentalCompany1;
             set
             {
-                Set(ref _carRentalCompany1, value);
+                SetAndCheckChanged(ref _carRentalCompany1, value);
                 RaisePropertyChanged(nameof(CarRentalCompany));
-                IsChanged = true;
             }
         }
 
@@ -127,6 +114,9 @@ namespace Great.ViewModels.Database
         {
             if (car != null)
                 Global.Mapper.Map(car, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
