@@ -49,6 +49,7 @@ namespace Great.ViewModels
         }
 
         public Action<FactoryEVM> OnZoomOnFactoryRequest { get; set; }
+        public Action<FactoryEVM> OnFactoryUpdated { get; set; }
         #endregion
 
         #region Commands
@@ -144,6 +145,7 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("Cannot save/edit the factory. Please check the errors", "Save Factory", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             factory.NotifyAsNew = false;
 
             if (factory.Save())
@@ -154,7 +156,10 @@ namespace Great.ViewModels
                     Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, factory));
                 }
                 else
+                {
                     Messenger.Default.Send(new ItemChangedMessage<FactoryEVM>(this, factory));
+                    OnFactoryUpdated?.Invoke(factory);
+                }   
 
                 SelectedFactory = factory;
 

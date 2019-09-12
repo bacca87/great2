@@ -30,7 +30,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <Gmap:GMapControl x:Name="factoriesMapControl" Grid.Row="0" Zoom="5" MaxZoom="20" MinZoom="1" MouseLeftButtonUp="factoriesMapControl_MouseLeftButtonUp" MouseDoubleClick="FactoriesMapControl_MouseDoubleClick" OnMapZoomChanged="factoriesMapControl_OnMapZoomChanged" Loaded="factoriesMapControl_Loaded">
+        <Gmap:GMapControl x:Name="factoriesMapControl" Grid.Row="0" Zoom="5" MaxZoom="20" MinZoom="1" 
+                          MouseDoubleClick="FactoriesMapControl_MouseDoubleClick" 
+                          OnMapZoomChanged="factoriesMapControl_OnMapZoomChanged" 
+                          Loaded="factoriesMapControl_Loaded">
             <Gmap:GMapControl.Resources>
                 <Style TargetType="c:FactoryMarker">
                     <EventSetter Event="MouseUp"  Handler="marker_MouseUp"/>
@@ -78,81 +81,72 @@
                 </ListView.View>
             </ListView>
 
-            <Expander Grid.Column="1" ExpandDirection="Left" IsExpanded="{Binding ShowExpandable,Mode=TwoWay}">
-                <Expander.Header>
-                    <TextBlock Text="Add / Edit" Margin="0,10,0,0">
-                        <TextBlock.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </TextBlock.LayoutTransform>
-                    </TextBlock>
-                </Expander.Header>
-                <Grid Margin="5,5,5,5" Width="500">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="GotFocus">
-                            <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="LostFocus">
-                            <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <Grid.Resources>
-                        <Style TargetType="Label">
-                            <Setter Property="VerticalAlignment" Value="Top" />
-                            <Setter Property="HorizontalAlignment" Value="Right"/>
-                        </Style>
-                    </Grid.Resources>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                
-                    <Label Grid.Column="0" Grid.Row="0" Content="Name:"/>
-                    <Label Grid.Column="0" Grid.Row="1" Content="Company Name:"/>
-                    <Label Grid.Column="0" Grid.Row="2" Content="Address:"/>
-                    <ToggleButton Name="latlngButton" Grid.Column="0" Grid.Row="3" Content="+" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="latlngButton_Click"/>
-                    <Label Grid.Column="0" Grid.Row="4" Content="Transfer Type:"/>
-                    <Label Grid.Column="0" Grid.Row="5" Content="Is Forfait:"/>
-                    <Label Grid.Column="0" Grid.Row="6" Content="Override Address:"/>
+            <Grid Grid.Column="1" Margin="5,5,5,5" Width="500">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="LostFocus">
+                        <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding SelectedFactory.Name, Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" />
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedFactory.CompanyName,Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedFactory.Address,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
+                <Label Grid.Column="0" Grid.Row="0" Content="Name:"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Company Name:"/>
+                <Label Grid.Column="0" Grid.Row="2" Content="Address:"/>
+                <ToggleButton Name="latlngButton" Grid.Column="0" Grid.Row="3" Content="+" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="latlngButton_Click"/>
+                <Label Grid.Column="0" Grid.Row="4" Content="Transfer Type:"/>
+                <Label Grid.Column="0" Grid.Row="5" Content="Is Forfait:"/>
+                <Label Grid.Column="0" Grid.Row="6" Content="Override Address:"/>
 
-                    <WrapPanel Grid.Column="1" Grid.Row="3">
-                        <Label>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding  StringFormat="Lat: {0}   Lng: {1}">
-                                        <Binding Path="SelectedFactory.Latitude"/>
-                                        <Binding Path="SelectedFactory.Longitude"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </Label>
-                    </WrapPanel>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding SelectedFactory.Name, Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" />
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedFactory.CompanyName,Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedFactory.Address,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
 
-                    <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactory.TransferType1}" SelectedValue="{Binding SelectedFactory.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                <WrapPanel Grid.Column="1" Grid.Row="3">
+                    <Label>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding  StringFormat="Lat: {0}   Lng: {1}">
+                                    <Binding Path="SelectedFactory.Latitude"/>
+                                    <Binding Path="SelectedFactory.Longitude"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Label>
+                </WrapPanel>
 
-                    <CheckBox Grid.Column="1" Grid.Row="5" Margin="7" IsChecked="{Binding SelectedFactory.IsForfait}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="6" Margin="7" IsChecked="{Binding SelectedFactory.OverrideAddressOnFDL}"/>
+                <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactory.TransferType1}" SelectedValue="{Binding SelectedFactory.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
 
-                    <!--<StackPanel Grid.ColumnSpan="2" Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <CheckBox Grid.Column="1" Grid.Row="5" Margin="7" IsChecked="{Binding SelectedFactory.IsForfait}"/>
+                <CheckBox Grid.Column="1" Grid.Row="6" Margin="7" IsChecked="{Binding SelectedFactory.OverrideAddressOnFDL}"/>
+
+                <!--<StackPanel Grid.ColumnSpan="2" Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <Button Margin="10" Content="Delete" Command="{Binding DeleteFactoryCommand}" CommandParameter="{Binding SelectedFactory}"/>
                         <Button Margin="10" Content="Clear" Command="{Binding ClearSelectionCommand}"/>
                         <Button Margin="10" Content="Save" Command="{Binding SaveFactoryCommand}" CommandParameter="{Binding SelectedFactory}"/>
                     </StackPanel>-->
-                </Grid>
-            </Expander>
+            </Grid>
         </Grid>
     </Grid>
 </Page>
