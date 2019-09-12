@@ -86,7 +86,11 @@ namespace Great.ViewModels.Database
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
-            set => Set(ref _NotifyAsNew, value);
+            set
+            {
+                Set(ref _NotifyAsNew, value);
+                RaisePropertyChanged(nameof(FDL_New_Display));
+            }
         }
 
         private bool _IsCompiled;
@@ -181,6 +185,10 @@ namespace Great.ViewModels.Database
             set => Set(ref _InsertExpenseEnabled, value);
         }
         #endregion;
+
+        #region Display Properties
+        public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}";
+        #endregion
 
         public ExpenseAccountEVM(ExpenseAccount ea = null)
         {

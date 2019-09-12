@@ -70,7 +70,11 @@ namespace Great.ViewModels.Database
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
-            set => Set(ref _NotifyAsNew, value);
+            set
+            {
+                Set(ref _NotifyAsNew, value);
+                RaisePropertyChanged(nameof(Factory_New_Display));
+            }
         }
 
         private bool _OverrideAddressOnFDL;
@@ -87,6 +91,10 @@ namespace Great.ViewModels.Database
             set => Set(ref _TransferType1, value);
         }
 
+        #endregion
+
+        #region Display Properties
+        public string Factory_New_Display => $"{(NotifyAsNew ? "*" : "")}{Name}";
         #endregion
 
         #region Error Validation

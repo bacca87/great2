@@ -290,7 +290,6 @@ namespace Great.Models
 
                 fdl.NotifyAsNew = NotifyAsNew;
 
-                // TODO: gestire automobili
                 //GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Cars1)
                 //GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Cars2)
 
@@ -503,7 +502,6 @@ namespace Great.Models
                 if (long.TryParse(fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString(), out long longResult))
                     fdl.Order = longResult;
 
-                // TODO: gestire automobili
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
                 //fields[ApplicationSettings.FDL.FieldNames.Cars2]
 

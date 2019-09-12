@@ -71,7 +71,7 @@
                 </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Factory_New_Display}" />
                         <GridViewColumn Header="CompanyName" DisplayMemberBinding="{Binding CompanyName}" />
                         <GridViewColumn Header="Address" DisplayMemberBinding="{Binding Address}" />
                         <GridViewColumn Header="TransferType" DisplayMemberBinding="{Binding TransferType1.Name}" />

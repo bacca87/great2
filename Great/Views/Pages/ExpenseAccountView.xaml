@@ -109,7 +109,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                     <DataGridTextColumn Header="Amount" CellStyle="{StaticResource CenterAligned}">
                         <DataGridTextColumn.Binding>

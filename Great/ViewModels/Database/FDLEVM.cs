@@ -164,7 +164,11 @@ namespace Great.ViewModels.Database
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
-            set => Set(ref _NotifyAsNew, value);
+            set
+            {
+                Set(ref _NotifyAsNew, value);
+                RaisePropertyChanged(nameof(FDL_New_Display));
+            }
         }
 
         private bool _IsCompiled;
@@ -252,8 +256,8 @@ namespace Great.ViewModels.Database
         #endregion
 
         #region Display Properties
+        public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{Id}";
         public string FDL_Display => $"{Id}{(IsExtra ? " (EXTRA)" : "")}";
-
         public string FDL_Factory_Display => $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}";
         #endregion
 

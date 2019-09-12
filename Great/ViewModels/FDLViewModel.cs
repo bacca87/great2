@@ -200,6 +200,7 @@ namespace Great.ViewModels
                         if (fdl != null)
                         {
                             fdl.Status = item.Content.Status;
+                            fdl.NotifyAsNew = item.Content.NotifyAsNew;
                             fdl.LastError = item.Content.LastError;
                         }
                     }
