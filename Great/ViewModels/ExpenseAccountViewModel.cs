@@ -235,6 +235,7 @@ namespace Great.ViewModels
                         if (ea != null)
                         {
                             ea.Status = item.Content.Status;
+                            ea.NotifyAsNew = item.Content.NotifyAsNew;
                             ea.LastError = item.Content.LastError;
                         }
                     }
