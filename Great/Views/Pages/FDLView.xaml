@@ -18,7 +18,7 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
         </i:EventTrigger>
-        <i:EventTrigger EventName="Unloaded">
+        <i:EventTrigger EventName="PreviewClosing">
             <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>

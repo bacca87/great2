@@ -43,6 +43,7 @@ namespace Great.ViewModels
             get => _selectedFactory;
             set
             {
+                _selectedFactory?.CheckChangedEntity();
                 Set(ref _selectedFactory, value ?? new FactoryEVM());
                 ShowEditMenu = false;
             }
@@ -93,28 +94,12 @@ namespace Great.ViewModels
 
         private void PageUnloaded()
         {
-            var changed = Factories.Where(x => x.IsChanged).ToList();
-            //add also new not saved valid entities
-            if (SelectedFactory != null && SelectedFactory.Id == 0)
-                changed.Add(SelectedFactory);
-
-            if (changed.Count() == 0) return;
-
-            if (MetroMessageBox.Show("You changed page without saving. Do you want to commit changes?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
-                changed.ToList().ForEach(x => { if (x.IsValid) x.Save(); else x.RejectChanges(); });
-            }
-
-            else
-            {
-                changed.ToList().ForEach(x => { x.RejectChanges(); });
-            }
-
+            SelectedFactory.CheckChangedEntity();
         }
 
         private void PageLoaded()
         {
-            Factories.ToList().ForEach(x => x.IsChanged = false);
+            //  Factories.ToList().ForEach(x => x.RejectChanges());
         }
 
         private void NewFactory(FactoryEVM obj)

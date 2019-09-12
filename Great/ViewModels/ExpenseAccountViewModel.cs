@@ -53,6 +53,8 @@ namespace Great.ViewModels
             get => _selectedEA;
             set
             {
+                _selectedEA?.CheckChangedEntity();
+
                 Set(ref _selectedEA, value);
 
                 if (_selectedEA != null)
@@ -196,21 +198,13 @@ namespace Great.ViewModels
 
         private void PageUnloaded()
         {
-            var changed = ExpenseAccounts.Where(x => x.IsChanged);
-            if (changed.Count() == 0) return;
-
-
-            if (MetroMessageBox.Show("You changed page without saving. Do you want to save it?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                changed.ToList().ForEach(x => x.Save());
-
-            else
-                changed.ToList().ForEach(x => x.RejectChanges());
+            SelectedEA?.CheckChangedEntity();
 
         }
 
         private void PageLoaded()
         {
-            ExpenseAccounts.ToList().ForEach(x => x.IsChanged = false);
+            //ExpenseAccounts.ToList().ForEach(x => x.IsChanged = false);
         }
 
         public void NewEA(NewItemMessage<ExpenseAccountEVM> item)

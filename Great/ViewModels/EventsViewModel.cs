@@ -87,6 +87,8 @@ namespace Great.ViewModels
             get => _SelectedEvent;
             set
             {
+                _SelectedEvent?.CheckChangedEntity();
+
                 Set(ref _SelectedEvent, value);
 
                 if (_SelectedEvent != null)
@@ -173,28 +175,13 @@ namespace Great.ViewModels
 
         private void PageUnloaded()
         {
-            var changed = Events.Where(x => x.IsChanged).ToList();
-            //add also new not saved valid entities
-            if (SelectedEvent != null && SelectedEvent.Id == 0)
-                changed.Add(SelectedEvent);
-
-            if (changed.Count() == 0) return;
-
-            if (MetroMessageBox.Show("You changed page without saving. Do you want to commit changes?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
-                changed.ToList().ForEach(x => { if (x.IsValid) x.Save(); else x.RejectChanges(); });
-            }
-
-            else
-            {
-                changed.ToList().ForEach(x => { x.RejectChanges(); });
-            }
+            SelectedEvent?.CheckChangedEntity();
 
         }
 
         private void PageLoaded()
         {
-            Events.ToList().ForEach(x => x.IsChanged = false);
+            //Events.ToList().ForEach(x => x.IsChanged = false);
         }
 
         public void ClearEvent()

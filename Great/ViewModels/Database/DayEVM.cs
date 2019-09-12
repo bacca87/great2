@@ -30,7 +30,7 @@ namespace Great.ViewModels.Database
             get => _Type;
             set
             {
-                Set(ref _Type, value);
+                SetAndCheckChanged(ref _Type, value);
                 RaisePropertyChanged(nameof(EType));
             }
         }
@@ -39,8 +39,8 @@ namespace Great.ViewModels.Database
         public DayType DayType
         {
             get => _DayType;
-            set { Set(ref _DayType, value); }
-            }
+            set { SetAndCheckChanged(ref _DayType, value); }
+        }
 
         public ObservableCollectionEx<TimesheetEVM> Timesheets { get; set; }
 
@@ -332,6 +332,9 @@ namespace Great.ViewModels.Database
 
             if (day != null)
                 Global.Mapper.Map(day, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();

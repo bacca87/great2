@@ -416,6 +416,9 @@ namespace Great.ViewModels.Database
         {
             if (timesheet != null)
                 Global.Mapper.Map(timesheet, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)

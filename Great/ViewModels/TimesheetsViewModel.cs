@@ -196,7 +196,7 @@ namespace Great.ViewModels
 
         private void PageLoaded()
         {
-            WorkingDays.ToList().ForEach(x => x.IsChanged = false);
+            //WorkingDays.ToList().ForEach(x => x.IsChanged = false);
         }
 
         private void UpdateWorkingDays()

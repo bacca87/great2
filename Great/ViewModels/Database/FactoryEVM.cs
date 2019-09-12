@@ -21,11 +21,8 @@ namespace Great.ViewModels.Database
         public string Name
         {
             get => _Name;
-            set
-            {
-                Set(ref _Name, value);
-                IsChanged = true;
-            }
+            set=> SetAndCheckChanged(ref _Name, value);
+
 
         }
 
@@ -33,66 +30,47 @@ namespace Great.ViewModels.Database
         public string CompanyName
         {
             get => _CompanyName;
-            set
-            {
-                Set(ref _CompanyName, value);
-                IsChanged = true;
-            }
+            set =>SetAndCheckChanged(ref _CompanyName, value);
+ 
         }
 
         private string _Address;
         public string Address
         {
             get => _Address;
-            set
-            {
-                Set(ref _Address, value);
-                IsChanged = true;
-            }
+            set=>SetAndCheckChanged(ref _Address, value);
+
         }
 
         private double? _Latitude;
         public double? Latitude
         {
             get => _Latitude;
-            set
-            {
-                Set(ref _Latitude, value);
-                IsChanged = true;
-            }
+            set=>SetAndCheckChanged(ref _Latitude, value);
+
         }
 
         private double? _Longitude;
         public double? Longitude
         {
             get => _Longitude;
-            set
-            {
-                Set(ref _Longitude, value);
-                IsChanged = true;
-            }
+            set =>SetAndCheckChanged(ref _Longitude, value);
+
         }
 
         private long _TransferType;
         public long TransferType
         {
             get => _TransferType;
-            set
-            {
-                Set(ref _TransferType, value);
-                IsChanged = true;
-            }
+            set=>SetAndCheckChanged(ref _TransferType, value);
         }
 
         private bool _IsForfait;
         public bool IsForfait
         {
             get => _IsForfait;
-            set
-            {
-                Set(ref _IsForfait, value);
-                IsChanged = true;
-            }
+            set=>SetAndCheckChanged(ref _IsForfait, value);
+
         }
 
         private bool _NotifyAsNew;
@@ -106,22 +84,15 @@ namespace Great.ViewModels.Database
         public bool OverrideAddressOnFDL
         {
             get => _OverrideAddressOnFDL;
-            set
-            {
-                Set(ref _OverrideAddressOnFDL, value);
-                IsChanged = true;
-            }
+            set=> SetAndCheckChanged(ref _OverrideAddressOnFDL, value);
         }
 
         private TransferTypeDTO _TransferType1;
         public TransferTypeDTO TransferType1
         {
             get => _TransferType1;
-            set
-            {
-                Set(ref _TransferType1, value);
-                IsChanged = true;
-            }
+            set=>SetAndCheckChanged(ref _TransferType1, value);
+
         }
 
         #endregion
@@ -168,6 +139,9 @@ namespace Great.ViewModels.Database
         {
             if (factory != null)
                 Global.Mapper.Map(factory, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
         }
 
         public override bool Delete(DBArchive db)

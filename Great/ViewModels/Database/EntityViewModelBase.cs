@@ -1,6 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using Great.Models.Database;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace Great.ViewModels.Database
 {
@@ -32,7 +35,7 @@ namespace Great.ViewModels.Database
 
         #region IRevertibleChangesTracking
 
-        public bool IsChanged { get; set; }
+        public bool IsChanged { get; protected set; }
         public void AcceptChanges()
         {
             IsChanged = false;
@@ -45,6 +48,26 @@ namespace Great.ViewModels.Database
                 Refresh();
                 IsChanged = false;
             }
+        }
+
+        public void CheckChangedEntity()
+        {
+            if (!IsChanged) return;
+
+            if (MetroMessageBox.Show("Do you want to commit changes before leave selecion?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                Save();
+            else
+                RejectChanges();
+
+
+        }
+
+        public bool SetAndCheckChanged<T>(ref T field, T newValue = default, bool broadcast = false, [CallerMemberName] string propertyName = null)
+        {
+            if (!EqualityComparer<T>.Default.Equals(field, newValue))
+                IsChanged = true;
+
+             return base.Set(ref field, newValue);
         }
         #endregion
     }

@@ -110,9 +110,10 @@ namespace Great.ViewModels
             set
             {
                 if (value != null)
+
+                    _selectedCar?.CheckChangedEntity();
+
                     Set(ref _selectedCar, value);
-
-
             }
         }
 
@@ -236,30 +237,13 @@ namespace Great.ViewModels
 
         private void PageUnloaded()
         {
-            var changed = (from r in Rentals let car = r.Car1 where car != null && car.IsChanged || r.IsChanged select r).ToList();
-
-            //add also new not saved valid entities
-            if (SelectedRent != null && SelectedRent.Id == 0)
-                changed.Add(SelectedRent);
-
-            if (changed.Count() == 0) return;
-
-            if (MetroMessageBox.Show("You changed page without saving. Do you want to commit changes?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
-                changed.ToList().ForEach(x => { if (x.IsValid) x.Save(); else x.RejectChanges(); });
-            }
-
-            else
-            {
-                changed.ToList().ForEach(x => { x.RejectChanges(); x.Car1?.RejectChanges(); });
-            }
-
+            SelectedCar?.CheckChangedEntity();
 
         }
 
         private void PageLoaded()
         {
-            Rentals.ToList().ForEach(x => { x.IsChanged = false; x.Car1.IsChanged = false; });
+            //Rentals.ToList().ForEach(x => { x.IsChanged = false; x.Car1.IsChanged = false; });
         }
 
         private void RemoveFiltersCommand()

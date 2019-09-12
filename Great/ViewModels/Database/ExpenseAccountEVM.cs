@@ -38,9 +38,8 @@ namespace Great.ViewModels.Database
             get => _Currency;
             set
             {
-                Set(ref _Currency, value);
+                SetAndCheckChanged(ref _Currency, value);
                 CurrencyCode = CurrencyCodeMapper.GetSymbol(_Currency);
-                IsChanged = true;
             }
         }
 
@@ -48,7 +47,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set { Set(ref _Notes, value); IsChanged = true; }
+            set => SetAndCheckChanged(ref _Notes, value);
         }
 
         private long _Status;
@@ -115,14 +114,14 @@ namespace Great.ViewModels.Database
         public CurrencyDTO Currency1
         {
             get => _Currency1;
-            set { Set(ref _Currency1, value); IsChanged = true; }
+            set => SetAndCheckChanged(ref _Currency1, value);
         }
 
         private ObservableCollectionEx<ExpenseEVM> _Expenses;
         public ObservableCollectionEx<ExpenseEVM> Expenses
         {
             get => _Expenses;
-            set => Set(ref _Expenses, value);
+            set => SetAndCheckChanged(ref _Expenses, value);
         }
 
         private FDLStatusDTO _FDLStatus;
@@ -152,7 +151,7 @@ namespace Great.ViewModels.Database
         public string CurrencyCode
         {
             get => _CurrencyCode;
-            set { Set(ref _CurrencyCode, value); IsChanged = true; }
+            set => SetAndCheckChanged(ref _CurrencyCode, value);
         }
 
         public EFDLStatus EStatus
@@ -192,6 +191,9 @@ namespace Great.ViewModels.Database
 
             if (ea != null)
                 Global.Mapper.Map(ea, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
         }
 
         private void UpdateTotals()

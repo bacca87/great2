@@ -39,11 +39,8 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set
-            {
-                Set(ref _Type, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _Type, value);
+
         }
 
         public EEventType EType
@@ -53,7 +50,6 @@ namespace Great.ViewModels.Database
             {
                 Type = (int)value;
                 RaisePropertyChanged(nameof(Type));
-                IsChanged = true;
             }
         }
 
@@ -62,22 +58,16 @@ namespace Great.ViewModels.Database
         public string Title
         {
             get => _Title;
-            set
-            {
-                Set(ref _Title, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _Title, value);
+
         }
 
         private string _Location;
         public string Location
         {
             get => _Location;
-            set
-            {
-                Set(ref _Location, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _Location, value);
+
         }
 
         private DateTime? _SendDateTime;
@@ -91,7 +81,7 @@ namespace Great.ViewModels.Database
         public long StartDateTimeStamp
         {
             get => _StartDateTimestamp;
-            set => Set(ref _StartDateTimestamp, value);
+            set => SetAndCheckChanged(ref _StartDateTimestamp, value);
         }
 
 
@@ -99,7 +89,7 @@ namespace Great.ViewModels.Database
         public long EndDateTimeStamp
         {
             get => _EndDateTimestamp;
-            set => Set(ref _EndDateTimestamp, value);
+            set => SetAndCheckChanged(ref _EndDateTimestamp, value);
         }
 
         public DateTime StartDate
@@ -191,33 +181,24 @@ namespace Great.ViewModels.Database
         public string Description
         {
             get => _Description;
-            set
-            {
-                Set(ref _Description, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _Description, value);
+
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set
-            {
-                Set(ref _Notes, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _Notes, value);
+
         }
 
         private bool _IsAllDay;
         public bool IsAllDay
         {
             get => _IsAllDay;
-            set
-            {
-                Set(ref _IsAllDay, value);
-                IsChanged = true;
-            }
+            set=> SetAndCheckChanged(ref _IsAllDay, value);
+
         }
 
 
@@ -233,7 +214,7 @@ namespace Great.ViewModels.Database
         public bool IsCancelRequested
         {
             get => _IsCancelRequested;
-            set => Set(ref _IsCancelRequested, value);
+            set => SetAndCheckChanged(ref _IsCancelRequested, value);
         }
 
 
@@ -286,8 +267,7 @@ namespace Great.ViewModels.Database
             get => _Type1;
             set
             {
-                Set(ref _Type1, value);
-                IsChanged = true;
+                SetAndCheckChanged(ref _Type1, value);
                 RaisePropertyChanged(nameof(Type));
                 RaisePropertyChanged(nameof(EType));
             }
@@ -376,6 +356,9 @@ namespace Great.ViewModels.Database
             EndDate = DateTime.Now;
             if (ev != null)
                 Global.Mapper.Map(ev, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
         }
         public override bool Save(DBArchive db)
         {

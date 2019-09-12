@@ -16,11 +16,7 @@ namespace Great.ViewModels.Database
         public long Car
         {
             get => _car;
-            set
-            {
-                Set(ref _car, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _car, value);
         }
 
         private CarEVM _car1;
@@ -29,8 +25,9 @@ namespace Great.ViewModels.Database
             get => _car1;
             set
             {
-                Set(ref _car1, value);
-                IsChanged = true;
+                SetAndCheckChanged(ref _car1, value);
+                RaisePropertyChanged(nameof(Car));
+
             }
         }
 
@@ -40,10 +37,8 @@ namespace Great.ViewModels.Database
             get => _startKm;
             set
             {
-                Set(ref _startKm, value);
+                SetAndCheckChanged(ref _startKm, value);
                 RaisePropertyChanged(nameof(EndKm));
-
-                IsChanged = true;
             }
         }
 
@@ -53,12 +48,11 @@ namespace Great.ViewModels.Database
             get => _endKm;
             set
             {
-                Set(ref _endKm, value);
+                SetAndCheckChanged(ref _endKm, value);
                 RaisePropertyChanged(nameof(StartKm));
                 RaisePropertyChanged(nameof(EndLocation));
                 RaisePropertyChanged(nameof(RentEndTime));
                 RaisePropertyChanged(nameof(RentEndDate));
-                IsChanged = true;
             }
         }
 
@@ -66,11 +60,8 @@ namespace Great.ViewModels.Database
         public string StartLocation
         {
             get => _startLocation;
-            set
-            {
-                Set(ref _startLocation, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _startLocation, value);
+
         }
 
         private string _endLocation;
@@ -79,10 +70,9 @@ namespace Great.ViewModels.Database
             get => _endLocation;
             set
             {
-                Set(ref _endLocation, value);
+                SetAndCheckChanged(ref _endLocation, value);
                 RaisePropertyChanged(nameof(EndKm));
                 RaisePropertyChanged(nameof(RentEndDate));
-                IsChanged = true;
             }
         }
 
@@ -90,55 +80,40 @@ namespace Great.ViewModels.Database
         public long StartDate
         {
             get => _startDate;
-            set
-            {
-                Set(ref _startDate, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _startDate, value);
+
         }
 
         private long _endDate;
         public long EndDate
         {
             get => _endDate;
-            set
-            {
-                Set(ref _endDate, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _endDate, value);
+
         }
 
         private long _startFuelLevel;
         public long StartFuelLevel
         {
             get => _startFuelLevel;
-            set
-            {
-                Set(ref _startFuelLevel, value);
-                IsChanged = true;
-            }
+            set =>  SetAndCheckChanged(ref _startFuelLevel, value);
+
         }
 
         private long _endFuelLevel;
         public long EndFuelLevel
         {
             get => _endFuelLevel;
-            set
-            {
-                Set(ref _endFuelLevel, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _endFuelLevel, value);
+
         }
 
         private string _notes;
         public string Notes
         {
             get => _notes;
-            set
-            {
-                Set(ref _notes, value);
-                IsChanged = true;
-            }
+            set => SetAndCheckChanged(ref _notes, value);
+
         }
 
         public DateTime RentStartDate
@@ -307,6 +282,9 @@ namespace Great.ViewModels.Database
 
             if (rent != null)
                 Global.Mapper.Map(rent, this);
+
+            //Avoid fake ischanged when setting properties for first time
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
