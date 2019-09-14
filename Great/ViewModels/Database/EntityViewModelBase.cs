@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Great.ViewModels.Database
 {
-    public abstract class EntityViewModelBase : ViewModelBase, IRevertibleChangeTracking
+    public abstract class EntityViewModelBase : ViewModelBase
     {
         public bool Refresh()
         {
@@ -17,6 +17,7 @@ namespace Great.ViewModels.Database
 
         public abstract bool Refresh(DBArchive db);
 
+
         public bool Save()
         {
             using (DBArchive db = new DBArchive())
@@ -24,6 +25,13 @@ namespace Great.ViewModels.Database
         }
 
         public abstract bool Save(DBArchive db);
+
+        public bool IsChanged()
+        {
+            using (DBArchive db = new DBArchive())
+                return IsChanged(db);
+        }
+        public abstract bool IsChanged(DBArchive db);
 
         public bool Delete()
         {
@@ -33,42 +41,17 @@ namespace Great.ViewModels.Database
 
         public abstract bool Delete(DBArchive db);
 
-        #region IRevertibleChangesTracking
 
-        public bool IsChanged { get; protected set; }
-        public void AcceptChanges()
-        {
-            IsChanged = false;
-        }
-
-        public void RejectChanges()
-        {
-            using (DBArchive DB = new DBArchive())
-            {
-                Refresh();
-                IsChanged = false;
-            }
-        }
 
         public void CheckChangedEntity()
         {
-            if (!IsChanged) return;
+            if (!IsChanged()) return;
 
             if (MetroMessageBox.Show("Do you want to commit changes before leave selecion?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 Save();
             else
-                RejectChanges();
-
-
+                Refresh();
         }
 
-        public bool SetAndCheckChanged<T>(ref T field, T newValue = default, bool broadcast = false, [CallerMemberName] string propertyName = null)
-        {
-            if (!EqualityComparer<T>.Default.Equals(field, newValue))
-                IsChanged = true;
-
-             return base.Set(ref field, newValue);
-        }
-        #endregion
     }
 }

@@ -175,8 +175,9 @@ namespace Great.ViewModels
             CopyDayCommand = new RelayCommand<DayEVM>(CopyDay);
             CutDayCommand = new RelayCommand<DayEVM>(CutDay);
             PasteDayCommand = new RelayCommand<DayEVM>(PasteDay);
-            PageLoadedCommand = new RelayCommand(PageLoaded);
-            PageUnloadedCommand = new RelayCommand(PageUnloaded);
+
+            PageLoadedCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => {});
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
@@ -189,15 +190,7 @@ namespace Great.ViewModels
             UpdateWorkingDays();
         }
 
-        private void PageUnloaded()
-        {
-            var a = WorkingDays.Where(x => x.IsChanged);
-        }
 
-        private void PageLoaded()
-        {
-            //WorkingDays.ToList().ForEach(x => x.IsChanged = false);
-        }
 
         private void UpdateWorkingDays()
         {

@@ -95,6 +95,7 @@ namespace Great.ViewModels
 
             set
             {
+                _selectedRent?.CheckChangedEntity();
                 Set(ref _selectedRent, value);
                 SelectedCar = _selectedRent?.Car1;
 
@@ -109,9 +110,9 @@ namespace Great.ViewModels
 
             set
             {
-                if (value != null)
+                _selectedCar?.CheckChangedEntity();
 
-                    _selectedCar?.CheckChangedEntity();
+                if (value != null)
 
                     Set(ref _selectedCar, value);
             }
@@ -201,10 +202,11 @@ namespace Great.ViewModels
             NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
+            PageLoadedCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedRent?.CheckChangedEntity(); SelectedCar?.CheckChangedEntity(); });
+
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
-            PageLoadedCommand = new RelayCommand(PageLoaded);
-            PageUnloadedCommand = new RelayCommand(PageUnloaded);
 
             RentStartDateFilter = DateTime.Now;
             RentEndDateFilter = DateTime.Now;
@@ -235,16 +237,7 @@ namespace Great.ViewModels
         }
 
 
-        private void PageUnloaded()
-        {
-            SelectedCar?.CheckChangedEntity();
 
-        }
-
-        private void PageLoaded()
-        {
-            //Rentals.ToList().ForEach(x => { x.IsChanged = false; x.Car1.IsChanged = false; });
-        }
 
         private void RemoveFiltersCommand()
         {

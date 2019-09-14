@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class CarEVM : EntityViewModelBase, IDataErrorInfo
+    public class CarEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<CarEVM>
     {
         #region Properties
 
@@ -18,14 +18,14 @@ namespace Great.ViewModels.Database
         public string LicensePlate
         {
             get => _licencePlate;
-            set =>SetAndCheckChanged(ref _licencePlate, value);
+            set =>Set(ref _licencePlate, value);
         }
 
         private string _brand;
         public string Brand
         {
             get => _brand;
-            set =>  SetAndCheckChanged(ref _brand, value);
+            set => Set(ref _brand, value);
 
         }
 
@@ -33,7 +33,7 @@ namespace Great.ViewModels.Database
         public string Model
         {
             get => _model;
-            set => SetAndCheckChanged(ref _model, value);
+            set => Set(ref _model, value);
         }
 
         private long _carRentalCompany;
@@ -43,7 +43,7 @@ namespace Great.ViewModels.Database
             get => _carRentalCompany;
             set
             {
-                SetAndCheckChanged(ref _carRentalCompany, value);
+                Set(ref _carRentalCompany, value);
                 RaisePropertyChanged(nameof(CarRentalCompany1));
             }
 
@@ -55,7 +55,7 @@ namespace Great.ViewModels.Database
             get => _carRentalCompany1;
             set
             {
-                SetAndCheckChanged(ref _carRentalCompany1, value);
+                Set(ref _carRentalCompany1, value);
                 RaisePropertyChanged(nameof(CarRentalCompany));
             }
         }
@@ -114,9 +114,6 @@ namespace Great.ViewModels.Database
         {
             if (car != null)
                 Global.Mapper.Map(car, this);
-
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -126,7 +123,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, car);
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
-            AcceptChanges();
             Id = car.Id;
             return true;
         }
@@ -153,5 +149,26 @@ namespace Great.ViewModels.Database
             }
             return false;
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var car = db.Cars.SingleOrDefault(x => x.Id == Id);
+            if (car != null)
+            {
+              CarEVM c = new CarEVM(car);
+                return !c.Equals(this);
+            }
+            return false;
+        }
+
+        public  bool Equals(CarEVM obj)
+        {
+
+            return obj.LicensePlate == LicensePlate 
+                && obj.Model == Model 
+                && obj.Brand == Brand 
+                && obj.CarRentalCompany == CarRentalCompany;
+        }
+
     }
 }

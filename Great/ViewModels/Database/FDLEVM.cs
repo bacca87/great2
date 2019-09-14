@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class FDLEVM : EntityViewModelBase, IFDLFile
+    public class FDLEVM : EntityViewModelBase, IFDLFile,IEquatable<FDLEVM>
     {
         #region Properties
         private string _Id;
@@ -51,56 +51,56 @@ namespace Great.ViewModels.Database
         public long? Factory
         {
             get => _Factory;
-            set => SetAndCheckChanged(ref _Factory, value);
+            set => Set(ref _Factory, value);
         }
 
         private bool _OutwardCar;
         public bool OutwardCar
         {
             get => _OutwardCar;
-            set => SetAndCheckChanged(ref _OutwardCar, value);
+            set => Set(ref _OutwardCar, value);
         }
 
         private bool _ReturnCar;
         public bool ReturnCar
         {
             get => _ReturnCar;
-            set => SetAndCheckChanged(ref _ReturnCar, value);
+            set => Set(ref _ReturnCar, value);
         }
 
         private bool _OutwardTaxi;
         public bool OutwardTaxi
         {
             get => _OutwardTaxi;
-            set => SetAndCheckChanged(ref _OutwardTaxi, value);
+            set => Set(ref _OutwardTaxi, value);
         }
 
         private bool _ReturnTaxi;
         public bool ReturnTaxi
         {
             get => _ReturnTaxi;
-            set => SetAndCheckChanged(ref _ReturnTaxi, value);
+            set => Set(ref _ReturnTaxi, value);
         }
 
         private bool _OutwardAircraft;
         public bool OutwardAircraft
         {
             get => _OutwardAircraft;
-            set => SetAndCheckChanged(ref _OutwardAircraft, value);
+            set => Set(ref _OutwardAircraft, value);
         }
 
         private bool _ReturnAircraft;
         public bool ReturnAircraft
         {
             get => _ReturnAircraft;
-            set => SetAndCheckChanged(ref _ReturnAircraft, value);
+            set => Set(ref _ReturnAircraft, value);
         }
 
         private string _PerformanceDescription;
         public string PerformanceDescription
         {
             get => _PerformanceDescription;
-            set => SetAndCheckChanged(ref _PerformanceDescription, value);
+            set => Set(ref _PerformanceDescription, value);
         }
 
         private long _Result;
@@ -109,7 +109,7 @@ namespace Great.ViewModels.Database
             get => _Result;
             set
             {
-                SetAndCheckChanged(ref _Result, value);
+                Set(ref _Result, value);
                 RaisePropertyChanged(nameof(EResult));
             }
         }
@@ -118,21 +118,21 @@ namespace Great.ViewModels.Database
         public string ResultNotes
         {
             get => _ResultNotes;
-            set => SetAndCheckChanged(ref _ResultNotes, value);
+            set => Set(ref _ResultNotes, value);
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set => SetAndCheckChanged(ref _Notes, value);
+            set => Set(ref _Notes, value);
         }
 
         private string _PerformanceDescriptionDetails;
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
-            set => SetAndCheckChanged(ref _PerformanceDescriptionDetails, value); 
+            set => Set(ref _PerformanceDescriptionDetails, value); 
         }
 
         private long _Status;
@@ -271,9 +271,6 @@ namespace Great.ViewModels.Database
 
             if (fdl != null)
                 Global.Mapper.Map(fdl, this);
-
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -283,8 +280,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();
-            AcceptChanges();
-
             return true;
         }
 
@@ -309,5 +304,37 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var fdl = db.FDLs.SingleOrDefault(x => x.Id == Id);
+            if (fdl != null)
+            {
+                FDLEVM f = new FDLEVM(fdl);
+                return !f.Equals(this);
+            }
+            return false;
+        }
+
+        public  bool Equals(FDLEVM obj)
+        {
+
+            var result = Factory == obj.Factory
+                && OutwardAircraft == obj.OutwardAircraft
+                && OutwardCar == obj.OutwardCar
+                && OutwardTaxi == obj.OutwardTaxi
+                && ReturnAircraft == obj.ReturnAircraft
+                && ReturnCar == obj.ReturnCar
+                && ReturnTaxi == obj.ReturnTaxi
+                && PerformanceDescription == obj.PerformanceDescription
+                && Result == obj.Result
+                && ResultNotes == obj.ResultNotes
+                && Notes == obj.Notes
+                && Timesheets.SequenceEqual(obj.Timesheets);
+
+            return result;
+        }
+
+
     }
 }

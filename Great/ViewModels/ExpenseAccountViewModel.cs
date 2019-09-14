@@ -172,8 +172,9 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
-            PageLoadedCommand = new RelayCommand(PageLoaded);
-            PageUnloadedCommand = new RelayCommand(PageUnloaded);
+            PageLoadedCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
+
 
 
             using (DBArchive db = new DBArchive())
@@ -196,16 +197,7 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        private void PageUnloaded()
-        {
-            SelectedEA?.CheckChangedEntity();
 
-        }
-
-        private void PageLoaded()
-        {
-            //ExpenseAccounts.ToList().ForEach(x => x.IsChanged = false);
-        }
 
         public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {

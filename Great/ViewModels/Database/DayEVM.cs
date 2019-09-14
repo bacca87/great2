@@ -14,7 +14,7 @@ using Day = Great.Models.Database.Day;
 
 namespace Great.ViewModels.Database
 {
-    public class DayEVM : EntityViewModelBase
+    public class DayEVM : EntityViewModelBase, IEquatable<DayEVM>
     {
         #region Properties
         public long _Timestamp;
@@ -30,7 +30,7 @@ namespace Great.ViewModels.Database
             get => _Type;
             set
             {
-                SetAndCheckChanged(ref _Type, value);
+                Set(ref _Type, value);
                 RaisePropertyChanged(nameof(EType));
             }
         }
@@ -39,7 +39,7 @@ namespace Great.ViewModels.Database
         public DayType DayType
         {
             get => _DayType;
-            set { SetAndCheckChanged(ref _DayType, value); }
+            set => Set(ref _DayType, value);
         }
 
         public ObservableCollectionEx<TimesheetEVM> Timesheets { get; set; }
@@ -333,9 +333,6 @@ namespace Great.ViewModels.Database
             if (day != null)
                 Global.Mapper.Map(day, this);
 
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
-
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
         }
@@ -368,7 +365,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
             db.SaveChanges();
-            AcceptChanges();
             return true;
         }
 
@@ -396,17 +392,24 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-
-        public override bool Equals(object obj)
+        public override bool IsChanged(DBArchive db)
         {
-            return obj is DayEVM eVM &&
-                   Timestamp == eVM.Timestamp;
+            var day = db.Days.SingleOrDefault(x => x.Timestamp == Timestamp);
+            if (day != null)
+            {
+                DayEVM d = new DayEVM(day);
+                return !d.Equals(this);
+            }
+            return false;
         }
 
-        public override int GetHashCode()
+        public bool Equals(DayEVM obj)
         {
-            return 227403579 + Timestamp.GetHashCode();
+
+            return Timestamp == obj.Timestamp;
         }
+
+
     }
 
     public enum EDayType

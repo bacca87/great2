@@ -149,8 +149,9 @@ namespace Great.ViewModels
 
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
-            PageLoadedCommand = new RelayCommand(PageLoaded);
-            PageUnloadedCommand = new RelayCommand(PageUnloaded);
+            PageLoadedCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedFDL?.CheckChangedEntity(); });
+
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
@@ -178,14 +179,6 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        private void PageUnloaded()
-        {
-            SelectedFDL?.CheckChangedEntity();
-        }
-
-        private void PageLoaded()
-        {
-        }
 
         public void NewFDL(NewItemMessage<FDLEVM> item)
         {

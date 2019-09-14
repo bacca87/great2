@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class TimesheetEVM : EntityViewModelBase, IDataErrorInfo
+    public class TimesheetEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<TimesheetEVM>
     {
         #region Properties
         private long _Id;
@@ -40,7 +40,6 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelStartTimeAM, value);
                 RaisePropertyChanged(nameof(TravelStartTimeAM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -53,7 +52,6 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelEndTimeAM, value);
                 RaisePropertyChanged(nameof(TravelEndTimeAM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -66,7 +64,6 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelStartTimePM, value);
                 RaisePropertyChanged(nameof(TravelStartTimePM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -79,7 +76,6 @@ namespace Great.ViewModels.Database
                 Set(ref _TravelEndTimePM, value);
                 RaisePropertyChanged(nameof(TravelEndTimePM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -92,7 +88,6 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkStartTimeAM, value);
                 RaisePropertyChanged(nameof(WorkStartTimeAM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -105,7 +100,6 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkEndTimeAM, value);
                 RaisePropertyChanged(nameof(WorkEndTimeAM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -118,7 +112,6 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkStartTimePM, value);
                 RaisePropertyChanged(nameof(WorkStartTimePM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -131,7 +124,6 @@ namespace Great.ViewModels.Database
                 Set(ref _WorkEndTimePM, value);
                 RaisePropertyChanged(nameof(WorkEndTimePM_t));
                 UpdateTotals();
-                IsChanged = true;
             }
         }
 
@@ -139,14 +131,14 @@ namespace Great.ViewModels.Database
         public string FDL
         {
             get => _FDL;
-            set { Set(ref _FDL, value); IsChanged = true; }
+            set => Set(ref _FDL, value);
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set { Set(ref _Notes, value); IsChanged = true; }
+            set => Set(ref _Notes, value); 
         }
 
         private DayDTO _Day;
@@ -160,7 +152,7 @@ namespace Great.ViewModels.Database
         public FDLEVM FDL1
         {
             get => _FDL1;
-            set { Set(ref _FDL1, value); IsChanged = true; }
+            set => Set(ref _FDL1, value);
         }
 
         #region Converted Properties
@@ -416,9 +408,6 @@ namespace Great.ViewModels.Database
         {
             if (timesheet != null)
                 Global.Mapper.Map(timesheet, this);
-
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -429,7 +418,6 @@ namespace Great.ViewModels.Database
             db.Timesheets.AddOrUpdate(timesheet);
             db.SaveChanges();
             Id = timesheet.Id;
-            AcceptChanges();
             return true;
         }
 
@@ -455,6 +443,31 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+        public override bool IsChanged(DBArchive db)
+        {
+            var ts = db.Timesheets.SingleOrDefault(x => x.Id == Id);
+            if (ts != null)
+            {
+                TimesheetEVM f = new TimesheetEVM(ts);
+                return ts.Equals(this);
+            }
+            return false;
+        }
+
+        public  bool Equals(TimesheetEVM obj)
+        {
+            return FDL == obj.FDL
+                && TravelStartTimeAM == obj.TravelStartTimeAM
+                && WorkStartTimeAM == obj.WorkStartTimeAM
+                && WorkEndTimeAM == obj.WorkEndTimeAM
+                && TravelEndTimeAM == obj.TravelEndTimeAM
+                && TravelStartTimePM == obj.TravelStartTimePM
+                && WorkStartTimePM == obj.WorkStartTimePM
+                && WorkEndTimePM == obj.WorkEndTimePM
+                && TravelEndTimePM == obj.TravelEndTimePM
+                && Notes == obj.Notes;
+        }
+
 
         private void UpdateTotals()
         {

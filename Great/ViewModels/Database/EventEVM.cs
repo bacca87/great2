@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public partial class EventEVM : EntityViewModelBase, IDataErrorInfo
+    public partial class EventEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<EventEVM>
     {
         #region Properties
 
@@ -39,7 +39,7 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set => SetAndCheckChanged(ref _Type, value);
+            set => Set(ref _Type, value);
 
         }
 
@@ -58,7 +58,7 @@ namespace Great.ViewModels.Database
         public string Title
         {
             get => _Title;
-            set => SetAndCheckChanged(ref _Title, value);
+            set => Set(ref _Title, value);
 
         }
 
@@ -66,7 +66,7 @@ namespace Great.ViewModels.Database
         public string Location
         {
             get => _Location;
-            set => SetAndCheckChanged(ref _Location, value);
+            set => Set(ref _Location, value);
 
         }
 
@@ -81,7 +81,7 @@ namespace Great.ViewModels.Database
         public long StartDateTimeStamp
         {
             get => _StartDateTimestamp;
-            set => SetAndCheckChanged(ref _StartDateTimestamp, value);
+            set => Set(ref _StartDateTimestamp, value);
         }
 
 
@@ -89,7 +89,7 @@ namespace Great.ViewModels.Database
         public long EndDateTimeStamp
         {
             get => _EndDateTimestamp;
-            set => SetAndCheckChanged(ref _EndDateTimestamp, value);
+            set => Set(ref _EndDateTimestamp, value);
         }
 
         public DateTime StartDate
@@ -104,7 +104,6 @@ namespace Great.ViewModels.Database
                 RaisePropertyChanged(nameof(EndMinutes));
                 RaisePropertyChanged(nameof(StartDate));
                 RaisePropertyChanged(nameof(EndDate));
-                IsChanged = true;
             }
         }
         public DateTime EndDate
@@ -119,7 +118,6 @@ namespace Great.ViewModels.Database
                 RaisePropertyChanged(nameof(EndMinutes));
                 RaisePropertyChanged(nameof(StartDate));
                 RaisePropertyChanged(nameof(EndDate));
-                IsChanged = true;
             }
         }
 
@@ -181,7 +179,7 @@ namespace Great.ViewModels.Database
         public string Description
         {
             get => _Description;
-            set => SetAndCheckChanged(ref _Description, value);
+            set => Set(ref _Description, value);
 
         }
 
@@ -189,7 +187,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => SetAndCheckChanged(ref _Notes, value);
+            set => Set(ref _Notes, value);
 
         }
 
@@ -197,7 +195,7 @@ namespace Great.ViewModels.Database
         public bool IsAllDay
         {
             get => _IsAllDay;
-            set=> SetAndCheckChanged(ref _IsAllDay, value);
+            set=> Set(ref _IsAllDay, value);
 
         }
 
@@ -214,7 +212,7 @@ namespace Great.ViewModels.Database
         public bool IsCancelRequested
         {
             get => _IsCancelRequested;
-            set => SetAndCheckChanged(ref _IsCancelRequested, value);
+            set => Set(ref _IsCancelRequested, value);
         }
 
 
@@ -267,7 +265,7 @@ namespace Great.ViewModels.Database
             get => _Type1;
             set
             {
-                SetAndCheckChanged(ref _Type1, value);
+                Set(ref _Type1, value);
                 RaisePropertyChanged(nameof(Type));
                 RaisePropertyChanged(nameof(EType));
             }
@@ -356,9 +354,6 @@ namespace Great.ViewModels.Database
             EndDate = DateTime.Now;
             if (ev != null)
                 Global.Mapper.Map(ev, this);
-
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
         public override bool Save(DBArchive db)
         {
@@ -395,6 +390,28 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var ev = db.Events.SingleOrDefault(x => x.Id == Id);
+            if (ev != null)
+            {
+                EventEVM e = new EventEVM(ev);
+                return !e.Equals(this);
+            }
+            return false;
+        }
+
+        public  bool Equals(EventEVM obj)
+        {
+            return Title == obj.Title
+                && Location == obj.Location
+                && IsAllDay == obj.IsAllDay
+                && StartDate == obj.StartDate
+                && Status == obj.Status
+                && EndDate == obj.EndDate;
+        }
+
         public void AddOrUpdateEventRelations(DBArchive db, out List<DayEVM> DaysToBeCleared, out List<DayEVM> NewDaysInEvent)
         {
             NewDaysInEvent = new List<DayEVM>();
@@ -486,20 +503,6 @@ namespace Great.ViewModels.Database
 
 
             return dates;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is EventEVM)) return false;
-
-            EventEVM baseEv = (EventEVM)obj;
-
-            return this.Title == baseEv.Title
-                && this.Location == baseEv.Location
-                && this.IsAllDay == baseEv.IsAllDay
-                && this.StartDate == baseEv.StartDate
-                && this.Status == baseEv.Status
-                && this.EndDate == baseEv.EndDate;
         }
 
     }

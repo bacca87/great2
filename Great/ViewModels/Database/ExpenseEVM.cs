@@ -1,11 +1,13 @@
 ﻿
 using Great.Models.Database;
 using Great.Models.DTO;
+using System;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseEVM : EntityViewModelBase
+    public class ExpenseEVM : EntityViewModelBase, IEquatable<ExpenseEVM>
     {
         #region Properties
         public long _Id;
@@ -26,7 +28,7 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set => SetAndCheckChanged(ref _Type, value);
+            set => Set(ref _Type, value);
         }
 
         private double? _MondayAmount;
@@ -35,7 +37,7 @@ namespace Great.ViewModels.Database
             get => _MondayAmount;
             set
             {
-                SetAndCheckChanged(ref _MondayAmount, value);
+                Set(ref _MondayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -46,7 +48,7 @@ namespace Great.ViewModels.Database
             get => _TuesdayAmount;
             set
             {
-                SetAndCheckChanged(ref _TuesdayAmount, value);
+                Set(ref _TuesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -57,7 +59,7 @@ namespace Great.ViewModels.Database
             get => _WednesdayAmount;
             set
             {
-                SetAndCheckChanged(ref _WednesdayAmount, value);
+                Set(ref _WednesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -68,7 +70,7 @@ namespace Great.ViewModels.Database
             get => _ThursdayAmount;
             set
             {
-                SetAndCheckChanged(ref _ThursdayAmount, value);
+                Set(ref _ThursdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -79,7 +81,7 @@ namespace Great.ViewModels.Database
             get => _FridayAmount;
             set
             {
-                SetAndCheckChanged(ref _FridayAmount, value);
+                Set(ref _FridayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -90,7 +92,7 @@ namespace Great.ViewModels.Database
             get => _SaturdayAmount;
             set
             {
-                SetAndCheckChanged(ref _SaturdayAmount, value);
+                Set(ref _SaturdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -101,7 +103,7 @@ namespace Great.ViewModels.Database
             get => _SundayAmount;
             set
             {
-                SetAndCheckChanged(ref _SundayAmount, value);
+                Set(ref _SundayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -112,7 +114,7 @@ namespace Great.ViewModels.Database
         public ExpenseTypeDTO ExpenseType
         {
             get => _ExpenseType;
-            set => SetAndCheckChanged(ref _ExpenseType, value);
+            set => Set(ref _ExpenseType, value);
         }
         #endregion
 
@@ -123,9 +125,6 @@ namespace Great.ViewModels.Database
         {
             if (expense != null)
                 Global.Mapper.Map(expense, this);
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
-
         }
 
         public override bool Save(DBArchive db)
@@ -136,7 +135,6 @@ namespace Great.ViewModels.Database
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;
-            AcceptChanges();
             return true;
         }
 
@@ -149,5 +147,29 @@ namespace Great.ViewModels.Database
         {
             throw new System.NotImplementedException();
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var ex = db.Expenses.SingleOrDefault(x => x.Id == Id);
+            if (ex != null)
+            {
+                ExpenseEVM e = new ExpenseEVM(ex);
+                return !e.Equals(this);
+            }
+            return false;
+        }
+
+        public bool Equals(ExpenseEVM obj)
+        {        
+            return Type == obj.Type
+                && MondayAmount == obj.MondayAmount
+                && TuesdayAmount == obj.TuesdayAmount
+                && ThursdayAmount == obj.ThursdayAmount
+                && WednesdayAmount == obj.WednesdayAmount
+                && FridayAmount == obj.FridayAmount
+                && SaturdayAmount == obj.SaturdayAmount
+                && SundayAmount == obj.SundayAmount;
+        }
+
     }
 }

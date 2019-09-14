@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class FactoryEVM : EntityViewModelBase, IDataErrorInfo
+    public class FactoryEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<FactoryEVM>
     {
         #region Properties
         private long _Id;
@@ -21,7 +21,7 @@ namespace Great.ViewModels.Database
         public string Name
         {
             get => _Name;
-            set=> SetAndCheckChanged(ref _Name, value);
+            set=> Set(ref _Name, value);
 
 
         }
@@ -30,7 +30,7 @@ namespace Great.ViewModels.Database
         public string CompanyName
         {
             get => _CompanyName;
-            set =>SetAndCheckChanged(ref _CompanyName, value);
+            set => Set(ref _CompanyName, value);
  
         }
 
@@ -38,7 +38,7 @@ namespace Great.ViewModels.Database
         public string Address
         {
             get => _Address;
-            set=>SetAndCheckChanged(ref _Address, value);
+            set=> Set(ref _Address, value);
 
         }
 
@@ -46,7 +46,7 @@ namespace Great.ViewModels.Database
         public double? Latitude
         {
             get => _Latitude;
-            set=>SetAndCheckChanged(ref _Latitude, value);
+            set=> Set(ref _Latitude, value);
 
         }
 
@@ -54,7 +54,7 @@ namespace Great.ViewModels.Database
         public double? Longitude
         {
             get => _Longitude;
-            set =>SetAndCheckChanged(ref _Longitude, value);
+            set => Set(ref _Longitude, value);
 
         }
 
@@ -62,14 +62,14 @@ namespace Great.ViewModels.Database
         public long TransferType
         {
             get => _TransferType;
-            set=>SetAndCheckChanged(ref _TransferType, value);
+            set=> Set(ref _TransferType, value);
         }
 
         private bool _IsForfait;
         public bool IsForfait
         {
             get => _IsForfait;
-            set=>SetAndCheckChanged(ref _IsForfait, value);
+            set=> Set(ref _IsForfait, value);
 
         }
 
@@ -88,14 +88,14 @@ namespace Great.ViewModels.Database
         public bool OverrideAddressOnFDL
         {
             get => _OverrideAddressOnFDL;
-            set=> SetAndCheckChanged(ref _OverrideAddressOnFDL, value);
+            set=> Set(ref _OverrideAddressOnFDL, value);
         }
 
         private TransferTypeDTO _TransferType1;
         public TransferTypeDTO TransferType1
         {
             get => _TransferType1;
-            set=>SetAndCheckChanged(ref _TransferType1, value);
+            set=> Set(ref _TransferType1, value);
 
         }
 
@@ -147,9 +147,6 @@ namespace Great.ViewModels.Database
         {
             if (factory != null)
                 Global.Mapper.Map(factory, this);
-
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
 
         public override bool Delete(DBArchive db)
@@ -185,9 +182,34 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, factory);
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();
-            AcceptChanges();
             Id = factory.Id;
             return true;
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var fact = db.Factories.SingleOrDefault(x => x.Id == Id);
+            if (fact != null)
+            {
+                FactoryEVM f = new FactoryEVM(fact);
+                return !f.Equals(this);
+            }
+            return false;
+        }
+
+        public bool Equals(FactoryEVM obj)
+        {
+
+            return Name == obj.Name
+                && CompanyName  == obj.CompanyName
+                && Address == obj.Address
+                && Latitude == obj.Latitude
+                && Longitude == obj.Longitude
+                && IsForfait == obj.IsForfait
+                && TransferType == obj.TransferType
+                && OverrideAddressOnFDL == obj.OverrideAddressOnFDL;
+        }
+
+
     }
 }

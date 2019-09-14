@@ -3,12 +3,13 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
+using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile
+    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile,IEquatable<ExpenseAccountEVM>
     {
         #region Properties
         private long _Id;
@@ -38,7 +39,7 @@ namespace Great.ViewModels.Database
             get => _Currency;
             set
             {
-                SetAndCheckChanged(ref _Currency, value);
+                Set(ref _Currency, value);
                 CurrencyCode = CurrencyCodeMapper.GetSymbol(_Currency);
             }
         }
@@ -47,7 +48,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => SetAndCheckChanged(ref _Notes, value);
+            set => Set(ref _Notes, value);
         }
 
         private long _Status;
@@ -118,14 +119,14 @@ namespace Great.ViewModels.Database
         public CurrencyDTO Currency1
         {
             get => _Currency1;
-            set => SetAndCheckChanged(ref _Currency1, value);
+            set => Set(ref _Currency1, value);
         }
 
         private ObservableCollectionEx<ExpenseEVM> _Expenses;
         public ObservableCollectionEx<ExpenseEVM> Expenses
         {
             get => _Expenses;
-            set => SetAndCheckChanged(ref _Expenses, value);
+            set => Set(ref _Expenses, value);
         }
 
         private FDLStatusDTO _FDLStatus;
@@ -155,7 +156,7 @@ namespace Great.ViewModels.Database
         public string CurrencyCode
         {
             get => _CurrencyCode;
-            set => SetAndCheckChanged(ref _CurrencyCode, value);
+            set => Set(ref _CurrencyCode, value);
         }
 
         public EFDLStatus EStatus
@@ -200,8 +201,6 @@ namespace Great.ViewModels.Database
             if (ea != null)
                 Global.Mapper.Map(ea, this);
 
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
 
         private void UpdateTotals()
@@ -224,7 +223,6 @@ namespace Great.ViewModels.Database
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;
-            AcceptChanges();
             return true;
         }
 
@@ -243,5 +241,28 @@ namespace Great.ViewModels.Database
             }
             return false;
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var ea = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
+            if (ea != null)
+            {
+                ExpenseAccountEVM e = new ExpenseAccountEVM(ea);
+                return !e.Equals(this);
+            }
+            return false;
+        }
+
+        public  bool Equals(ExpenseAccountEVM obj)
+        {
+
+            return FDL == obj.FDL
+                && CdC == obj.CdC
+                && Currency == obj.Currency
+                && Notes == obj.Notes
+                && Expenses.SequenceEqual(obj.Expenses);
+
+        }
+
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class CarRentalHistoryEVM : EntityViewModelBase, IDataErrorInfo
+    public class CarRentalHistoryEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<CarRentalHistoryEVM>
     {
         #region Properties
         public long Id { get; set; }
@@ -16,7 +16,7 @@ namespace Great.ViewModels.Database
         public long Car
         {
             get => _car;
-            set => SetAndCheckChanged(ref _car, value);
+            set => Set(ref _car, value);
         }
 
         private CarEVM _car1;
@@ -25,7 +25,7 @@ namespace Great.ViewModels.Database
             get => _car1;
             set
             {
-                SetAndCheckChanged(ref _car1, value);
+                Set(ref _car1, value);
                 RaisePropertyChanged(nameof(Car));
 
             }
@@ -37,7 +37,7 @@ namespace Great.ViewModels.Database
             get => _startKm;
             set
             {
-                SetAndCheckChanged(ref _startKm, value);
+                Set(ref _startKm, value);
                 RaisePropertyChanged(nameof(EndKm));
             }
         }
@@ -48,7 +48,7 @@ namespace Great.ViewModels.Database
             get => _endKm;
             set
             {
-                SetAndCheckChanged(ref _endKm, value);
+                Set(ref _endKm, value);
                 RaisePropertyChanged(nameof(StartKm));
                 RaisePropertyChanged(nameof(EndLocation));
                 RaisePropertyChanged(nameof(RentEndTime));
@@ -60,7 +60,7 @@ namespace Great.ViewModels.Database
         public string StartLocation
         {
             get => _startLocation;
-            set => SetAndCheckChanged(ref _startLocation, value);
+            set => Set(ref _startLocation, value);
 
         }
 
@@ -70,7 +70,7 @@ namespace Great.ViewModels.Database
             get => _endLocation;
             set
             {
-                SetAndCheckChanged(ref _endLocation, value);
+                Set(ref _endLocation, value);
                 RaisePropertyChanged(nameof(EndKm));
                 RaisePropertyChanged(nameof(RentEndDate));
             }
@@ -80,7 +80,7 @@ namespace Great.ViewModels.Database
         public long StartDate
         {
             get => _startDate;
-            set => SetAndCheckChanged(ref _startDate, value);
+            set => Set(ref _startDate, value);
 
         }
 
@@ -88,7 +88,7 @@ namespace Great.ViewModels.Database
         public long EndDate
         {
             get => _endDate;
-            set => SetAndCheckChanged(ref _endDate, value);
+            set => Set(ref _endDate, value);
 
         }
 
@@ -96,7 +96,7 @@ namespace Great.ViewModels.Database
         public long StartFuelLevel
         {
             get => _startFuelLevel;
-            set =>  SetAndCheckChanged(ref _startFuelLevel, value);
+            set => Set(ref _startFuelLevel, value);
 
         }
 
@@ -104,7 +104,7 @@ namespace Great.ViewModels.Database
         public long EndFuelLevel
         {
             get => _endFuelLevel;
-            set => SetAndCheckChanged(ref _endFuelLevel, value);
+            set => Set(ref _endFuelLevel, value);
 
         }
 
@@ -112,7 +112,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _notes;
-            set => SetAndCheckChanged(ref _notes, value);
+            set => Set(ref _notes, value);
 
         }
 
@@ -282,9 +282,6 @@ namespace Great.ViewModels.Database
 
             if (rent != null)
                 Global.Mapper.Map(rent, this);
-
-            //Avoid fake ischanged when setting properties for first time
-            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -294,7 +291,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, rent);
             db.CarRentalHistories.AddOrUpdate(rent);
             db.SaveChanges();
-            AcceptChanges();
             Id = rent.Id;
             return true;
         }
@@ -325,5 +321,31 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
+        public override bool IsChanged(DBArchive db)
+        {
+            var rent = db.CarRentalHistories.SingleOrDefault(x => x.Id == Id);
+            if (rent != null)
+            {
+                CarRentalHistoryEVM r = new CarRentalHistoryEVM(rent);
+                return !r.Equals(this);
+            }
+            return false;
+        }
+
+        public  bool Equals(CarRentalHistoryEVM obj)
+        {
+
+            return obj.Car == Car 
+                && obj.StartKm == StartKm 
+                && obj.EndKm == EndKm 
+                && obj.StartLocation == StartLocation 
+                && obj.EndLocation == EndLocation 
+                && obj.StartDate == StartDate 
+                && obj.EndDate == EndDate 
+                && obj.StartFuelLevel == StartFuelLevel 
+                && obj.EndFuelLevel == EndFuelLevel;
+        }
+
     }
 }

@@ -24,7 +24,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Fluent:Ribbon Grid.Row="0">
+        <Fluent:Ribbon Grid.Row="0" >
             <Fluent:Ribbon.Resources>
                 <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
                 <conv:CompareIntConverter x:Key="CompareIntConverter"/>
@@ -47,7 +47,7 @@
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
             <!--Contextual Tab Groups-->
-            <Fluent:Ribbon.ContextualGroups>
+            <Fluent:Ribbon.ContextualGroups >
                 <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
                                      Header="RENT" 
                                      DataContext="{Binding CarRental, Source={StaticResource Locator}}"

@@ -1,4 +1,5 @@
 ﻿using Great.Utils.Extensions;
+using Great.ViewModels;
 using System.Windows.Controls;
 
 namespace Great.Views.Pages
@@ -39,6 +40,17 @@ namespace Great.Views.Pages
         private void MaskedTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             MaskedTextBoxHelper.PreviewTextInput(sender, e);
+        }
+
+        private void Page_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            if (sender!= this)
+            {
+                var context = (CarRentalViewModel)DataContext;
+                context.PageUnloadedCommand.Execute(null);
+            }
+
+
         }
     }
 }

@@ -153,8 +153,9 @@ namespace Great.ViewModels
             NewCommand = new RelayCommand<EventEVM>(AddEvent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
-            PageLoadedCommand = new RelayCommand(PageLoaded);
-            PageUnloadedCommand = new RelayCommand(PageUnloaded);
+            PageLoadedCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedEvent?.CheckChangedEntity(); });
+
 
             using (DBArchive db = new DBArchive())
             {
@@ -172,17 +173,6 @@ namespace Great.ViewModels
         #endregion
 
         #region Methods
-
-        private void PageUnloaded()
-        {
-            SelectedEvent?.CheckChangedEntity();
-
-        }
-
-        private void PageLoaded()
-        {
-            //Events.ToList().ForEach(x => x.IsChanged = false);
-        }
 
         public void ClearEvent()
         {

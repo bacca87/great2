@@ -110,5 +110,6 @@ namespace Great.Views
             view.Owner = this;
             view.ShowDialog();
         }
+
     }
 }
