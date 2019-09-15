@@ -15,14 +15,7 @@
       Title="Timesheet"
       Loaded="Page_Loaded"
       Style="{DynamicResource MetroPage}">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Unloaded">
-            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">

@@ -13,15 +13,9 @@
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView"
+
       Style="{DynamicResource MetroPage}">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
-        </i:EventTrigger>
-        <i:EventTrigger EventName="PreviewClosing">
-            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+
     <Page.Resources>
         <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>

@@ -14,8 +14,8 @@
       mc:Ignorable="d" 
       DataContext="{Binding CarRental, Source={StaticResource Locator}}"
       Title="CarRental"
-       Style="{DynamicResource MetroPage}"  
-      PreviewLostKeyboardFocus="Page_PreviewLostKeyboardFocus">
+       Style="{DynamicResource MetroPage}">
+
     <Page.Resources>
         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
         <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />

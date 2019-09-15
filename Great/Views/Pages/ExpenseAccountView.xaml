@@ -15,14 +15,6 @@
       DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
       Title="ExpenseAccount"
       Style="{DynamicResource MetroPage}">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Unloaded">
-            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <Page.Resources>
         <CollectionViewSource x:Key="EACollectionView" Source="{Binding ExpenseAccounts}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>

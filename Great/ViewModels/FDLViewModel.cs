@@ -121,10 +121,7 @@ namespace Great.ViewModels
 
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
-
-        public RelayCommand PageLoadedCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
-
         public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
 
@@ -149,7 +146,6 @@ namespace Great.ViewModels
 
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
-            PageLoadedCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedFDL?.CheckChangedEntity(); });
 
 

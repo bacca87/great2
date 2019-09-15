@@ -16,14 +16,6 @@
     mc:Ignorable="d"
         Title="Events"
         DataContext="{Binding Events, Source={StaticResource Locator}}">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction  Command="{Binding PageLoadedCommand}" />
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Unloaded">
-            <i:InvokeCommandAction  Command="{Binding PageUnloadedCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <conv:CompareIntConverter x:Key="CompareIntConverter"/>

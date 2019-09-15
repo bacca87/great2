@@ -1,4 +1,5 @@
-﻿using Great.Utils.Extensions;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Great.Utils.Extensions;
 using Great.ViewModels;
 using System.Windows.Controls;
 
@@ -42,15 +43,5 @@ namespace Great.Views.Pages
             MaskedTextBoxHelper.PreviewTextInput(sender, e);
         }
 
-        private void Page_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
-        {
-            if (sender!= this)
-            {
-                var context = (CarRentalViewModel)DataContext;
-                context.PageUnloadedCommand.Execute(null);
-            }
-
-
-        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using MahApps.Metro.Controls;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Great.ViewModels;
+using MahApps.Metro.Controls;
 
 namespace Great.Views.Dialogs
 {

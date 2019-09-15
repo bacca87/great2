@@ -14,6 +14,7 @@
     GlassFrameThickness="0"
     BorderThickness="0"
     WindowStartupLocation="CenterScreen" 
+                     Closing="RibbonWindow_Closing"
     WindowState="Maximized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -587,13 +588,13 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Name="timesheetsTab" Header="Timesheets" ap:NotificationHelper.NotificationCount="0">
+            <TabItem Name="timesheetsTab"  Header="Timesheets" ap:NotificationHelper.NotificationCount="0">
                 <Frame Source="/Views/Pages/TimesheetsView.xaml"/>
             </TabItem>
             <TabItem Name="fdlTab" Header="FDL" ap:NotificationHelper.NotificationCount="{Binding NewFDLCount}">
                 <Frame Source="/Views/Pages/FDLView.xaml"/>
             </TabItem>
-            <TabItem Name="expenseAccountTab" Header="Expense Account" ap:NotificationHelper.NotificationCount="{Binding NewExpenseAccountsCount}">
+            <TabItem Name="expenseAccountTab" Header="Expense Account"  ap:NotificationHelper.NotificationCount="{Binding NewExpenseAccountsCount}">
                 <Frame Source="/Views/Pages/ExpenseAccountView.xaml"/>
             </TabItem>
             <TabItem Name="carrentalTab" Header="Car Rental" ap:NotificationHelper.NotificationCount="0">

@@ -183,7 +183,6 @@ namespace Great.ViewModels
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand ApplyFilters { get; set; }
         public RelayCommand RemoveFilters { get; set; }
-        public RelayCommand PageLoadedCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
 
         #endregion
@@ -202,7 +201,6 @@ namespace Great.ViewModels
             NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
-            PageLoadedCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedRent?.CheckChangedEntity(); SelectedCar?.CheckChangedEntity(); });
 
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
