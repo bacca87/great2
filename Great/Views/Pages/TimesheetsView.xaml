@@ -15,6 +15,7 @@
       Title="Timesheet"
       Loaded="Page_Loaded"
       Style="{DynamicResource MetroPage}">
+
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">

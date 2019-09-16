@@ -13,7 +13,9 @@
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView"
+
       Style="{DynamicResource MetroPage}">
+
     <Page.Resources>
         <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
@@ -160,10 +162,10 @@
         <Grid Grid.Column="1" Margin="10,0,0,0">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
-                    <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                    <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
                 </i:EventTrigger>
                 <i:EventTrigger EventName="LostFocus">
-                    <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                    <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <Grid.RowDefinitions>

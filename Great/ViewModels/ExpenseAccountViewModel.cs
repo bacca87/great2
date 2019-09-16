@@ -53,6 +53,8 @@ namespace Great.ViewModels
             get => _selectedEA;
             set
             {
+                _selectedEA?.CheckChangedEntity();
+
                 Set(ref _selectedEA, value);
 
                 if (_selectedEA != null)
@@ -116,6 +118,7 @@ namespace Great.ViewModels
         public RelayCommand<ExpenseAccountEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
+        public RelayCommand PageUnloadedCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -168,6 +171,9 @@ namespace Great.ViewModels
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
+
+
 
             using (DBArchive db = new DBArchive())
             {
@@ -188,6 +194,8 @@ namespace Great.ViewModels
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
+
+
 
         public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {

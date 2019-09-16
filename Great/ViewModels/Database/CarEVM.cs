@@ -4,6 +4,7 @@ using Great.Utils;
 using System;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
@@ -17,33 +18,22 @@ namespace Great.ViewModels.Database
         public string LicensePlate
         {
             get => _licencePlate;
-            set
-            {
-                Set(ref _licencePlate, value);
-                RaisePropertyChanged(nameof(LicensePlate));
-            }
+            set =>Set(ref _licencePlate, value);
         }
 
         private string _brand;
         public string Brand
         {
             get => _brand;
-            set
-            {
-                Set(ref _brand, value);
-                RaisePropertyChanged(nameof(Brand));
-            }
+            set =>  Set(ref _brand, value);
+
         }
 
         private string _model;
         public string Model
         {
             get => _model;
-            set
-            {
-                Set(ref _model, value);
-                RaisePropertyChanged(nameof(Model));
-            }
+            set => Set(ref _model, value);
         }
 
         private long _carRentalCompany;
@@ -54,7 +44,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _carRentalCompany, value);
-                RaisePropertyChanged(nameof(CarRentalCompany));
                 RaisePropertyChanged(nameof(CarRentalCompany1));
             }
 
@@ -67,7 +56,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _carRentalCompany1, value);
-                RaisePropertyChanged(nameof(CarRentalCompany1));
+                RaisePropertyChanged(nameof(CarRentalCompany));
             }
         }
 
@@ -85,7 +74,11 @@ namespace Great.ViewModels.Database
 
         public string Error => throw new NotImplementedException();
 
-        public bool IsValid => LicensePlate?.Length > 0 && Brand?.Length > 0 && Model?.Length > 0 && CarRentalCompany > 0;
+        public bool IsValid => 
+            this["LicensePlate"] == null
+            && this["Brand"] == null
+            && this["Model"] == null
+            && this["CarRentalCompany1"] == null;
 
         public string this[string columnName]
         {
@@ -125,6 +118,7 @@ namespace Great.ViewModels.Database
         {
             if (car != null)
                 Global.Mapper.Map(car, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -135,18 +129,31 @@ namespace Great.ViewModels.Database
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
             Id = car.Id;
-
             return true;
         }
 
         public override bool Delete(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            var car = db.Cars.SingleOrDefault(x => x.Id == Id);
+            if (car != null)
+            {
+                db.Cars.Remove(car);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public override bool Refresh(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            var car = db.Cars.SingleOrDefault(x => x.Id == Id);
+            if (car != null)
+            {
+                Global.Mapper.Map(car, this);
+                return true;
+            }
+            return false;
         }
+
     }
 }

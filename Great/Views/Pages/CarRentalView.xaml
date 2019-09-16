@@ -19,7 +19,6 @@
     <Page.Resources>
         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
         <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
-        <CollectionViewSource x:Key="CarRentalCollectionView" Source="{Binding FilteredRentals}" IsLiveSortingRequested="True" />
         <DataTemplate x:Key="AutoCompleteLicensePlate">
             <StackPanel Orientation="Horizontal">
                 <Label  Content="{Binding LicensePlate}" Width="100" />
@@ -78,8 +77,10 @@
                     <DataGridTextColumn  Header="Start Location" Binding="{Binding StartLocation}"/>
                     <DataGridTextColumn  Header="End Location" Binding="{Binding EndLocation}"/>
                     <DataGridTextColumn  Header="Duration" Binding="{Binding RentDuration, Converter={StaticResource TimeSpanToStringConverter}}"/>
-                    <DataGridTextColumn  Header="Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy HH:mm' }" />
-                    <DataGridTextColumn  Header="End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy HH:mm'}"/>
+                    <DataGridTextColumn  Header="Start Date" Binding="{Binding RentStartDate,StringFormat='dd/MM/yyyy' }" />
+                    <DataGridTextColumn  Header="" Binding="{Binding RentStartTime}" />
+                    <DataGridTextColumn  Header="End Date" Binding="{Binding RentEndDate,StringFormat='dd/MM/yyyy'}"/>
+                    <DataGridTextColumn  Header="" Binding="{Binding RentEndTime }" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -121,10 +122,10 @@
                 </Grid.RowDefinitions>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="GotFocus">
-                        <mvvm:EventToCommand Command="{Binding GotFocusCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="LostFocus">
-                        <mvvm:EventToCommand Command="{Binding LostFocusCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
@@ -146,12 +147,11 @@
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding Cars }" 
-                    SelectedItem="{Binding SelectedCar, UpdateSourceTrigger=LostFocus}" 
+                    ItemsSource="{Binding Cars }"                     
                     SelectedValuePath="LicensePlate" 
                     DisplayMemberPath="LicensePlate" 
                     LostFocus="CmbLicenxePlate_LostFocus"
-                    Text="{Binding SelectedCar.LicensePlate, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
+                    Text="{Binding LicensePlate, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
                 <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
@@ -161,7 +161,6 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarBrands }" 
-                    SelectedItem="{Binding SelectedCar.Brand, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
                 <ComboBox
@@ -170,7 +169,6 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarModels }" 
-                    SelectedItem="{Binding SelectedCar.Model, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
                 <ComboBox Grid.Row="7"
@@ -200,7 +198,7 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="70" />
                     </Grid.ColumnDefinitions>
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedRent.RentStartDate,StringFormat='dd/MM/yyyy',ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0"  SelectedDate="{Binding SelectedRent.RentStartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}" />
                     <xctk:MaskedTextBox Grid.Column="2"  Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentStartTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
                 </Grid>
                 <TextBlock VerticalAlignment="Center" Grid.Row="14">Rent End Date</TextBlock>
@@ -210,7 +208,7 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="70" />
                     </Grid.ColumnDefinitions>
-                    <DatePicker Grid.Column="0" SelectedDate="{Binding SelectedRent.RentEndDate,StringFormat='dd/MM/yyyy',ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <DatePicker Style="{DynamicResource FormattedDatePicker}"  Grid.Column="0" SelectedDate="{Binding SelectedRent.RentEndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}"/>
                     <xctk:MaskedTextBox  Grid.Column="2" Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentEndTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
                 </Grid>
                 <TextBlock VerticalAlignment="Center" Grid.Row="16">Rent Start Location</TextBlock>
@@ -218,8 +216,7 @@
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding StartLocations }" 
-                    SelectedItem="{Binding SelectedRent.StartLocation, UpdateSourceTrigger=LostFocus}"
+                    ItemsSource="{Binding Locations }" 
                     Text="{Binding SelectedRent.StartLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
@@ -228,8 +225,7 @@
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding EndLocations }" 
-                    SelectedItem="{Binding SelectedRent.EndLocation, UpdateSourceTrigger=LostFocus}"
+                    ItemsSource="{Binding Locations }" 
                     Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>
                 <Slider  Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>

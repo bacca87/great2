@@ -43,6 +43,7 @@ namespace Great.ViewModels
             get => _selectedFactory;
             set
             {
+                _selectedFactory?.CheckChangedEntity();
                 Set(ref _selectedFactory, value ?? new FactoryEVM());
                 ShowEditMenu = false;
             }
@@ -59,6 +60,7 @@ namespace Great.ViewModels
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
 
+        public RelayCommand PageUnloadedCommand { get; set; }
 
         public RelayCommand ClearSelectionCommand { get; set; }
         #endregion
@@ -80,11 +82,15 @@ namespace Great.ViewModels
             //ClearSelectionCommand = new RelayCommand(ClearSelection);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedFactory?.CheckChangedEntity(); });
+
 
             MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
 
             SelectedFactory = Factories.FirstOrDefault();
         }
+
+
 
         private void NewFactory(FactoryEVM obj)
         {
@@ -159,7 +165,7 @@ namespace Great.ViewModels
                 {
                     Messenger.Default.Send(new ItemChangedMessage<FactoryEVM>(this, factory));
                     OnFactoryUpdated?.Invoke(factory);
-                }   
+                }
 
                 SelectedFactory = factory;
 

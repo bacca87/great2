@@ -335,6 +335,8 @@ namespace Great.ViewModels.Database
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
+
+            IsChanged = false;
         }
 
         private void UpdateInfo()
@@ -365,7 +367,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
             db.SaveChanges();
-
             return true;
         }
 
@@ -394,16 +395,6 @@ namespace Great.ViewModels.Database
             return false;
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is DayEVM eVM &&
-                   Timestamp == eVM.Timestamp;
-        }
-
-        public override int GetHashCode()
-        {
-            return 227403579 + Timestamp.GetHashCode();
-        }
     }
 
     public enum EDayType

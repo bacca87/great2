@@ -1,7 +1,9 @@
 ﻿
 using Great.Models.Database;
 using Great.Models.DTO;
+using System;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
@@ -123,6 +125,7 @@ namespace Great.ViewModels.Database
         {
             if (expense != null)
                 Global.Mapper.Map(expense, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -133,7 +136,6 @@ namespace Great.ViewModels.Database
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;
-
             return true;
         }
 
@@ -146,5 +148,6 @@ namespace Great.ViewModels.Database
         {
             throw new System.NotImplementedException();
         }
+
     }
 }

@@ -150,6 +150,9 @@ namespace Great.ViewModels
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
         public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
 
+        public RelayCommand PageLoadedCommand { get; set; }
+        public RelayCommand PageUnloadedCommand { get; set; }
+
         #endregion
 
         /// <summary>
@@ -173,6 +176,9 @@ namespace Great.ViewModels
             CutDayCommand = new RelayCommand<DayEVM>(CutDay);
             PasteDayCommand = new RelayCommand<DayEVM>(PasteDay);
 
+            PageLoadedCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => {});
+
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
@@ -183,6 +189,8 @@ namespace Great.ViewModels
 
             UpdateWorkingDays();
         }
+
+
 
         private void UpdateWorkingDays()
         {

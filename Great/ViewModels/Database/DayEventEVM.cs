@@ -1,31 +1,25 @@
 ﻿using Great.Models.Database;
 using System;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    class DayEventEVM : EntityViewModelBase
+    public class DayEventEVM : EntityViewModelBase
     {
         private long _TimeStamp;
         public long TimeStamp
         {
             get => _TimeStamp;
-            set
-            {
-                Set(ref _TimeStamp, value);
-                RaisePropertyChanged(nameof(TimeStamp));
-            }
+            set => Set(ref _TimeStamp, value);
+
         }
 
         private long _EventId;
         public long EventId
         {
             get => _EventId;
-            set
-            {
-                Set(ref _EventId, value);
-                RaisePropertyChanged(nameof(EventId));
-            }
+            set => Set(ref _EventId, value);
         }
 
 
@@ -62,20 +56,20 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, di);
             db.DayEvents.AddOrUpdate(di);
             db.SaveChanges();
-
-
             return true;
         }
 
         public override bool Delete(DBArchive db)
         {
-            DayEvent di = new DayEvent();
-
-            Global.Mapper.Map(this, di);
-            //db.DayEvents.Remove(di);
-            db.SaveChanges();
-
-            return true;
+            var de = db.DayEvents.SingleOrDefault(x => x.EventId == EventId || x.Timestamp == TimeStamp);
+            if (de != null)
+            {
+                db.DayEvents.Remove(de);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
         }
+
     }
 }

@@ -132,7 +132,7 @@ namespace Great.ViewModels.Database
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
-            set => Set(ref _PerformanceDescriptionDetails, value);
+            set => Set(ref _PerformanceDescriptionDetails, value); 
         }
 
         private long _Status;
@@ -201,6 +201,7 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _Factory1, value);
                 RaisePropertyChanged(nameof(FDL_Factory_Display));
+
             }
         }
 
@@ -270,6 +271,7 @@ namespace Great.ViewModels.Database
 
             if (fdl != null)
                 Global.Mapper.Map(fdl, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -279,7 +281,6 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();
-
             return true;
         }
 
@@ -304,5 +305,6 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
     }
 }

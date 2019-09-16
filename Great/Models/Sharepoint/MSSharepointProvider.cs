@@ -35,14 +35,31 @@ namespace Great.Models
 
         protected void NotifyEventChanged(EventEVM e)
         {
+            List<DayEVM> DaysToClear = new List<DayEVM>();
+            List<DayEVM> DaysInEvent = new List<DayEVM>();
+            e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
             Messenger.Default.Send(new ItemChangedMessage<EventEVM>(this, e));
-            UpdateEventStatus(e);
+            DaysToClear.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
+            DaysInEvent.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
+        }
+
+        protected void NotifyEventDeleted(EventEVM e)
+        {
+            List<DayEVM> DaysToClear = new List<DayEVM>();
+            List<DayEVM> DaysInEvent = new List<DayEVM>();
+            e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
+            Messenger.Default.Send(new DeletedItemMessage<EventEVM>(this, e));
+            DaysToClear.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
+
         }
 
         protected void NotifyEventImported(EventEVM e)
         {
+            List<DayEVM> DaysToClear = new List<DayEVM>();
+            List<DayEVM> DaysInEvent = new List<DayEVM>();
+            e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
             Messenger.Default.Send(new NewItemMessage<EventEVM>(this, e));
-            UpdateEventStatus(e);
+            DaysInEvent.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
         }
 
         private void SenderThread()
@@ -57,47 +74,13 @@ namespace Great.Models
                     {
                         try
                         {
-
                             XmlDocument xdoc;
                             XmlNode request = null;
 
-                            switch (ev.EStatus)
+                            if (ev.IsCancelRequested)
                             {
-                                case EEventStatus.Pending:
-
-                                    if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
-                                    else request = GenerateBatchInsertXML(ev);
-
-                                    using (SharepointReference.Lists l = new SharepointReference.Lists())
-                                    {
-                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
-                                        xdoc = new XmlDocument();
-
-                                        var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
-                                        xdoc.LoadXml(response.OuterXml);
-                                        var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
-                                        var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
-
-                                        if (eventId > 0 && ecode == 0)
-                                        {
-                                            ev.SharePointId = eventId;
-                                            ev.SendDateTime = DateTime.Now;
-                                            ev.IsSent = true;
-                                            ev.Save(db);
-
-                                            NotifyEventChanged(ev);
-                                        }
-                                    }
-                                    break;
-
-                                case EEventStatus.Rejected:
-
-                                    if (ev.SharePointId == 0)
-                                    {
-                                        ev.IsSent = true;
-                                        ev.Save(db);
-                                        continue;
-                                    }
+                                if (ev.SharePointId > 0)
+                                {
                                     request = GenerateBatchDeletetXML(ev);
                                     using (SharepointReference.Lists l = new SharepointReference.Lists())
                                     {
@@ -110,13 +93,36 @@ namespace Great.Models
 
                                         if (ecode == 0)
                                         {
-                                            ev.IsSent = true;
-                                            ev.Save(db);
-                                            NotifyEventChanged(ev);
+                                            NotifyEventDeleted(ev);
+                                            ev.Delete();
                                         }
                                     }
+                                }
+                            }
+                            else
+                            {
+                                if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
+                                else request = GenerateBatchInsertXML(ev);
 
-                                    break;
+                                using (SharepointReference.Lists l = new SharepointReference.Lists())
+                                {
+                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                    xdoc = new XmlDocument();
+
+                                    var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
+                                    xdoc.LoadXml(response.OuterXml);
+                                    var eventId = Convert.ToInt32(xdoc.GetElementsByTagName("z:row")[0]?.Attributes["ows_ID"].Value ?? "0");
+                                    var ecode = Convert.ToInt32(xdoc.GetElementsByTagName("ErrorCode")[0].Value);
+
+                                    if (eventId > 0 && ecode == 0)
+                                    {
+                                        ev.SharePointId = eventId;
+                                        ev.SendDateTime = DateTime.Now;
+                                        ev.IsSent = true;
+                                        ev.Save(db);
+                                        NotifyEventChanged(ev);
+                                    }
+                                }
                             }
                         }
                         catch (Exception)
@@ -172,62 +178,58 @@ namespace Great.Models
                                 Int64 shpid = Convert.ToInt64(el.GetElementsByTagName("content")[0]?.FirstChild["d:Id"].InnerText);
                                 int status = Convert.ToInt32(el.GetElementsByTagName("content")[0]?.FirstChild["d:OData__ModerationStatus"].InnerText);
 
-                                var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
-
                                 if (shpid == 0) continue;
-                                if (existing == null)
+
+                                EventEVM tmp = new EventEVM();
+                                tmp.IsSent = true; // the event is on calendar. Not necessary to send it
+                                tmp.SharePointId = shpid;
+                                tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
+                                tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
+                                tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
+                                tmp.Status = status;
+                                tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
+                                tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
+
+                                if (tmp.IsAllDay)
                                 {
-                                    //manually added to calendar. Import it!
-                                    EventEVM tmp = new EventEVM();
-                                    tmp.IsSent = true; // the event is on calendar. Not necessary to send it
-                                    tmp.SharePointId = shpid;
-                                    tmp.Title = el.GetElementsByTagName("content")[0]?.FirstChild["d:Title"].InnerText.Trim('*');
-                                    tmp.Location = el.GetElementsByTagName("content")[0]?.FirstChild["d:Location"].InnerText;
-                                    tmp.Description = el.GetElementsByTagName("content")[0]?.FirstChild["d:Description"].InnerText;
-                                    tmp.Status = status;
-                                    tmp.IsAllDay = Convert.ToBoolean(el.GetElementsByTagName("content")[0]?.FirstChild["d:fAllDayEvent"].InnerText);
-                                    tmp.SendDateTime = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Created"].InnerText);
-
-                                    if (tmp.IsAllDay)
-                                    {
-                                        tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText.TrimEnd('Z'));
-                                        tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText.TrimEnd('Z'));
-                                    }
-                                    else
-                                    {
-                                        tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
-                                        tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
-                                    }
-
-                                    if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education") tmp.EType = EEventType.Education;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other") tmp.EType = EEventType.Other;
-                                    else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations") tmp.EType = EEventType.OldVacations;
-
-                                    if (tmp.EStatus == EEventStatus.Accepted)
-                                    {
-                                        tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
-                                        tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
-                                    }
-
-                                    tmp.Save(db);
-
-                                    if (tmp.EStatus != EEventStatus.Rejected)
-                                        NotifyEventImported(tmp);
+                                    tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText.TrimEnd('Z'));
+                                    tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText.TrimEnd('Z'));
                                 }
                                 else
                                 {
-                                    EventEVM tmp = new EventEVM(existing);
+                                    tmp.StartDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EventDate"].InnerText);
+                                    tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
+                                }
 
-                                    if (tmp.EStatus != EEventStatus.Pending || tmp.EType != EEventType.Vacations) continue;
+                                if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education") tmp.EType = EEventType.Education;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other") tmp.EType = EEventType.Other;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations") tmp.EType = EEventType.OldVacations;
 
-                                    if ((EEventStatus)status < tmp.EStatus)
+                                if (tmp.EStatus == EEventStatus.Accepted)
+                                {
+                                    tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
+                                    tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
+                                }
+
+
+
+                                if (db.Events.SingleOrDefault(x => x.SharepointId == shpid) == null)
+                                {
+                                    tmp.Save(db);
+                                    NotifyEventImported(tmp);
+                                }
+
+                                else
+                                {
+                                    var existing = new EventEVM(db.Events.SingleOrDefault(x => x.SharepointId == shpid));
+                                    if (!tmp.IsEqual(existing) && !existing.IsCancelRequested)
                                     {
-                                        tmp.EStatus = (EEventStatus)status;
-                                        tmp.ApprovationDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:Modified"].InnerText);
-                                        tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
+                                        tmp.Id = existing.Id;
+                                        tmp.Notes = existing.Notes;
+                                        //Global.Mapper.Map(tmp, existing);
                                         tmp.Save(db);
                                         NotifyEventChanged(tmp);
                                     }
@@ -236,7 +238,7 @@ namespace Great.Models
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
                 }
@@ -308,78 +310,6 @@ namespace Great.Models
             d.LoadXml(doc.ToString());
             return d;
         }
-
-        public void UpdateEventStatus(EventEVM ev)
-        {
-            using (DBArchive db = new DBArchive())
-            {
-                IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
-                List<DayEVM> currentDayEVM = currentDays.ToList().Select(x => new DayEVM(x)).ToList();
-
-                currentDayEVM.ToList().ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
-            }
-        }
-
-        //public void AddOrUpdateEventRelations(EventEVM ev, DBArchive db)
-        //{
-        //    List<DayEVM> currentDayEVM;
-        //    List<DayEVM> newDays = new List<DayEVM>();
-
-        //    List<DayEventEVM> relationsToAdd = new List<DayEventEVM>();
-        //    IEnumerable<Day> currentDays = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == ev.Id select d);
-        //    currentDayEVM = currentDays.Select(x => new DayEVM(x)).ToList();
-
-        //    foreach (DateTime d in AllDatesInRange(ev.StartDate, ev.EndDate))
-        //    {
-        //        long timestamp = d.ToUnixTimestamp();
-        //        Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
-
-        //        if (currentDay == null)
-        //            newDays.Add(new DayEVM { Date = d });
-
-        //        else newDays.Add(new DayEVM(currentDay));
-
-        //        relationsToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = ev.Id });
-        //    }
-
-        //    db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == ev.Id));
-        //    newDays.ToList().ForEach(d => d.Save(db));
-        //    relationsToAdd.ToList().ForEach(r => r.Save(db));
-
-
-        //    if (ev.EType == EEventType.Vacations)
-        //    {
-        //        if (ev.EStatus == EEventStatus.Accepted) newDays.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday) d.EType = EDayType.VacationDay; d.Save(db); });
-        //        if (ev.EStatus == EEventStatus.Rejected) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday) d.EType = EDayType.WorkDay; d.Save(db); });
-        //        if (ev.EStatus == EEventStatus.Pending) newDays.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday) d.EType = EDayType.SpecialLeave; d.Save(db); });
-        //    }
-
-        //    //var commonDays = newDays.Intersect(currentDayEVM).ToList();
-        //    //var toReset = currentDayEVM.Except(commonDays).ToList();
-        //    //toReset.ForEach(x => x.EType = EDayType.WorkDay);
-        //    //var toadd = newDays.Except(commonDays).ToList();
-
-        //    //var daysChanged = commonDays.Union(toReset).Union(toadd).ToList();
-        //    //daysChanged.ForEach(d => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, d)); });
-
-        //}
-
-        //public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
-        //{
-        //    List<DateTime> dates = new List<DateTime>();
-
-        //    DateTime pointer = startDate;
-
-        //    do
-        //    {
-        //        dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
-        //        pointer = pointer.AddDays(1);
-        //    }
-        //    while (pointer <= endDate);
-
-
-        //    return dates;
-        //}
 
     }
 

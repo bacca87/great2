@@ -63,6 +63,7 @@ namespace Great.ViewModels
             get => _selectedFDL;
             set
             {
+                _selectedFDL?.CheckChangedEntity();
 
                 Set(ref _selectedFDL, value);
 
@@ -120,7 +121,7 @@ namespace Great.ViewModels
 
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
-
+        public RelayCommand PageUnloadedCommand { get; set; }
         public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
 
@@ -145,6 +146,8 @@ namespace Great.ViewModels
 
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
+            PageUnloadedCommand = new RelayCommand(() => { SelectedFDL?.CheckChangedEntity(); });
+
 
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
@@ -171,6 +174,7 @@ namespace Great.ViewModels
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
+
 
         public void NewFDL(NewItemMessage<FDLEVM> item)
         {

@@ -3,6 +3,7 @@ using Great.Utils.Extensions;
 using System;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great.ViewModels.Database
 {
@@ -15,9 +16,18 @@ namespace Great.ViewModels.Database
         public long Car
         {
             get => _car;
+            set => Set(ref _car, value);
+        }
+
+        private CarEVM _car1;
+        public CarEVM Car1
+        {
+            get => _car1;
             set
             {
-                Set(ref _car, value);
+                Set(ref _car1, value);
+                RaisePropertyChanged(nameof(Car));
+
             }
         }
 
@@ -28,6 +38,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _startKm, value);
+                RaisePropertyChanged(nameof(EndKm));
             }
         }
 
@@ -38,6 +49,10 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _endKm, value);
+                RaisePropertyChanged(nameof(StartKm));
+                RaisePropertyChanged(nameof(EndLocation));
+                RaisePropertyChanged(nameof(RentEndTime));
+                RaisePropertyChanged(nameof(RentEndDate));
             }
         }
 
@@ -45,10 +60,8 @@ namespace Great.ViewModels.Database
         public string StartLocation
         {
             get => _startLocation;
-            set
-            {
-                Set(ref _startLocation, value);
-            }
+            set => Set(ref _startLocation, value);
+
         }
 
         private string _endLocation;
@@ -58,6 +71,8 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _endLocation, value);
+                RaisePropertyChanged(nameof(EndKm));
+                RaisePropertyChanged(nameof(RentEndDate));
             }
         }
 
@@ -66,6 +81,7 @@ namespace Great.ViewModels.Database
         {
             get => _startDate;
             set => Set(ref _startDate, value);
+
         }
 
         private long _endDate;
@@ -73,6 +89,7 @@ namespace Great.ViewModels.Database
         {
             get => _endDate;
             set => Set(ref _endDate, value);
+
         }
 
         private long _startFuelLevel;
@@ -80,6 +97,7 @@ namespace Great.ViewModels.Database
         {
             get => _startFuelLevel;
             set => Set(ref _startFuelLevel, value);
+
         }
 
         private long _endFuelLevel;
@@ -87,6 +105,7 @@ namespace Great.ViewModels.Database
         {
             get => _endFuelLevel;
             set => Set(ref _endFuelLevel, value);
+
         }
 
         private string _notes;
@@ -94,43 +113,68 @@ namespace Great.ViewModels.Database
         {
             get => _notes;
             set => Set(ref _notes, value);
+
         }
 
         public DateTime RentStartDate
         {
             get => DateTime.Now.FromUnixTimestamp(StartDate);
-            set => StartDate = value.ToUnixTimestamp();
+            set
+            {
+                StartDate = value.ToUnixTimestamp();
+                RaisePropertyChanged(nameof(RentStartDate));
+                RaisePropertyChanged(nameof(RentStartTime));
+                RaisePropertyChanged(nameof(RentEndDate));
+                RaisePropertyChanged(nameof(RentEndTime));
+            }
         }
 
         public DateTime? RentEndDate
         {
-            get => DateTime.Now.FromUnixTimestamp(EndDate);
-            set { if (value != null) EndDate = ((DateTime)value).ToUnixTimestamp(); }
+            get
+            {
+                if (EndDate > 0) return DateTime.Now.FromUnixTimestamp(EndDate);
+                return null;
+            }
+            set
+            {
+                if (value == null) EndDate = 0;
+                else
+                    EndDate = ((DateTime)value).ToUnixTimestamp();
+                RaisePropertyChanged(nameof(EndKm));
+                RaisePropertyChanged(nameof(RentStartDate));
+                RaisePropertyChanged(nameof(RentStartTime));
+                RaisePropertyChanged(nameof(RentEndDate));
+                RaisePropertyChanged(nameof(RentEndTime));
+                RaisePropertyChanged(nameof(EndLocation));
+
+            }
         }
 
         public TimeSpan RentStartTime
         {
             get => RentStartDate.TimeOfDay;
-            set { RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0); }
+            set
+            {
+                RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0);
+            }
         }
 
         public TimeSpan? RentEndTime
         {
             get { if (RentEndDate.HasValue) return RentEndDate.Value.TimeOfDay; return null; }
-            set { if (value.HasValue) RentEndDate = new DateTime(RentEndDate.Value.Year, RentEndDate.Value.Month, RentEndDate.Value.Day, value.Value.Hours, value.Value.Minutes, 0); }
+            set
+            {
+                if (value.HasValue)
+                    RentEndDate = new DateTime(RentEndDate.Value.Year, RentEndDate.Value.Month, RentEndDate.Value.Day, value.Value.Hours, value.Value.Minutes, 0);
+            }
         }
 
         public TimeSpan? RentDuration
         {
             get
             {
-
-                if (RentEndDate.HasValue)
-                {
-                    return RentEndDate.Value.Subtract(RentStartDate);
-                }
-
-                return null;
+                return RentEndDate?.Subtract(RentStartDate);
             }
         }
 
@@ -147,13 +191,6 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private CarEVM _car1;
-        public CarEVM Car1
-        {
-            get => _car1;
-            set => Set(ref _car1, value);
-        }
-
         #endregion
 
 
@@ -168,8 +205,8 @@ namespace Great.ViewModels.Database
             && this["RentEndDate"] == null
             && this["RentStartTime"] == null
             && this["StartLocation"] == null
+            && this["EndLocation"] == null
             && this["RentEndTime"] == null;
-
 
         public string this[string columnName]
         {
@@ -178,16 +215,39 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "StartKm":
-                    case "EndKm":
-                        if (EndKm < StartKm)
-                            return "Start Km must be lower than End Km valid";
+                        if (EndKm < StartKm && EndKm > 0)
+                            return "Start Km must be lower than End Km";
                         break;
+
+                    case "EndKm":
+                        if (EndKm < StartKm && EndKm > 0)
+                            return "Start Km must be lower than End Km";
+
+                        if (EndKm == 0 && RentEndDate.HasValue)
+                            return "End Km must be set when defining end date";
+
+                        if (!String.IsNullOrWhiteSpace(EndLocation) && EndKm == 0)
+                            return "End Km must be set when defining end location";
+                        break;
+
                     case "RentStartDate":
-                    case "RentEndDate":
                     case "RentStartTime":
-                    case "RentEndTime":
-                        if (RentStartDate != null && RentEndDate.Value< RentStartDate)
+
+                        if (RentStartDate != null && RentEndDate < RentStartDate)
                             return "Dates not valid: End Date < Start Date";
+                        break;
+
+                    case "RentEndDate":
+                    case "RentEndTime":
+
+                        if (RentStartDate != null && RentEndDate < RentStartDate)
+                            return "Dates not valid: End Date < Start Date";
+
+                        if (!RentEndDate.HasValue && EndKm > StartKm)
+                            return "End Date must be set when defining end km";
+
+                        if (!RentEndDate.HasValue && !String.IsNullOrWhiteSpace(EndLocation))
+                            return "End Date must be set when defining end location";
                         break;
 
                     case "StartLocation":
@@ -195,6 +255,14 @@ namespace Great.ViewModels.Database
                             return "Start Location not valid";
                         break;
 
+                    case "EndLocation":
+                        if (RentEndDate.HasValue && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
+                            return "End location is required when setting End Date";
+
+                        if (EndKm > StartKm && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
+                            return "End location is required when setting End Km";
+
+                        break;
 
                     default:
                         ;
@@ -210,11 +278,11 @@ namespace Great.ViewModels.Database
         {
             StartFuelLevel = 8;
             EndFuelLevel = 8;
-            RentStartDate = DateTime.Now;
-            RentEndDate = DateTime.Now;
+            RentStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
             if (rent != null)
                 Global.Mapper.Map(rent, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -225,22 +293,35 @@ namespace Great.ViewModels.Database
             db.CarRentalHistories.AddOrUpdate(rent);
             db.SaveChanges();
             Id = rent.Id;
-
             return true;
         }
 
         public override bool Delete(DBArchive db)
         {
-            CarRentalHistory rent = new CarRentalHistory();
-            Global.Mapper.Map(this, rent);
-            db.CarRentalHistories.Remove(rent);
-            db.SaveChanges();
-            return true;
+            CarRentalHistory cr = db.CarRentalHistories.SingleOrDefault(x => x.Id == Id);
+
+            if (cr != null)
+            {
+                db.CarRentalHistories.Remove(cr);
+                db.SaveChanges();
+                return true;
+            }
+
+            return false;
         }
 
         public override bool Refresh(DBArchive db)
         {
-            throw new NotImplementedException();
+            CarRentalHistory cr = db.CarRentalHistories.SingleOrDefault(x => x.Id == Id);
+
+            if (cr != null)
+            {
+                Global.Mapper.Map(cr, this);
+                return true;
+            }
+
+            return false;
         }
+
     }
 }

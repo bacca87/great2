@@ -17,6 +17,13 @@ Update Day SET Type = 1 where TimeStamp in
 inner Join Event on Event.Id = DayEvent.EventId 
 where Event.Status = 2 and Day.Type= 4);
 
+-- new Event fields
+ALTER TABLE [Events] ADD COLUMN IsCancelRequested BOOL NOT NULL DEFAULT 0;
+
+ALTER TABLE [Events] ADD COLUMN Notes NVARCHAR(50)  NULL DEFAULT NULL;
+
+
+
 --=========================================================================
 -- MANDATORY: Increment internal db version
 PRAGMA user_version = 11;

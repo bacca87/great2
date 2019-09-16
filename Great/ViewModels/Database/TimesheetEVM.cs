@@ -138,7 +138,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
+            set => Set(ref _Notes, value); 
         }
 
         private DayDTO _Day;
@@ -313,8 +313,6 @@ namespace Great.ViewModels.Database
         }
         #endregion
 
-
-
         #endregion
 
         #region Error Validation
@@ -326,31 +324,31 @@ namespace Great.ViewModels.Database
             {
                 switch (columnName)
                 {
-                    case "WorkStartTimeAM_t":
-                    case "WorkEndTimeAM_t":
-                        if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
-                            return "Work time AM interval not correct";
-                        break;
+                    //case "WorkStartTimeAM_t":
+                    //case "WorkEndTimeAM_t":
+                    //    if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
+                    //        return "Work time AM interval not correct";
+                    //    break;
 
-                    case "WorkStartTimePM_t":
-                    case "WorkEndTimePM_t":
-                        if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
-                            return "Work time PM interval not correct";
-                        break;
+                    //case "WorkStartTimePM_t":
+                    //case "WorkEndTimePM_t":
+                    //    if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
+                    //        return "Work time PM interval not correct";
+                    //    break;
 
-                    case "TravelStartTimeAM_t":
-                    case "TravelEndTimeAM_t":
-                        if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
-                            (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
-                            return "Travel time AM interval not correct";
-                        break;
+                    //case "TravelStartTimeAM_t":
+                    //case "TravelEndTimeAM_t":
+                    //    if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
+                    //        (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
+                    //        return "Travel time AM interval not correct";
+                    //    break;
 
-                    case "TravelStartTimePM_t":
-                    case "TravelEndTimePM_t":
-                        if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
-                            (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
-                            return "Travel time PM interval not correct";
-                        break;
+                    //case "TravelStartTimePM_t":
+                    //case "TravelEndTimePM_t":
+                    //    if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
+                    //        (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
+                    //        return "Travel time PM interval not correct";
+                    //    break;
                     default:
 
                         break;
@@ -378,7 +376,7 @@ namespace Great.ViewModels.Database
                     (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
                     return false;
 
-                if (TimePeriods == null && FDL == null)
+                if (TimePeriods == null && FDL == null && Notes == null)
                     return false;
 
                 if (TimePeriods != null && TimePeriods.HasOverlaps())
@@ -410,6 +408,7 @@ namespace Great.ViewModels.Database
         {
             if (timesheet != null)
                 Global.Mapper.Map(timesheet, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -420,15 +419,7 @@ namespace Great.ViewModels.Database
             db.Timesheets.AddOrUpdate(timesheet);
             db.SaveChanges();
             Id = timesheet.Id;
-
             return true;
-        }
-
-        private void UpdateTotals()
-        {
-            RaisePropertyChanged(nameof(TotalTime));
-            RaisePropertyChanged(nameof(WorkTime));
-            RaisePropertyChanged(nameof(TravelTime));
         }
 
         public override bool Delete(DBArchive db)
@@ -453,5 +444,13 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
+        private void UpdateTotals()
+        {
+            RaisePropertyChanged(nameof(TotalTime));
+            RaisePropertyChanged(nameof(WorkTime));
+            RaisePropertyChanged(nameof(TravelTime));
+        }
+
     }
 }

@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -95,6 +96,7 @@ namespace Great.Views
                 return;
 
             EventsView view = new EventsView();
+            view.Owner = this;
             view.ShowDialog();
         }
 
@@ -109,5 +111,29 @@ namespace Great.Views
             view.Owner = this;
             view.ShowDialog();
         }
+
+        private void RibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SimpleIoc.Default.GetInstance<FDLViewModel>().SelectedFDL?.CheckChangedEntity();
+            SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
+            SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
+            SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
+            SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
+        }
+
+        private void NavigationTabControl_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Source is TabItem)
+            {
+                SimpleIoc.Default.GetInstance<FDLViewModel>().SelectedFDL?.CheckChangedEntity();
+                SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
+                SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
+                SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
+                SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
+            }
+
+
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
+using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -199,6 +200,8 @@ namespace Great.ViewModels.Database
 
             if (ea != null)
                 Global.Mapper.Map(ea, this);
+            IsChanged = false;
+
         }
 
         private void UpdateTotals()
@@ -221,7 +224,6 @@ namespace Great.ViewModels.Database
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;
-
             return true;
         }
 
@@ -232,7 +234,14 @@ namespace Great.ViewModels.Database
 
         public override bool Refresh(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            var exp = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
+            if (exp != null)
+            {
+                Global.Mapper.Map(exp, this);
+                return true;
+            }
+            return false;
         }
+
     }
 }
