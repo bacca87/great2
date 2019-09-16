@@ -212,8 +212,8 @@ namespace Great.ViewModels
                 UserSettings.Advanced.AutoAssignFactories = AutoAssignFactories;
 
                 StringCollection recipients = new StringCollection();
-                string[] addresses = FDLCancelRequestRecipients.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < addresses.Length; i++)
+                string[] addresses = FDLCancelRequestRecipients?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < addresses?.Length; i++)
                     recipients.Add(addresses[i].Trim());
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
 
