@@ -324,31 +324,31 @@ namespace Great.ViewModels.Database
             {
                 switch (columnName)
                 {
-                    case "WorkStartTimeAM_t":
-                    case "WorkEndTimeAM_t":
-                        if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
-                            return "Work time AM interval not correct";
-                        break;
+                    //case "WorkStartTimeAM_t":
+                    //case "WorkEndTimeAM_t":
+                    //    if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
+                    //        return "Work time AM interval not correct";
+                    //    break;
 
-                    case "WorkStartTimePM_t":
-                    case "WorkEndTimePM_t":
-                        if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
-                            return "Work time PM interval not correct";
-                        break;
+                    //case "WorkStartTimePM_t":
+                    //case "WorkEndTimePM_t":
+                    //    if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
+                    //        return "Work time PM interval not correct";
+                    //    break;
 
-                    case "TravelStartTimeAM_t":
-                    case "TravelEndTimeAM_t":
-                        if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
-                            (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
-                            return "Travel time AM interval not correct";
-                        break;
+                    //case "TravelStartTimeAM_t":
+                    //case "TravelEndTimeAM_t":
+                    //    if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
+                    //        (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
+                    //        return "Travel time AM interval not correct";
+                    //    break;
 
-                    case "TravelStartTimePM_t":
-                    case "TravelEndTimePM_t":
-                        if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
-                            (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
-                            return "Travel time PM interval not correct";
-                        break;
+                    //case "TravelStartTimePM_t":
+                    //case "TravelEndTimePM_t":
+                    //    if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
+                    //        (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
+                    //        return "Travel time PM interval not correct";
+                    //    break;
                     default:
 
                         break;
