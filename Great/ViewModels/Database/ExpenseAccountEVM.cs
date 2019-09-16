@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile,IEquatable<ExpenseAccountEVM>
+    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile/*,IEquatable<ExpenseAccountEVM>*/
     {
         #region Properties
         private long _Id;

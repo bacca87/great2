@@ -165,7 +165,12 @@ namespace Great.ViewModels
             MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
 
             _FilteredEvents = CollectionViewSource.GetDefaultView(Events);
+            SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
+            _FilteredEvents.SortDescriptions.Add(sd);
             _FilteredEvents.Filter += Filter;
+
+            _FilteredEvents.MoveCurrentToFirst();
+            SelectedEvent = (EventEVM)_FilteredEvents.CurrentItem;
         }
         #endregion
 
@@ -191,9 +196,9 @@ namespace Great.ViewModels
                 return;
 
             ev.EStatus = EEventStatus.Pending;
-            ev.IsSent = false;    
+            ev.IsSent = false;
             ev.Save();
-           // ev.AddOrUpdateEventRelations();
+            // ev.AddOrUpdateEventRelations();
 
             //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
@@ -234,9 +239,9 @@ namespace Great.ViewModels
                  if (item.Content != null)
                  {
                      EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
-
-                     Global.Mapper.Map(item.Content, v);
-                     v.Save();
+                     v = item.Content;
+                     //Global.Mapper.Map(item.Content, v);
+                     //v.Save();
 
                      FilteredEvents.Refresh();
                  }

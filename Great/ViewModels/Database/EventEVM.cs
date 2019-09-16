@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public partial class EventEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<EventEVM>
+    public partial class EventEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
 
@@ -195,7 +195,7 @@ namespace Great.ViewModels.Database
         public bool IsAllDay
         {
             get => _IsAllDay;
-            set=> Set(ref _IsAllDay, value);
+            set => Set(ref _IsAllDay, value);
 
         }
 
@@ -366,6 +366,8 @@ namespace Great.ViewModels.Database
 
             return true;
         }
+
+
         public override bool Delete(DBArchive db)
         {
             var ev = db.Events.SingleOrDefault(x => x.Id == this.Id);
@@ -402,14 +404,40 @@ namespace Great.ViewModels.Database
             return false;
         }
 
-        public  bool Equals(EventEVM obj)
+        public override bool Equals(object o)
         {
-            return Title == obj.Title
+            if (o is EventEVM)
+            {
+                EventEVM obj = (EventEVM)o;
+                var result = Title == obj.Title
                 && Location == obj.Location
                 && IsAllDay == obj.IsAllDay
                 && StartDate == obj.StartDate
                 && Status == obj.Status
                 && EndDate == obj.EndDate;
+                return result;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                // Choose large primes to avoid hashing collisions
+                const int HashingBase = (int)2166136261;
+                const int HashingMultiplier = 16777619;
+
+                int hash = HashingBase;
+                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Title) ? Title.GetHashCode() : 0);
+                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Location) ? Location.GetHashCode() : 0);
+                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, IsAllDay) ? IsAllDay.GetHashCode() : 0);
+                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, StartDate) ? StartDate.GetHashCode() : 0);
+                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, EndDate) ? EndDate.GetHashCode() : 0);
+                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Status) ? Status.GetHashCode() : 0);
+
+                return hash;
+            }
         }
 
         public void AddOrUpdateEventRelations(DBArchive db, out List<DayEVM> DaysToBeCleared, out List<DayEVM> NewDaysInEvent)
@@ -456,7 +484,8 @@ namespace Great.ViewModels.Database
 
             using (DBArchive db = new DBArchive())
             {
-                List<DayEVM> actualDaysInEvent = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == Id select new DayEVM(d)).ToList();
+                List<Day> act = (from d in db.Days join e in db.DayEvents on d.Timestamp equals e.Timestamp where e.EventId == Id select d).ToList();
+                List<DayEVM> actualDaysInEvent = act.Select(x => new DayEVM(x)).ToList();
 
                 foreach (DateTime d in AllDatesInRange(StartDate, EndDate))
                 {
@@ -482,7 +511,7 @@ namespace Great.ViewModels.Database
                     if (EStatus == EEventStatus.Pending) NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay; d.Save(db); });
                 }
 
-                DaysToBeCleared = NewDaysInEvent.Except(actualDaysInEvent).ToList();
+                DaysToBeCleared = actualDaysInEvent.Except(NewDaysInEvent).ToList();
 
                 DaysToBeCleared.ForEach(x => { x.EType = EDayType.WorkDay; x.Save(db); });
             }

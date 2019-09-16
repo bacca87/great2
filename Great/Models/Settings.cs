@@ -1002,7 +1002,7 @@ namespace Great.Models
         {
             public const int WaitForNextConnectionRetry = 10000;
             public const int WaitForNextEmailCheck = 1000;
-            public const int WaitForNextEventChek = 600000; //10 minutes
+            public const int WaitForNextEventChek = 30000;//600000; //10 minutes
             public const int WaitForCredentialsCheck = 1000;
 
             public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";

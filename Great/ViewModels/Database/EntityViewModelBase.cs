@@ -42,7 +42,6 @@ namespace Great.ViewModels.Database
         public abstract bool Delete(DBArchive db);
 
 
-
         public void CheckChangedEntity()
         {
             if (!IsChanged()) return;

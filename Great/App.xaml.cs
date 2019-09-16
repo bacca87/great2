@@ -32,6 +32,7 @@ namespace Great
 
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
+            if (!Debugger.IsAttached)
             splash.Show();
 
             //in order to ensure the UI stays responsive, we need to

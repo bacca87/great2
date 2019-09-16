@@ -49,7 +49,7 @@ namespace Great.Models
             List<DayEVM> DaysInEvent = new List<DayEVM>();
             e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
             Messenger.Default.Send(new DeletedItemMessage<EventEVM>(this, e));
-            DaysToClear.ForEach(x=> { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x));} );
+            DaysToClear.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
 
         }
 
@@ -214,22 +214,22 @@ namespace Great.Models
                                     tmp.Approver = el.GetElementsByTagName("content")[0]?.FirstChild["d:Approver"].InnerText;
                                 }
 
-                                var existing = db.Events.SingleOrDefault(x => x.SharepointId == shpid);
 
-                                if (existing == null)
+
+                                if (db.Events.SingleOrDefault(x => x.SharepointId == shpid) == null)
                                 {
-                                    tmp.Save(db);              
+                                    tmp.Save(db);
                                     NotifyEventImported(tmp);
                                 }
 
                                 else
                                 {
-                                    var actual = new Event();
-                                    Global.Mapper.Map(tmp, actual);
-
-                                    if (!actual.Equals(existing) && !existing.IsCancelRequested)
+                                    var existing = new EventEVM(db.Events.SingleOrDefault(x => x.SharepointId == shpid));
+                                    if (!tmp.Equals(existing) && !existing.IsCancelRequested)
                                     {
-                                        tmp = new EventEVM(existing);
+                                        tmp.Id = existing.Id;
+                                        tmp.Notes = existing.Notes;
+                                        //Global.Mapper.Map(tmp, existing);
                                         tmp.Save(db);
                                         NotifyEventChanged(tmp);
                                     }
@@ -238,7 +238,7 @@ namespace Great.Models
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
                 }
