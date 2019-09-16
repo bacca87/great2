@@ -19,7 +19,6 @@
     <Page.Resources>
         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
         <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
-        <CollectionViewSource x:Key="CarRentalCollectionView" Source="{Binding FilteredRentals}" IsLiveSortingRequested="True" />
         <DataTemplate x:Key="AutoCompleteLicensePlate">
             <StackPanel Orientation="Horizontal">
                 <Label  Content="{Binding LicensePlate}" Width="100" />
@@ -148,12 +147,11 @@
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding Cars }" 
-                    SelectedItem="{Binding LicensePlate, UpdateSourceTrigger=LostFocus}" 
+                    ItemsSource="{Binding Cars }"                     
                     SelectedValuePath="LicensePlate" 
                     DisplayMemberPath="LicensePlate" 
                     LostFocus="CmbLicenxePlate_LostFocus"
-                    Text="{Binding SelectedCar.LicensePlate, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
+                    Text="{Binding LicensePlate, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
                 <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
@@ -163,8 +161,6 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarBrands }" 
-                    SelectedItem="{Binding SelectedCar.Brand, UpdateSourceTrigger=LostFocus}"
- 
                     Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
                 <ComboBox
@@ -173,7 +169,6 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarModels }" 
-                    SelectedItem="{Binding SelectedCar.Model, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
                 <ComboBox Grid.Row="7"
@@ -222,7 +217,6 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding Locations }" 
-                    SelectedItem="{Binding SelectedRent.StartLocation, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedRent.StartLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
@@ -232,7 +226,6 @@
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding Locations }" 
-                    SelectedItem="{Binding SelectedRent.EndLocation, UpdateSourceTrigger=LostFocus}"
                     Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                 <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>
                 <Slider  Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>

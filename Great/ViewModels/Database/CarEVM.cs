@@ -25,7 +25,7 @@ namespace Great.ViewModels.Database
         public string Brand
         {
             get => _brand;
-            set => Set(ref _brand, value);
+            set =>  Set(ref _brand, value);
 
         }
 
@@ -74,7 +74,11 @@ namespace Great.ViewModels.Database
 
         public string Error => throw new NotImplementedException();
 
-        public bool IsValid => LicensePlate?.Length > 0 && Brand?.Length > 0 && Model?.Length > 0 && CarRentalCompany > 0;
+        public bool IsValid => 
+            this["LicensePlate"] == null
+            && this["Brand"] == null
+            && this["Model"] == null
+            && this["CarRentalCompany1"] == null;
 
         public string this[string columnName]
         {

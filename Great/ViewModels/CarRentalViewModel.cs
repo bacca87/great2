@@ -112,9 +112,11 @@ namespace Great.ViewModels
             {
                 _selectedCar?.CheckChangedEntity();
 
-                if (value != null)
-
+                if (value != null && value != _selectedCar)
+                {
                     Set(ref _selectedCar, value);
+                    LicensePlate = SelectedCar.LicensePlate;
+                }
             }
         }
 
@@ -128,6 +130,7 @@ namespace Great.ViewModels
                 var car = Cars.SingleOrDefault(x => x.LicensePlate == _LicensePlate);
                 if (car != null)
                     SelectedCar = car;
+                    SelectedCar.LicensePlate = value;
             }
         }
 
