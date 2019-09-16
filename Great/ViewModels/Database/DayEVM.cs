@@ -309,17 +309,31 @@ namespace Great.ViewModels.Database
                 {
                     if (!string.IsNullOrEmpty(timesheet.FDL))
                         factories += timesheet?.FDL1?.Factory1?.Name + "; ";
-
-                    if (!string.IsNullOrEmpty(timesheet.Notes))
-                    {
-                        factories += timesheet?.Notes + "; ";
-                    }
                 }
 
                 if (!string.IsNullOrEmpty(factories))
                     factories = factories.Remove(factories.Length - 2);
 
                 return factories;
+            }
+        }
+        public string Notes_Display
+        {
+            get
+            {
+                string notes = string.Empty;
+
+                foreach (TimesheetEVM timesheet in Timesheets)
+                {
+                    if (!string.IsNullOrEmpty(timesheet.Notes))
+                        notes += timesheet?.Notes+";";
+
+                }
+
+                if (!string.IsNullOrEmpty(notes))
+                    notes = notes.Remove(notes.Length - 1);
+
+                return notes;
             }
         }
         #endregion
