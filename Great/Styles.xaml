@@ -45,6 +45,7 @@
     </Style>
     
     <Style x:Key="FormattedDatePicker"  TargetType="DatePicker">
+        <Setter Property="FirstDayOfWeek" Value="Monday"/>
         <Style.Resources>
             <Style TargetType="{x:Type DatePickerTextBox}">
                 <Setter Property="Control.Template">
