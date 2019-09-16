@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class CarRentalHistoryEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<CarRentalHistoryEVM>
+    public class CarRentalHistoryEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
         public long Id { get; set; }
@@ -282,6 +282,7 @@ namespace Great.ViewModels.Database
 
             if (rent != null)
                 Global.Mapper.Map(rent, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -320,31 +321,6 @@ namespace Great.ViewModels.Database
             }
 
             return false;
-        }
-
-        public override bool IsChanged(DBArchive db)
-        {
-            var rent = db.CarRentalHistories.SingleOrDefault(x => x.Id == Id);
-            if (rent != null)
-            {
-                CarRentalHistoryEVM r = new CarRentalHistoryEVM(rent);
-                return !r.Equals(this);
-            }
-            return false;
-        }
-
-        public  bool Equals(CarRentalHistoryEVM obj)
-        {
-
-            return obj.Car == Car 
-                && obj.StartKm == StartKm 
-                && obj.EndKm == EndKm 
-                && obj.StartLocation == StartLocation 
-                && obj.EndLocation == EndLocation 
-                && obj.StartDate == StartDate 
-                && obj.EndDate == EndDate 
-                && obj.StartFuelLevel == StartFuelLevel 
-                && obj.EndFuelLevel == EndFuelLevel;
         }
 
     }

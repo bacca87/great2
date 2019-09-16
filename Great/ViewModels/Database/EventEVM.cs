@@ -354,6 +354,7 @@ namespace Great.ViewModels.Database
             EndDate = DateTime.Now;
             if (ev != null)
                 Global.Mapper.Map(ev, this);
+            IsChanged = false;
         }
         public override bool Save(DBArchive db)
         {
@@ -393,51 +394,58 @@ namespace Great.ViewModels.Database
             return false;
         }
 
-        public override bool IsChanged(DBArchive db)
+        //public override int GetHashCode()
+        //{
+        //    unchecked
+        //    {
+
+        //        // Choose large primes to avoid hashing collisions
+        //        const int HashingBase = (int)2166136261;
+        //        const int HashingMultiplier = 16777619;
+
+        //        int hash = HashingBase;
+        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Title) ? Title.GetHashCode() : 0);
+        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Location) ? Location.GetHashCode() : 0);
+        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, IsAllDay) ? IsAllDay.GetHashCode() : 0);
+        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, StartDate) ? StartDate.GetHashCode() : 0);
+        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, EndDate) ? EndDate.GetHashCode() : 0);
+        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Status) ? Status.GetHashCode() : 0);
+
+        //        return hash;
+        //    }
+        //}
+        //public override bool Equals(object obj)
+        //{
+        //    if (obj is EventEVM)
+        //    {
+        //        EventEVM o = (EventEVM)obj;
+
+        //        return Title == o.Title
+        //            && Location == o.Location
+        //            && IsAllDay == o.IsAllDay
+        //            && StartDate == o.StartDate
+        //            && EndDate == o.EndDate
+        //            && Status == o.Status;
+
+        //    }
+        //    return false;
+        //}
+        public bool IsEqual(object obj)
         {
-            var ev = db.Events.SingleOrDefault(x => x.Id == Id);
-            if (ev != null)
+            //Hack: too much long computation when overriding Object.GetHashCode() and Object.Equals()
+            if (obj is EventEVM)
             {
-                EventEVM e = new EventEVM(ev);
-                return !e.Equals(this);
+                EventEVM o = (EventEVM)obj;
+
+                return Title == o.Title
+                    && Location == o.Location
+                    && IsAllDay == o.IsAllDay
+                    && StartDate == o.StartDate
+                    && EndDate == o.EndDate
+                    && Status == o.Status;
+
             }
             return false;
-        }
-
-        public override bool Equals(object o)
-        {
-            if (o is EventEVM)
-            {
-                EventEVM obj = (EventEVM)o;
-                var result = Title == obj.Title
-                && Location == obj.Location
-                && IsAllDay == obj.IsAllDay
-                && StartDate == obj.StartDate
-                && Status == obj.Status
-                && EndDate == obj.EndDate;
-                return result;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                // Choose large primes to avoid hashing collisions
-                const int HashingBase = (int)2166136261;
-                const int HashingMultiplier = 16777619;
-
-                int hash = HashingBase;
-                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Title) ? Title.GetHashCode() : 0);
-                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Location) ? Location.GetHashCode() : 0);
-                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, IsAllDay) ? IsAllDay.GetHashCode() : 0);
-                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, StartDate) ? StartDate.GetHashCode() : 0);
-                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, EndDate) ? EndDate.GetHashCode() : 0);
-                hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Status) ? Status.GetHashCode() : 0);
-
-                return hash;
-            }
         }
 
         public void AddOrUpdateEventRelations(DBArchive db, out List<DayEVM> DaysToBeCleared, out List<DayEVM> NewDaysInEvent)

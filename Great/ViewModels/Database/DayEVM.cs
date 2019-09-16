@@ -14,7 +14,7 @@ using Day = Great.Models.Database.Day;
 
 namespace Great.ViewModels.Database
 {
-    public class DayEVM : EntityViewModelBase, IEquatable<DayEVM>
+    public class DayEVM : EntityViewModelBase
     {
         #region Properties
         public long _Timestamp;
@@ -335,6 +335,8 @@ namespace Great.ViewModels.Database
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
+
+            IsChanged = false;
         }
 
         private void UpdateInfo()
@@ -392,23 +394,6 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-        public override bool IsChanged(DBArchive db)
-        {
-            var day = db.Days.SingleOrDefault(x => x.Timestamp == Timestamp);
-            if (day != null)
-            {
-                DayEVM d = new DayEVM(day);
-                return !d.Equals(this);
-            }
-            return false;
-        }
-
-        public bool Equals(DayEVM obj)
-        {
-
-            return Timestamp == obj.Timestamp;
-        }
-
 
     }
 

@@ -9,6 +9,17 @@ namespace Great.ViewModels.Database
 {
     public abstract class EntityViewModelBase : ViewModelBase
     {
+        public bool IsChanged { get; protected set; }
+        public EntityViewModelBase()
+        {
+            PropertyChanged += EntityViewModelBase_PropertyChanged;
+        }
+
+        private void EntityViewModelBase_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            IsChanged = true;
+        }
+
         public bool Refresh()
         {
             using (DBArchive db = new DBArchive())
@@ -16,7 +27,6 @@ namespace Great.ViewModels.Database
         }
 
         public abstract bool Refresh(DBArchive db);
-
 
         public bool Save()
         {
@@ -26,13 +36,6 @@ namespace Great.ViewModels.Database
 
         public abstract bool Save(DBArchive db);
 
-        public bool IsChanged()
-        {
-            using (DBArchive db = new DBArchive())
-                return IsChanged(db);
-        }
-        public abstract bool IsChanged(DBArchive db);
-
         public bool Delete()
         {
             using (DBArchive db = new DBArchive())
@@ -41,15 +44,18 @@ namespace Great.ViewModels.Database
 
         public abstract bool Delete(DBArchive db);
 
-
         public void CheckChangedEntity()
         {
-            if (!IsChanged()) return;
+            return;
+            //incomplete management
+            if (!IsChanged) return;
 
             if (MetroMessageBox.Show("Do you want to commit changes before leave selecion?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 Save();
             else
                 Refresh();
+
+            IsChanged = false;
         }
 
     }

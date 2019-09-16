@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseEVM : EntityViewModelBase, IEquatable<ExpenseEVM>
+    public class ExpenseEVM : EntityViewModelBase
     {
         #region Properties
         public long _Id;
@@ -125,6 +125,7 @@ namespace Great.ViewModels.Database
         {
             if (expense != null)
                 Global.Mapper.Map(expense, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -146,29 +147,6 @@ namespace Great.ViewModels.Database
         public override bool Refresh(DBArchive db)
         {
             throw new System.NotImplementedException();
-        }
-
-        public override bool IsChanged(DBArchive db)
-        {
-            var ex = db.Expenses.SingleOrDefault(x => x.Id == Id);
-            if (ex != null)
-            {
-                ExpenseEVM e = new ExpenseEVM(ex);
-                return !e.Equals(this);
-            }
-            return false;
-        }
-
-        public bool Equals(ExpenseEVM obj)
-        {        
-            return Type == obj.Type
-                && MondayAmount == obj.MondayAmount
-                && TuesdayAmount == obj.TuesdayAmount
-                && ThursdayAmount == obj.ThursdayAmount
-                && WednesdayAmount == obj.WednesdayAmount
-                && FridayAmount == obj.FridayAmount
-                && SaturdayAmount == obj.SaturdayAmount
-                && SundayAmount == obj.SundayAmount;
         }
 
     }

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class CarEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<CarEVM>
+    public class CarEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
 
@@ -114,6 +114,7 @@ namespace Great.ViewModels.Database
         {
             if (car != null)
                 Global.Mapper.Map(car, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -148,26 +149,6 @@ namespace Great.ViewModels.Database
                 return true;
             }
             return false;
-        }
-
-        public override bool IsChanged(DBArchive db)
-        {
-            var car = db.Cars.SingleOrDefault(x => x.Id == Id);
-            if (car != null)
-            {
-              CarEVM c = new CarEVM(car);
-                return !c.Equals(this);
-            }
-            return false;
-        }
-
-        public  bool Equals(CarEVM obj)
-        {
-
-            return obj.LicensePlate == LicensePlate 
-                && obj.Model == Model 
-                && obj.Brand == Brand 
-                && obj.CarRentalCompany == CarRentalCompany;
         }
 
     }

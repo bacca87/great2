@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class TimesheetEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<TimesheetEVM>
+    public class TimesheetEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
         private long _Id;
@@ -408,6 +408,7 @@ namespace Great.ViewModels.Database
         {
             if (timesheet != null)
                 Global.Mapper.Map(timesheet, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -443,31 +444,6 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-        public override bool IsChanged(DBArchive db)
-        {
-            var ts = db.Timesheets.SingleOrDefault(x => x.Id == Id);
-            if (ts != null)
-            {
-                TimesheetEVM f = new TimesheetEVM(ts);
-                return ts.Equals(this);
-            }
-            return false;
-        }
-
-        public  bool Equals(TimesheetEVM obj)
-        {
-            return FDL == obj.FDL
-                && TravelStartTimeAM == obj.TravelStartTimeAM
-                && WorkStartTimeAM == obj.WorkStartTimeAM
-                && WorkEndTimeAM == obj.WorkEndTimeAM
-                && TravelEndTimeAM == obj.TravelEndTimeAM
-                && TravelStartTimePM == obj.TravelStartTimePM
-                && WorkStartTimePM == obj.WorkStartTimePM
-                && WorkEndTimePM == obj.WorkEndTimePM
-                && TravelEndTimePM == obj.TravelEndTimePM
-                && Notes == obj.Notes;
-        }
-
 
         private void UpdateTotals()
         {

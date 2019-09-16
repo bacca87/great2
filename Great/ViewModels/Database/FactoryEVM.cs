@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class FactoryEVM : EntityViewModelBase, IDataErrorInfo,IEquatable<FactoryEVM>
+    public class FactoryEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
         private long _Id;
@@ -147,6 +147,7 @@ namespace Great.ViewModels.Database
         {
             if (factory != null)
                 Global.Mapper.Map(factory, this);
+            IsChanged = false;
         }
 
         public override bool Delete(DBArchive db)
@@ -185,31 +186,5 @@ namespace Great.ViewModels.Database
             Id = factory.Id;
             return true;
         }
-
-        public override bool IsChanged(DBArchive db)
-        {
-            var fact = db.Factories.SingleOrDefault(x => x.Id == Id);
-            if (fact != null)
-            {
-                FactoryEVM f = new FactoryEVM(fact);
-                return !f.Equals(this);
-            }
-            return false;
-        }
-
-        public bool Equals(FactoryEVM obj)
-        {
-
-            return Name == obj.Name
-                && CompanyName  == obj.CompanyName
-                && Address == obj.Address
-                && Latitude == obj.Latitude
-                && Longitude == obj.Longitude
-                && IsForfait == obj.IsForfait
-                && TransferType == obj.TransferType
-                && OverrideAddressOnFDL == obj.OverrideAddressOnFDL;
-        }
-
-
     }
 }

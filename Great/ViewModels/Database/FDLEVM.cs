@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class FDLEVM : EntityViewModelBase, IFDLFile,IEquatable<FDLEVM>
+    public class FDLEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
         private string _Id;
@@ -271,6 +271,7 @@ namespace Great.ViewModels.Database
 
             if (fdl != null)
                 Global.Mapper.Map(fdl, this);
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -304,37 +305,6 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-
-        public override bool IsChanged(DBArchive db)
-        {
-            var fdl = db.FDLs.SingleOrDefault(x => x.Id == Id);
-            if (fdl != null)
-            {
-                FDLEVM f = new FDLEVM(fdl);
-                return !f.Equals(this);
-            }
-            return false;
-        }
-
-        public  bool Equals(FDLEVM obj)
-        {
-
-            var result = Factory == obj.Factory
-                && OutwardAircraft == obj.OutwardAircraft
-                && OutwardCar == obj.OutwardCar
-                && OutwardTaxi == obj.OutwardTaxi
-                && ReturnAircraft == obj.ReturnAircraft
-                && ReturnCar == obj.ReturnCar
-                && ReturnTaxi == obj.ReturnTaxi
-                && PerformanceDescription == obj.PerformanceDescription
-                && Result == obj.Result
-                && ResultNotes == obj.ResultNotes
-                && Notes == obj.Notes
-                && Timesheets.SequenceEqual(obj.Timesheets);
-
-            return result;
-        }
-
 
     }
 }

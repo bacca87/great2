@@ -71,9 +71,5 @@ namespace Great.ViewModels.Database
             return false;
         }
 
-        public override bool IsChanged(DBArchive db)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

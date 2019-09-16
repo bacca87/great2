@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Great.ViewModels.Database
 {
-    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile/*,IEquatable<ExpenseAccountEVM>*/
+    public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
         private long _Id;
@@ -200,6 +200,7 @@ namespace Great.ViewModels.Database
 
             if (ea != null)
                 Global.Mapper.Map(ea, this);
+            IsChanged = false;
 
         }
 
@@ -240,28 +241,6 @@ namespace Great.ViewModels.Database
                 return true;
             }
             return false;
-        }
-
-        public override bool IsChanged(DBArchive db)
-        {
-            var ea = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
-            if (ea != null)
-            {
-                ExpenseAccountEVM e = new ExpenseAccountEVM(ea);
-                return !e.Equals(this);
-            }
-            return false;
-        }
-
-        public  bool Equals(ExpenseAccountEVM obj)
-        {
-
-            return FDL == obj.FDL
-                && CdC == obj.CdC
-                && Currency == obj.Currency
-                && Notes == obj.Notes
-                && Expenses.SequenceEqual(obj.Expenses);
-
         }
 
     }
