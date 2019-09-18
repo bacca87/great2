@@ -372,8 +372,14 @@ namespace Great.ViewModels.Database
 
         public override bool Delete(DBArchive db)
         {
-            db.Days.Remove(db.Days.SingleOrDefault(d => d.Timestamp == Timestamp));
-            db.SaveChanges();
+            var day = db.Days.SingleOrDefault(d => d.Timestamp == Timestamp);
+
+            if(day != null)
+            {
+                db.Days.Remove(day);
+                db.SaveChanges();
+            }
+            
             Timesheets.Clear();
             return true;
         }
