@@ -100,7 +100,7 @@ namespace Great.Utils
 
                     try
                     {
-                        fdl = FDLManager.ImportFDLFromFile(file.FullName, false, false, false, false, false);
+                        fdl = FDLManager.ImportFDLFromFile(file.FullName, false, false, false, false, true);
 
                         // try with XFA format
                         if (fdl == null)
@@ -170,7 +170,7 @@ namespace Great.Utils
 
                     try
                     {
-                        ea = FDLManager.ImportEAFromFile(file.FullName, false, false, false);
+                        ea = FDLManager.ImportEAFromFile(file.FullName, false, false, true);
 
                         if (ea != null)
                         {

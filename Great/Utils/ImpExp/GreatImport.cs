@@ -534,7 +534,10 @@ namespace Great.Utils
                                             currentFdl.Status = (long)EFDLStatus.Cancelled;
 
                                         if (currentFdl.Status != (long)EFDLStatus.New)
+                                        {
                                             currentFdl.IsReadOnly = true;
+                                            currentFdl.IsCompiled = true;
+                                        }   
 
                                         db.FDLs.AddOrUpdate(currentFdl);
                                         db.SaveChanges();
@@ -612,7 +615,10 @@ namespace Great.Utils
                                     currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");
 
                                     if (currentEA.Status != (long)EFDLStatus.New)
+                                    {
                                         currentEA.IsReadOnly = true;
+                                        currentEA.IsCompiled = true;
+                                    }   
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
                                     db.SaveChanges();
