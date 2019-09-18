@@ -51,56 +51,80 @@ namespace Great.ViewModels.Database
         public long? Factory
         {
             get => _Factory;
-            set => Set(ref _Factory, value);
+            set
+            {
+                SetAndCheckChanged(ref _Factory, value);
+            }
         }
 
         private bool _OutwardCar;
         public bool OutwardCar
         {
             get => _OutwardCar;
-            set => Set(ref _OutwardCar, value);
+            set
+            {
+                SetAndCheckChanged(ref _OutwardCar, value);
+            }
         }
 
         private bool _ReturnCar;
         public bool ReturnCar
         {
             get => _ReturnCar;
-            set => Set(ref _ReturnCar, value);
+            set
+            {
+                SetAndCheckChanged(ref _ReturnCar, value);
+            }
         }
 
         private bool _OutwardTaxi;
         public bool OutwardTaxi
         {
             get => _OutwardTaxi;
-            set => Set(ref _OutwardTaxi, value);
+            set
+            {
+                SetAndCheckChanged(ref _OutwardTaxi, value);
+            }
         }
 
         private bool _ReturnTaxi;
         public bool ReturnTaxi
         {
             get => _ReturnTaxi;
-            set => Set(ref _ReturnTaxi, value);
+            set
+            {
+                SetAndCheckChanged(ref _ReturnTaxi, value);
+            }
         }
 
         private bool _OutwardAircraft;
         public bool OutwardAircraft
         {
             get => _OutwardAircraft;
-            set => Set(ref _OutwardAircraft, value);
+            set
+            {
+                SetAndCheckChanged(ref _OutwardAircraft, value);
+            }
         }
 
         private bool _ReturnAircraft;
         public bool ReturnAircraft
         {
             get => _ReturnAircraft;
-            set => Set(ref _ReturnAircraft, value);
+            set
+            {
+                SetAndCheckChanged(ref _ReturnAircraft, value);
+            }
         }
 
         private string _PerformanceDescription;
         public string PerformanceDescription
         {
             get => _PerformanceDescription;
-            set => Set(ref _PerformanceDescription, value);
+            set
+            {
+                SetAndCheckChanged(ref _PerformanceDescription, value);
+            }
         }
 
         private long _Result;
@@ -118,21 +142,30 @@ namespace Great.ViewModels.Database
         public string ResultNotes
         {
             get => _ResultNotes;
-            set => Set(ref _ResultNotes, value);
+            set
+            {
+                SetAndCheckChanged(ref _ResultNotes, value);
+            }
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
+            set
+            {
+                SetAndCheckChanged(ref _Notes, value);
+            }
         }
 
         private string _PerformanceDescriptionDetails;
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
-            set => Set(ref _PerformanceDescriptionDetails, value); 
+            set
+            {
+                SetAndCheckChanged(ref _PerformanceDescriptionDetails, value);
+            }
         }
 
         private long _Status;
@@ -263,7 +296,12 @@ namespace Great.ViewModels.Database
         #endregion
 
         // hack because XAML didnt support default parameters
-        public FDLEVM() => Timesheets = new ObservableCollection<TimesheetEVM>();
+        public FDLEVM()
+        {
+            Timesheets = new ObservableCollection<TimesheetEVM>();
+
+            IsChanged = false;
+        }
 
         public FDLEVM(FDL fdl = null)
         {

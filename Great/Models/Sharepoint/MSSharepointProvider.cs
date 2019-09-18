@@ -35,6 +35,7 @@ namespace Great.Models
 
         protected void NotifyEventChanged(EventEVM e)
         {
+            e.IsChanged = false;
             List<DayEVM> DaysToClear = new List<DayEVM>();
             List<DayEVM> DaysInEvent = new List<DayEVM>();
             e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
@@ -55,6 +56,7 @@ namespace Great.Models
 
         protected void NotifyEventImported(EventEVM e)
         {
+            e.IsChanged = false;
             List<DayEVM> DaysToClear = new List<DayEVM>();
             List<DayEVM> DaysInEvent = new List<DayEVM>();
             e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);

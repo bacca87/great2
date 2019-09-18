@@ -16,7 +16,10 @@ namespace Great.ViewModels.Database
         public long Car
         {
             get => _car;
-            set => Set(ref _car, value);
+            set
+            {
+                SetAndCheckChanged(ref _car, value);
+            }
         }
 
         private CarEVM _car1;
@@ -37,8 +40,9 @@ namespace Great.ViewModels.Database
             get => _startKm;
             set
             {
-                Set(ref _startKm, value);
+                SetAndCheckChanged(ref _startKm, value);
                 RaisePropertyChanged(nameof(EndKm));
+
             }
         }
 
@@ -48,7 +52,7 @@ namespace Great.ViewModels.Database
             get => _endKm;
             set
             {
-                Set(ref _endKm, value);
+                SetAndCheckChanged(ref _endKm, value);
                 RaisePropertyChanged(nameof(StartKm));
                 RaisePropertyChanged(nameof(EndLocation));
                 RaisePropertyChanged(nameof(RentEndTime));
@@ -60,7 +64,10 @@ namespace Great.ViewModels.Database
         public string StartLocation
         {
             get => _startLocation;
-            set => Set(ref _startLocation, value);
+            set
+            {
+                SetAndCheckChanged(ref _startLocation, value);
+            }
 
         }
 
@@ -70,7 +77,7 @@ namespace Great.ViewModels.Database
             get => _endLocation;
             set
             {
-                Set(ref _endLocation, value);
+                SetAndCheckChanged(ref _endLocation, value);
                 RaisePropertyChanged(nameof(EndKm));
                 RaisePropertyChanged(nameof(RentEndDate));
             }
@@ -80,7 +87,10 @@ namespace Great.ViewModels.Database
         public long StartDate
         {
             get => _startDate;
-            set => Set(ref _startDate, value);
+            set
+            {
+                SetAndCheckChanged(ref _startDate, value);
+            }
 
         }
 
@@ -88,7 +98,10 @@ namespace Great.ViewModels.Database
         public long EndDate
         {
             get => _endDate;
-            set => Set(ref _endDate, value);
+            set
+            {
+                SetAndCheckChanged(ref _endDate, value);
+            }
 
         }
 
@@ -96,7 +109,10 @@ namespace Great.ViewModels.Database
         public long StartFuelLevel
         {
             get => _startFuelLevel;
-            set => Set(ref _startFuelLevel, value);
+            set
+            {
+                SetAndCheckChanged(ref _startFuelLevel, value);
+            }
 
         }
 
@@ -104,7 +120,11 @@ namespace Great.ViewModels.Database
         public long EndFuelLevel
         {
             get => _endFuelLevel;
-            set => Set(ref _endFuelLevel, value);
+            set
+            {
+                SetAndCheckChanged(ref _endFuelLevel, value);
+            }
+
 
         }
 
@@ -112,7 +132,10 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _notes;
-            set => Set(ref _notes, value);
+            set
+            {
+                SetAndCheckChanged(ref _notes, value);
+            }
 
         }
 

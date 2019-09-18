@@ -97,7 +97,7 @@ namespace Great.ViewModels
             {
                 _selectedRent?.CheckChangedEntity();
                 Set(ref _selectedRent, value);
-                SelectedCar = _selectedRent?.Car1;
+                LicensePlate = _selectedRent?.Car1.LicensePlate;
 
                 ShowEditMenu = false;
             }
@@ -112,10 +112,9 @@ namespace Great.ViewModels
             {
                 _selectedCar?.CheckChangedEntity();
 
-                if (value != null && value != _selectedCar)
+                if (value != null )
                 {
                     Set(ref _selectedCar, value);
-                    LicensePlate = SelectedCar.LicensePlate;
                 }
             }
         }
@@ -130,7 +129,7 @@ namespace Great.ViewModels
                 var car = Cars.SingleOrDefault(x => x.LicensePlate == _LicensePlate);
                 if (car != null)
                     SelectedCar = car;
-                    SelectedCar.LicensePlate = value;
+                 //   SelectedCar.LicensePlate = value;
             }
         }
 

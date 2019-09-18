@@ -21,11 +21,7 @@ namespace Great.ViewModels.Database
         public long Id
         {
             get => _Id;
-            set
-            {
-                Set(ref _Id, value);
-                RaisePropertyChanged(nameof(Id));
-            }
+            set => Set(ref _Id, value);
         }
 
         private long _SharePointId;
@@ -39,7 +35,10 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set => Set(ref _Type, value);
+            set
+            {
+                SetAndCheckChanged(ref _Type, value);
+            }
 
         }
 
@@ -53,12 +52,15 @@ namespace Great.ViewModels.Database
             }
         }
 
-
         private string _Title;
         public string Title
         {
             get => _Title;
-            set => Set(ref _Title, value);
+            set
+            {
+
+                SetAndCheckChanged(ref _Title, value);
+            }
 
         }
 
@@ -66,7 +68,11 @@ namespace Great.ViewModels.Database
         public string Location
         {
             get => _Location;
-            set => Set(ref _Location, value);
+            set
+            {
+
+                SetAndCheckChanged(ref _Location, value);
+            }
 
         }
 
@@ -81,7 +87,12 @@ namespace Great.ViewModels.Database
         public long StartDateTimeStamp
         {
             get => _StartDateTimestamp;
-            set => Set(ref _StartDateTimestamp, value);
+            set
+            {
+
+
+                SetAndCheckChanged(ref _StartDateTimestamp, value);
+            }
         }
 
 
@@ -89,7 +100,11 @@ namespace Great.ViewModels.Database
         public long EndDateTimeStamp
         {
             get => _EndDateTimestamp;
-            set => Set(ref _EndDateTimestamp, value);
+            set
+            {
+
+                SetAndCheckChanged(ref _EndDateTimestamp, value);
+            }
         }
 
         public DateTime StartDate
@@ -179,7 +194,11 @@ namespace Great.ViewModels.Database
         public string Description
         {
             get => _Description;
-            set => Set(ref _Description, value);
+            set
+            {
+
+                SetAndCheckChanged(ref _Description, value);
+            }
 
         }
 
@@ -187,7 +206,11 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
+            set
+            {
+
+                SetAndCheckChanged(ref _Notes, value);
+            }
 
         }
 
@@ -195,7 +218,11 @@ namespace Great.ViewModels.Database
         public bool IsAllDay
         {
             get => _IsAllDay;
-            set => Set(ref _IsAllDay, value);
+            set
+            {
+
+                SetAndCheckChanged(ref _IsAllDay, value);
+            }
 
         }
 

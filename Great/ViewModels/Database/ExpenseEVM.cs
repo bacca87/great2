@@ -28,7 +28,10 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set => Set(ref _Type, value);
+            set
+            {
+                SetAndCheckChanged(ref _Type, value);
+            }
         }
 
         private double? _MondayAmount;
@@ -37,7 +40,7 @@ namespace Great.ViewModels.Database
             get => _MondayAmount;
             set
             {
-                Set(ref _MondayAmount, value);
+                SetAndCheckChanged(ref _MondayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -48,7 +51,7 @@ namespace Great.ViewModels.Database
             get => _TuesdayAmount;
             set
             {
-                Set(ref _TuesdayAmount, value);
+                SetAndCheckChanged(ref _TuesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -59,8 +62,9 @@ namespace Great.ViewModels.Database
             get => _WednesdayAmount;
             set
             {
-                Set(ref _WednesdayAmount, value);
+                SetAndCheckChanged(ref _WednesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
+
             }
         }
 
@@ -70,7 +74,7 @@ namespace Great.ViewModels.Database
             get => _ThursdayAmount;
             set
             {
-                Set(ref _ThursdayAmount, value);
+                SetAndCheckChanged(ref _ThursdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -81,7 +85,7 @@ namespace Great.ViewModels.Database
             get => _FridayAmount;
             set
             {
-                Set(ref _FridayAmount, value);
+                SetAndCheckChanged(ref _FridayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -92,7 +96,7 @@ namespace Great.ViewModels.Database
             get => _SaturdayAmount;
             set
             {
-                Set(ref _SaturdayAmount, value);
+                SetAndCheckChanged(ref _SaturdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }
@@ -103,7 +107,7 @@ namespace Great.ViewModels.Database
             get => _SundayAmount;
             set
             {
-                Set(ref _SundayAmount, value);
+                SetAndCheckChanged(ref _SundayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
             }
         }

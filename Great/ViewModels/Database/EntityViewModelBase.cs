@@ -7,18 +7,12 @@ using System.Windows;
 
 namespace Great.ViewModels.Database
 {
-    public abstract class EntityViewModelBase : ViewModelBase
+    public abstract class EntityViewModelBase : ViewModelBase, IChangeTracking
     {
-        public bool IsChanged { get; protected set; }
-        public EntityViewModelBase()
-        {
-            PropertyChanged += EntityViewModelBase_PropertyChanged;
-        }
-
-        private void EntityViewModelBase_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            IsChanged = true;
-        }
+        #region IChangeTracking
+        public bool IsChanged { get; set; }
+        public void AcceptChanges() => throw new System.NotImplementedException();
+        #endregion
 
         public bool Refresh()
         {
@@ -46,7 +40,7 @@ namespace Great.ViewModels.Database
 
         public void CheckChangedEntity()
         {
-            return;
+
             //incomplete management
             if (!IsChanged) return;
 
@@ -57,6 +51,16 @@ namespace Great.ViewModels.Database
 
             IsChanged = false;
         }
+
+        protected bool SetAndCheckChanged<T>(ref T field, T newValue = default, bool broadcast = false, [CallerMemberName] string propertyName = null)
+        {
+
+
+            IsChanged = !EqualityComparer<T>.Default.Equals(field, newValue);
+
+            return Set(ref field, newValue);
+        }
+
 
     }
 }
