@@ -443,12 +443,12 @@ namespace Great.ViewModels.Database
         {
             var day = db.Days.SingleOrDefault(d => d.Timestamp == Timestamp);
 
-            if(day != null)
+            if (day != null)
             {
                 db.Days.Remove(day);
                 db.SaveChanges();
             }
-            
+
             Timesheets.Clear();
             return true;
         }

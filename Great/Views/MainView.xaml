@@ -543,7 +543,7 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <TabControl Name="NavigationTabControl" Grid.Row="1"   TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"            
+        <TabControl Name="NavigationTabControl" PreviewMouseDown="NavigationTabControl_PreviewMouseDown" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"            
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MetroTabControl}">
@@ -589,7 +589,7 @@
                 </Style>
             </TabControl.Resources>
             <TabItem Name="timesheetsTab"  Header="Timesheets" ap:NotificationHelper.NotificationCount="0">
-                <Frame Source="/Views/Pages/TimesheetsView.xaml"/>
+                <Frame  Source="/Views/Pages/TimesheetsView.xaml"/>
             </TabItem>
             <TabItem Name="fdlTab" Header="FDL" ap:NotificationHelper.NotificationCount="{Binding NewFDLCount}">
                 <Frame Source="/Views/Pages/FDLView.xaml"/>

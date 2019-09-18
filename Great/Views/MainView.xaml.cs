@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -119,13 +120,31 @@ namespace Great.Views
 
         private void RibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            CheckEntities();
+        }
+
+
+
+        private void NavigationTabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var test = e.Source;
+            if (e.Source is TabItem)
+            {
+                TabItem t = (TabItem)e.Source;
+                this.Dispatcher.Invoke(new Action(() => { CheckEntities(); }), null);
+                t.Focus();
+            }
+
+        }
+
+        private void CheckEntities()
+        {
             SimpleIoc.Default.GetInstance<FDLViewModel>().SelectedFDL?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
-
-
     }
 }
+

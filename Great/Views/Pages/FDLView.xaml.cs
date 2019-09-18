@@ -67,12 +67,5 @@ namespace Great.Views.Pages
             }
         }
 
-        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(bool)e.NewValue)
-            {
-                _viewModel.SelectedFDL?.CheckChangedEntity();
-            }
-        }
     }
 }
