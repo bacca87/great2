@@ -33,7 +33,9 @@ namespace Great
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
             if (!Debugger.IsAttached)
-            splash.Show();
+            {
+                splash.Show();
+            }
 
             //in order to ensure the UI stays responsive, we need to
             //do the work on a different thread
@@ -104,9 +106,13 @@ namespace Great
             Directory.CreateDirectory(dbDirectory);
 
             if (!File.Exists(dbFileName))
+            {
                 File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
+            }
             else
+            {
                 DoBackup(dbFileName, dbDirectory); //Backup before migrations
+            }
 
             ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
         }
@@ -124,10 +130,14 @@ namespace Great
                         foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
                         {
                             if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
+                            {
                                 continue;
+                            }
 
                             if (db_version >= scriptVersion)
+                            {
                                 continue;
+                            }
 
                             db.Database.ExecuteSqlCommand(File.ReadAllText(f));
                             db.SaveChanges();
@@ -167,9 +177,13 @@ namespace Great
             foreach (ResourceDictionary dict in Resources.MergedDictionaries)
             {
                 if (dict is SkinResourceDictionary skinDict)
+                {
                     skinDict.UpdateSource();
+                }
                 else
+                {
                     dict.Source = dict.Source;
+                }
             }
 
         }

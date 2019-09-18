@@ -17,7 +17,9 @@ namespace Great.ViewModels.Database
         public bool Refresh()
         {
             using (DBArchive db = new DBArchive())
+            {
                 return Refresh(db);
+            }
         }
 
         public abstract bool Refresh(DBArchive db);
@@ -25,7 +27,9 @@ namespace Great.ViewModels.Database
         public bool Save()
         {
             using (DBArchive db = new DBArchive())
+            {
                 return Save(db);
+            }
         }
 
         public abstract bool Save(DBArchive db);
@@ -33,7 +37,9 @@ namespace Great.ViewModels.Database
         public bool Delete()
         {
             using (DBArchive db = new DBArchive())
+            {
                 return Delete(db);
+            }
         }
 
         public abstract bool Delete(DBArchive db);
@@ -42,12 +48,19 @@ namespace Great.ViewModels.Database
         {
 
             //incomplete management
-            if (!IsChanged) return;
+            if (!IsChanged)
+            {
+                return;
+            }
 
             if (MetroMessageBox.Show("Do you want to commit changes before leave selecion?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
                 Save();
+            }
             else
+            {
                 Refresh();
+            }
 
             IsChanged = false;
         }

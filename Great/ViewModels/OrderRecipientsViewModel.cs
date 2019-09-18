@@ -40,7 +40,9 @@ namespace Great.ViewModels
                 Set(ref _order, value);
 
                 using (DBArchive db = new DBArchive())
+                {
                     Recipients = new ObservableCollection<OrderEmailRecipient>(db.OrderEmailRecipients.Where(r => r.Order == _order).ToList());
+                }
             }
         }
 

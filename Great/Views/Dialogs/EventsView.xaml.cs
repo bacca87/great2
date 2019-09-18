@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Great.ViewModels;
+﻿using Great.ViewModels;
 using MahApps.Metro.Controls;
 
 namespace Great.Views.Dialogs
@@ -14,5 +13,10 @@ namespace Great.Views.Dialogs
             InitializeComponent();
         }
 
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            EventsViewModel _viewModel = (EventsViewModel)DataContext;
+            _viewModel.SelectedEvent?.CheckChangedEntity();
+        }
     }
 }

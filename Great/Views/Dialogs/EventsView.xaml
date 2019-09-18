@@ -15,6 +15,7 @@
     xmlns:Fluent="urn:fluent-ribbon"
     mc:Ignorable="d"
         Title="Events"
+    Closing="MetroWindow_Closing"   
         DataContext="{Binding Events, Source={StaticResource Locator}}">
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

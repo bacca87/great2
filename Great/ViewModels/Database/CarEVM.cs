@@ -26,10 +26,7 @@ namespace Great.ViewModels.Database
         public string Brand
         {
             get => _brand;
-            set
-            {
-                SetAndCheckChanged(ref _brand, value);
-            }
+            set => SetAndCheckChanged(ref _brand, value);
 
         }
 
@@ -37,10 +34,7 @@ namespace Great.ViewModels.Database
         public string Model
         {
             get => _model;
-            set
-            {
-                SetAndCheckChanged(ref _model, value);
-            }
+            set => SetAndCheckChanged(ref _model, value);
         }
 
         private long _carRentalCompany;
@@ -82,7 +76,7 @@ namespace Great.ViewModels.Database
 
         public string Error => throw new NotImplementedException();
 
-        public bool IsValid => 
+        public bool IsValid =>
             this["LicensePlate"] == null
             && this["Brand"] == null
             && this["Model"] == null
@@ -96,21 +90,33 @@ namespace Great.ViewModels.Database
                 {
                     case "LicensePlate":
                         if (string.IsNullOrEmpty(LicensePlate) || string.IsNullOrWhiteSpace(LicensePlate))
+                        {
                             return "License Plate not valid";
+                        }
+
                         break;
 
                     case "Brand":
                         if (string.IsNullOrEmpty(Brand) || string.IsNullOrWhiteSpace(Brand))
+                        {
                             return "Brand not valid";
+                        }
+
                         break;
 
                     case "Model":
                         if (string.IsNullOrEmpty(Model) || string.IsNullOrWhiteSpace(Model))
+                        {
                             return "Model not valid";
+                        }
+
                         break;
                     case "CarRentalCompany1":
                         if (CarRentalCompany1 == null || CarRentalCompany1?.Id == 0)
+                        {
                             return "Rental company not valid";
+                        }
+
                         break;
 
                     default:
@@ -125,7 +131,10 @@ namespace Great.ViewModels.Database
         public CarEVM(Car car = null)
         {
             if (car != null)
+            {
                 Global.Mapper.Map(car, this);
+            }
+
             IsChanged = false;
         }
 

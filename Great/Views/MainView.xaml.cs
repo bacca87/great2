@@ -10,7 +10,6 @@ using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -80,7 +79,9 @@ namespace Great.Views
             FDLViewModel FdlVM = SimpleIoc.Default.GetInstance<FDLViewModel>();
 
             if (recipientsVM == null || FdlVM == null || FdlVM.SelectedFDL == null)
+            {
                 return;
+            }
 
             recipientsVM.Order = FdlVM.SelectedFDL.Order;
 
@@ -93,7 +94,9 @@ namespace Great.Views
             EventsViewModel eventVM = SimpleIoc.Default.GetInstance<EventsViewModel>();
 
             if (eventVM == null)
+            {
                 return;
+            }
 
             EventsView view = new EventsView();
             view.Owner = this;
@@ -105,7 +108,9 @@ namespace Great.Views
             SettingsViewModel settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
             if (settingsVM == null)
+            {
                 return;
+            }
 
             SettingsView view = new SettingsView();
             view.Owner = this;
@@ -121,19 +126,6 @@ namespace Great.Views
             SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
 
-        private void NavigationTabControl_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.Source is TabItem)
-            {
-                SimpleIoc.Default.GetInstance<FDLViewModel>().SelectedFDL?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
-            }
-
-
-        }
 
     }
 }

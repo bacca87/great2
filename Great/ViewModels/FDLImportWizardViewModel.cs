@@ -167,22 +167,32 @@ namespace Great.ViewModels
                 string text;
 
                 if (!_fdlImport.Output.TryDequeue(out text))
+                {
                     continue;
+                }
 
                 newText += text + Environment.NewLine;
             }
 
             if (newText != string.Empty)
+            {
                 LogText += newText;
+            }
 
             if (Status != _fdlImport.Status)
+            {
                 Status = _fdlImport.Status;
+            }
 
             if (Completed != _fdlImport.IsCompleted)
+            {
                 Completed = _fdlImport.IsCompleted;
+            }
 
             if (CanSelectPreviousPage != _fdlImport.IsCancelled)
+            {
                 CanSelectPreviousPage = _fdlImport.IsCancelled;
+            }
         }
 
         private void Reset()

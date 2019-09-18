@@ -129,11 +129,15 @@ namespace Great.Models
                 ea.NotifyAsNew = NotifyAsNew;
 
                 if (int.TryParse(fields[ApplicationSettings.ExpenseAccount.FieldNames.CdC].GetValueAsString(), out int cdc))
+                {
                     ea.CdC = cdc;
+                }
 
                 string currency = fields[ApplicationSettings.ExpenseAccount.FieldNames.Currency].GetValueAsString();
                 if (currency.Length > 4)
+                {
                     ea.Currency = currency.Substring(0, 4).Trim();
+                }
 
                 string value = fields[ApplicationSettings.ExpenseAccount.FieldNames.Notes].GetValueAsString().Trim();
                 ea.Notes = value != string.Empty ? value : null;
@@ -166,7 +170,9 @@ namespace Great.Models
                                         string type = fields[entry["Type"]].GetValueAsString().ToLower();
 
                                         if (string.IsNullOrEmpty(type))
+                                        {
                                             continue;
+                                        }
 
                                         var typeId = db.ExpenseTypes.Where(t => t.Description.ToLower() == type).Select(t => t.Id).FirstOrDefault();
 
@@ -178,10 +184,14 @@ namespace Great.Models
                                             typeId = db.ExpenseTypes.Where(t => t.Description.ToLower().Contains(type) && t.Description.ToLower().Contains(IsItaly ? "italia" : "estero")).Select(t => t.Id).FirstOrDefault();
 
                                             if (typeId == 0) // try last time with less filters as possible
+                                            {
                                                 typeId = db.ExpenseTypes.Where(t => t.Description.ToLower().Contains(type)).Select(t => t.Id).FirstOrDefault();
+                                            }
 
                                             if (typeId == 0) // unknown expense type
+                                            {
                                                 continue;
+                                            }
                                         }
 
                                         Expense expense = new Expense()
@@ -194,19 +204,39 @@ namespace Great.Models
                                         Func<string, string> ConvertToInvariantDoubleString = (str) => { return str.IndexOf('.') < str.IndexOf(',') ? str.Replace(".", "").Replace(",", ".") : str.Replace(",", ""); };
 
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Mon_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out double amount))
+                                        {
                                             expense.MondayAmount = amount;
+                                        }
+
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Tue_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        {
                                             expense.TuesdayAmount = amount;
+                                        }
+
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Wed_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        {
                                             expense.WednesdayAmount = amount;
+                                        }
+
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Thu_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        {
                                             expense.ThursdayAmount = amount;
+                                        }
+
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Fri_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        {
                                             expense.FridayAmount = amount;
+                                        }
+
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Sat_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        {
                                             expense.SaturdayAmount = amount;
+                                        }
+
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Sun_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out amount))
+                                        {
                                             expense.SundayAmount = amount;
+                                        }
 
                                         db.Expenses.Add(expense);
                                     }
@@ -251,9 +281,13 @@ namespace Great.Models
         public FDLEVM ImportFDLFromFile(string filePath, bool IsXfaPdf, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {
             if (IsXfaPdf)
+            {
                 return ImportFDL_XFAForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
+            }
             else
+            {
                 return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
+            }
         }
 
         public FDLEVM ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
@@ -286,7 +320,9 @@ namespace Great.Models
                 long longResult;
 
                 if (long.TryParse(GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order), out longResult))
+                {
                     fdl.Order = longResult;
+                }
 
                 fdl.NotifyAsNew = NotifyAsNew;
 
@@ -321,7 +357,9 @@ namespace Great.Models
                 }
 
                 if (fdl.WeekNr == 0)
+                {
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
+                }
 
                 // Save
                 using (DBArchive db = new DBArchive())
@@ -370,7 +408,9 @@ namespace Great.Models
                                         }
 
                                         if (factory != null && UserSettings.Advanced.AutoAssignFactories)
+                                        {
                                             fdl.Factory = factory.Id;
+                                        }
                                     }
                                 }
                                 #endregion
@@ -398,21 +438,44 @@ namespace Great.Models
                                             TimeSpan time;
 
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimeAM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelStartTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimeAM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkStartTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimeAM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkEndTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimeAM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelEndTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimePM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelStartTimePM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimePM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkStartTimePM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimePM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkEndTimePM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimePM"]).Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelEndTimePM_t = time;
+                                            }
 
                                             if (timesheet.TimePeriods != null)
                                             {
@@ -435,7 +498,11 @@ namespace Great.Models
                                 {
                                     transaction.Commit();
 
-                                    if (IsNewFactory) Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, new FactoryEVM(factory)));
+                                    if (IsNewFactory)
+                                    {
+                                        Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, new FactoryEVM(factory)));
+                                    }
+
                                     Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, fdlEVM));
                                 }
                                 else
@@ -500,7 +567,9 @@ namespace Great.Models
                 fdl.NotifyAsNew = NotifyAsNew;
 
                 if (long.TryParse(fields[ApplicationSettings.FDL.FieldNames.Order].GetValueAsString(), out long longResult))
+                {
                     fdl.Order = longResult;
+                }
 
                 //fields[ApplicationSettings.FDL.FieldNames.Cars1]
                 //fields[ApplicationSettings.FDL.FieldNames.Cars2]
@@ -515,9 +584,13 @@ namespace Great.Models
                 fdl.Notes = value != string.Empty ? value : null;
 
                 if (fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails))
+                {
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails].GetValueAsString().Trim();
+                }
                 else if (fields.ContainsKey(ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old)) // Some very old FDL have a different field name for performance description details
+                {
                     value = fields[ApplicationSettings.FDL.FieldNames.PerformanceDescriptionDetails_old].GetValueAsString().Trim();
+                }
 
                 fdl.PerformanceDescriptionDetails = value != string.Empty ? value : null;
 
@@ -536,7 +609,9 @@ namespace Great.Models
                 }
 
                 if (fdl.WeekNr == 0)
+                {
                     throw new InvalidOperationException("Impossible to retrieve the week number.");
+                }
 
                 // Save
                 using (DBArchive db = new DBArchive())
@@ -585,7 +660,9 @@ namespace Great.Models
                                         }
 
                                         if (factory != null && UserSettings.Advanced.AutoAssignFactories)
+                                        {
                                             fdl.Factory = factory.Id;
+                                        }
                                     }
                                 }
                                 #endregion
@@ -613,21 +690,44 @@ namespace Great.Models
                                             TimeSpan time;
 
                                             if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelStartTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkStartTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkEndTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelEndTimeAM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelStartTimePM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkStartTimePM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.WorkEndTimePM_t = time;
+                                            }
+
                                             if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            {
                                                 timesheet.TravelEndTimePM_t = time;
+                                            }
 
                                             if (timesheet.TimePeriods != null)
                                             {
@@ -651,7 +751,9 @@ namespace Great.Models
                                     transaction.Commit();
 
                                     if (IsNewFactory)
+                                    {
                                         Messenger.Default.Send(new NewItemMessage<FactoryEVM>(this, new FactoryEVM(factory)));
+                                    }
 
                                     Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, fdlEVM));
                                 }
@@ -712,11 +814,15 @@ namespace Great.Models
                         foreach (string word in newAddress)
                         {
                             if (word.Trim() != string.Empty && exsAddress.Any(x => x == word))
+                            {
                                 matchCount++;
+                            }
                         }
 
                         if (matchCount > 0)
+                        {
                             factoryMatchRate.Add(f.Id, (matchCount * 100) / newAddress.Count());
+                        }
                     }
 
                     if (factoryMatchRate.Count > 0)
@@ -725,7 +831,9 @@ namespace Great.Models
                         var factoryRate = factoryMatchRate.Aggregate((l, r) => l.Value > r.Value ? l : r);
 
                         if (factoryRate.Value > 50)
+                        {
                             factory = db.Factories.SingleOrDefault(f => f.Id == factoryRate.Key);
+                        }
                     }
                 }
                 catch { }
@@ -781,11 +889,17 @@ namespace Great.Models
         private Dictionary<string, string> GetAcroFormFields(IFDLFile file, bool IsReadonly = false)
         {
             if (file is FDLEVM)
+            {
                 return GetAcroFormFields(file as FDLEVM);
+            }
             else if (file is ExpenseAccountEVM)
+            {
                 return GetAcroFormFields(file as ExpenseAccountEVM, IsReadonly);
+            }
             else
+            {
                 return null;
+            }
         }
 
         private Dictionary<string, string> GetAcroFormFields(FDLEVM fdl)
@@ -861,7 +975,9 @@ namespace Great.Models
                 ExpenseEVM expense = null;
 
                 if (i < expenses.Count())
+                {
                     expense = expenses[i];
+                }
 
                 fields.Add(entry["Type"], expense != null ? expense.ExpenseType.Description : string.Empty);
                 fields.Add(entry["Mon_Amount"], expense != null && expense.MondayAmount.HasValue ? expenses[i].MondayAmount.Value.ToString() : string.Empty);
@@ -873,7 +989,9 @@ namespace Great.Models
                 fields.Add(entry["Sun_Amount"], expense != null && expense.SundayAmount.HasValue ? expenses[i].SundayAmount.Value.ToString() : string.Empty);
 
                 if (IsReadonly)
+                {
                     fields.Add(entry["Total"], expense.TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
+                }
             }
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1 != null ? ea.Currency1.Description : string.Empty);
@@ -918,14 +1036,18 @@ namespace Great.Models
                     foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
                     {
                         if (fields.ContainsKey(entry.Key))
+                        {
                             fields[entry.Key].SetValue(entry.Value);
+                        }
                     }
                 }
 
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
                 {
                     if (fields.ContainsKey(entry.Key))
+                    {
                         fields[entry.Key].SetValue(entry.Value);
+                    }
                 }
             }
             catch (Exception)
@@ -984,7 +1106,9 @@ namespace Great.Models
         public bool SendToSAP(IFDLFile file)
         {
             if (file == null)
+            {
                 return false;
+            }
 
             EmailMessageDTO message = new EmailMessageDTO();
             message.Type = EEmailMessageType.SAP_Notification;
@@ -1004,7 +1128,9 @@ namespace Great.Models
                     var recipients = db.OrderEmailRecipients.Where(r => r.Order == fdl.Order).Select(r => r.Address);
 
                     foreach (var r in recipients)
+                    {
                         message.CcRecipients.Add(r);
+                    }
                 }
 
             }
@@ -1020,7 +1146,9 @@ namespace Great.Models
         public bool SendTo(string address, IFDLFile file)
         {
             if (file == null)
+            {
                 return false;
+            }
 
             EmailMessageDTO message = new EmailMessageDTO();
             message.Type = EEmailMessageType.Message;
@@ -1044,7 +1172,9 @@ namespace Great.Models
         private bool SendMessage(EmailMessageDTO message, IFDLFile file)
         {
             if (file == null)
+            {
                 return false;
+            }
 
             // removed because sap accept only pdf compiled with adobe library
             //Compile(file, file.FilePath);
@@ -1060,7 +1190,9 @@ namespace Great.Models
         public bool SendCancellationRequest(FDLEVM fdl)
         {
             if (fdl == null)
+            {
                 return false;
+            }
 
             EmailMessageDTO message = new EmailMessageDTO();
             message.Type = EEmailMessageType.Cancellation_Request;
@@ -1076,7 +1208,9 @@ namespace Great.Models
             message.Importance = Importance.High;
 
             foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
+            {
                 message.ToRecipients.Add(address);
+            }
 
             exchange.SendEmail(message);
 
@@ -1086,7 +1220,9 @@ namespace Great.Models
         public bool SaveAs(IFDLFile file, string filePath)
         {
             if (file == null || filePath == string.Empty)
+            {
                 return false;
+            }
 
             Compile(file, filePath);
             return true;
@@ -1097,7 +1233,9 @@ namespace Great.Models
             FilePath = string.Empty;
 
             if (file == null)
+            {
                 return false;
+            }
 
             FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
             CompileXFDF(file, file.FilePath, FilePath);
@@ -1119,7 +1257,9 @@ namespace Great.Models
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0))
+                            {
                                 break;
+                            }
 
                             accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
@@ -1137,7 +1277,9 @@ namespace Great.Models
                         if (rejected != null && rejected.Status != (long)EFDLStatus.Rejected && rejected.Status != (long)EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.LastSAPSendTimestamp ?? 0))
+                            {
                                 break;
+                            }
 
                             rejected.Status = (long)EFDLStatus.Rejected;
                             rejected.LastError = message.Body?.Text.Trim();
@@ -1156,7 +1298,9 @@ namespace Great.Models
                         foreach (Attachment attachment in message.Attachments)
                         {
                             if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                            {
                                 continue;
+                            }
 
                             filename = (attachment as FileAttachment).Name.ToLower();
                             break;
@@ -1167,7 +1311,9 @@ namespace Great.Models
                         if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0))
+                            {
                                 break;
+                            }
 
                             accepted.Status = (long)EFDLStatus.Accepted;
                             accepted.LastError = null;
@@ -1187,7 +1333,9 @@ namespace Great.Models
                         foreach (Attachment attachment in message.Attachments)
                         {
                             if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                            {
                                 continue;
+                            }
 
                             filename = (attachment as FileAttachment).Name.ToLower();
                             break;
@@ -1198,7 +1346,9 @@ namespace Great.Models
                         if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.LastSAPSendTimestamp ?? 0))
+                            {
                                 break;
+                            }
 
                             expenseAccount.Status = (long)EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text.Trim();
@@ -1216,7 +1366,9 @@ namespace Great.Models
                         foreach (Attachment attachment in message.Attachments)
                         {
                             if (!(attachment is FileAttachment) || attachment.ContentType != ApplicationSettings.FDL.MIMEType)
+                            {
                                 continue;
+                            }
 
                             FileAttachment fileAttachment = attachment as FileAttachment;
 
@@ -1232,10 +1384,12 @@ namespace Great.Models
                                         using (DBArchive db = new DBArchive())
                                         {
                                             if (db.FDLs.SingleOrDefault(f => f.FileName.ToLower() == fileAttachment.Name.ToLower()) != null)
+                                            {
                                                 exist = true;
+                                            }
                                         }
 
-                                        if(!exist)
+                                        if (!exist)
                                         {
                                             FDLEVM fdl = ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
 
@@ -1257,7 +1411,9 @@ namespace Great.Models
                                         using (DBArchive db = new DBArchive())
                                         {
                                             if (db.ExpenseAccounts.SingleOrDefault(e => e.FileName.ToLower() == fileAttachment.Name.ToLower()) != null)
+                                            {
                                                 exist = true;
+                                            }
                                         }
 
                                         if (!exist)
@@ -1277,11 +1433,15 @@ namespace Great.Models
                             }
 
                             if (deleteMessage)
+                            {
                                 break;
+                            }
                         }
 
-                        if(deleteMessage)
+                        if (deleteMessage)
+                        {
                             message.Delete(DeleteMode.MoveToDeletedItems);
+                        }
                     }
                     break;
 
@@ -1293,25 +1453,41 @@ namespace Great.Models
         private EMessageType GetMessageType(string subject)
         {
             if (subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
+            {
                 return EMessageType.FDL_Accepted;
+            }
             else if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
+            {
                 return EMessageType.FDL_Rejected;
+            }
             else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
+            {
                 return EMessageType.EA_Accepted;
+            }
             else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
+            {
                 return EMessageType.EA_Rejected;
+            }
             else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
+            {
                 return EMessageType.EA_RejectedResubmission;
+            }
             else if (subject.Contains(ApplicationSettings.FDL.Reminder))
+            {
                 return EMessageType.Reminder;
+            }
             else
             {
                 EFileType type = GetFileType(subject);
 
                 if (type == EFileType.FDL || type == EFileType.ExpenseAccount)
+                {
                     return EMessageType.FDL_EA_New;
+                }
                 else
+                {
                     return EMessageType.Unknown;
+                }
             }
         }
 
@@ -1332,12 +1508,16 @@ namespace Great.Models
                     if (FDL.All(char.IsDigit))
                     {
                         if (words.LastOrDefault().Contains("R"))
+                        {
                             return EFileType.ExpenseAccount;
+                        }
                         else if (CID.All(char.IsDigit) &&
                                  WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
                                  Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
                                  Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
+                        {
                             return EFileType.FDL;
+                        }
                     }
                 }
             }
@@ -1358,19 +1538,28 @@ namespace Great.Models
                     foreach (Attachment attachment in message.Attachments)
                     {
                         if (!(attachment is FileAttachment))
+                        {
                             continue;
+                        }
 
                         EFileType attType = GetFileType(attachment.Name);
 
                         if (attType == EFileType.Unknown)
+                        {
                             continue;
+                        }
 
                         words = Path.GetFileNameWithoutExtension(attachment.Name).Split(' ');
 
                         if (attType == EFileType.FDL)
+                        {
                             FDL = $"{words[words.Length - 1]}/{words[0]}";
+                        }
                         else if (attType == EFileType.ExpenseAccount)
+                        {
                             FDL = $"{words[words.Length - 2]}/{words[0]}";
+                        }
+
                         break;
                     }
                 }
@@ -1388,7 +1577,10 @@ namespace Great.Models
                             // FDL RECEIVED (XXXXX)
                             Match match = Regex.Match(message.Subject, @"\(([^)]*)\)");
                             if (match.Success || match.Groups.Count > 0)
+                            {
                                 FDL = $"{message.DateTimeSent.Year}/{match.Groups[1].Value}";
+                            }
+
                             break;
                         case EMessageType.EA_Accepted:
                         case EMessageType.EA_Rejected:
@@ -1398,14 +1590,20 @@ namespace Great.Models
                             //  0    1    2     3       4
                             words = message.Subject.Split(' ');
                             if (words.Length > 1)
+                            {
                                 FDL = $"{message.DateTimeSent.Year}/{words[1]}";
+                            }
+
                             break;
                         case EMessageType.EA_RejectedResubmission:
                             // Reinvio nota spese YYYY/XXXXX respinto
                             //    0      1    2       3         4
                             words = message.Subject.Split(' ');
                             if (words.Length > 3)
+                            {
                                 FDL = words[3];
+                            }
+
                             break;
                         default:
                             break;

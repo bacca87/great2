@@ -91,7 +91,9 @@ namespace Great.Models
                         // callback, the redirection URL is considered valid if it is using HTTPS
                         // to encrypt the authentication credentials. 
                         if (redirectionUri.Scheme == "https")
+                        {
                             result = true;
+                        }
 
                         return result;
                     });
@@ -104,12 +106,16 @@ namespace Great.Models
                         return;
                     }
                     else
+                    {
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    }
                 }
             } while (exService.Url == null && !exitToken.IsCancellationRequested);
 
             if (exitToken.IsCancellationRequested)
+            {
                 return;
+            }
 
             Status = EProviderStatus.Connecting;
 
@@ -160,7 +166,9 @@ namespace Great.Models
                     bool IsSent = false;
 
                     if (!emailQueue.TryDequeue(out message))
+                    {
                         continue;
+                    }
 
                     do
                     {
@@ -176,7 +184,9 @@ namespace Great.Models
                             msg.CcRecipients.AddRange(message.CcRecipients);
 
                             foreach (string file in message.Attachments)
+                            {
                                 msg.Attachments.AddFileAttachment(file);
+                            }
 
                             msg.SendAndSaveCopy();
                             IsSent = true;
@@ -191,7 +201,9 @@ namespace Great.Models
                                 return;
                             }
                             else
+                            {
                                 Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                            }
                         }
                     }
                     while (!IsSent);
@@ -235,7 +247,9 @@ namespace Great.Models
                         return;
                     }
                     else
+                    {
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    }
                 }
             } while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
         }
@@ -278,10 +292,15 @@ namespace Great.Models
                     // try to get last week messages (high priority)
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery + " received:>=lastweek", folderView, itemView))
                     {
-                        if (exitToken.IsCancellationRequested) break;
+                        if (exitToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
 
                         if (!(item is EmailMessage))
+                        {
                             continue;
+                        }
 
                         EmailMessage message = EmailMessage.Bind(service, item.Id);
                         NotifyNewMessage(message);
@@ -290,10 +309,15 @@ namespace Great.Models
                     // then all the other messages
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery, folderView, itemView))
                     {
-                        if (exitToken.IsCancellationRequested) break;
+                        if (exitToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
 
                         if (!(item is EmailMessage))
+                        {
                             continue;
+                        }
 
                         EmailMessage message = EmailMessage.Bind(service, item.Id);
                         NotifyNewMessage(message);
@@ -310,7 +334,9 @@ namespace Great.Models
                         return;
                     }
                     else
+                    {
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    }
                 }
             } while (!IsSynced && !exitToken.IsCancellationRequested);
         }
@@ -347,7 +373,9 @@ namespace Great.Models
             catch (Exception)
             {
                 if (Status != EProviderStatus.Error)
+                {
                     Status = EProviderStatus.Offline;
+                }
 
                 connection.Dispose();
                 Connect();
@@ -361,7 +389,9 @@ namespace Great.Models
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
             if (!connection.IsOpen)
+            {
                 connection.Close();
+            }
 
             connection.Dispose();
             Status = EProviderStatus.Error;
@@ -386,13 +416,19 @@ namespace Great.Models
 
             do
             {
-                if (exitToken.IsCancellationRequested) break;
+                if (exitToken.IsCancellationRequested)
+                {
+                    break;
+                }
 
                 foldersResults = service.FindFolders(root, folderView);
 
                 foreach (Folder folder in foldersResults)
                 {
-                    if (exitToken.IsCancellationRequested) break;
+                    if (exitToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
 
                     if (folder.WellKnownFolderName == WellKnownFolderName.DeletedItems ||
                         folder.WellKnownFolderName == WellKnownFolderName.SentItems ||
@@ -405,26 +441,35 @@ namespace Great.Models
                         folder.WellKnownFolderName == WellKnownFolderName.QuickContacts ||
                         folder.WellKnownFolderName == WellKnownFolderName.Tasks ||
                         folder.WellKnownFolderName == WellKnownFolderName.Contacts)
+                    {
                         continue;
+                    }
 
                     do
                     {
-                        if (exitToken.IsCancellationRequested) break;
+                        if (exitToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
 
                         itemsResults = service.FindItems(folder.Id, query, itemView);
 
                         foreach (Item item in itemsResults)
+                        {
                             yield return item;
+                        }
 
                         if (itemsResults.MoreAvailable)
+                        {
                             itemView.Offset += itemView.PageSize;
-
+                        }
                     } while (itemsResults.MoreAvailable);
                 }
 
                 if (foldersResults.MoreAvailable)
+                {
                     folderView.Offset += folderView.PageSize;
-
+                }
             } while (foldersResults.MoreAvailable);
 
             // reset the offset for a new search in current folder
@@ -432,16 +477,22 @@ namespace Great.Models
 
             do
             {
-                if (exitToken.IsCancellationRequested) break;
+                if (exitToken.IsCancellationRequested)
+                {
+                    break;
+                }
 
                 itemsResults = service.FindItems(root, query, itemView);
 
                 foreach (Item item in itemsResults)
+                {
                     yield return item;
+                }
 
                 if (itemsResults.MoreAvailable)
+                {
                     itemView.Offset += itemView.PageSize;
-
+                }
             } while (itemsResults.MoreAvailable);
         }
 
@@ -475,7 +526,9 @@ namespace Great.Models
                 try
                 {
                     if (subconn.IsOpen)
+                    {
                         subconn.Close();
+                    }
 
                     subconn.Dispose();
                 }
@@ -553,9 +606,13 @@ namespace Great.Models
         public NameResolutionCollection ResolveName(string filter)
         {
             if (exService.Url != null)
+            {
                 return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
+            }
             else
+            {
                 return null;
+            }
         }
 
         public void SendEmail(EmailMessageDTO message)
@@ -584,7 +641,9 @@ namespace Great.Models
             try
             {
                 if (exServiceUri == null)
+                {
                     return false;
+                }
 
                 var request = (HttpWebRequest)WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
                 request.UserAgent = ApplicationSettings.General.UserAgent;
@@ -597,9 +656,13 @@ namespace Great.Models
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
+                    {
                         return true;
+                    }
                     else
+                    {
                         return false;
+                    }
                 }
             }
             catch (Exception)
@@ -649,10 +712,14 @@ namespace Great.Models
         public void Trace(string traceType, string traceMessage)
         {
             if (traceMessage.Contains("(401)"))
+            {
                 Result = ETraceResult.LoginError;
+            }
 
             if (traceMessage.Contains("No matching Autodiscover DNS SRV records were found."))
+            {
                 Result = ETraceResult.AutodiscoverError;
+            }
         }
     }
 }

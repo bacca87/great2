@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace Great.Utils.Converters
@@ -17,8 +13,12 @@ namespace Great.Utils.Converters
             {
                 TimeSpan ts = (TimeSpan)value;
 
-                if (ts.Days > 0) result = result + String.Format("{0}d,",ts.Days);
-                result = result+ String.Format("{0}h,", ts.Hours);
+                if (ts.Days > 0)
+                {
+                    result = result + String.Format("{0}d,", ts.Days);
+                }
+
+                result = result + String.Format("{0}h,", ts.Hours);
                 result = result + String.Format("{0}min", ts.Minutes);
             }
             catch { }

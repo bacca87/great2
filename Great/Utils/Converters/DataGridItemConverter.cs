@@ -22,7 +22,10 @@ namespace Great.Utils.Converters
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             if (converter == null)
+            {
                 converter = new DataGridItemConverter();
+            }
+
             return converter;
         }
     }

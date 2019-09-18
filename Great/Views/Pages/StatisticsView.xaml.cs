@@ -18,7 +18,9 @@ namespace Great.Views.Pages
         private void Page_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
             if ((bool)e.NewValue == true)
+            {
                 _viewModel.RefreshAllData();
+            }
         }
     }
 }

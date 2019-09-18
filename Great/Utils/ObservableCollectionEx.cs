@@ -34,14 +34,18 @@ namespace Great.Utils
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.OldItems)
+                {
                     item.PropertyChanged -= ChildPropertyChanged;
+                }
             }
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.NewItems)
+                {
                     item.PropertyChanged += ChildPropertyChanged;
+                }
             }
 
             base.OnCollectionChanged(e);
@@ -60,7 +64,9 @@ namespace Great.Utils
         protected override void ClearItems()
         {
             foreach (T item in Items)
+            {
                 item.PropertyChanged -= ChildPropertyChanged;
+            }
 
             base.ClearItems();
         }
@@ -68,7 +74,9 @@ namespace Great.Utils
         private void ObserveAll()
         {
             foreach (T item in Items)
+            {
                 item.PropertyChanged += ChildPropertyChanged;
+            }
         }
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -77,7 +85,9 @@ namespace Great.Utils
             int i = Items.IndexOf(typedSender);
 
             if (i < 0)
+            {
                 throw new ArgumentException("Received property notification from item not in collection");
+            }
 
             OnItemPropertyChanged(i, e);
         }

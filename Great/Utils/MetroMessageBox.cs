@@ -164,10 +164,22 @@ namespace Great
                         break;
                 }
 
-                if (image == MessageBoxImage.Question) msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxQuestion.png"));
-                else if (image == MessageBoxImage.Error) msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxError.png"));
-                else if (image == MessageBoxImage.Information) msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxInfo.png"));
-                else if (image == MessageBoxImage.Warning) msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxWarning.png"));
+                if (image == MessageBoxImage.Question)
+                {
+                    msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxQuestion.png"));
+                }
+                else if (image == MessageBoxImage.Error)
+                {
+                    msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxError.png"));
+                }
+                else if (image == MessageBoxImage.Information)
+                {
+                    msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxInfo.png"));
+                }
+                else if (image == MessageBoxImage.Warning)
+                {
+                    msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxWarning.png"));
+                }
 
                 msg.Title = title;
                 msg.TxtTitle.Text = title;

@@ -26,7 +26,9 @@ namespace Great.Models
                     string connectionString = ConfigurationManager.ConnectionStrings["DBArchive"].ConnectionString;
 
                     if (connectionString == null || connectionString == string.Empty)
+                    {
                         throw new ConfigurationErrorsException("Missing DBEntities connection string!");
+                    }
 
                     return connectionString;
                 }
@@ -53,7 +55,9 @@ namespace Great.Models
                     string dataDirectoryPath = Settings.Default.DataDirectoryPath;
 
                     if (dataDirectoryPath == null || dataDirectoryPath == string.Empty)
+                    {
                         throw new ConfigurationErrorsException("Missing or invalid DataDirectoryPath configuration!");
+                    }
 
                     dataDirectoryPath = Environment.ExpandEnvironmentVariables(dataDirectoryPath);
                     return dataDirectoryPath + (!dataDirectoryPath.EndsWith("\\") ? "\\" : "");
@@ -88,7 +92,9 @@ namespace Great.Models
                     string cacheDirectoryPath = ConfigurationManager.AppSettings["CacheDirectoryPath"];
 
                     if (cacheDirectoryPath == null || cacheDirectoryPath == string.Empty)
+                    {
                         throw new ConfigurationErrorsException("Missing or invalid CacheDirectoryPath configuration!");
+                    }
 
                     cacheDirectoryPath = Environment.ExpandEnvironmentVariables(cacheDirectoryPath);
                     return cacheDirectoryPath + (!cacheDirectoryPath.EndsWith("\\") ? "\\" : "");
@@ -1002,7 +1008,7 @@ namespace Great.Models
         {
             public const int WaitForNextConnectionRetry = 10000;
             public const int WaitForNextEmailCheck = 1000;
-            public const int WaitForNextEventChek = 600000; //10 minutes
+            public const int WaitForNextEventCheck = 600000; //10 minutes
             public const int WaitForCredentialsCheck = 1000;
 
             public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
@@ -1068,10 +1074,7 @@ namespace Great.Models
         {
             public static CountryCode Country
             {
-                get
-                {
-                    return Settings.Default.CountryCode;
-                }
+                get => Settings.Default.CountryCode;
                 set
                 {
                     Settings.Default.CountryCode = value;
@@ -1086,7 +1089,7 @@ namespace Great.Models
         {
             public static string EmailAddress
             {
-                get { return Settings.Default.EmailAddress; }
+                get => Settings.Default.EmailAddress;
                 set
                 {
                     Settings.Default.EmailAddress = value;
@@ -1116,10 +1119,7 @@ namespace Great.Models
             {
                 public static StringCollection MRU
                 {
-                    get
-                    {
-                        return Settings.Default.MRUEmailRecipients;
-                    }
+                    get => Settings.Default.MRUEmailRecipients;
                     set
                     {
                         Settings.Default.MRUEmailRecipients = value;
@@ -1129,10 +1129,7 @@ namespace Great.Models
 
                 public static StringCollection FDLCancelRequest
                 {
-                    get
-                    {
-                        return Settings.Default.FDLCancelRequestRecipients;
-                    }
+                    get => Settings.Default.FDLCancelRequestRecipients;
                     set
                     {
                         Settings.Default.FDLCancelRequestRecipients = value;
@@ -1148,7 +1145,7 @@ namespace Great.Models
         {
             public static bool AutoAddFactories
             {
-                get { return Settings.Default.AutoAddFactories; }
+                get => Settings.Default.AutoAddFactories;
                 set
                 {
                     Settings.Default.AutoAddFactories = value;
@@ -1158,7 +1155,7 @@ namespace Great.Models
 
             public static bool AutoAssignFactories
             {
-                get { return Settings.Default.AutoAssignFactories; }
+                get => Settings.Default.AutoAssignFactories;
                 set
                 {
                     Settings.Default.AutoAssignFactories = value;

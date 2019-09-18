@@ -33,10 +33,20 @@ namespace Great.Utils
         public void UpdateSource()
         {
             Uri val = null;
-            if (UserSettings.Themes.Skin == ESkin.Light) val = LightSource;
-            if (UserSettings.Themes.Skin == ESkin.Dark) val = DarkSource;
+            if (UserSettings.Themes.Skin == ESkin.Light)
+            {
+                val = LightSource;
+            }
+
+            if (UserSettings.Themes.Skin == ESkin.Dark)
+            {
+                val = DarkSource;
+            }
+
             if (val != null)
+            {
                 base.Source = val;
+            }
         }
     }
 }
