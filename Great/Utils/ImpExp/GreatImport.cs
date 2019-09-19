@@ -97,15 +97,9 @@ namespace Great.Utils
                         }
                     }
                 }
-                else
-                {
-                    Error($"Database not found on path: {_sourceDatabase}");
-                }
+                else Error($"Database not found on path: {_sourceDatabase}");
             }
-            else
-            {
-                Error($"Wrong GREAT directory path: {GreatPath}");
-            }
+            else Error($"Wrong GREAT directory path: {GreatPath}");
 
             StatusChanged("Import failed!");
             Finished(false);
@@ -217,9 +211,7 @@ namespace Great.Utils
             IDictionary<string, long> _cars = new Dictionary<string, long>();
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing Car Rents...");
 
@@ -237,9 +229,7 @@ namespace Great.Utils
                     foreach (DataRow r in cars)
                     {
                         if (stopImport)
-                        {
                             break;
-                        }
 
                         Car car = new Car();
 
@@ -267,9 +257,7 @@ namespace Great.Utils
                     foreach (DataRow r in collection)
                     {
                         if (stopImport)
-                        {
                             break;
-                        }
 
                         string licensePlate = r.Field<string>("dbf_Targa");
                         if (_cars.ContainsKey(licensePlate))
@@ -317,9 +305,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing Factories...");
 
@@ -333,11 +319,9 @@ namespace Great.Utils
                     foreach (DataRow r in collection)
                     {
                         if (stopImport)
-                        {
                             break;
-                        }
 
-                        FactoryEVM f = new FactoryEVM();
+                        Factory f = new Factory();
 
                         try
                         {
@@ -349,7 +333,8 @@ namespace Great.Utils
                             long transferType = r.Field<byte>("dbf_Tipo_Trasf");
                             f.TransferType = transferType != 4 ? transferType : 0;
 
-                            f.Save(db);
+                            db.Factories.AddOrUpdate(x => x.Name, f);
+                            db.SaveChanges();
 
                             _factories.Add(r.Field<int>("dbf_Index"), f.Id);
 
@@ -360,6 +345,8 @@ namespace Great.Utils
                             Error($"Failed to import factory {f.Name}. {ex}", ex);
                         }
                     }
+
+                    db.SaveChanges();
 
                     result = true;
                 }
@@ -378,9 +365,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing Hours...");
 
@@ -394,9 +379,7 @@ namespace Great.Utils
                     foreach (DataRow r in collection)
                     {
                         if (stopImport)
-                        {
                             break;
-                        }
 
                         DayEVM d = new DayEVM();
 
@@ -407,32 +390,25 @@ namespace Great.Utils
                             d.Type = r.Field<byte>("dbf_Tipo_Giorno");
 
                             if (d.Type != 3 && d.Type != 6)
-                            {
                                 d.Type = 0;
-                            }
                             else if (d.Type == 3)
-                            {
                                 d.Type = 1;
-                            }
                             else if (d.Type == 6)
-                            {
                                 d.Type = 2;
-                            }
 
                             d.Save(db);
 
-                            //t = new Timesheet();
-                            long timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
-
                             //Add office hours
-                            if (
-                                r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
+                            if (r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_PM") != 0)
                             {
-                                TimesheetEVM office = new TimesheetEVM();
-                                office.Timestamp = timestamp;
+                                // clean all office timesheets
+                                //db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == d.Timestamp && (t.FDL == null || t.FDL == string.Empty)));
+
+                                Timesheet office = new Timesheet();
+                                office.Timestamp = d.Timestamp;
 
                                 office.TravelStartTimeAM = null;
                                 office.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
@@ -443,13 +419,23 @@ namespace Great.Utils
                                 office.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
                                 office.TravelEndTimePM = null;
 
-                                if (db.Timesheets.Where(x => x.Timestamp == office.Timestamp && office.FDL == string.Empty).Count() == 0)
-                                {
-                                    office.Save(db);
-                                }
+                                db.Timesheets.AddOrUpdate(x => new { x.Timestamp, x.FDL }, office);
                             }
 
                             // Factory association
+                            bool IsRestDay = r.Field<Int16>("Dbf_Uff_Inizio_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Uff_Fine_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Uff_Inizio_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Uff_Fine_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Inizio_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Fine_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Inizio_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Fine_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Partenza_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Arrivo_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Partenza_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Arrivo_PM") == 0;
+
                             short? factoryId = r.Field<short?>("Dbf_Impianto");
                             string fdlId = FormatFDL(r.Field<string>("Dbf_Foglio"));
 
@@ -465,11 +451,18 @@ namespace Great.Utils
                                         db.FDLs.AddOrUpdate(fdl);
                                         db.SaveChanges();
                                     }
+
+                                    // assign fdl to rest day if present
+                                    if (IsRestDay && !db.Timesheets.Any(x => x.Timestamp == d.Timestamp && fdlId == x.FDL))
+                                    {
+                                        TimesheetEVM restDay = new TimesheetEVM();
+                                        restDay.Timestamp = d.Timestamp;
+                                        restDay.FDL = fdlId;
+                                        restDay.Save(db);
+                                    }
                                 }
                                 else
-                                {
                                     Warning($"The FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
-                                }
                             }
 
                             short? factory2Id = r.Field<short?>("Dbf_SecondoImpianto");
@@ -486,9 +479,7 @@ namespace Great.Utils
                                     db.SaveChanges();
                                 }
                                 else
-                                {
                                     Warning($"The second FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
-                                }
                             }
 
                             Message($"Day {d.Date.ToShortDateString()} OK");
@@ -516,9 +507,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing PDF files...");
 
@@ -529,9 +518,7 @@ namespace Great.Utils
                 foreach (FileInfo file in new DirectoryInfo(_sourceFdlPath).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
                     if (stopImport)
-                    {
                         break;
-                    }
 
                     FDLEVM fdl = null;
 
@@ -541,9 +528,7 @@ namespace Great.Utils
 
                         // try with XFA format
                         if (fdl == null)
-                        {
                             fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, true, true);
-                        }
 
                         if (fdl != null)
                         {
@@ -565,43 +550,31 @@ namespace Great.Utils
                                     if (currentFdl != null)
                                     {
                                         if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                        {
                                             currentFdl.Status = (long)EFDLStatus.Waiting;
-                                        }
                                         else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
-                                        {
                                             currentFdl.Status = (long)EFDLStatus.Accepted;
-                                        }
                                         else
-                                        {
                                             currentFdl.Status = (long)EFDLStatus.Cancelled;
-                                        }
 
                                         if (currentFdl.Status != (long)EFDLStatus.New)
                                         {
                                             currentFdl.IsReadOnly = true;
                                             currentFdl.IsCompiled = true;
-                                        }
+                                        }   
 
                                         db.FDLs.AddOrUpdate(currentFdl);
                                         db.SaveChanges();
                                         Message($"FDL {currentFdl.Id} OK");
                                     }
                                     else
-                                    {
                                         Error("Missing FDL on database. Should never happen.");
-                                    }
                                 }
                             }
                             else
-                            {
                                 Error("Missing FDL sent status!");
-                            }
                         }
                         else
-                        {
                             Error($"Failed to import FDL from file: {file.FullName}");
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -624,9 +597,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing Expense Account files...");
 
@@ -637,9 +608,7 @@ namespace Great.Utils
                 foreach (FileInfo file in new DirectoryInfo(_sourceEAPath).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
                     if (stopImport)
-                    {
                         break;
-                    }
 
                     ExpenseAccountEVM ea = null;
 
@@ -661,13 +630,9 @@ namespace Great.Utils
                                     FDL fdl = db.FDLs.SingleOrDefault(f => f.Id == currentEA.FDL);
 
                                     if (fdl != null)
-                                    {
                                         currentEA.Status = fdl.Status;
-                                    }
                                     else
-                                    {
                                         currentEA.Status = (long)EFDLStatus.Accepted;
-                                    }
 
                                     var expense = expenses.SingleOrDefault(e => !string.IsNullOrEmpty(e.Field<string>("Dbf_Foglio")) && FormatFDL(e.Field<string>("Dbf_Foglio")) == fdl.Id);
                                     currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");
@@ -676,22 +641,18 @@ namespace Great.Utils
                                     {
                                         currentEA.IsReadOnly = true;
                                         currentEA.IsCompiled = true;
-                                    }
+                                    }   
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
                                     db.SaveChanges();
                                     Message($"Expense Account {currentEA.FDL} OK");
                                 }
                                 else
-                                {
                                     Error("Missing EA on database. Should never happen.");
-                                }
                             }
                         }
                         else
-                        {
                             Error($"Failed to import EA from file: {file.FullName}");
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -715,28 +676,20 @@ namespace Great.Utils
             string virtualStorePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\", uri.Parent.Name), Path.Combine(uri.Name, "DB\\Archivio.mdb"));
 
             if (File.Exists(virtualStorePath))
-            {
                 return virtualStorePath;
-            }
             else
-            {
                 return (Path.Combine(folder, "DB\\Archivio.mdb"));
-            }
         }
 
         private string FormatFDL(string fdl_Id)
         {
             if (string.IsNullOrEmpty(fdl_Id))
-            {
                 return string.Empty;
-            }
 
             string[] parts = fdl_Id.Split('/');
 
             for (int i = 0; i < parts.Length; i++)
-            {
                 parts[i] = parts[i].Trim();
-            }
 
             return $"{parts[1]}/{parts[0]}";
         }

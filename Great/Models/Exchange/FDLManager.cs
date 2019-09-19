@@ -477,6 +477,22 @@ namespace Great.Models
                                                 timesheet.TravelEndTimePM_t = time;
                                             }
 
+                                            // hack for supporting old travel periods
+                                            if(timesheet.TravelStartTimeAM_t.HasValue && !timesheet.TravelEndTimeAM_t.HasValue &&
+                                               !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&                                                 
+                                               !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
+                                               !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
+                                            {
+                                                timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
+                                                timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
+                                            }
+
+                                            // hack for missing midnight value on fdl
+                                            if (!timesheet.TravelStartTimeAM_t.HasValue && !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue && timesheet.TravelEndTimeAM_t.HasValue)
+                                                timesheet.TravelStartTimeAM_t = new TimeSpan(0, 0, 0);
+                                            if (!timesheet.WorkStartTimeAM_t.HasValue && timesheet.WorkEndTimeAM_t.HasValue)
+                                                timesheet.WorkStartTimeAM_t = new TimeSpan(0, 0, 0);
+
                                             if (timesheet.TimePeriods != null)
                                             {
                                                 day.Save(db);
@@ -728,6 +744,22 @@ namespace Great.Models
                                             {
                                                 timesheet.TravelEndTimePM_t = time;
                                             }
+
+                                            // hack for supporting old travel periods
+                                            if (timesheet.TravelStartTimeAM_t.HasValue && !timesheet.TravelEndTimeAM_t.HasValue &&
+                                               !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&
+                                               !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
+                                               !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
+                                            {
+                                                timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
+                                                timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
+                                            }
+
+                                            // hack for missing midnight value on fdl
+                                            if (!timesheet.TravelStartTimeAM_t.HasValue && !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue && timesheet.TravelEndTimeAM_t.HasValue)
+                                                timesheet.TravelStartTimeAM_t = new TimeSpan(0, 0, 0);
+                                            if (!timesheet.WorkStartTimeAM_t.HasValue && timesheet.WorkEndTimeAM_t.HasValue)
+                                                timesheet.WorkStartTimeAM_t = new TimeSpan(0, 0, 0);
 
                                             if (timesheet.TimePeriods != null)
                                             {

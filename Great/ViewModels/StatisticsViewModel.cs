@@ -246,38 +246,33 @@ namespace Great.ViewModels
                                         from ts in d.Timesheets
                                         where ts.FDL1 != null
                                         && ts.FDL1.Id.Substring(0, 4) == YearStr
-                                        select d).Count();
+                                        select d).Distinct().Count();
 
                 //count all office days without fdl
                 var officeDays = (from d in db.Days
                                   from ts in d.Timesheets
                                   where d.DayType.Id == (long)EDayType.WorkDay && ts.FDL1 == null && d.Timestamp >= startDate && d.Timestamp <= endDate
-                                  select d
-                            ).Count();
+                                  select d).Distinct().Count();
 
                 //count all home working days 
                 var homeWorkingDays = (from d in db.Days
                                        where d.DayType.Id == (long)EDayType.HomeWorkDay && d.Timestamp >= startDate && d.Timestamp <= endDate
-                                       select d
-                            ).Count();
+                                       select d).Distinct().Count();
 
                 //count all sick leaves 
                 var sickDays = (from d in db.Days
                                 where d.DayType.Id == (long)EDayType.SickLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
-                                select d
-                            ).Count();
+                                select d).Distinct().Count();
 
                 //count all vacations days
                 var vacationDays = (from d in db.Days
                                     where d.DayType.Id == (long)EDayType.VacationDay && d.Timestamp >= startDate && d.Timestamp <= endDate
-                                    select d
-                            ).Count();
+                                    select d).Distinct().Count();
 
                 //count all special leaves
                 var specialDays = (from d in db.Days
                                    where d.DayType.Id == (long)EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
-                                   select d
-                            ).Count();
+                                   select d).Distinct().Count();
 
                 //days in italy
                 var transferITA = (from d in db.Days
@@ -285,7 +280,7 @@ namespace Great.ViewModels
                                    where ts.FDL1 != null
                                    && ts.FDL1.Id.Substring(0, 4) == YearStr
                                    && ts.FDL1.Factory1.TransferType1.Id == 1
-                                   select d).Count();
+                                   select d).Distinct().Count();
 
                 //days in italy
                 var transferEU = (from d in db.Days
@@ -293,7 +288,7 @@ namespace Great.ViewModels
                                   where ts.FDL1 != null
                                   && ts.FDL1.Id.Substring(0, 4) == YearStr
                                   && ts.FDL1.Factory1.TransferType1.Id == 2
-                                  select d).Count();
+                                  select d).Distinct().Count();
 
                 //days in italy
                 var transferExEU = (from d in db.Days
@@ -301,7 +296,7 @@ namespace Great.ViewModels
                                     where ts.FDL1 != null
                                     && ts.FDL1.Id.Substring(0, 4) == YearStr
                                     && ts.FDL1.Factory1.TransferType1.Id == 3
-                                    select d).Count();
+                                    select d).Distinct().Count();
 
                 //days no transf
                 var noTransfer = (from d in db.Days
@@ -309,7 +304,7 @@ namespace Great.ViewModels
                                   where ts.FDL1 != null
                                   && ts.FDL1.Id.Substring(0, 4) == YearStr
                                   && ts.FDL1.Factory1.TransferType1.Id == 0
-                                  select d).Count();
+                                  select d).Distinct().Count();
 
                 if (officeDays > 0)
                 {

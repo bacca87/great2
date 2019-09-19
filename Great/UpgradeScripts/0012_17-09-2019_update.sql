@@ -4,6 +4,11 @@
 -- Author: Marco Baccarani
 --=========================================================================
 
+-- new Event fields
+ALTER TABLE [Event] ADD COLUMN IsCancelRequested BOOL NOT NULL DEFAULT 0;
+ALTER TABLE [Event] ADD COLUMN Notes NVARCHAR(50)  NULL DEFAULT NULL;
+
+-- fix iscompiled flags
 UPDATE FDL SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 OR [Status] = 3;
 UPDATE ExpenseAccount SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 OR [Status] = 3;
 
