@@ -334,6 +334,7 @@ namespace Great.Utils
                             f.TransferType = transferType != 4 ? transferType : 0;
 
                             db.Factories.AddOrUpdate(x => x.Name, f);
+                            db.SaveChanges();
 
                             _factories.Add(r.Field<int>("dbf_Index"), f.Id);
 
@@ -344,6 +345,8 @@ namespace Great.Utils
                             Error($"Failed to import factory {f.Name}. {ex}", ex);
                         }
                     }
+
+                    db.SaveChanges();
 
                     result = true;
                 }
@@ -401,7 +404,7 @@ namespace Great.Utils
                                 r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_PM") != 0)
                             {
-                                //// clean all office timesheets
+                                // clean all office timesheets
                                 //db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == d.Timestamp && (t.FDL == null || t.FDL == string.Empty)));
 
                                 Timesheet office = new Timesheet();
