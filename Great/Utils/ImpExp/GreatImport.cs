@@ -321,7 +321,7 @@ namespace Great.Utils
                         if (stopImport)
                             break;
 
-                        FactoryEVM f = new FactoryEVM();
+                        Factory f = new Factory();
 
                         try
                         {
@@ -333,7 +333,7 @@ namespace Great.Utils
                             long transferType = r.Field<byte>("dbf_Tipo_Trasf");
                             f.TransferType = transferType != 4 ? transferType : 0;
 
-                            f.Save(db);
+                            db.Factories.AddOrUpdate(x => x.Name, f);
 
                             _factories.Add(r.Field<int>("dbf_Index"), f.Id);
 
@@ -395,18 +395,17 @@ namespace Great.Utils
 
                             d.Save(db);
 
-                            //t = new Timesheet();
-                            long timestamp = r.Field<DateTime>("Dbf_Data").ToUnixTimestamp();
-
                             //Add office hours
-                            if (
-                                r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
+                            if (r.Field<Int16>("Dbf_Uff_Inizio_AM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_AM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Inizio_PM") != 0 |
                                 r.Field<Int16>("Dbf_Uff_Fine_PM") != 0)
                             {
-                                TimesheetEVM office = new TimesheetEVM();
-                                office.Timestamp = timestamp;
+                                //// clean all office timesheets
+                                //db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == d.Timestamp && (t.FDL == null || t.FDL == string.Empty)));
+
+                                Timesheet office = new Timesheet();
+                                office.Timestamp = d.Timestamp;
 
                                 office.TravelStartTimeAM = null;
                                 office.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
@@ -417,11 +416,23 @@ namespace Great.Utils
                                 office.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
                                 office.TravelEndTimePM = null;
 
-                                if (db.Timesheets.Where(x => x.Timestamp == office.Timestamp && office.FDL == string.Empty).Count() == 0)
-                                    office.Save(db);
+                                db.Timesheets.AddOrUpdate(x => new { x.Timestamp, x.FDL }, office);
                             }
 
                             // Factory association
+                            bool IsRestDay = r.Field<Int16>("Dbf_Uff_Inizio_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Uff_Fine_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Uff_Inizio_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Uff_Fine_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Inizio_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Fine_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Inizio_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Trasf_Fine_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Partenza_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Arrivo_AM") == 0 &&
+                                        r.Field<Int16>("Dbf_Partenza_PM") == 0 &&
+                                        r.Field<Int16>("Dbf_Arrivo_PM") == 0;
+
                             short? factoryId = r.Field<short?>("Dbf_Impianto");
                             string fdlId = FormatFDL(r.Field<string>("Dbf_Foglio"));
 
@@ -436,6 +447,15 @@ namespace Great.Utils
                                         fdl.Factory = _factories[factoryId.Value];
                                         db.FDLs.AddOrUpdate(fdl);
                                         db.SaveChanges();
+                                    }
+
+                                    // assign fdl to rest day if present
+                                    if (IsRestDay && !db.Timesheets.Any(x => x.Timestamp == d.Timestamp && fdlId == x.FDL))
+                                    {
+                                        TimesheetEVM restDay = new TimesheetEVM();
+                                        restDay.Timestamp = d.Timestamp;
+                                        restDay.FDL = fdlId;
+                                        restDay.Save(db);
                                     }
                                 }
                                 else
