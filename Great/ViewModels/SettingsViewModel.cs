@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Great.ViewModels
 {
@@ -49,12 +50,113 @@ namespace Great.ViewModels
             set => Set(ref _AutoAddFactories, value);
         }
 
+        #region Appeareance
         private ESkin _Skin;
         public ESkin Skin
         {
             get => _Skin;
             set => Set(ref _Skin, value);
         }
+
+        private bool _IsCustomSaturdayColorUsed;
+        public bool IsCustomSaturdayColorUsed
+        {
+            get => _IsCustomSaturdayColorUsed;
+            set => Set(ref _IsCustomSaturdayColorUsed, value);
+
+        }
+
+        private Color _CustomSaturdayColor;
+        public Color CustomSaturdayColor
+        {
+            get => _CustomSaturdayColor;
+            set => Set(ref _CustomSaturdayColor, value);
+        }
+
+        private bool _IsCustomSundayColorUsed;
+        public bool IsCustomSundayColorUsed
+        {
+            get => _IsCustomSundayColorUsed;
+            set => Set(ref _IsCustomSundayColorUsed, value);
+        }
+
+        private Color _CustomSundayColor;
+        public Color CustomSundayColor
+        {
+            get => _CustomSundayColor;
+            set => Set(ref _CustomSundayColor, value);
+        }
+
+        private bool _IsCustomHolidayColorUsed;
+        public bool IsCustomHolidayColorUsed
+        {
+            get => _IsCustomHolidayColorUsed;
+            set => Set(ref _IsCustomHolidayColorUsed, value);
+        }
+
+        private Color _CustomHolidayColor;
+        public Color CustomHolidayColor
+        {
+            get => _CustomHolidayColor;
+            set => Set(ref _CustomHolidayColor, value);
+        }
+
+        private bool _IsCustomVacationColorUsed;
+        public bool IsCustomVacationColorUsed
+        {
+            get => _IsCustomVacationColorUsed;
+            set => Set(ref _IsCustomVacationColorUsed, value);
+        }
+
+        private Color _CustomVacationColor;
+        public Color CustomVacationColor
+        {
+            get => _CustomVacationColor;
+            set => Set(ref _CustomVacationColor, value);
+        }
+
+        private bool _IsCustomSickColorUsed;
+        public bool IsCustomSickColorUsed
+        {
+            get => _IsCustomSickColorUsed;
+            set => Set(ref _IsCustomSickColorUsed, value);
+        }
+
+        private Color _CustomSickColor;
+        public Color CustomSickColor
+        {
+            get => _CustomSickColor;
+            set => Set(ref _CustomSickColor, value);
+        }
+
+        private bool _IsCustomHomeworkColorUsed;
+        public bool IsCustomHomeworkColorUsed
+        {
+            get => _IsCustomHomeworkColorUsed;
+            set => Set(ref _IsCustomHomeworkColorUsed, value);
+        }
+
+        private Color _CustomHomeworkColor;
+        public Color CustomHomeworkColor
+        {
+            get => _CustomHomeworkColor;
+            set => Set(ref _CustomHomeworkColor, value);
+        }
+
+        private bool _IsCustomSpecialLeaveColorUsed;
+        public bool IsCustomSpecialLeaveColorUsed
+        {
+            get => _IsCustomSpecialLeaveColorUsed;
+            set => Set(ref _IsCustomSpecialLeaveColorUsed, value);
+        }
+
+        private Color _CustomSpecialLeaveColor;
+        public Color CustomSpecialLeaveColor
+        {
+            get => _CustomSpecialLeaveColor;
+            set => Set(ref _CustomSpecialLeaveColor, value);
+        }
+        #endregion
 
         private bool _AutoAssignFactories;
         public bool AutoAssignFactories
@@ -199,6 +301,22 @@ namespace Great.ViewModels
             }
 
             Skin = UserSettings.Themes.Skin;
+
+            CustomSaturdayColor = UserSettings.Themes.CustomSaturdayColor.Color;
+            CustomSundayColor = UserSettings.Themes.CustomSundayColor.Color;
+            CustomHolidayColor = UserSettings.Themes.CustomHolidayColor.Color;
+            CustomVacationColor = UserSettings.Themes.CustomVacationColor.Color;
+            CustomSickColor = UserSettings.Themes.CustomSickColor.Color;
+            CustomHomeworkColor = UserSettings.Themes.CustomHomeworkColor.Color;
+            CustomSpecialLeaveColor = UserSettings.Themes.CustomSpecialLeaveColor.Color;
+
+            IsCustomSaturdayColorUsed = UserSettings.Themes.IsCustomSaturdayColorUsed;
+            IsCustomSundayColorUsed = UserSettings.Themes.IsCustomSaturdayColorUsed;
+            IsCustomHolidayColorUsed = UserSettings.Themes.IsCustomHolidayColorUsed;
+            IsCustomVacationColorUsed = UserSettings.Themes.IsCustomVacationColorUsed;
+            IsCustomSickColorUsed = UserSettings.Themes.IsCustomSickColorUsed;
+            IsCustomHomeworkColorUsed = UserSettings.Themes.IsCustomHomeworkColorUsed;
+            IsCustomSpecialLeaveColorUsed = UserSettings.Themes.IsCustomSpecialLeaveColorUsed;
         }
 
         private void ApplyChanges()
@@ -229,9 +347,24 @@ namespace Great.ViewModels
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
 
                 if (UserSettings.Themes.Skin != Skin)
-                {
                     UserSettings.Themes.Skin = Skin;
-                }
+
+                UserSettings.Themes.IsCustomSaturdayColorUsed = IsCustomSaturdayColorUsed;
+                UserSettings.Themes.IsCustomSundayColorUsed = IsCustomSundayColorUsed;
+                UserSettings.Themes.IsCustomHolidayColorUsed = IsCustomHolidayColorUsed;
+                UserSettings.Themes.IsCustomVacationColorUsed = IsCustomVacationColorUsed;
+                UserSettings.Themes.IsCustomSickColorUsed = IsCustomSickColorUsed;
+                UserSettings.Themes.IsCustomHomeworkColorUsed = IsCustomHomeworkColorUsed;
+                UserSettings.Themes.IsCustomSpecialLeaveColorUsed = IsCustomSpecialLeaveColorUsed;
+
+                UserSettings.Themes.CustomSaturdayColor =       new SolidColorBrush(CustomSaturdayColor);
+                UserSettings.Themes.CustomSundayColor =         new SolidColorBrush(CustomSundayColor);
+                UserSettings.Themes.CustomHolidayColor =        new SolidColorBrush(CustomHolidayColor);
+                UserSettings.Themes.CustomVacationColor =       new SolidColorBrush(CustomVacationColor);
+                UserSettings.Themes.CustomSickColor =           new SolidColorBrush(CustomSickColor);
+                UserSettings.Themes.CustomHomeworkColor =       new SolidColorBrush(CustomHomeworkColor);
+                UserSettings.Themes.CustomSpecialLeaveColor =   new SolidColorBrush(CustomSpecialLeaveColor);
+
 
                 Close();
             }

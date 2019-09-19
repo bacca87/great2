@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Media;
 
 namespace Great.Models
 {
@@ -1175,10 +1176,174 @@ namespace Great.Models
                 get => (ESkin)Settings.Default.Skin;
                 set
                 {
+
                     _skin = value;
                     Settings.Default.Skin = (int)value;
                     Settings.Default.Save();
                     (App.Current as App).ApplySkin(value);
+
+                }
+            }
+
+            public static bool IsCustomSaturdayColorUsed
+            {
+                get => Settings.Default.CustomSaturdayColorUsed;
+                set
+                {
+                    Settings.Default.CustomSaturdayColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+            public static SolidColorBrush CustomSaturdayColor
+            {
+                get => Settings.Default.SaturdayColor;
+                set
+                {
+                    Settings.Default.SaturdayColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static bool IsCustomSundayColorUsed
+            {
+                get => Settings.Default.CustomSundayColorUsed;
+                set
+                {
+                    Settings.Default.CustomSundayColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+            public static SolidColorBrush CustomSundayColor
+            {
+                get => Settings.Default.SundayColor;
+                set
+                {
+                    Settings.Default.SundayColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static bool IsCustomHolidayColorUsed
+            {
+                get => Settings.Default.CustomHolidayColorUsed;
+                set
+                {
+                    Settings.Default.CustomHolidayColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+            public static SolidColorBrush CustomHolidayColor
+            {
+                get => Settings.Default.HolidayColor;
+                set
+                {
+                    Settings.Default.HolidayColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static bool IsCustomVacationColorUsed
+            {
+                get => Settings.Default.CustomVacationColorUsed;
+                set
+                {
+                    Settings.Default.CustomVacationColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+            public static SolidColorBrush CustomVacationColor
+            {
+                get => Settings.Default.VacationColor;
+                set
+                {
+                    Settings.Default.VacationColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static bool IsCustomSickColorUsed
+            {
+                get => Settings.Default.CustomSickColorUsed;
+                set
+                {
+                    Settings.Default.CustomSickColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+            public static SolidColorBrush CustomSickColor
+            {
+                get => Settings.Default.SickColor;
+                set
+                {
+                    Settings.Default.SickColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static bool IsCustomHomeworkColorUsed
+            {
+                get => Settings.Default.CustomHomeworkColorUsed;
+                set
+                {
+                    Settings.Default.CustomHomeworkColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+            public static SolidColorBrush CustomHomeworkColor
+            {
+                get => Settings.Default.HomeworkColor;
+                set
+                {
+                    Settings.Default.HomeworkColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static bool IsCustomSpecialLeaveColorUsed
+            {
+                get => Settings.Default.CustomSpecialLeaveColorUsed;
+                set
+                {
+                    Settings.Default.CustomSpecialLeaveColorUsed = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
+                }
+            }
+
+            public static SolidColorBrush CustomSpecialLeaveColor
+            {
+                get => Settings.Default.SpecialLeaveColor;
+                set
+                {
+                    Settings.Default.SpecialLeaveColor = value;
+                    Settings.Default.Save();
+                    (App.Current as App).ApplyColors();
+
                 }
             }
         }

@@ -64,6 +64,7 @@ namespace Great
                 }
 
                 ApplySkin(UserSettings.Themes.Skin);
+                ApplyColors();
 
                 GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
                 InitializeDirectoryTree();
@@ -186,6 +187,44 @@ namespace Great
                 }
             }
 
+        }
+
+        public void ApplyColors()
+        {
+            //load the original resource dictionary
+            ResourceDictionary dict = new ResourceDictionary();
+            if (UserSettings.Themes.Skin == ESkin.Light)
+                dict.Source = new Uri("Skins/LightSkin.xaml", UriKind.Relative);
+            else
+                dict.Source = new Uri("Skins/DarkSkin.xaml", UriKind.Relative);
+
+            if (UserSettings.Themes.IsCustomSaturdayColorUsed)
+                Resources["DefaultSaturdayColor"] = UserSettings.Themes.CustomSaturdayColor;
+            else Resources["DefaultSaturdayColor"] = dict["DefaultSaturdayColor"];
+
+            if (UserSettings.Themes.IsCustomSundayColorUsed)
+                Resources["DefaultSundayColor"] = UserSettings.Themes.CustomSundayColor;
+            else Resources["DefaultSundayColor"] = dict["DefaultSundayColor"];
+
+            if (UserSettings.Themes.IsCustomHolidayColorUsed)
+                Resources["DefaultHolidayColor"] = UserSettings.Themes.CustomHolidayColor;
+            else Resources["DefaultHolidayColor"] = dict["DefaultHolidayColor"];
+
+            if (UserSettings.Themes.IsCustomVacationColorUsed)
+                Resources["DefaultVacationColor"] = UserSettings.Themes.CustomVacationColor;
+            else Resources["DefaultVacationColor"] = dict["DefaultVacationColor"];
+
+            if (UserSettings.Themes.IsCustomSickColorUsed)
+                Resources["DefaultSickColor"] = UserSettings.Themes.CustomSickColor;
+            else Resources["DefaultSickColor"] = dict["DefaultSickColor"];
+
+            if (UserSettings.Themes.IsCustomHomeworkColorUsed)
+                Resources["DefaultHomeworkColor"] = UserSettings.Themes.CustomHomeworkColor;
+            else Resources["DefaultHomeworkColor"] = dict["DefaultHomeworkColor"];
+
+            if (UserSettings.Themes.IsCustomSpecialLeaveColorUsed)
+                Resources["DefaultSpecialLeaveColor"] = UserSettings.Themes.CustomSpecialLeaveColor;
+            else Resources["DefaultSpecialLeaveColor"] = dict["DefaultSpecialLeaveColor"];
         }
     }
 }

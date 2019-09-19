@@ -127,7 +127,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <GroupBox Header="Theme" HorizontalAlignment="Left" Margin="0,5">
+                    <GroupBox Grid.Row="0" Header="Theme" HorizontalAlignment="Left" Margin="0,5">
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <TextBlock Text="Skin: " VerticalAlignment="Center" Margin="0,0,5,0"/>
                             <ComboBox 
@@ -136,6 +136,61 @@
                                 FontSize="15"
                                 Width="100"/>
                         </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Colors" HorizontalAlignment="Left" Margin="0,5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0">Saturday Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="0" Grid.Column="2" SelectedColor="{Binding CustomSaturdayColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="0" Grid.Column="4" IsChecked="{Binding IsCustomSaturdayColorUsed}" Content="Override on theme" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0">Sunday Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="1" Grid.Column="2" SelectedColor="{Binding CustomSundayColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{Binding IsCustomSundayColorUsed}" Content="Override on theme" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0">Holiday Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="2" Grid.Column="2" SelectedColor="{Binding CustomHolidayColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="2" Grid.Column="4" IsChecked="{Binding IsCustomHolidayColorUsed}" Content="Override on theme" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0">Vacation Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="3" Grid.Column="2" SelectedColor="{Binding CustomVacationColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="3" Grid.Column="4" IsChecked="{Binding IsCustomVacationColorUsed}" Content="Override on theme" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0">Sick Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="4" Grid.Column="2" SelectedColor="{Binding CustomSickColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="4" Grid.Column="4" IsChecked="{Binding IsCustomSickColorUsed}" Content="Override on theme" />
+
+                            <TextBlock Grid.Row="5" Grid.Column="0">Homeworking Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="5" Grid.Column="2" SelectedColor="{Binding CustomHomeworkColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="5" Grid.Column="4" IsChecked="{Binding IsCustomHomeworkColorUsed}" Content="Override on theme" />
+
+                            <TextBlock Grid.Row="6" Grid.Column="0">Special Leave Color</TextBlock>
+                            <xctk:ColorPicker Grid.Row="6" Grid.Column="2" SelectedColor="{Binding CustomSpecialLeaveColor}" DisplayColorAndName="True"/>
+                            <CheckBox Grid.Row="6" Grid.Column="4" IsChecked="{Binding IsCustomSpecialLeaveColorUsed}" Content="Override on theme" />
+                        </Grid>
+                            <!--<StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="Skin: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <ComboBox 
+                                ItemsSource="{Binding Source={StaticResource enumSkins}}" 
+                                SelectedValue="{Binding Skin, Mode=TwoWay}" 
+                                FontSize="15"
+                                Width="100"/>
+                        </StackPanel>-->
                     </GroupBox>
                 </Grid>
             </TabItem>
