@@ -3,7 +3,16 @@
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:Great">
-    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <!--Fluent Ribbon Styles-->
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+
     <Style TargetType="Image" x:Key="DisabledImageStyle">
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
@@ -44,7 +53,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Background" Value="{x:Null}"/>
     </Style>
-    
+
     <Style x:Key="FormattedDatePicker"  TargetType="DatePicker">
         <Setter Property="FirstDayOfWeek" Value="Monday"/>
         <Style.Resources>
@@ -95,19 +104,19 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+
     <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
         <Setter Property="Background" Value="{DynamicResource DefaultTravelStartColor}" />
     </Style>
-    
+
     <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
         <Setter Property="Background" Value="{DynamicResource DefaultTravelEndColor}" />
     </Style>
-    
+
     <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
         <Setter Property="Background" Value="{DynamicResource DefaultWorkStartColor}" />
     </Style>
-    
+
     <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
         <Setter Property="Background" Value="{DynamicResource DefaultWorkEndColor}" />
     </Style>

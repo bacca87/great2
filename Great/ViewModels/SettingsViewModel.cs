@@ -51,12 +51,20 @@ namespace Great.ViewModels
         }
 
         #region Appeareance
-        private ESkin _Skin;
-        public ESkin Skin
+        private ETheme _Skin;
+        public ETheme Theme
         {
             get => _Skin;
             set => Set(ref _Skin, value);
         }
+
+        private EAccentColor _AccentColor;
+        public EAccentColor AccentColor
+        {
+            get => _AccentColor;
+            set => Set(ref _AccentColor, value);
+        }
+
 
         private bool _IsCustomSaturdayColorUsed;
         public bool IsCustomSaturdayColorUsed
@@ -300,7 +308,8 @@ namespace Great.ViewModels
                 }
             }
 
-            Skin = UserSettings.Themes.Skin;
+            Theme = UserSettings.Themes.Theme;
+            AccentColor = UserSettings.Themes.AccentColor;
 
             CustomSaturdayColor = UserSettings.Themes.CustomSaturdayColor.Color;
             CustomSundayColor = UserSettings.Themes.CustomSundayColor.Color;
@@ -346,8 +355,8 @@ namespace Great.ViewModels
 
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
 
-                if (UserSettings.Themes.Skin != Skin)
-                    UserSettings.Themes.Skin = Skin;
+                UserSettings.Themes.Theme = Theme;
+                UserSettings.Themes.AccentColor = AccentColor;
 
                 UserSettings.Themes.IsCustomSaturdayColorUsed = IsCustomSaturdayColorUsed;
                 UserSettings.Themes.IsCustomSundayColorUsed = IsCustomSundayColorUsed;
@@ -357,14 +366,16 @@ namespace Great.ViewModels
                 UserSettings.Themes.IsCustomHomeworkColorUsed = IsCustomHomeworkColorUsed;
                 UserSettings.Themes.IsCustomSpecialLeaveColorUsed = IsCustomSpecialLeaveColorUsed;
 
-                UserSettings.Themes.CustomSaturdayColor =       new SolidColorBrush(CustomSaturdayColor);
-                UserSettings.Themes.CustomSundayColor =         new SolidColorBrush(CustomSundayColor);
-                UserSettings.Themes.CustomHolidayColor =        new SolidColorBrush(CustomHolidayColor);
-                UserSettings.Themes.CustomVacationColor =       new SolidColorBrush(CustomVacationColor);
-                UserSettings.Themes.CustomSickColor =           new SolidColorBrush(CustomSickColor);
-                UserSettings.Themes.CustomHomeworkColor =       new SolidColorBrush(CustomHomeworkColor);
-                UserSettings.Themes.CustomSpecialLeaveColor =   new SolidColorBrush(CustomSpecialLeaveColor);
+                UserSettings.Themes.CustomSaturdayColor = new SolidColorBrush(CustomSaturdayColor);
+                UserSettings.Themes.CustomSundayColor = new SolidColorBrush(CustomSundayColor);
+                UserSettings.Themes.CustomHolidayColor = new SolidColorBrush(CustomHolidayColor);
+                UserSettings.Themes.CustomVacationColor = new SolidColorBrush(CustomVacationColor);
+                UserSettings.Themes.CustomSickColor = new SolidColorBrush(CustomSickColor);
+                UserSettings.Themes.CustomHomeworkColor = new SolidColorBrush(CustomHomeworkColor);
+                UserSettings.Themes.CustomSpecialLeaveColor = new SolidColorBrush(CustomSpecialLeaveColor);
 
+                (Application.Current as App).ApplyColors();
+                (Application.Current as App).ApplyThemeAccent(Theme, AccentColor);
 
                 Close();
             }

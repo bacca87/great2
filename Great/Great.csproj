@@ -423,7 +423,6 @@
     <Compile Include="Views\Pages\TimesheetsView.xaml.cs">
       <DependentUpon>TimesheetsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\SkinResourceDictionary.cs" />
     <Compile Include="Views\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>

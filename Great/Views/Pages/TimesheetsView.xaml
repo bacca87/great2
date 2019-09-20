@@ -156,7 +156,7 @@
                 <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="False" Expanded="TimesheetPanel_Expanded"   >
+        <Expander x:Name="timesheetPanel" Header="TIMESHEET INFO"    Grid.Row="2" IsExpanded="False" Expanded="TimesheetPanel_Expanded"    >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

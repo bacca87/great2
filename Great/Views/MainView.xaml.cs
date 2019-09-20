@@ -145,6 +145,8 @@ namespace Great.Views
             SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
+
+
     }
 }
 

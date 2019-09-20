@@ -1170,20 +1170,25 @@ namespace Great.Models
 
         public static class Themes
         {
-            private static ESkin _skin;
-            public static ESkin Skin
+            public static ETheme Theme
             {
-                get => (ESkin)Settings.Default.Skin;
+                get => (ETheme)Settings.Default.Skin;
                 set
                 {
-
-                    _skin = value;
                     Settings.Default.Skin = (int)value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplySkin(value);
-
                 }
             }
+            public static EAccentColor AccentColor
+            {
+                get => (EAccentColor)Settings.Default.AccentColor;
+                set
+                {
+                    Settings.Default.AccentColor = (int)value;
+                    Settings.Default.Save();
+                }
+            }
+
 
             public static bool IsCustomSaturdayColorUsed
             {
@@ -1192,8 +1197,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomSaturdayColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomSaturdayColor
@@ -1203,8 +1206,6 @@ namespace Great.Models
                 {
                     Settings.Default.SaturdayColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
 
@@ -1226,8 +1227,6 @@ namespace Great.Models
                 {
                     Settings.Default.SundayColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
 
@@ -1249,8 +1248,6 @@ namespace Great.Models
                 {
                     Settings.Default.HolidayColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
 
@@ -1272,8 +1269,6 @@ namespace Great.Models
                 {
                     Settings.Default.VacationColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
 
@@ -1284,8 +1279,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomSickColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomSickColor
@@ -1295,8 +1288,6 @@ namespace Great.Models
                 {
                     Settings.Default.SickColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
 
@@ -1318,8 +1309,6 @@ namespace Great.Models
                 {
                     Settings.Default.HomeworkColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
 
@@ -1334,7 +1323,6 @@ namespace Great.Models
 
                 }
             }
-
             public static SolidColorBrush CustomSpecialLeaveColor
             {
                 get => Settings.Default.SpecialLeaveColor;
@@ -1342,8 +1330,6 @@ namespace Great.Models
                 {
                     Settings.Default.SpecialLeaveColor = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
         }
@@ -1352,9 +1338,37 @@ namespace Great.Models
     }
     #endregion
 
-    public enum ESkin : int
+    public enum ETheme : int
     {
-        Light = 1,
-        Dark = 0
+        LightSkin = 1,
+        DarkSkin = 0
+    }
+
+    public enum EAccentColor : int
+    {
+        Default = 0,
+        Red =1,
+        Green = 2,
+        Blue = 3,
+        Purple = 4,
+        Orange = 5,
+        Lime = 6,
+        Emerald = 7,
+        Teal = 8,
+        Cyan = 9,
+        Cobalt = 10,
+        Indigo = 11,
+        Violet = 12,
+        Pink = 13,
+        Magenta = 14,
+        Crimson = 15,
+        Amber = 16,
+        Yellow = 17,
+        Brown = 18,
+        Olive = 19,
+        Steel = 20,
+        Mauve = 21,
+        Taupe = 22,
+        Sienna = 23,
     }
 }

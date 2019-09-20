@@ -119,7 +119,12 @@
                     <Grid.Resources>
                         <ObjectDataProvider x:Key="enumSkins" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
                             <ObjectDataProvider.MethodParameters>
-                                <x:Type TypeName="enm:ESkin"/>
+                                <x:Type TypeName="enm:ETheme"/>
+                            </ObjectDataProvider.MethodParameters>
+                        </ObjectDataProvider>
+                        <ObjectDataProvider x:Key="enumAcents" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                            <ObjectDataProvider.MethodParameters>
+                                <x:Type TypeName="enm:EAccentColor"/>
                             </ObjectDataProvider.MethodParameters>
                         </ObjectDataProvider>
                     </Grid.Resources>
@@ -128,14 +133,22 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <GroupBox Grid.Row="0" Header="Theme" HorizontalAlignment="Left" Margin="0,5">
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <StackPanel Grid.Row="0" Orientation="Vertical">
                             <TextBlock Text="Skin: " VerticalAlignment="Center" Margin="0,0,5,0"/>
                             <ComboBox 
                                 ItemsSource="{Binding Source={StaticResource enumSkins}}" 
-                                SelectedValue="{Binding Skin, Mode=TwoWay}" 
+                                SelectedValue="{Binding Theme, Mode=TwoWay}" 
+                                FontSize="15"
+                                Width="100"/>
+
+                            <TextBlock Text="Accent: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <ComboBox 
+                                ItemsSource="{Binding Source={StaticResource enumAcents}}" 
+                                SelectedValue="{Binding AccentColor, Mode=TwoWay}" 
                                 FontSize="15"
                                 Width="100"/>
                         </StackPanel>
+                        
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Colors" HorizontalAlignment="Left" Margin="0,5">
                         <Grid>

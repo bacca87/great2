@@ -37,6 +37,18 @@ namespace Great
                 splash.Show();
             }
 
+            // themes
+            Fluent.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+            Fluent.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+
+            MahApps.Metro.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+            MahApps.Metro.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+
+
+            ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
+            ApplyColors();
+
+
             //in order to ensure the UI stays responsive, we need to
             //do the work on a different thread
             Task.Factory.StartNew(() =>
@@ -63,8 +75,8 @@ namespace Great
                     Settings.Default.Save();
                 }
 
-                ApplySkin(UserSettings.Themes.Skin);
-                ApplyColors();
+                //ApplySkin(UserSettings.Themes.Skin);
+                //ApplyColors();
 
                 GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
                 InitializeDirectoryTree();
@@ -83,6 +95,7 @@ namespace Great
                 });
             });
         }
+
 
         private void InitializeDirectoryTree()
         {
@@ -173,30 +186,24 @@ namespace Great
                   .ForEach(x => x.Delete());
         }
 
-        public void ApplySkin(ESkin newSkin)
+
+
+        public void ApplyThemeAccent( ETheme theme, EAccentColor accent)
         {
-            foreach (ResourceDictionary dict in Resources.MergedDictionaries)
-            {
-                if (dict is SkinResourceDictionary skinDict)
-                {
-                    skinDict.UpdateSource();
-                }
-                else
-                {
-                    dict.Source = dict.Source;
-                }
-            }
+            Fluent.ThemeManager.ChangeAppStyle(Application.Current,
+                            Fluent.ThemeManager.GetAccent(accent.ToString()),
+                            Fluent.ThemeManager.GetAppTheme(theme.ToString()));
+
+            MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
+                MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
+                MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
 
         }
-
         public void ApplyColors()
         {
             //load the original resource dictionary
             ResourceDictionary dict = new ResourceDictionary();
-            if (UserSettings.Themes.Skin == ESkin.Light)
-                dict.Source = new Uri("Skins/LightSkin.xaml", UriKind.Relative);
-            else
-                dict.Source = new Uri("Skins/DarkSkin.xaml", UriKind.Relative);
+            dict.Source = new Uri("Styles.xaml", UriKind.Relative);
 
             if (UserSettings.Themes.IsCustomSaturdayColorUsed)
                 Resources["DefaultSaturdayColor"] = UserSettings.Themes.CustomSaturdayColor;
