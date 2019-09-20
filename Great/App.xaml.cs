@@ -198,6 +198,7 @@ namespace Great
                 MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
                 MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
 
+
         }
         public void ApplyColors()
         {
