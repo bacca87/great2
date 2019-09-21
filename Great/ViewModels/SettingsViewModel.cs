@@ -374,8 +374,8 @@ namespace Great.ViewModels
                 UserSettings.Themes.CustomHomeworkColor = new SolidColorBrush(CustomHomeworkColor);
                 UserSettings.Themes.CustomSpecialLeaveColor = new SolidColorBrush(CustomSpecialLeaveColor);
 
-                (Application.Current as App).ApplyColors();
-                (Application.Current as App).ApplyThemeAccent(Theme, AccentColor);
+                UserSettings.Themes.ApplyAllColors();
+                UserSettings.Themes.ApplyThemeAccent(Theme, AccentColor);
 
                 Close();
             }

@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Great.Models
@@ -1170,6 +1171,39 @@ namespace Great.Models
 
         public static class Themes
         {
+            //used to compare with origina theme settings without restarting the application
+            private static ResourceDictionary _LightSkinDictionary;
+            private static ResourceDictionary LightSkinDictionary
+            {
+                get
+                {
+                    if (_LightSkinDictionary == null)
+                    {
+                        _LightSkinDictionary = new ResourceDictionary();
+                        _LightSkinDictionary.Source = new Uri("Skins/LightSkin.xaml", UriKind.Relative);
+                    }
+                    return _LightSkinDictionary;
+
+                }
+
+            }
+
+            private static ResourceDictionary _DarkSkinDictionary;
+            private static ResourceDictionary DarkSkinDictionary
+            {
+                get
+                {
+                    if (_DarkSkinDictionary == null)
+                    {
+                        _DarkSkinDictionary = new ResourceDictionary();
+                        _DarkSkinDictionary.Source = new Uri("Skins/DarkSkin.xaml", UriKind.Relative);
+                    }
+                    return _DarkSkinDictionary;
+
+                }
+
+            }
+
             public static ETheme Theme
             {
                 get => (ETheme)Settings.Default.Skin;
@@ -1189,7 +1223,6 @@ namespace Great.Models
                 }
             }
 
-
             public static bool IsCustomSaturdayColorUsed
             {
                 get => Settings.Default.CustomSaturdayColorUsed;
@@ -1197,6 +1230,7 @@ namespace Great.Models
                 {
                     Settings.Default.CustomSaturdayColorUsed = value;
                     Settings.Default.Save();
+
                 }
             }
             public static SolidColorBrush CustomSaturdayColor
@@ -1216,8 +1250,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomSundayColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomSundayColor
@@ -1237,8 +1269,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomHolidayColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomHolidayColor
@@ -1258,8 +1288,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomVacationColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomVacationColor
@@ -1298,8 +1326,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomHomeworkColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomHomeworkColor
@@ -1319,8 +1345,6 @@ namespace Great.Models
                 {
                     Settings.Default.CustomSpecialLeaveColorUsed = value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplyColors();
-
                 }
             }
             public static SolidColorBrush CustomSpecialLeaveColor
@@ -1332,6 +1356,66 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
+            public static void ApplySingleColor(string resourceName, SolidColorBrush color)
+            {
+                if (App.Current.Resources[resourceName] is SolidColorBrush)
+                {
+                    if ((App.Current.Resources[resourceName] as SolidColorBrush).Color != color.Color)
+                        App.Current.Resources[resourceName] = color;
+                }
+            }
+
+            public static void ApplyAllColors()
+            {
+                // Get the original resource dictionary and compare it with the selected one
+
+                var usedDict = Theme == ETheme.LightSkin ? LightSkinDictionary : DarkSkinDictionary;
+
+                if (IsCustomSaturdayColorUsed) ApplySingleColor("DefaultSaturdayColor", CustomSaturdayColor);
+                else ApplySingleColor("DefaultSaturdayColor", usedDict["DefaultSaturdayColor"] as SolidColorBrush);
+
+                if (IsCustomSundayColorUsed) ApplySingleColor("DefaultSundayColor", CustomSundayColor);
+                else ApplySingleColor("DefaultSundayColor", usedDict["DefaultSundayColor"] as SolidColorBrush);
+
+                if (IsCustomHolidayColorUsed) ApplySingleColor("DefaultHolidayColor", CustomHolidayColor);
+                else ApplySingleColor("DefaultHolidayColor", usedDict["DefaultHolidayColor"] as SolidColorBrush);
+
+                if (IsCustomVacationColorUsed) ApplySingleColor("DefaultVacationColor", CustomVacationColor);
+                else ApplySingleColor("DefaultVacationColor", usedDict["DefaultVacationColor"] as SolidColorBrush);
+
+                if (IsCustomSickColorUsed) ApplySingleColor("DefaultSickColor", CustomSickColor);
+                else ApplySingleColor("DefaultSickColor", usedDict["DefaultSickColor"] as SolidColorBrush);
+
+                if (IsCustomHomeworkColorUsed) ApplySingleColor("DefaultHomeworkColor", CustomHomeworkColor);
+                else ApplySingleColor("DefaultHomeworkColor", usedDict["DefaultHomeworkColor"] as SolidColorBrush);
+
+                if (IsCustomSpecialLeaveColorUsed) ApplySingleColor("DefaultSpecialLeaveColor", CustomSpecialLeaveColor);
+                else ApplySingleColor("DefaultSpecialLeaveColor", usedDict["DefaultSpecialLeaveColor"] as SolidColorBrush);
+
+            }
+
+            public static void ApplyThemeAccent(ETheme theme, EAccentColor accent)
+            {
+                Fluent.ThemeManager.ChangeAppStyle(Application.Current,
+                                Fluent.ThemeManager.GetAccent(accent.ToString()),
+                                Fluent.ThemeManager.GetAppTheme(theme.ToString()));
+
+                MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
+                    MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
+                    MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+
+            }
+
+            public static void AttachCustomThemes()
+            {
+                Fluent.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                Fluent.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+
+                MahApps.Metro.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                MahApps.Metro.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+            }
+
         }
 
         #endregion
@@ -1340,13 +1424,16 @@ namespace Great.Models
 
     public enum ETheme : int
     {
-        LightSkin = 1,
-        DarkSkin = 0
+        DarkSkin = 0,
+        LightSkin = 1
     }
 
     public enum EAccentColor : int
     {
-        Red =1,
+        //Default:Cobalt
+
+        Colalt = 0,
+        Red = 1,
         Green = 2,
         Blue = 3,
         Purple = 4,
@@ -1355,19 +1442,18 @@ namespace Great.Models
         Emerald = 7,
         Teal = 8,
         Cyan = 9,
-        Cobalt = 10,
-        Indigo = 11,
-        Violet = 12,
-        Pink = 13,
-        Magenta = 14,
-        Crimson = 15,
-        Amber = 16,
-        Yellow = 17,
-        Brown = 18,
-        Olive = 19,
-        Steel = 20,
-        Mauve = 21,
-        Taupe = 22,
-        Sienna = 23,
+        Indigo = 10,
+        Violet = 11,
+        Pink = 12,
+        Magenta = 13,
+        Crimson = 14,
+        Amber = 15,
+        Yellow = 16,
+        Brown = 17,
+        Olive = 18,
+        Steel = 19,
+        Mauve = 20,
+        Taupe = 21,
+        Sienna = 22,
     }
 }

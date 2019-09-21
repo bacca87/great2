@@ -53,7 +53,7 @@ namespace Great.ViewModels.Database
                 return;
             }
 
-            if (MetroMessageBox.Show("Do you want to commit changes before leave selecion?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MetroMessageBox.Show("Do you want to commit changes before leave selection?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 Save();
             }
