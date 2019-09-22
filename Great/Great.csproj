@@ -267,7 +267,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Images\Accents.cs" />
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
