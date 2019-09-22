@@ -1397,13 +1397,23 @@ namespace Great.Models
 
             public static void ApplyThemeAccent(ETheme theme, EAccentColor accent)
             {
-                Fluent.ThemeManager.ChangeAppStyle(Application.Current,
-                                Fluent.ThemeManager.GetAccent(accent.ToString()),
-                                Fluent.ThemeManager.GetAppTheme(theme.ToString()));
+                try
+                {
 
-                MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
-                    MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
-                    MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+                    Fluent.ThemeManager.ChangeAppStyle(Application.Current,
+                        Fluent.ThemeManager.GetAccent(accent.ToString()),
+                        Fluent.ThemeManager.GetAppTheme(theme.ToString()));
+
+                    MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
+                        MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
+                        MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+                }
+                catch (Exception)
+                {
+
+
+                }
+
 
             }
 

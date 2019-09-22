@@ -22,5 +22,20 @@ namespace Great.Views.Pages
                 _viewModel.RefreshAllData();
             }
         }
+
+        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void GeoMapPlants_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //   geoMapPlants.EnableZoomingAndPanning = true;
+        }
+
+        private void GeoMap_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+
+        }
     }
 }

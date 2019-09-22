@@ -117,6 +117,16 @@ namespace Great.ViewModels.Database
             }
         }
 
+        private string _Country;
+        public string Country
+        {
+            get => _Country;
+            set
+            {
+                SetAndCheckChanged(ref _Country, value);
+            }
+        }
+
         private TransferTypeDTO _TransferType1;
         public TransferTypeDTO TransferType1
         {

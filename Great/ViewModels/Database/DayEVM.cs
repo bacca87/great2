@@ -162,6 +162,53 @@ namespace Great.ViewModels.Database
                 return 8 - TotalTime;
             }
         }
+
+        public float? HoursOfVacation
+        {
+            get
+            {
+                if (EType != EDayType.VacationDay || TotalTime >= 8)
+                {
+                    return null;
+                }
+
+                return 8 - (TotalTime??0);
+            }
+        }
+
+        public float? HoursOfHomeWorking
+        {
+            get
+            {
+                if (EType == EDayType.HomeWorkDay)
+                    return TotalTime;
+                return null;
+            }
+        }
+        public float? HoursOfSpecialLeave
+        {
+            get
+            {
+                if (EType != EDayType.SpecialLeave || TotalTime >= 8)
+                {
+                    return null;
+                }
+
+                return 8 - (TotalTime??0);
+            }
+        }
+        public float? HoursOfSicklLeave
+        {
+            get
+            {
+                if (EType != EDayType.SickLeave || TotalTime >= 8)
+                {
+                    return null;
+                }
+
+                return 8 - (TotalTime??0);
+            }
+        }
         #endregion
 
         #region Time Periods

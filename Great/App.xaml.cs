@@ -1,7 +1,6 @@
 ﻿using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
-using Great.Utils;
 using Great.Views;
 using NLog;
 using System;

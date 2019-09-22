@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       xmlns:local="clr-namespace:Great.Views.Pages"
+      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
       mc:Ignorable="d"
       DataContext="{Binding Statistics, Source={StaticResource Locator}}"
       Style="{DynamicResource MetroPage}"
@@ -31,7 +32,7 @@
             <Setter Property="Fill" Value="Transparent"/>
         </Style>
     </Page.Resources>
-    <TabControl>
+    <TabControl TabStripPlacement="Left" >
         <TabItem Header="Hours">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -39,108 +40,171 @@
                     <ColumnDefinition Width="60*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="70*"/>
+                    <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Column="0" Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="50*"/>
-                            <RowDefinition Height="50"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" FontWeight="Bold"  HorizontalAlignment="Center" FontSize="20" >Day Count</Label>
-                        <lvc:PieChart Grid.Row="1" Grid.Column="0" LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Days}">
-                            <lvc:PieChart.DataTooltip>
-                                <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
-                            </lvc:PieChart.DataTooltip>
-                        </lvc:PieChart>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Column="1" Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Days Worked" Count="{Binding WorkedDays}" ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Holidays worked" Count="{Binding WorkedHolidays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Saturdays worked" Count="{Binding WorkedSaturdays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Sundays worked" Count="{Binding WorkedSundays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Travels" Count="{Binding TravelCount}"  ></mah:Tile>
+                </StackPanel>
+                <Grid Grid.Row="2" Grid.Column="0"  >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="1" FontWeight="Bold"  HorizontalAlignment="Center" FontSize="20">Year Statistic</Label>
-                    <lvc:CartesianChart Grid.Row="01" Grid.Column="0" Series="{Binding Hours}" LegendLocation="Bottom" Width="Auto" Height="700" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <lvc:CartesianChart.DataTooltip>
-                            <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
-                        </lvc:CartesianChart.DataTooltip>
-                        <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Month" 
+                    <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Day by Type</Label>
+                    <lvc:PieChart Grid.Row="1"  LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Days}">
+                        <lvc:PieChart.DataTooltip>
+                            <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
+                        </lvc:PieChart.DataTooltip>
+                    </lvc:PieChart>
+                </Grid>
+                <Grid Grid.RowSpan="3" Grid.Row="0" Grid.Column="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="6*"></RowDefinition>
+                            <RowDefinition Height="50*"></RowDefinition>
+                            <RowDefinition Height="6*"></RowDefinition>
+                            <RowDefinition Height="40*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Work time Overview</Label>
+                        <lvc:CartesianChart Grid.Row="1" Series="{Binding Hours}" LegendLocation="Bottom"   Margin="10,10,50,10">
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
+                            </lvc:CartesianChart.DataTooltip>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Month" 
                           Labels="{Binding MonthsLabels}" 
                           Foreground="{DynamicResource TextBrush}">
-                                <lvc:Axis.Separator>
-                                    <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
-                                </lvc:Axis.Separator>
-                            </lvc:Axis>
-                        </lvc:CartesianChart.AxisX>
-                        <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Title="Hours"
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Hours"
                           Foreground="{DynamicResource TextBrush}">
-                                <lvc:Axis.Separator >
-                                    <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
-                                        <lvc:Separator.Stroke>
-                                            <SolidColorBrush Color="{DynamicResource Gray7}" />
-                                        </lvc:Separator.Stroke>
-                                    </lvc:Separator>
-                                </lvc:Axis.Separator>
-                            </lvc:Axis>
-                        </lvc:CartesianChart.AxisY>
-                        <lvc:CartesianChart.ChartLegend>
-                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
-                        </lvc:CartesianChart.ChartLegend>
-                    </lvc:CartesianChart>
+                                    <lvc:Axis.Separator >
+                                        <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                            <lvc:Separator.Stroke>
+                                                <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                            </lvc:Separator.Stroke>
+                                        </lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.ChartLegend>
+                                <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                            </lvc:CartesianChart.ChartLegend>
+                        </lvc:CartesianChart>
+                        <Label Grid.Row="2" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Hours by Type</Label>
+                        <lvc:CartesianChart Grid.Row="3"  Series="{Binding HourTypes}" LegendLocation="Bottom"  Margin="10,10,50,10">
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
+                            </lvc:CartesianChart.DataTooltip>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Month" 
+                          Labels="{Binding MonthsLabels}" 
+                          Foreground="{DynamicResource TextBrush}">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Hours"
+                          Foreground="{DynamicResource TextBrush}">
+                                    <lvc:Axis.Separator >
+                                        <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                            <lvc:Separator.Stroke>
+                                                <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                            </lvc:Separator.Stroke>
+                                        </lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.ChartLegend>
+                                <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                            </lvc:CartesianChart.ChartLegend>
+                        </lvc:CartesianChart>
+                    </Grid>
 
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Total Factories">
+
+        <TabItem Header="Factories">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50*"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="45*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="45*"/>
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50*"/>
-                            <RowDefinition Height="50"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0"  FontWeight="Bold"  HorizontalAlignment="Center" FontSize="20" >Factories</Label>
-                        <lvc:PieChart Grid.Row="1" Grid.Column="0" LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Factories}">
-                            <lvc:PieChart.DataTooltip>
-                                <lvc:DefaultTooltip Style="{StaticResource  PieTooltip}"/>
-                            </lvc:PieChart.DataTooltip>
-                        </lvc:PieChart>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Column="2" >
-                    <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="70*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="1" Grid.Column="0"  >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="30*"></RowDefinition>
+                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="45*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45*"></ColumnDefinition>
+                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                        <ColumnDefinition Width="45*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Factories by Type</Label>
+                    <lvc:PieChart Grid.Row="1" Grid.Column="0"  Series="{Binding FactoryTypes}" LegendLocation="Left">
+                        <lvc:PieChart.DataTooltip>
+                            <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
+                        </lvc:PieChart.DataTooltip>
+                    </lvc:PieChart>
 
+                    <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Travel Meter</Label>
+                    <lvc:AngularGauge Grid.Row="1" Grid.Column="2" Value="{Binding TravelCount}"  FromValue="0" ToValue="365" 
+                          LabelsStep="100" TicksStep="10" Wedge="250" 
+                          TicksForeground="White" Foreground="White" 
+                          FontWeight="Bold" FontSize="16"
+                          ToolTip="{Binding TravelCount}"
+                          SectionsInnerRadius=".6">
+                        <lvc:AngularGauge.Sections>
+                            <lvc:AngularSection FromValue="0" ToValue="100" Fill="#008000"/>
+                            <lvc:AngularSection FromValue="101" ToValue="200" Fill="#F8A725"/>
+                            <lvc:AngularSection FromValue="201" ToValue="365" Fill="#FF3939"/>
+                        </lvc:AngularGauge.Sections>
+                    </lvc:AngularGauge>
+                    <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Factories visited</Label>
+                    <lvc:PieChart Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}">
+                        <lvc:PieChart.DataTooltip>
+                            <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
+                        </lvc:PieChart.DataTooltip>
+                    </lvc:PieChart>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="2">
+                    <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50*"/>
-                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="10*"></RowDefinition>
+                            <RowDefinition Height="90*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" FontWeight="Bold"  HorizontalAlignment="Center" FontSize="20" >Types</Label>
-                        <lvc:PieChart Grid.Row="1" Grid.Column="0" LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding FactoryTypes}">
-                            <lvc:PieChart.DataTooltip>
-                                <lvc:DefaultTooltip Style="{StaticResource  PieTooltip}"/>
-                            </lvc:PieChart.DataTooltip>
-                        </lvc:PieChart>
+                        <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Most visited countries</Label>
+
+                        <lvc:GeoMap Grid.Row="1"  HeatMap="{Binding FactoryCountries}" Background="Transparent"  UseLayoutRounding="True" Source="World.xml" Margin="10,10,50,10" />
+
                     </Grid>
                 </Grid>
             </Grid>
         </TabItem>
+
+
 
         <TabItem Header="Kilometers">
             <Grid>

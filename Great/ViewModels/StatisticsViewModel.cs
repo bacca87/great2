@@ -16,11 +16,54 @@ namespace Great.ViewModels
         #region Properties
         private Func<ChartPoint, string> HoursLabel { get; set; }
 
+        private int _WorkedDays;
+        public int WorkedDays
+        {
+            get => _WorkedDays;
+            set => Set(ref _WorkedDays, value);
+        }
+
+        private int _WorkedSaturdays;
+        public int WorkedSaturdays
+        {
+            get => _WorkedSaturdays;
+            set => Set(ref _WorkedSaturdays, value);
+        }
+
+        private int _WorkedSundays;
+        public int WorkedSundays
+        {
+            get => _WorkedSundays;
+            set => Set(ref _WorkedSundays, value);
+        }
+
+        private int _WorkedHolidays;
+        public int WorkedHolidays
+        {
+            get => _WorkedHolidays;
+            set => Set(ref _WorkedHolidays, value);
+        }
+
+        private int _TravelCount;
+        public int TravelCount
+        {
+            get => _TravelCount;
+            set => Set(ref _TravelCount, value);
+        }
+
+
         private SeriesCollection _Factories;
         public SeriesCollection Factories
         {
             get => _Factories;
             set => Set(ref _Factories, value);
+        }
+
+        private Dictionary<string, double> _FactoryCountries;
+        public Dictionary<string, double> FactoryCountries
+        {
+            get => _FactoryCountries;
+            set => Set(ref _FactoryCountries, value);
         }
 
         private SeriesCollection _Km;
@@ -35,6 +78,13 @@ namespace Great.ViewModels
         {
             get => _Hours;
             set => Set(ref _Hours, value);
+        }
+
+        private SeriesCollection _HourTypes;
+        public SeriesCollection HourTypes
+        {
+            get => _HourTypes;
+            set => Set(ref _HourTypes, value);
         }
 
         private SeriesCollection _days;
@@ -82,8 +132,10 @@ namespace Great.ViewModels
             Factories = new SeriesCollection();
             FactoryTypes = new SeriesCollection();
             Hours = new SeriesCollection();
+            HourTypes = new SeriesCollection();
             Days = new SeriesCollection();
             Km = new SeriesCollection();
+            FactoryCountries = new Dictionary<string, double>();
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
@@ -116,6 +168,7 @@ namespace Great.ViewModels
         {
             Dictionary<string, int> factoriesData = new Dictionary<string, int>();
             Factories.Clear();
+            FactoryCountries.Clear();
 
             using (DBArchive db = new DBArchive())
             {
@@ -129,8 +182,6 @@ namespace Great.ViewModels
 
                 foreach (KeyValuePair<string, int> entry in factoriesData)
                 {
-
-
                     PieSeries factory = new PieSeries
                     {
                         Title = entry.Key,
@@ -140,21 +191,36 @@ namespace Great.ViewModels
                     };
 
                     Factories.Add(factory);
+
+                    var f = db.Factories.SingleOrDefault(x => x.Name == entry.Key);
+
+                    if (FactoryCountries.Any(x => x.Key == f.Country))
+                        FactoryCountries[f.Country] = FactoryCountries[f.Country] + entry.Value;
+                    else
+                        FactoryCountries.Add(f.Country, entry.Value);
+
                 }
+
+
             }
         }
 
         private void LoadHoursData()
         {
+
             Dictionary<string, int> factoriesData = new Dictionary<string, int>();
 
             using (DBArchive db = new DBArchive())
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
-                var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
+                var WorkingDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
+                var AllDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
 
-                var MontlyHours = Days?.GroupBy(d => d.Date.Month)
+
+
+
+                var MontlyHours = WorkingDays?.GroupBy(d => d.Date.Month)
                                        .Select(g => new
                                        {
                                            TotalTime = g.Sum(x => (x.TotalTime ?? 0)),
@@ -165,12 +231,31 @@ namespace Great.ViewModels
                                            Overtime100 = g.Sum(x => x.Overtime100 ?? 0)
                                        });
 
+                var AllDayMonthlyHours = AllDays?.GroupBy(d => d.Date.Month)
+                       .Select(g => new
+                       {
+                           HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0),
+                           Vacations = g.Sum(x => x.HoursOfVacation ?? 0),
+                           Leave = g.Sum(x => x.HoursOfLeave ?? 0),
+                           SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0),
+                           SickLeave = g.Sum(x => x.HoursOfSicklLeave ?? 0)
+                       });
+
+
                 ChartValues<float> TotalTimeValues = new ChartValues<float>();
                 ChartValues<float> OrdinaryValues = new ChartValues<float>();
                 ChartValues<float> Overtime34Values = new ChartValues<float>();
                 ChartValues<float> Overtime35Values = new ChartValues<float>();
                 ChartValues<float> Overtime50Values = new ChartValues<float>();
                 ChartValues<float> Overtime100Values = new ChartValues<float>();
+
+                ChartValues<float> SpecialLeaveValues = new ChartValues<float>();
+                ChartValues<float> VacationsValues = new ChartValues<float>();
+                ChartValues<float> LeaveValues = new ChartValues<float>();
+                ChartValues<float> SickLeaveValues = new ChartValues<float>();
+                ChartValues<float> HomeWorkValues = new ChartValues<float>();
+
+
 
                 foreach (var month in MontlyHours)
                 {
@@ -180,6 +265,15 @@ namespace Great.ViewModels
                     Overtime35Values.Add(month.Overtime35);
                     Overtime50Values.Add(month.Overtime50);
                     Overtime100Values.Add(month.Overtime100);
+                }
+
+                foreach (var month in AllDayMonthlyHours)
+                {
+                    HomeWorkValues.Add(month.HomeWoring);
+                    SickLeaveValues.Add(month.SickLeave);
+                    LeaveValues.Add(month.Leave);
+                    VacationsValues.Add(month.Vacations);
+                    SpecialLeaveValues.Add(month.SpecialLeave);
                 }
 
                 Hours = new SeriesCollection()
@@ -227,6 +321,59 @@ namespace Great.ViewModels
                         LabelPoint = HoursLabel
                     }
                 };
+
+                HourTypes = new SeriesCollection()
+                {
+                    new StackedColumnSeries()
+                    {
+                        Title = "Office work hours",
+                        Values = TotalTimeValues,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries()
+                    {
+                        Title = "Home working hours",
+                        Values = HomeWorkValues,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries()
+                    {
+                        Title = "Vacation Hours",
+                        Values = VacationsValues,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries()
+                    {
+                        Title = "Leave Hours",
+                        Values = LeaveValues,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries()
+                    {
+                        Title = "Special Leave Hours",
+                        Values = SpecialLeaveValues,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries
+                    {
+                        Title = "Sick Leave Hours",
+                        Values = SickLeaveValues,
+                        DataLabels = true,
+                        LabelPoint = HoursLabel
+                    }
+                };
+
+                WorkedDays = WorkingDays?.Count() ?? 0;
+                TravelCount = WorkingDays?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
+                WorkedHolidays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.IsHoliday).Count() ?? 0;
+                WorkedSaturdays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
+                WorkedSundays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;
+                TravelCount = WorkingDays?.Where(x => x.Timesheets.Count() > 0 && x.Timesheets.Any(y => y.FDL1 != null)).Count() ??0;
             }
         }
 

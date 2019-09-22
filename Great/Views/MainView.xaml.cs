@@ -99,9 +99,6 @@ namespace Great.Views
                 return;
             }
 
-            EventsView view = new EventsView();
-            view.Owner = this;
-            view.ShowDialog();
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -148,5 +145,7 @@ namespace Great.Views
 
 
     }
+
+
 }
 
