@@ -34,10 +34,7 @@ namespace Great.ViewModels
         /// </summary>
         public string InstallationFolder
         {
-            get
-            {
-                return _installationFolder;
-            }
+            get => _installationFolder;
             set
             {
                 _installationFolder = value;
@@ -56,10 +53,7 @@ namespace Great.ViewModels
         /// </summary>
         public bool Completed
         {
-            get
-            {
-                return _completed;
-            }
+            get => _completed;
             internal set
             {
                 _completed = value;
@@ -78,10 +72,7 @@ namespace Great.ViewModels
         /// </summary>
         public bool CanSelectPreviousPage
         {
-            get
-            {
-                return _isRunning;
-            }
+            get => _isRunning;
             internal set
             {
                 _isRunning = value;
@@ -100,10 +91,7 @@ namespace Great.ViewModels
         /// </summary>
         public string Status
         {
-            get
-            {
-                return _status;
-            }
+            get => _status;
             internal set
             {
                 _status = value;
@@ -122,10 +110,7 @@ namespace Great.ViewModels
         /// </summary>
         public string LogText
         {
-            get
-            {
-                return _logText;
-            }
+            get => _logText;
             internal set
             {
                 _logText = value;

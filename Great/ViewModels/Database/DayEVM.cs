@@ -172,7 +172,7 @@ namespace Great.ViewModels.Database
                     return null;
                 }
 
-                return 8 - (TotalTime??0);
+                return 8 - (TotalTime ?? 0);
             }
         }
 
@@ -194,7 +194,7 @@ namespace Great.ViewModels.Database
                     return null;
                 }
 
-                return 8 - (TotalTime??0);
+                return 8 - (TotalTime ?? 0);
             }
         }
         public float? HoursOfSicklLeave
@@ -206,7 +206,7 @@ namespace Great.ViewModels.Database
                     return null;
                 }
 
-                return 8 - (TotalTime??0);
+                return 8 - (TotalTime ?? 0);
             }
         }
         #endregion

@@ -194,10 +194,10 @@ namespace Great.ViewModels
 
                     var f = db.Factories.SingleOrDefault(x => x.Name == entry.Key);
 
-                    if (FactoryCountries.Any(x => x.Key == f.Country))
-                        FactoryCountries[f.Country] = FactoryCountries[f.Country] + entry.Value;
-                    else
-                        FactoryCountries.Add(f.Country, entry.Value);
+                    if (FactoryCountries.Any(x => x.Key == f.CountryCode))
+                        FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
+                    else if (f.CountryCode != null)
+                        FactoryCountries.Add(f.CountryCode, entry.Value);
 
                 }
 
@@ -373,7 +373,7 @@ namespace Great.ViewModels
                 WorkedHolidays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.IsHoliday).Count() ?? 0;
                 WorkedSaturdays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
                 WorkedSundays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;
-                TravelCount = WorkingDays?.Where(x => x.Timesheets.Count() > 0 && x.Timesheets.Any(y => y.FDL1 != null)).Count() ??0;
+                TravelCount = WorkingDays?.Where(x => x.Timesheets.Count() > 0 && x.Timesheets.Any(y => y.FDL1 != null)).Count() ?? 0;
             }
         }
 

@@ -11,6 +11,7 @@
       xmlns:System="clr-namespace:System;assembly=mscorlib"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
+      xmlns:date="clr-namespace:Nager.Date;assembly=Nager.Date"
       mc:Ignorable="d"
       DataContext="{Binding Factories, Source={StaticResource Locator}}"
 	  Title="FactoriesManagerPage"
@@ -20,12 +21,12 @@
       IsVisibleChanged="Page_IsVisibleChanged"
       Style="{DynamicResource MetroPage}">
     <Page.Resources>
-        <ObjectDataProvider x:Key="enumCountry" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+        <ObjectDataProvider x:Key="enumCountries" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="enm:ECountry"/>
+                <x:Type TypeName="date:CountryCode"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        
+
         <CollectionViewSource x:Key="FactoriesCollectionView" Source="{Binding Factories}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name" />
@@ -131,7 +132,7 @@
                 <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding SelectedFactory.Name, Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" />
                 <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedFactory.CompanyName,Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
                 <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedFactory.Address,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
-                <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding Source={StaticResource enumCountry}}" Text="{Binding SelectedFactory.Country,Mode=TwoWay}" IsTextSearchEnabled="True" />
+                <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding Source={StaticResource enumCountries}}" Text="{Binding SelectedFactory.CountryCode,Mode=TwoWay}" IsTextSearchEnabled="True" />
                 <WrapPanel Grid.Column="1" Grid.Row="4">
                     <Label>
                         <TextBlock>

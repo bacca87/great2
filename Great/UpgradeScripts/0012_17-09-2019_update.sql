@@ -13,7 +13,7 @@ UPDATE FDL SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 OR [Status] 
 UPDATE ExpenseAccount SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 OR [Status] = 3;
 
 -- New factory field
-ALTER TABLE [Factory] ADD COLUMN Country NVARCHAR(2) NULL DEFAULT NULL;
+ALTER TABLE [Factory] ADD COLUMN CountryCode NVARCHAR(2) NULL DEFAULT NULL;
 
 --=========================================================================
 -- MANDATORY: Increment internal db version

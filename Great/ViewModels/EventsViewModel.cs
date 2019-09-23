@@ -69,10 +69,7 @@ namespace Great.ViewModels
         }
 
         private ICollectionView _FilteredEvents;
-        public ICollectionView FilteredEvents
-        {
-            get => _FilteredEvents;
-        }
+        public ICollectionView FilteredEvents => _FilteredEvents;
 
         public bool Filter(object ev)
         {

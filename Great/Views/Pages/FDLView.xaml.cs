@@ -13,7 +13,7 @@ namespace Great.Views.Pages
     public partial class FDLView : Page
     {
         private bool runonce = true;
-        private FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }
+        private FDLViewModel _viewModel => DataContext as FDLViewModel;
 
         public FDLView()
         {

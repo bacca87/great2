@@ -16,10 +16,7 @@ namespace Great.ViewModels.Database
         public long Car
         {
             get => _car;
-            set
-            {
-                SetAndCheckChanged(ref _car, value);
-            }
+            set => SetAndCheckChanged(ref _car, value);
         }
 
         private CarEVM _car1;
@@ -64,10 +61,7 @@ namespace Great.ViewModels.Database
         public string StartLocation
         {
             get => _startLocation;
-            set
-            {
-                SetAndCheckChanged(ref _startLocation, value);
-            }
+            set => SetAndCheckChanged(ref _startLocation, value);
 
         }
 
@@ -87,10 +81,7 @@ namespace Great.ViewModels.Database
         public long StartDate
         {
             get => _startDate;
-            set
-            {
-                SetAndCheckChanged(ref _startDate, value);
-            }
+            set => SetAndCheckChanged(ref _startDate, value);
 
         }
 
@@ -98,10 +89,7 @@ namespace Great.ViewModels.Database
         public long EndDate
         {
             get => _endDate;
-            set
-            {
-                SetAndCheckChanged(ref _endDate, value);
-            }
+            set => SetAndCheckChanged(ref _endDate, value);
 
         }
 
@@ -109,10 +97,7 @@ namespace Great.ViewModels.Database
         public long StartFuelLevel
         {
             get => _startFuelLevel;
-            set
-            {
-                SetAndCheckChanged(ref _startFuelLevel, value);
-            }
+            set => SetAndCheckChanged(ref _startFuelLevel, value);
 
         }
 
@@ -120,10 +105,7 @@ namespace Great.ViewModels.Database
         public long EndFuelLevel
         {
             get => _endFuelLevel;
-            set
-            {
-                SetAndCheckChanged(ref _endFuelLevel, value);
-            }
+            set => SetAndCheckChanged(ref _endFuelLevel, value);
 
 
         }
@@ -132,10 +114,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _notes;
-            set
-            {
-                SetAndCheckChanged(ref _notes, value);
-            }
+            set => SetAndCheckChanged(ref _notes, value);
 
         }
 
@@ -187,10 +166,7 @@ namespace Great.ViewModels.Database
         public TimeSpan RentStartTime
         {
             get => RentStartDate.TimeOfDay;
-            set
-            {
-                RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0);
-            }
+            set => RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0);
         }
 
         public TimeSpan? RentEndTime
@@ -205,13 +181,7 @@ namespace Great.ViewModels.Database
             }
         }
 
-        public TimeSpan? RentDuration
-        {
-            get
-            {
-                return RentEndDate?.Subtract(RentStartDate);
-            }
-        }
+        public TimeSpan? RentDuration => RentEndDate?.Subtract(RentStartDate);
 
         public long TotalDrivenKm
         {

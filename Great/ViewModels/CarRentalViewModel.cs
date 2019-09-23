@@ -74,10 +74,7 @@ namespace Great.ViewModels
         }
 
         private ICollectionView _FilteredRentals;
-        public ICollectionView FilteredRentals
-        {
-            get { return _FilteredRentals; }
-        }
+        public ICollectionView FilteredRentals => _FilteredRentals;
 
         private ObservableCollectionEx<CarEVM> _Cars;
         public ObservableCollectionEx<CarEVM> Cars

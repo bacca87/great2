@@ -31,10 +31,7 @@ namespace Great.ViewModels
         /// </summary>
         public int NewFactoriesCount
         {
-            get
-            {
-                return _newFactoriesCount;
-            }
+            get => _newFactoriesCount;
 
             set
             {
@@ -56,10 +53,7 @@ namespace Great.ViewModels
         /// </summary>
         public int NewFDLCount
         {
-            get
-            {
-                return _newFDLCount;
-            }
+            get => _newFDLCount;
 
             set
             {
@@ -81,10 +75,7 @@ namespace Great.ViewModels
         /// </summary>
         public int NewExpenseAccountsCount
         {
-            get
-            {
-                return _newExpenseAccountsCount;
-            }
+            get => _newExpenseAccountsCount;
 
             set
             {
@@ -106,10 +97,7 @@ namespace Great.ViewModels
         /// </summary>
         public EProviderStatus ExchangeStatus
         {
-            get
-            {
-                return _exchangeStatus;
-            }
+            get => _exchangeStatus;
 
             set
             {

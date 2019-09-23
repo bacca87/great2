@@ -26,10 +26,7 @@ namespace Great.ViewModels.Database
         public long Type
         {
             get => _Type;
-            set
-            {
-                SetAndCheckChanged(ref _Type, value);
-            }
+            set => SetAndCheckChanged(ref _Type, value);
         }
 
         private double? _MondayAmount;

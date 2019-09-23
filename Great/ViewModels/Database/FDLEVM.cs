@@ -51,80 +51,56 @@ namespace Great.ViewModels.Database
         public long? Factory
         {
             get => _Factory;
-            set
-            {
-                SetAndCheckChanged(ref _Factory, value);
-            }
+            set => SetAndCheckChanged(ref _Factory, value);
         }
 
         private bool _OutwardCar;
         public bool OutwardCar
         {
             get => _OutwardCar;
-            set
-            {
-                SetAndCheckChanged(ref _OutwardCar, value);
-            }
+            set => SetAndCheckChanged(ref _OutwardCar, value);
         }
 
         private bool _ReturnCar;
         public bool ReturnCar
         {
             get => _ReturnCar;
-            set
-            {
-                SetAndCheckChanged(ref _ReturnCar, value);
-            }
+            set => SetAndCheckChanged(ref _ReturnCar, value);
         }
 
         private bool _OutwardTaxi;
         public bool OutwardTaxi
         {
             get => _OutwardTaxi;
-            set
-            {
-                SetAndCheckChanged(ref _OutwardTaxi, value);
-            }
+            set => SetAndCheckChanged(ref _OutwardTaxi, value);
         }
 
         private bool _ReturnTaxi;
         public bool ReturnTaxi
         {
             get => _ReturnTaxi;
-            set
-            {
-                SetAndCheckChanged(ref _ReturnTaxi, value);
-            }
+            set => SetAndCheckChanged(ref _ReturnTaxi, value);
         }
 
         private bool _OutwardAircraft;
         public bool OutwardAircraft
         {
             get => _OutwardAircraft;
-            set
-            {
-                SetAndCheckChanged(ref _OutwardAircraft, value);
-            }
+            set => SetAndCheckChanged(ref _OutwardAircraft, value);
         }
 
         private bool _ReturnAircraft;
         public bool ReturnAircraft
         {
             get => _ReturnAircraft;
-            set
-            {
-                SetAndCheckChanged(ref _ReturnAircraft, value);
-            }
+            set => SetAndCheckChanged(ref _ReturnAircraft, value);
         }
 
         private string _PerformanceDescription;
         public string PerformanceDescription
         {
             get => _PerformanceDescription;
-            set
-            {
-                SetAndCheckChanged(ref _PerformanceDescription, value);
-            }
+            set => SetAndCheckChanged(ref _PerformanceDescription, value);
         }
 
         private long _Result;
@@ -142,30 +118,21 @@ namespace Great.ViewModels.Database
         public string ResultNotes
         {
             get => _ResultNotes;
-            set
-            {
-                SetAndCheckChanged(ref _ResultNotes, value);
-            }
+            set => SetAndCheckChanged(ref _ResultNotes, value);
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set
-            {
-                SetAndCheckChanged(ref _Notes, value);
-            }
+            set => SetAndCheckChanged(ref _Notes, value);
         }
 
         private string _PerformanceDescriptionDetails;
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
-            set
-            {
-                SetAndCheckChanged(ref _PerformanceDescriptionDetails, value);
-            }
+            set => SetAndCheckChanged(ref _PerformanceDescriptionDetails, value);
         }
 
         private long _Status;
@@ -254,9 +221,9 @@ namespace Great.ViewModels.Database
 
         public ObservableCollection<TimesheetEVM> Timesheets { get; set; }
 
-        public string FilePath { get { return ApplicationSettings.Directories.FDL + FileName; } }
+        public string FilePath => ApplicationSettings.Directories.FDL + FileName;
 
-        public int Year { get { return Convert.ToInt32(Id.Substring(0, 4)); } }
+        public int Year => Convert.ToInt32(Id.Substring(0, 4));
 
         private bool _IsNew;
         public bool IsNew // used for sorting purpose
@@ -265,7 +232,7 @@ namespace Great.ViewModels.Database
             set => Set(ref _IsNew, value);
         }
 
-        public bool IsValid { get { return Timesheets.Count == 0 || Timesheets.All(ts => ts.IsValid); } }
+        public bool IsValid => Timesheets.Count == 0 || Timesheets.All(ts => ts.IsValid);
 
         public EFDLStatus EStatus
         {

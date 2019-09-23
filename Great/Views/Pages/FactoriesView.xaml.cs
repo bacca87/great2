@@ -5,6 +5,7 @@ using Great.Controls;
 using Great.Models;
 using Great.ViewModels;
 using Great.ViewModels.Database;
+using Nager.Date;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -29,7 +30,7 @@ namespace Great.Views
         private GMapMarker tempMarker;
         private GMapMarker tempPosMarker;
 
-        private FactoriesViewModel _viewModel { get { return DataContext as FactoriesViewModel; } }
+        private FactoriesViewModel _viewModel => DataContext as FactoriesViewModel;
 
         private bool IsLatLngSelectionMode = false;
         private GridLength lastGridHeight;
@@ -210,14 +211,15 @@ namespace Great.Views
             {
                 var point = await GetCoordsFromAddressAsync(factory.Address);
 
-                if (point.HasValue)
+                if (point?.Item1 != null)
                 {
-                    factory.Latitude = point.Value.Lat;
-                    factory.Longitude = point.Value.Lng;
+                    factory.Latitude = point.Value.Item1.Lat;
+                    factory.Longitude = point.Value.Item1.Lng;
+                    factory.CountryCode = point.Value.Item2.ToString();
                     factory.Save();
                 }
 
-                return point;
+                return point?.Item1;
             }
         }
 
@@ -233,7 +235,7 @@ namespace Great.Views
             return point;
         }
 
-        public static async Task<PointLatLng?> GetCoordsFromAddressAsync(string address)
+        public static async Task<(PointLatLng, CountryCode)?> GetCoordsFromAddressAsync(string address)
         {
             try
             {
@@ -251,17 +253,24 @@ namespace Great.Views
                 {
                     var latString = ((JValue)r[0]["lat"]).Value as string;
                     var lngString = ((JValue)r[0]["lon"]).Value as string;
+                    var countryCode = ((JValue)r[0]["address"]["country_code"]).Value as string;
 
                     if (latString != string.Empty && lngString != string.Empty)
                     {
                         double lat = double.Parse(latString, CultureInfo.InvariantCulture);
                         double lng = double.Parse(lngString, CultureInfo.InvariantCulture);
 
-                        return new PointLatLng(lat, lng);
+                        PointLatLng pnt = new PointLatLng(lat, lng);
+                        CountryCode cCode;
+                        Enum.TryParse(countryCode.ToUpper(), out cCode);
+
+                        return (new PointLatLng(lat, lng), cCode);
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return null;
         }

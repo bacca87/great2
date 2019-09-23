@@ -71,21 +71,9 @@ namespace Great.Models
                 }
             }
 
-            public static string FDL
-            {
-                get
-                {
-                    return Data + "FDL\\";
-                }
-            }
+            public static string FDL => Data + "FDL\\";
 
-            public static string ExpenseAccount
-            {
-                get
-                {
-                    return Data + "Expense Account\\";
-                }
-            }
+            public static string ExpenseAccount => Data + "Expense Account\\";
 
             public static string Cache
             {
@@ -103,13 +91,7 @@ namespace Great.Models
                 }
             }
 
-            public static string Log
-            {
-                get
-                {
-                    return Data + "Log\\";
-                }
-            }
+            public static string Log => Data + "Log\\";
         }
         #endregion
 
@@ -1098,10 +1080,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
-            public static string Username
-            {
-                get { return Settings.Default.EmailAddress.Split('@')[0]; }
-            }
+            public static string Username => Settings.Default.EmailAddress.Split('@')[0];
 
             public static string EmailPassword
             {

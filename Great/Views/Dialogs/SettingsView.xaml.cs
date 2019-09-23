@@ -8,7 +8,7 @@ namespace Great.Views.Dialogs
     /// </summary>
     public partial class SettingsView : MetroWindow
     {
-        private SettingsViewModel _viewModel { get { return DataContext as SettingsViewModel; } }
+        private SettingsViewModel _viewModel => DataContext as SettingsViewModel;
 
         public SettingsView()
         {

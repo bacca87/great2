@@ -47,10 +47,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set
-            {
-                SetAndCheckChanged(ref _Notes, value);
-            }
+            set => SetAndCheckChanged(ref _Notes, value);
         }
 
         private long _Status;

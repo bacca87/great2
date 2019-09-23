@@ -258,12 +258,35 @@ namespace Great.ViewModels
             OnSelectToday?.Invoke(SelectedWorkingDay);
         }
 
-        public void ClearTimesheet() => SelectedTimesheet = null;
-        public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
-        public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
-        public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
-        public void SetHomeWorkingDay(DayEVM day) => SetDayType(day, EDayType.HomeWorkDay);
-        public void SetSpecialLeave(DayEVM day) => SetDayType(day, EDayType.SpecialLeave);
+        public void ClearTimesheet()
+        {
+            SelectedTimesheet = null;
+        }
+
+        public void SetVacationDay(DayEVM day)
+        {
+            SetDayType(day, EDayType.VacationDay);
+        }
+
+        public void SetSickLeave(DayEVM day)
+        {
+            SetDayType(day, EDayType.SickLeave);
+        }
+
+        public void SetWorkDay(DayEVM day)
+        {
+            SetDayType(day, EDayType.WorkDay);
+        }
+
+        public void SetHomeWorkingDay(DayEVM day)
+        {
+            SetDayType(day, EDayType.HomeWorkDay);
+        }
+
+        public void SetSpecialLeave(DayEVM day)
+        {
+            SetDayType(day, EDayType.SpecialLeave);
+        }
 
         private void SetDayType(DayEVM day, EDayType type)
         {
