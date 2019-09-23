@@ -193,11 +193,13 @@ namespace Great.ViewModels
                     Factories.Add(factory);
 
                     var f = db.Factories.SingleOrDefault(x => x.Name == entry.Key);
-
-                    if (FactoryCountries.Any(x => x.Key == f.CountryCode))
-                        FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
-                    else if (f.CountryCode != null)
-                        FactoryCountries.Add(f.CountryCode, entry.Value);
+                    if (f != null && f?.CountryCode != null)
+                    {
+                        if (FactoryCountries.Any(x => x.Key == f.CountryCode))
+                            FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
+                        else 
+                            FactoryCountries.Add(f.CountryCode, entry.Value);
+                    }
 
                 }
 
