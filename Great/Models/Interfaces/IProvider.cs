@@ -17,12 +17,12 @@ namespace Great.Models.Interfaces
 
     public enum EProviderStatus
     {
-        Offline,
-        Connecting,
-        Connected,
-        Syncronizing,
-        Syncronized,
-        LoginError,
-        Error
+        Offline
+        , Connecting
+        , Connected
+        , Syncronizing
+        , Syncronized
+        , LoginError
+        , Error
     }
 }

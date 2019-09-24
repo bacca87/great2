@@ -12,7 +12,9 @@ namespace Great.Models.DTO
 
         public FactoryDTO Factory1 { get; set; }
 
-        public FDLDTO() { }
+        public FDLDTO()
+        {
+        }
 
         public FDLDTO(FDL fdl)
         {

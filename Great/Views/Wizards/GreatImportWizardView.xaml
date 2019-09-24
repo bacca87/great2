@@ -1,23 +1,23 @@
 ﻿<mah:MetroWindow
-        x:Class="Great.Wizards.Views.GreatImportWizardView"    
-        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Great.Views"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
-        xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
-        xmlns:conv="clr-namespace:Great.Utils.Converters"
-        mc:Ignorable="d"
-        DataContext="{Binding GreatImportWizard, Source={StaticResource Locator}}"
-        ResizeMode="NoResize"
-        Width="640" 
-        Height="480"
-        IsCloseButtonEnabled="False"
-        WindowStartupLocation="CenterOwner">
+    x:Class="Great.Wizards.Views.GreatImportWizardView"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Great.Views"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+    xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+    xmlns:conv="clr-namespace:Great.Utils.Converters"
+    mc:Ignorable="d"
+    DataContext="{Binding GreatImportWizard, Source={StaticResource Locator}}"
+    ResizeMode="NoResize"
+    Width="640"
+    Height="480"
+    IsCloseButtonEnabled="False"
+    WindowStartupLocation="CenterOwner">
     <Grid>
         <xctk:Wizard FinishButtonClosesWindow="True" HelpButtonVisibility="Hidden">
             <xctk:Wizard.Resources>
@@ -33,32 +33,35 @@
                         <Setter Property="HeaderBackground" Value="{StaticResource ControlBackgroundBrush}" />
                     </Style.Setters>
                 </Style>
-                <conv:NegateBoolConverter x:Key="NegateBoolConverter"/>
+                <conv:NegateBoolConverter x:Key="NegateBoolConverter" />
             </xctk:Wizard.Resources>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Cancel">
-                    <mvvm:EventToCommand Command="{Binding CancelCommand}"/>
+                    <mvvm:EventToCommand Command="{Binding CancelCommand}" />
                 </i:EventTrigger>
                 <i:EventTrigger EventName="Finish">
-                    <mvvm:EventToCommand Command="{Binding FinishCommand}"/>
+                    <mvvm:EventToCommand Command="{Binding FinishCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <xctk:WizardPage Title="Welcome to the GREAT data import Wizard"
-                             Description="This Wizard will walk you though how to import all the work hours, FDLs, expense accounts, car rents and visited factories from an old GREAT installation."/>
+                             Description="This Wizard will walk you though how to import all the work hours, FDLs, expense accounts, car rents and visited factories from an old GREAT installation." />
             <xctk:WizardPage Title="Configuration"
                              Description="Configuration process."
-                             PageType="Interior">                
+                             PageType="Interior">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <TextBlock Text="Installation Folder:" VerticalAlignment="Center"/>
-                        <TextBox Margin="5" Text="{Binding InstallationFolder}" Width="300"/>
-                        <Button Margin="0,5" Content="..." Command="{Binding SelectFolderCommand}"/>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                        <TextBlock Text="Installation Folder:" VerticalAlignment="Center" />
+                        <TextBox Margin="5" Text="{Binding InstallationFolder}" Width="300" />
+                        <Button Margin="0,5" Content="..." Command="{Binding SelectFolderCommand}" />
                     </StackPanel>
-                    <TextBlock Grid.Row="1" Text="WARNING: Clicking on the 'Next' button will start the import process!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                    <TextBlock Grid.Row="1"
+                               Text="WARNING: Clicking on the 'Next' button will start the import process!"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15" />
                 </Grid>
             </xctk:WizardPage>
             <xctk:WizardPage Title="Import"
@@ -72,13 +75,15 @@
                              CanCancel="{Binding Completed, Converter={StaticResource NegateBoolConverter}}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Enter">
-                        <mvvm:EventToCommand Command="{Binding StartImportCommand}"/>
+                        <mvvm:EventToCommand Command="{Binding StartImportCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Grid>
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Margin="5" Text="{Binding Status, StringFormat={}Status: {0}}"/>
-                        <TextBox Text="{Binding LogText, Mode=OneWay}" TextWrapping="NoWrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ap:TextBoxHelper.AutoScrollToEnd="True"/>
+                        <TextBlock DockPanel.Dock="Top" Margin="5" Text="{Binding Status, StringFormat={}Status: {0}}" />
+                        <TextBox Text="{Binding LogText, Mode=OneWay}" TextWrapping="NoWrap" IsReadOnly="True"
+                                 VerticalScrollBarVisibility="Auto" AcceptsReturn="True"
+                                 ap:TextBoxHelper.AutoScrollToEnd="True" />
                     </DockPanel>
                 </Grid>
             </xctk:WizardPage>

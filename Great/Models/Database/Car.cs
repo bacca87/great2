@@ -19,6 +19,7 @@ namespace Great.Models.Database
 
         [ForeignKey("CarRentalCompany")]
         public virtual CarRentalCompany CarRentalCompany1 { get; set; }
+
         public virtual ICollection<CarRentalHistory> CarRentalHistories { get; set; }
     }
 }

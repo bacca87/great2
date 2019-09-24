@@ -15,7 +15,7 @@ namespace Great.Views.Dialogs
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            EventsViewModel _viewModel = (EventsViewModel)DataContext;
+            EventsViewModel _viewModel = (EventsViewModel) DataContext;
             _viewModel.SelectedEvent?.CheckChangedEntity();
         }
     }

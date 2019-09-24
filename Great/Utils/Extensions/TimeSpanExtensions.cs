@@ -14,16 +14,12 @@ namespace Great.Utils.Extensions
         public static TimeSpan Round(this TimeSpan ts, RoundingDirection Direction, int MinutePrecision)
         {
             if (Direction == RoundingDirection.Up)
-            {
                 return TimeSpan.FromMinutes(
-                    MinutePrecision * Math.Ceiling(ts.TotalMinutes / MinutePrecision));
-            }
+                MinutePrecision * Math.Ceiling(ts.TotalMinutes / MinutePrecision));
 
             if (Direction == RoundingDirection.Down)
-            {
                 return TimeSpan.FromMinutes(
-                    MinutePrecision * Math.Floor(ts.TotalMinutes / MinutePrecision));
-            }
+                MinutePrecision * Math.Floor(ts.TotalMinutes / MinutePrecision));
 
             // Really shouldn't be able to get here...
             return ts;
@@ -38,8 +34,9 @@ namespace Great.Utils.Extensions
         /// <summary>
         /// Round up.
         /// </summary>
-        Up,
-        /// <summary>
+        Up
+
+        , /// <summary>
         /// Round down.
         /// </summary>
         Down

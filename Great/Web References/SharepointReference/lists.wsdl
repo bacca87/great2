@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://schemas.microsoft.com/sharepoint/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://schemas.microsoft.com/sharepoint/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:tns="http://schemas.microsoft.com/sharepoint/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  targetNamespace="http://schemas.microsoft.com/sharepoint/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/sharepoint/soap/">
       <s:import namespace="http://www.w3.org/2001/XMLSchema" />
@@ -1257,7 +1266,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetListItemChangesWithKnowledge">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesWithKnowledge" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesWithKnowledge"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1266,7 +1276,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetListItemChangesSinceToken">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesSinceToken" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesSinceToken"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1284,7 +1295,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateListItemsWithKnowledge">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateListItemsWithKnowledge" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateListItemsWithKnowledge"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1329,7 +1341,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetAttachmentCollection">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1383,7 +1396,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetListContentTypesAndProperties">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListContentTypesAndProperties" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListContentTypesAndProperties"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1428,7 +1442,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateContentTypeXmlDocument">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypeXmlDocument" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypeXmlDocument"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1437,7 +1452,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateContentTypesXmlDocument">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypesXmlDocument" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypesXmlDocument"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1446,7 +1462,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="DeleteContentTypeXmlDocument">
-      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/DeleteContentTypeXmlDocument" style="document" />
+      <soap:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/DeleteContentTypeXmlDocument"
+                      style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1548,7 +1565,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetListItemChangesWithKnowledge">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesWithKnowledge" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesWithKnowledge"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1557,7 +1575,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetListItemChangesSinceToken">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesSinceToken" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesSinceToken"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1575,7 +1594,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateListItemsWithKnowledge">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateListItemsWithKnowledge" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateListItemsWithKnowledge"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1584,7 +1604,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="AddDiscussionBoardItem">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/AddDiscussionBoardItem" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/AddDiscussionBoardItem"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1620,7 +1641,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetAttachmentCollection">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1674,7 +1696,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetListContentTypesAndProperties">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListContentTypesAndProperties" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/GetListContentTypesAndProperties"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1719,7 +1742,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateContentTypeXmlDocument">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypeXmlDocument" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypeXmlDocument"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1728,7 +1752,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateContentTypesXmlDocument">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypesXmlDocument" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/UpdateContentTypesXmlDocument"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1737,7 +1762,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="DeleteContentTypeXmlDocument">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/DeleteContentTypeXmlDocument" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/DeleteContentTypeXmlDocument"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -1746,7 +1772,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="ApplyContentTypeToList">
-      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/ApplyContentTypeToList" style="document" />
+      <soap12:operation soapAction="http://schemas.microsoft.com/sharepoint/soap/ApplyContentTypeToList"
+                        style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

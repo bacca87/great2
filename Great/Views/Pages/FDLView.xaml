@@ -1,13 +1,13 @@
 ﻿<Page x:Class="Great.Views.Pages.FDLView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-      xmlns:m="clr-namespace:Great.Models.DTO" 
+      xmlns:m="clr-namespace:Great.Models.DTO"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
       mc:Ignorable="d"
@@ -16,7 +16,7 @@
       Style="{DynamicResource MetroPage}">
 
     <Page.Resources>
-        <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
+        <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="IsNew" Direction="Descending" />
                 <scm:SortDescription PropertyName="Id" Direction="Descending" />
@@ -25,31 +25,31 @@
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>        
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <DataGrid Grid.Row="0"
-                Name="fdlDataGridView"                
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch"
-                AutoGenerateColumns="False" 
-                CanUserReorderColumns="False" 
-                CanUserResizeColumns="False" 
-                CanUserResizeRows="False" 
-                CanUserSortColumns="False" 
-                IsReadOnly="True"                  
-                SelectionMode="Single"
-                HeadersVisibility="Column"
-                ItemsSource="{Binding Source={StaticResource FDLCollectionView}}"
-                SelectedItem="{Binding SelectedFDL}"
-                VirtualizingPanel.ScrollUnit ="Item" 
-                VirtualizingPanel.VirtualizationMode="Standard"
-                Loaded="fdlDataGridView_Loaded">
+                      Name="fdlDataGridView"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserResizeRows="False"
+                      CanUserSortColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column"
+                      ItemsSource="{Binding Source={StaticResource FDLCollectionView}}"
+                      SelectedItem="{Binding SelectedFDL}"
+                      VirtualizingPanel.ScrollUnit="Item"
+                      VirtualizingPanel.VirtualizationMode="Standard"
+                      Loaded="fdlDataGridView_Loaded">
                 <DataGrid.Resources>
                     <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                         <Style.Setters>
@@ -68,8 +68,8 @@
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
-                    <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter"/>
-                    <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter"/>
+                    <conv:FDLStatusToImageConverter x:Key="FDLStatusToImageConverter" />
+                    <conv:FDLStatusToTextConverter x:Key="FDLStatusToTextConverter" />
                 </DataGrid.Resources>
                 <!--<DataGrid.ContextMenu>
                 <ContextMenu>
@@ -89,44 +89,58 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}" Stretch="None">
+                                    <Image
+                                        Source="{Binding Status, Converter={StaticResource FDLStatusToImageConverter}}"
+                                        Stretch="None">
                                         <Image.ToolTip>
-                                            <TextBlock Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}"/>
+                                            <TextBlock
+                                                Text="{Binding Status, Converter={StaticResource FDLStatusToTextConverter}}" />
                                         </Image.ToolTip>
                                     </Image>
-                                    <Image Source="pack://application:,,,/Great2;component/Images/16/file-pdf.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsCompiled}">
+                                    <Image Source="pack://application:,,,/Great2;component/Images/16/file-pdf.png"
+                                           Stretch="None" Style="{StaticResource DisabledImageStyle}"
+                                           IsEnabled="{Binding IsCompiled}">
                                         <Image.ToolTip>
-                                            <TextBlock Text="Compiled"/>
+                                            <TextBlock Text="Compiled" />
                                         </Image.ToolTip>
                                     </Image>
-                                    <Image Source="pack://application:,,,/Great2;component/Images/16/star.png" Stretch="None" Style="{StaticResource DisabledImageStyle}" IsEnabled="{Binding IsExtra}">
+                                    <Image Source="pack://application:,,,/Great2;component/Images/16/star.png"
+                                           Stretch="None" Style="{StaticResource DisabledImageStyle}"
+                                           IsEnabled="{Binding IsExtra}">
                                         <Image.ToolTip>
-                                            <TextBlock Text="Extra"/>
+                                            <TextBlock Text="Extra" />
                                         </Image.ToolTip>
                                     </Image>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold"
+                                        CellStyle="{StaticResource CenterAligned}" />
                     <DataGridTemplateColumn Header="Factory" CellStyle="{StaticResource BaseCellStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock>
-                                <Hyperlink NavigateUri="{Binding Factory1.Name}" RequestNavigate="FactoryHyperlink_OnNavigate">
-                                    <Hyperlink.InputBindings>
-                                       <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.FactoryLinkCommand}"/>
-                                    </Hyperlink.InputBindings>
-                                    <TextBlock Text="{Binding Factory1.Name}"/>
-                                </Hyperlink>
-                            </TextBlock>
+                                    <Hyperlink NavigateUri="{Binding Factory1.Name}"
+                                               RequestNavigate="FactoryHyperlink_OnNavigate">
+                                        <Hyperlink.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick"
+                                                          Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.FactoryLinkCommand}" />
+                                        </Hyperlink.InputBindings>
+                                        <TextBlock Text="{Binding Factory1.Name}" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Order" Binding="{Binding Order}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" CellStyle="{StaticResource BaseCellStyle}"/>
+                    <DataGridTextColumn Header="Order" Binding="{Binding Order}"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Result" Binding="{Binding FDLResult.Name}"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Week Nr" Binding="{Binding WeekNr}"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="File Name" Binding="{Binding FileName}"
+                                        CellStyle="{StaticResource BaseCellStyle}" />
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -154,30 +168,32 @@
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Resources>
-                <Image Source="pack://application:,,,/Great2;component/Images/72/sign-error.png" ToolTip="ERROR" Width="72" Height="72" VerticalAlignment="Top"/>
-                <TextBlock x:Name="LastErrorTextBlock" Text="{Binding SelectedFDL.LastError}" FontSize="15" FontWeight="Bold" FontStyle="Italic" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                <Image Source="pack://application:,,,/Great2;component/Images/72/sign-error.png" ToolTip="ERROR"
+                       Width="72" Height="72" VerticalAlignment="Top" />
+                <TextBlock x:Name="LastErrorTextBlock" Text="{Binding SelectedFDL.LastError}" FontSize="15"
+                           FontWeight="Bold" FontStyle="Italic" TextWrapping="Wrap" VerticalAlignment="Center" />
             </StackPanel>
         </Grid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
-                    <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
+                    <i:InvokeCommandAction Command="{Binding GotFocusCommand}" />
                 </i:EventTrigger>
                 <i:EventTrigger EventName="LostFocus">
-                    <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                    <i:InvokeCommandAction Command="{Binding LostFocusCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left">
                     <TextBlock.Text>
@@ -187,18 +203,18 @@
                     </TextBlock.Text>
                 </TextBlock>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,0,5,0" Text="Factory:" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,0,5,0" Text="Factory:" VerticalAlignment="Center" />
                     <ComboBox Grid.Column="1" Grid.Row="0" MinWidth="150" VerticalAlignment="Center"
-                          SelectedItem="{Binding SelectedFDL.Factory1}" 
-                          SelectedValue="{Binding SelectedFDL.Factory}" 
-                          IsEnabled="{Binding IsInputEnabled}"
-                          DisplayMemberPath="Name" 
-                          SelectedValuePath="Id">
+                              SelectedItem="{Binding SelectedFDL.Factory1}"
+                              SelectedValue="{Binding SelectedFDL.Factory}"
+                              IsEnabled="{Binding IsInputEnabled}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id">
                         <ComboBox.Resources>
 
-                            <CollectionViewSource x:Key="Items" Source="{Binding Factories}" >
+                            <CollectionViewSource x:Key="Items" Source="{Binding Factories}">
                                 <CollectionViewSource.SortDescriptions>
-                                    <scm:SortDescription  PropertyName="Name"></scm:SortDescription>
+                                    <scm:SortDescription PropertyName="Name" />
                                 </CollectionViewSource.SortDescriptions>
                             </CollectionViewSource>
                         </ComboBox.Resources>
@@ -211,14 +227,14 @@
                 </StackPanel>
             </Grid>
             <DataGrid Grid.Row="1"
-                      ItemsSource="{Binding SelectedFDL.Timesheets}"                      
+                      ItemsSource="{Binding SelectedFDL.Timesheets}"
                       SelectedItem="{Binding SelectedTimesheet}"
                       VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"                         
-                      AutoGenerateColumns="False" 
-                      CanUserReorderColumns="False" 
-                      CanUserResizeColumns="False" 
-                      CanUserResizeRows="False" 
+                      HorizontalAlignment="Stretch"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserResizeRows="False"
                       CanUserSortColumns="False"
                       HeadersVisibility="Column"
                       IsReadOnly="True"
@@ -245,7 +261,7 @@
                         <Setter Property="ContentTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center" />
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
@@ -253,15 +269,32 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='ddd dd MMM'}" Width="75" CellStyle="{StaticResource RightAligned}"/>
-                    <DataGridTextColumn Header="Travel Start Time AM" Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Work Start Time AM" Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Work End Time AM" Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Travel End Time AM" Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Travel Start Time PM" Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Work Start Time PM" Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Work End Time PM" Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Travel End Time PM" Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='ddd dd MMM'}" Width="75"
+                                        CellStyle="{StaticResource RightAligned}" />
+                    <DataGridTextColumn Header="Travel Start Time AM"
+                                        Binding="{Binding TravelStartTimeAM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Work Start Time AM"
+                                        Binding="{Binding WorkStartTimeAM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Work End Time AM"
+                                        Binding="{Binding WorkEndTimeAM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Travel End Time AM"
+                                        Binding="{Binding TravelEndTimeAM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Travel Start Time PM"
+                                        Binding="{Binding TravelStartTimePM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Work Start Time PM"
+                                        Binding="{Binding WorkStartTimePM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Work End Time PM"
+                                        Binding="{Binding WorkEndTimePM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Travel End Time PM"
+                                        Binding="{Binding TravelEndTimePM_t, StringFormat=hh\\:mm}" Width="100"
+                                        CellStyle="{StaticResource CenterAligned}" />
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="2" Margin="5">
@@ -269,73 +302,92 @@
                     <Style TargetType="CheckBox" BasedOn="{StaticResource MetroCheckBox}">
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
-                        <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>
+                        <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}" />
                     </Style>
                 </Grid.Resources>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="Car" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Taxi" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Grid.Row="0" Grid.Column="3" Text="Aircraft" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Outward" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Return" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <CheckBox Grid.Row="1" Grid.Column="1" Margin="5" IsChecked="{Binding SelectedFDL.OutwardCar}"/>
-                <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" IsChecked="{Binding SelectedFDL.OutwardTaxi}"/>
-                <CheckBox Grid.Row="1" Grid.Column="3" Margin="5" IsChecked="{Binding SelectedFDL.OutwardAircraft}"/>
-                <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" IsChecked="{Binding SelectedFDL.ReturnCar}"/>
-                <CheckBox Grid.Row="2" Grid.Column="2" Margin="5" IsChecked="{Binding SelectedFDL.ReturnTaxi}"/>
-                <CheckBox Grid.Row="2" Grid.Column="3" Margin="5" IsChecked="{Binding SelectedFDL.ReturnAircraft}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Car" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Taxi" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="Aircraft" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Outward" HorizontalAlignment="Right"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Return" HorizontalAlignment="Right"
+                           VerticalAlignment="Center" />
+                <CheckBox Grid.Row="1" Grid.Column="1" Margin="5" IsChecked="{Binding SelectedFDL.OutwardCar}" />
+                <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" IsChecked="{Binding SelectedFDL.OutwardTaxi}" />
+                <CheckBox Grid.Row="1" Grid.Column="3" Margin="5" IsChecked="{Binding SelectedFDL.OutwardAircraft}" />
+                <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" IsChecked="{Binding SelectedFDL.ReturnCar}" />
+                <CheckBox Grid.Row="2" Grid.Column="2" Margin="5" IsChecked="{Binding SelectedFDL.ReturnTaxi}" />
+                <CheckBox Grid.Row="2" Grid.Column="3" Margin="5" IsChecked="{Binding SelectedFDL.ReturnAircraft}" />
             </Grid>
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="20*"/>
-                    <RowDefinition Height="20*"/>
-                    <RowDefinition Height="20*"/>
-                    <RowDefinition Height="40*"/>
+                    <RowDefinition Height="20*" />
+                    <RowDefinition Height="20*" />
+                    <RowDefinition Height="20*" />
+                    <RowDefinition Height="40*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="Performance description:" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.PerformanceDescription}" MaxLength="{Binding PerfDescMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Grid.Row="0" Text="Performance description:" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True"
+                             Text="{Binding SelectedFDL.PerformanceDescription}"
+                             MaxLength="{Binding PerfDescMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}"
+                             VerticalScrollBarVisibility="Auto" />
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <TextBlock Text="Assistant final test result:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                        <ComboBox ItemsSource="{Binding FDLResults}" SelectedItem="{Binding SelectedFDL.FDLResult}" SelectedValue="{Binding SelectedFDL.Result}" IsEnabled="{Binding IsInputEnabled}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="100" Margin="2"/>
+                        <TextBlock Text="Assistant final test result:" Margin="0,0,5,0" VerticalAlignment="Center" />
+                        <ComboBox ItemsSource="{Binding FDLResults}" SelectedItem="{Binding SelectedFDL.FDLResult}"
+                                  SelectedValue="{Binding SelectedFDL.Result}" IsEnabled="{Binding IsInputEnabled}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="100"
+                                  Margin="2" />
                     </StackPanel>
-                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.ResultNotes}" MaxLength="{Binding FinalTestResultMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True"
+                             Text="{Binding SelectedFDL.ResultNotes}"
+                             MaxLength="{Binding FinalTestResultMaxLength, Mode=OneTime}"
+                             IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" />
                 </Grid>
                 <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.Notes}" MaxLength="{Binding OtherNotesMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Grid.Row="0" Text="Software versions and other notes:" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.Notes}"
+                             MaxLength="{Binding OtherNotesMaxLength, Mode=OneTime}"
+                             IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" />
                 </Grid>
                 <Grid Grid.Row="3">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="Performance description details:" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.PerformanceDescriptionDetails}" MaxLength="{Binding PerfDescDetMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Grid.Row="0" Text="Performance description details:" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True"
+                             Text="{Binding SelectedFDL.PerformanceDescriptionDetails}"
+                             MaxLength="{Binding PerfDescDetMaxLength, Mode=OneTime}"
+                             IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto" />
                 </Grid>
             </Grid>
         </Grid>

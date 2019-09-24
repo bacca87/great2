@@ -9,8 +9,8 @@
 
         <!-- Accent and AppTheme setting -->
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-        
-         <!--Needed also if overridden. I used a random color--> 
+
+        <!--Needed also if overridden. I used a random color-->
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
 
         <!--Live Charts Styles-->
@@ -25,24 +25,20 @@
         <ResourceDictionary>
 
             <!--Default Colors overridden by usersettings-->
-            <SolidColorBrush x:Key="DefaultSaturdayColor" Color="#90caf9"/>
-            <SolidColorBrush x:Key="DefaultSundayColor" Color="#ef9a9a"/>
-            <SolidColorBrush x:Key="DefaultHolidayColor" Color="#ffcc80"/>
-            <SolidColorBrush x:Key="DefaultVacationColor" Color="#c5e1a5"/>
-            <SolidColorBrush x:Key="DefaultSickColor" Color="#f48fb1"/>
-            <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#eeeeee"/>
-            <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#ccffcc"/>
+            <SolidColorBrush x:Key="DefaultSaturdayColor" Color="#90caf9" />
+            <SolidColorBrush x:Key="DefaultSundayColor" Color="#ef9a9a" />
+            <SolidColorBrush x:Key="DefaultHolidayColor" Color="#ffcc80" />
+            <SolidColorBrush x:Key="DefaultVacationColor" Color="#c5e1a5" />
+            <SolidColorBrush x:Key="DefaultSickColor" Color="#f48fb1" />
+            <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#eeeeee" />
+            <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#ccffcc" />
 
-            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc"/>
-            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc"/>
-            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8"/>
-            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8"/>
+            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc" />
+            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc" />
+            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8" />
+            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8" />
 
-            <Style x:Key="AutoCompleteBoxStyle"  TargetType="toolkit:AutoCompleteBox">
-                
-                
-                
-            </Style>
+            <Style x:Key="AutoCompleteBoxStyle" TargetType="toolkit:AutoCompleteBox" />
 
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>

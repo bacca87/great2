@@ -1,36 +1,37 @@
 ﻿<mah:MetroWindow
-        x:Class="Great.Views.Dialogs.ExchangeLoginView"
-        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    x:Class="Great.Views.Dialogs.ExchangeLoginView"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Great.Views.Dialogs"
-        xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
-        mc:Ignorable="d"
-        DataContext="{Binding Settings, Source={StaticResource Locator}}"
-        Title="Microsoft Exchange Account" 
-        Height="150" Width="400"
-        WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Great.Views.Dialogs"
+    xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+    mc:Ignorable="d"
+    DataContext="{Binding Settings, Source={StaticResource Locator}}"
+    Title="Microsoft Exchange Account"
+    Height="150" Width="400"
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="NoResize">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Name="txtEmailAddress"/>
-        <PasswordBox Grid.Row="1" Grid.Column="1"  Name="txtPassword" ap:PasswordHelper.BindPassword="true"/>
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Name="btnCancel" Content="Cancel" Click="btnCancel_Click"/>
-            <Button Name="btnSave" Content="Save" Click="btnSave_Click"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="E-Mail Address:" HorizontalAlignment="Right" />
+        <Label Grid.Row="1" Grid.Column="0" Content="Password:" HorizontalAlignment="Right" />
+        <TextBox Grid.Row="0" Grid.Column="1" Name="txtEmailAddress" />
+        <PasswordBox Grid.Row="1" Grid.Column="1" Name="txtPassword" ap:PasswordHelper.BindPassword="true" />
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom">
+            <Button Name="btnCancel" Content="Cancel" Click="btnCancel_Click" />
+            <Button Name="btnSave" Content="Save" Click="btnSave_Click" />
         </StackPanel>
     </Grid>
 </mah:MetroWindow>

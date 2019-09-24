@@ -8,7 +8,6 @@ namespace Great.Models.Database
     {
         public Event()
         {
-
         }
 
         public long Id { get; set; }
@@ -33,6 +32,5 @@ namespace Great.Models.Database
 
         [ForeignKey("Type")]
         public virtual EventType Type1 { get; set; }
-
     }
 }

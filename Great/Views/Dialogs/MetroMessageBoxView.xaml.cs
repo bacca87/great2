@@ -20,6 +20,7 @@ namespace Great
             Result = MessageBoxResult.OK;
             Close();
         }
+
         private void BtnCancel_OnClick(object sender, RoutedEventArgs e)
         {
             Result = MessageBoxResult.Cancel;

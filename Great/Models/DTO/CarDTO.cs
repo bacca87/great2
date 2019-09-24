@@ -10,7 +10,9 @@ namespace Great.Models.DTO
         public string Model { get; set; }
         public long CarRentalCompany { get; set; }
 
-        public CarDTO() { }
+        public CarDTO()
+        {
+        }
 
         public CarDTO(Car car)
         {

@@ -8,6 +8,7 @@ namespace Great.Models.Database
     {
         [Key, Column(Order = 1)]
         public long Order { get; set; }
+
         [Key, Column(Order = 2)]
         public string Address { get; set; }
     }

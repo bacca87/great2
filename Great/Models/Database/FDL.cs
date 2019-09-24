@@ -16,6 +16,7 @@ namespace Great.Models.Database
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
+
         public long WeekNr { get; set; }
         public long StartDay { get; set; }
         public bool IsExtra { get; set; }
@@ -41,12 +42,16 @@ namespace Great.Models.Database
         public long? LastSAPSendTimestamp { get; set; }
 
         public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
+
         [ForeignKey("Factory")]
         public virtual Factory Factory1 { get; set; }
+
         [ForeignKey("Status")]
         public virtual FDLStatus FDLStatus { get; set; }
+
         [ForeignKey("Result")]
         public virtual FDLResult FDLResult { get; set; }
+
         public virtual ICollection<Timesheet> Timesheets { get; set; }
     }
 }

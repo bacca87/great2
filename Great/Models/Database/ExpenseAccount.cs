@@ -27,9 +27,12 @@ namespace Great.Models.Database
 
         [ForeignKey("Currency")]
         public virtual Currency Currency1 { get; set; }
+
         public virtual ICollection<Expense> Expenses { get; set; }
+
         [ForeignKey("Status")]
         public virtual FDLStatus FDLStatus { get; set; }
+
         [ForeignKey("FDL")]
         public virtual FDL FDL1 { get; set; }
     }

@@ -1,21 +1,21 @@
 ﻿<Fluent:RibbonWindow x:Class="Great.Views.MainView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"    
-    xmlns:conv="clr-namespace:Great.Utils.Converters"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-    Title="GREAT²" 
-    Width="1024" 
-    Height="768"
-    MinWidth="800"
-    MinHeight="600"  
-    GlassFrameThickness="0"
-    BorderThickness="0"
-    WindowStartupLocation="CenterScreen" 
-    Closing="RibbonWindow_Closing"
-    WindowState="Maximized">
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
+                     xmlns:conv="clr-namespace:Great.Utils.Converters"
+                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                     xmlns:ap="clr-namespace:Great.Utils.AttachedProperties"
+                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                     Title="GREAT²"
+                     Width="1024"
+                     Height="768"
+                     MinWidth="800"
+                     MinHeight="600"
+                     GlassFrameThickness="0"
+                     BorderThickness="0"
+                     WindowStartupLocation="CenterScreen"
+                     Closing="RibbonWindow_Closing"
+                     WindowState="Maximized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,108 +25,127 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Fluent:Ribbon Grid.Row="0" >
+        <Fluent:Ribbon Grid.Row="0">
             <Fluent:Ribbon.Resources>
-                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-                <conv:CompareIntConverter x:Key="CompareIntConverter"/>
+                <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+                <conv:CompareIntConverter x:Key="CompareIntConverter" />
             </Fluent:Ribbon.Resources>
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage Header="FILE">
                     <Fluent:BackstageTabControl Name="menuBackstageTabControl">
                         <Fluent:BackstageTabItem Header="Informations">
-                            <Frame Source="/Views/Pages/InformationsView.xaml"/>
+                            <Frame Source="/Views/Pages/InformationsView.xaml" />
                         </Fluent:BackstageTabItem>
                         <Fluent:BackstageTabItem Header="Import/Export">
-                            <Frame Source="/Views/Pages/ImportExportView.xaml"/>
+                            <Frame Source="/Views/Pages/ImportExportView.xaml" />
                         </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem />
-                        <Fluent:Button Name="settingsButton" Header="Settings" Click="SettingsButton_Click"/>
+                        <Fluent:Button Name="settingsButton" Header="Settings" Click="SettingsButton_Click" />
                         <Fluent:SeparatorTabItem />
-                        <Fluent:Button Name="exitButton" Header="Exit" Click="exitButton_Click"/>
+                        <Fluent:Button Name="exitButton" Header="Exit" Click="exitButton_Click" />
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
             <!--Contextual Tab Groups-->
-            <Fluent:Ribbon.ContextualGroups >
+            <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup x:Name="EditRentalGroup"
-                                     Header="RENT" 
-                                     DataContext="{Binding CarRental, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
-                                     Background="Green" 
-                                     BorderBrush="Green" >
-                </Fluent:RibbonContextualTabGroup>
+                                                 Header="RENT"
+                                                 DataContext="{Binding CarRental, Source={StaticResource Locator}}"
+                                                 Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                 Background="Green"
+                                                 BorderBrush="Green" />
                 <Fluent:RibbonContextualTabGroup x:Name="EditEAGroup"
-                                     Header="EA" 
-                                     DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
-                                     Background="Green" 
-                                     BorderBrush="Green" >
-                </Fluent:RibbonContextualTabGroup>
+                                                 Header="EA"
+                                                 DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
+                                                 Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                 Background="Green"
+                                                 BorderBrush="Green" />
                 <Fluent:RibbonContextualTabGroup x:Name="EditFdlGroup"
-                                     Header="FDL" 
-                                     DataContext="{Binding FDL, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
-                                     Background="Green" 
-                                     BorderBrush="Green" >
-                </Fluent:RibbonContextualTabGroup>
+                                                 Header="FDL"
+                                                 DataContext="{Binding FDL, Source={StaticResource Locator}}"
+                                                 Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                 Background="Green"
+                                                 BorderBrush="Green" />
                 <Fluent:RibbonContextualTabGroup x:Name="EditFactoryGroup"
-                                     Header="FACTORIES" 
-                                     DataContext="{Binding Factories, Source={StaticResource Locator}}"
-                                     Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"                                     
-                                     Background="Green" 
-                                     BorderBrush="Green" >
-                </Fluent:RibbonContextualTabGroup>
+                                                 Header="FACTORIES"
+                                                 DataContext="{Binding Factories, Source={StaticResource Locator}}"
+                                                 Visibility="{Binding ShowEditMenu, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                 Background="Green"
+                                                 BorderBrush="Green" />
             </Fluent:Ribbon.ContextualGroups>
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="TIMESHEETS"
                                   DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
-                                  Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                  Visibility="{Binding ElementName=timesheetsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=timesheetsTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Clipboard">
-                    <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Copy.png">
+                    <Fluent:Button Header="Copy" Command="{Binding CopyDayCommand}"
+                                   CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle"
+                                   Icon="pack://application:,,,/Great2;component/Images/16/Copy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Copy" Text="Copy the selected day." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Paste" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Paste.png">
+                    <Fluent:Button Header="Paste" Command="{Binding PasteDayCommand}"
+                                   CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle"
+                                   Icon="pack://application:,,,/Great2;component/Images/16/Paste.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Today" Text="Paste on selected day." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle" Icon="pack://application:,,,/Great2;component/Images/16/Cut.png">
+                    <Fluent:Button Header="Cut" Command="{Binding CutDayCommand}"
+                                   CommandParameter="{Binding SelectedWorkingDay}" SizeDefinition="Middle"
+                                   Icon="pack://application:,,,/Great2;component/Images/16/Cut.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cut" Text="Cut the selected day." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Day">
-                    <Fluent:RadioButton Header="Day of Work" IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}" Command="{Binding SetWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                    <Fluent:RadioButton Header="Day of Work"
+                                        IsChecked="{Binding SelectedWorkingDay.IsWorkDay, Mode=OneWay}"
+                                        Command="{Binding SetWorkDayCommand}"
+                                        CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Day of Work" Text="Set the selected day as day of work." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
-                    <Fluent:RadioButton Header="Day of Home Work" IsChecked="{Binding SelectedWorkingDay.IsHomeWork, Mode=OneWay}" Command="{Binding SetHomeWorkDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                    <Fluent:RadioButton Header="Day of Home Work"
+                                        IsChecked="{Binding SelectedWorkingDay.IsHomeWork, Mode=OneWay}"
+                                        Command="{Binding SetHomeWorkDayCommand}"
+                                        CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Day of Home Work" Text="Set the selected day as day of home work." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
-                    <Fluent:RadioButton Header="Sick Leave" IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}" Command="{Binding SetSickLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                    <Fluent:RadioButton Header="Sick Leave"
+                                        IsChecked="{Binding SelectedWorkingDay.IsSickLeave, Mode=OneWay}"
+                                        Command="{Binding SetSickLeaveCommand}"
+                                        CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Sick Leave" Text="Set the selected day as sick leave." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
-                    <Fluent:RadioButton Header="Vacation Day" IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}" Command="{Binding SetVacationDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                    <Fluent:RadioButton Header="Vacation Day"
+                                        IsChecked="{Binding SelectedWorkingDay.IsVacationDay, Mode=OneWay}"
+                                        Command="{Binding SetVacationDayCommand}"
+                                        CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
                             <Fluent:ScreenTip Title="Vacation Day" Text="Set the selected day as vacation day." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
-                    <Fluent:RadioButton Header="Special Leave Day" IsChecked="{Binding SelectedWorkingDay.IsSpecialLeave, Mode=OneWay}" Command="{Binding SetSpecialLeaveCommand}" CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
+                    <Fluent:RadioButton Header="Special Leave Day"
+                                        IsChecked="{Binding SelectedWorkingDay.IsSpecialLeave, Mode=OneWay}"
+                                        Command="{Binding SetSpecialLeaveCommand}"
+                                        CommandParameter="{Binding SelectedWorkingDay}" GroupName="DayType">
                         <Fluent:RadioButton.ToolTip>
-                            <Fluent:ScreenTip Title="Special Leave Day" Text="Set the selected day as special leave day." />
+                            <Fluent:ScreenTip Title="Special Leave Day"
+                                              Text="Set the selected day as special leave day." />
                         </Fluent:RadioButton.ToolTip>
                     </Fluent:RadioButton>
-                    <Fluent:Button Header="Today" Command="{Binding SelectTodayCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/calendar.png">
+                    <Fluent:Button Header="Today" Command="{Binding SelectTodayCommand}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/calendar.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Today" Text="Select today." />
                         </Fluent:Button.ToolTip>
@@ -147,80 +166,132 @@
                         <sys:Int32 x:Key="Nov">11</sys:Int32>
                         <sys:Int32 x:Key="Dec">12</sys:Int32>
                     </Fluent:RibbonGroupBox.Resources>
-                    <Fluent:ToggleButton Header="Jan" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jan}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jan}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/cabin-1.png">
+                    <Fluent:ToggleButton Header="Jan" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Jan}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jan}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/cabin-1.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="January" Text="Set January as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Feb" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Feb}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Feb}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/snowman.png">
+                    <Fluent:ToggleButton Header="Feb" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Feb}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Feb}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/snowman.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="February" Text="Set February as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Mar" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Mar}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Mar}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/051-bird.png">
+                    <Fluent:ToggleButton Header="Mar" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Mar}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Mar}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/051-bird.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="March" Text="Set March as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Apr" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Apr}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Apr}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/051-leaf.png">
+                    <Fluent:ToggleButton Header="Apr" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Apr}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Apr}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/051-leaf.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="April" Text="Set April as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="May" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource May}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource May}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/051-kite.png">
+                    <Fluent:ToggleButton Header="May" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource May}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource May}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/051-kite.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="May" Text="Set May as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jun" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jun}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jun}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
+                    <Fluent:ToggleButton Header="Jun" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Jun}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jun}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="June" Text="Set June as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
+                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Jul}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="July" Text="Set July as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
+                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Aug}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="August" Text="Set August as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Sep" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Sep}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Sep}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/mushrooms.png">
+                    <Fluent:ToggleButton Header="Sep" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Sep}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Sep}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/mushrooms.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="September" Text="Set September as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Oct" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Oct}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Oct}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/maple-leaf.png">
+                    <Fluent:ToggleButton Header="Oct" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Oct}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Oct}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/maple-leaf.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="October" Text="Set October as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Nov" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Nov}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Nov}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/pumpkin.png">
+                    <Fluent:ToggleButton Header="Nov" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Nov}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Nov}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/pumpkin.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="November" Text="Set November as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Dec" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Dec}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Dec}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/christmas-tree.png">
+                    <Fluent:ToggleButton Header="Dec" Command="{Binding SelectFirstDayInMonthCommand}"
+                                         CommandParameter="{Binding Source={StaticResource Dec}}"
+                                         IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Dec}}"
+                                         SizeDefinition="Large" GroupName="gMonth"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/christmas-tree.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="December" Text="Set December as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Year">
-                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                    <Fluent:TextBox Name="yearTextBox" Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center"
+                                    PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small"
+                                    MaxLength="4">
                         <Fluent:TextBox.ToolTip>
                             <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
                         </Fluent:TextBox.ToolTip>
                     </Fluent:TextBox>
                     <Fluent:Gallery MaxItemsInRow="2">
-                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small"
+                                       Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
                             </Fluent:Button.ToolTip>
                         </Fluent:Button>
-                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small"
+                                       Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
                             </Fluent:Button.ToolTip>
@@ -228,112 +299,141 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Other">
-                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click" LargeIcon="pack://application:,,,/Great2;component/Images/32/events.png">
+                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click"
+                                         LargeIcon="pack://application:,,,/Great2;component/Images/32/events.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="Events" Text="Manage calendar events." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="FDL" 
+            <Fluent:RibbonTabItem Header="FDL"
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="E-Mail">
-                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large"
+                                           LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
                         </Fluent:DropDownButton.ToolTip>
                         <Fluent:Gallery GroupBy="Tag" Orientation="Horizontal" ItemWidth="32" ItemHeight="32">
-                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Message:">
+                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}"
+                                                CommandParameter="{Binding SelectedFDL}" Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected FDL to the SAP system." />
+                                    <Fluent:ScreenTip Title="Send to SAP"
+                                                      Text="Send the selected FDL to the SAP system." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png"
+                                       Width="24" />
                             </Fluent:GalleryItem>
                             <Fluent:GalleryItem Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected FDL by email." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great2;component/Images/24/envelope.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/envelope.png"
+                                       Width="24" />
                             </Fluent:GalleryItem>
-                            <Fluent:GalleryItem Command="{Binding SendCancellationRequestCommand}" CommandParameter="{Binding SelectedFDL}" Tag="Special:">
+                            <Fluent:GalleryItem Command="{Binding SendCancellationRequestCommand}"
+                                                CommandParameter="{Binding SelectedFDL}" Tag="Special:">
                                 <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="Cancel FDL" Text="Send cancellation request for the selected FDL." />
+                                    <Fluent:ScreenTip Title="Cancel FDL"
+                                                      Text="Send cancellation request for the selected FDL." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great2;component/Images/24/sign-ban.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/sign-ban.png"
+                                       Width="24" />
                             </Fluent:GalleryItem>
                         </Fluent:Gallery>
                         <Fluent:MenuItem Header="Send...">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 <Fluent:TextBox Text="{Binding SendToEmailRecipient}" MinWidth="150" Margin="2" />
-                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/paper-plane.png">
+                                <Fluent:Button Command="{Binding SendByEmailCommand}"
+                                               CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small"
+                                               Icon="pack://application:,,,/Great2;component/Images/24/paper-plane.png">
                                     <Fluent:Button.ToolTip>
-                                        <Fluent:ScreenTip Title="Send" Text="Send the selected FDL by email to the entered address." />
+                                        <Fluent:ScreenTip Title="Send"
+                                                          Text="Send the selected FDL by email to the entered address." />
                                     </Fluent:Button.ToolTip>
                                 </Fluent:Button>
                             </StackPanel>
-                            <Separator/>
+                            <Separator />
                             <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding MRUEmailRecipients}">
                                 <Fluent:MenuItem.ItemContainerStyle>
                                     <Style TargetType="{x:Type Fluent:MenuItem}">
-                                        <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
+                                        <Setter Property="Command"
+                                                Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
                                         <Setter Property="CommandParameter" Value="{Binding}" />
                                     </Style>
                                 </Fluent:MenuItem.ItemContainerStyle>
                             </Fluent:MenuItem>
                         </Fluent:MenuItem>
-                        <Separator/>
-                        <Fluent:MenuItem Name="mEditRecipients" Header="Edit Recipients..." Icon="pack://application:,,,/Great2;component/Images/24/user-id.png" Click="mEditRecipients_Click">
+                        <Separator />
+                        <Fluent:MenuItem Name="mEditRecipients" Header="Edit Recipients..."
+                                         Icon="pack://application:,,,/Great2;component/Images/24/user-id.png"
+                                         Click="mEditRecipients_Click">
                             <Fluent:MenuItem.ToolTip>
-                                <Fluent:ScreenTip Title="Edit Recipients" Text="Edit the selected FDL order's recipients." />
+                                <Fluent:ScreenTip Title="Edit Recipients"
+                                                  Text="Edit the selected FDL order's recipients." />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/build-fdl.png">
+                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}"
+                                   CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/build-fdl.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Compile FDL" Text="Compile and save the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}"
+                                   CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected FDL as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}"
+                                   CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cancel FDL" Text="Cancel the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/folder.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}"
+                                   CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/folder.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open FDL" Text="Open the selected FDL with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}"
+                                   CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="CAR RENTAL" 
+            <Fluent:RibbonTabItem Header="CAR RENTAL"
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=carrentalTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
-                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteCommand}"
+                                   CommandParameter="{Binding SelectedRent}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Delete Rent" Text="Delete Selected Rent" />
                         </Fluent:Button.ToolTip>
@@ -343,74 +443,95 @@
                 <Fluent:RibbonGroupBox Header="Filters">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height ="Auto"/>
-                            <RowDefinition Height ="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <CheckBox IsChecked="{Binding EnableStartDateFilter}" Grid.Row="0" Grid.Column="0"></CheckBox>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Start Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <DatePicker Grid.Row="0" Grid.Column="2" DisplayDate="{Binding RentStartDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}" SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5"/>
-                        <CheckBox IsChecked="{Binding EnableEndDateFilter}" Grid.Row="1" Grid.Column="0"></CheckBox>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="End Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <DatePicker Grid.Row="1" Grid.Column="2" DisplayDate="{Binding RentEndDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}" SelectedDate="{Binding RentEndDateFilter}" Margin="5,3,5,5"/>
-                        <TextBlock Grid.Row="0" Grid.Column="3" Text="Brand:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <Fluent:TextBox Grid.Row="0" Grid.Column="4" Width="100" Text="{Binding ModelBrandFilter}" Margin="0,3,3,5"/>
-                        <TextBlock Grid.Row="1" Grid.Column="3" Text="License Plate:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <Fluent:TextBox Grid.Row="1" Grid.Column="4" Width="100"  Text="{Binding LicencePlateFilter}" Margin="0,3,3,5"/>
+                        <CheckBox IsChecked="{Binding EnableStartDateFilter}" Grid.Row="0" Grid.Column="0" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Start Date:" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                        <DatePicker Grid.Row="0" Grid.Column="2"
+                                    DisplayDate="{Binding RentStartDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}"
+                                    SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5" />
+                        <CheckBox IsChecked="{Binding EnableEndDateFilter}" Grid.Row="1" Grid.Column="0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="End Date:" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                        <DatePicker Grid.Row="1" Grid.Column="2"
+                                    DisplayDate="{Binding RentEndDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}"
+                                    SelectedDate="{Binding RentEndDateFilter}" Margin="5,3,5,5" />
+                        <TextBlock Grid.Row="0" Grid.Column="3" Text="Brand:" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                        <Fluent:TextBox Grid.Row="0" Grid.Column="4" Width="100" Text="{Binding ModelBrandFilter}"
+                                        Margin="0,3,3,5" />
+                        <TextBlock Grid.Row="1" Grid.Column="3" Text="License Plate:" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                        <Fluent:TextBox Grid.Row="1" Grid.Column="4" Width="100" Text="{Binding LicencePlateFilter}"
+                                        Margin="0,3,3,5" />
                     </Grid>
-                    <Fluent:Button Header="Apply Filter" Command="{Binding ApplyFilters}" SizeDefinition="Middle"/>
-                    <Fluent:Button Header="Clear Filter" Command="{Binding RemoveFilters}" SizeDefinition="Middle"/>
+                    <Fluent:Button Header="Apply Filter" Command="{Binding ApplyFilters}" SizeDefinition="Middle" />
+                    <Fluent:Button Header="Clear Filter" Command="{Binding RemoveFilters}" SizeDefinition="Middle" />
                 </Fluent:RibbonGroupBox>
 
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="EXPENSE ACCOUNT" 
+            <Fluent:RibbonTabItem Header="EXPENSE ACCOUNT"
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=expenseAccountTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="E-Mail">
-                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large"
+                                           LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
                         <Fluent:DropDownButton.ToolTip>
-                            <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
+                            <Fluent:ScreenTip Title="Send EA by Email"
+                                              Text="Send the selected expense account by email." />
                         </Fluent:DropDownButton.ToolTip>
                         <Fluent:Gallery GroupBy="Tag" Orientation="Horizontal" ItemWidth="32" ItemHeight="32">
-                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedEA}" Tag="Message:">
+                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}"
+                                                CommandParameter="{Binding SelectedEA}" Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system." />
+                                    <Fluent:ScreenTip Title="Send to SAP"
+                                                      Text="Send the selected expense account to the SAP system." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png"
+                                       Width="24" />
                             </Fluent:GalleryItem>
                             <Fluent:GalleryItem Tag="Message:">
                                 <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="New Message" Text="Send the selected expense account by email." />
+                                    <Fluent:ScreenTip Title="New Message"
+                                                      Text="Send the selected expense account by email." />
                                 </Fluent:GalleryItem.ToolTip>
-                                <Image Source="pack://application:,,,/Great2;component/Images/24/envelope.png" Width="24" />
+                                <Image Source="pack://application:,,,/Great2;component/Images/24/envelope.png"
+                                       Width="24" />
                             </Fluent:GalleryItem>
                         </Fluent:Gallery>
                         <Fluent:MenuItem Header="Send...">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="To:" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 <Fluent:TextBox Text="{Binding SendToEmailRecipient}" MinWidth="150" Margin="2" />
-                                <Fluent:Button Command="{Binding SendByEmailCommand}" CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/paper-plane.png">
+                                <Fluent:Button Command="{Binding SendByEmailCommand}"
+                                               CommandParameter="{Binding SendToEmailRecipient}" SizeDefinition="Small"
+                                               Icon="pack://application:,,,/Great2;component/Images/24/paper-plane.png">
                                     <Fluent:Button.ToolTip>
-                                        <Fluent:ScreenTip Title="Send" Text="Send the selected expense account by email to the entered address." />
+                                        <Fluent:ScreenTip Title="Send"
+                                                          Text="Send the selected expense account by email to the entered address." />
                                     </Fluent:Button.ToolTip>
                                 </Fluent:Button>
                             </StackPanel>
-                            <Separator/>
+                            <Separator />
                             <Fluent:MenuItem Header="Recent Recipients" ItemsSource="{Binding MRUEmailRecipients}">
                                 <Fluent:MenuItem.ItemContainerStyle>
                                     <Style TargetType="{x:Type Fluent:MenuItem}">
-                                        <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
+                                        <Setter Property="Command"
+                                                Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Fluent:MenuItem}}, Path=DataContext.SendByEmailCommand}" />
                                         <Setter Property="CommandParameter" Value="{Binding}" />
                                     </Style>
                                 </Fluent:MenuItem.ItemContainerStyle>
@@ -419,74 +540,93 @@
                     </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/build-ea.png">
+                    <Fluent:Button Header="Compile" Command="{Binding CompileCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/build-ea.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Compile EA" Text="Compile and save the selected EA." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/money-bag.png">
+                    <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/money-bag.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Refunded" Text="Mark the selected EA as refunded." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
+                    <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Mark as Accepted" Text="Mark the selected EA as accepted." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Cancel" Command="{Binding MarkAsCancelledCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Cancel EA" Text="Cancel the selected EA." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Tools">
-                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/folder.png">
+                    <Fluent:Button Header="Open" Command="{Binding OpenCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/folder.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Open EA" Text="Open the selected EA with the default viewer." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected EA to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="FACTORIES" 
+            <Fluent:RibbonTabItem Header="FACTORIES"
                                   DataContext="{Binding Factories, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=factoriesTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=factoriesTab, Path=IsSelected,UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="New" Command="{Binding NewFactoryCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/factory.png">
+                    <Fluent:Button Header="New" Command="{Binding NewFactoryCommand}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/factory.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add new Factory" Text="Add a new factory" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Delete" Command="{Binding DeleteFactoryCommand}" CommandParameter="{Binding SelectedFactory}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
+                    <Fluent:Button Header="Delete" Command="{Binding DeleteFactoryCommand}"
+                                   CommandParameter="{Binding SelectedFactory}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-ban.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Delete Factory" Text="Delete the selected factory" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="STATISTICS" 
+            <Fluent:RibbonTabItem Header="STATISTICS"
                                   DataContext="{Binding Statistics, Source={StaticResource Locator}}"
                                   Visibility="{Binding ElementName=statsTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=statsTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="Year">
-                    <Fluent:TextBox Text="{Binding SelectedYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                    <Fluent:TextBox Text="{Binding SelectedYear, Mode=TwoWay}" TextAlignment="Center"
+                                    PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small"
+                                    MaxLength="4">
                         <Fluent:TextBox.ToolTip>
                             <Fluent:ScreenTip Title="Year" Text="Set the year." />
                         </Fluent:TextBox.ToolTip>
                     </Fluent:TextBox>
                     <Fluent:Gallery MaxItemsInRow="2">
-                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small"
+                                       Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
                             </Fluent:Button.ToolTip>
                         </Fluent:Button>
-                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small"
+                                       Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
                             <Fluent:Button.ToolTip>
                                 <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
                             </Fluent:Button.ToolTip>
@@ -494,48 +634,56 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="EDIT" 
-                                  DataContext="{Binding CarRental, Source={StaticResource Locator}}"                              
-                                  IsSelected="{Binding ShowEditMenu}"                                   
+            <Fluent:RibbonTabItem Header="EDIT"
+                                  DataContext="{Binding CarRental, Source={StaticResource Locator}}"
+                                  IsSelected="{Binding ShowEditMenu}"
                                   Group="{Binding Source={x:Reference EditRentalGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedRent}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}"
+                                   CommandParameter="{Binding SelectedRent}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="EDIT" 
+            <Fluent:RibbonTabItem Header="EDIT"
                                   DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
                                   IsSelected="{Binding ShowEditMenu}"
                                   Group="{Binding Source={x:Reference EditEAGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}"
+                                   CommandParameter="{Binding SelectedEA}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Expense Account" Text="Save the current expense account." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="EDIT" 
+            <Fluent:RibbonTabItem Header="EDIT"
                                   DataContext="{Binding FDL, Source={StaticResource Locator}}"
                                   IsSelected="{Binding ShowEditMenu}"
                                   Group="{Binding Source={x:Reference EditFdlGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveCommand}"
+                                   CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save fdl" Text="Save the current FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="EDIT" 
+            <Fluent:RibbonTabItem Header="EDIT"
                                   DataContext="{Binding Factories, Source={StaticResource Locator}}"
                                   IsSelected="{Binding ShowEditMenu}"
                                   Group="{Binding Source={x:Reference EditFactoryGroup}}">
                 <Fluent:RibbonGroupBox Header="Edit">
-                    <Fluent:Button Header="Save" Command="{Binding SaveFactoryCommand}" CommandParameter="{Binding SelectedFactory}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
+                    <Fluent:Button Header="Save" Command="{Binding SaveFactoryCommand}"
+                                   CommandParameter="{Binding SelectedFactory}" SizeDefinition="Large"
+                                   LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save factory" Text="Save the current Factory." />
                         </Fluent:Button.ToolTip>
@@ -543,7 +691,8 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <TabControl Name="NavigationTabControl" PreviewMouseDown="NavigationTabControl_PreviewMouseDown" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"            
+        <TabControl Name="NavigationTabControl" PreviewMouseDown="NavigationTabControl_PreviewMouseDown" Grid.Row="1"
+                    TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MetroTabControl}">
@@ -551,8 +700,9 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabControl}">
                                 <DockPanel KeyboardNavigation.TabNavigation="Local" LastChildFill="True">
-                                    <TabPanel IsItemsHost="True"                                              
-                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}" Background="{DynamicResource GrayBrush10}"/>
+                                    <TabPanel IsItemsHost="True"
+                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}"
+                                              Background="{DynamicResource GrayBrush10}" />
                                     <ContentPresenter ContentSource="SelectedContent" />
                                 </DockPanel>
                             </ControlTemplate>
@@ -566,18 +716,19 @@
                                 <Border Name="Border">
                                     <Grid>
                                         <mah:Badged Name="NotificationCount" Margin="0,10,3,0"
-                                                   Badge="{Binding (ap:NotificationHelper.NotificationCount), Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                                                    Badge="{Binding (ap:NotificationHelper.NotificationCount), Mode=TwoWay, RelativeSource={RelativeSource Self}}" />
                                         <ContentPresenter x:Name="ContentSite"
                                                           VerticalAlignment="Center"
                                                           HorizontalAlignment="Center"
                                                           ContentSource="Header"
                                                           Margin="10,5"
-                                                          TextElement.FontSize="25"/>
+                                                          TextElement.FontSize="25" />
                                     </Grid>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="{DynamicResource AccentColorBrush}" />
+                                        <Setter TargetName="ContentSite" Property="TextElement.Foreground"
+                                                Value="{DynamicResource AccentColorBrush}" />
                                     </Trigger>
                                     <Trigger Property="ap:NotificationHelper.NotificationCount" Value="0">
                                         <Setter TargetName="NotificationCount" Property="Visibility" Value="Hidden" />
@@ -588,35 +739,38 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Name="timesheetsTab"  Header="Timesheets" ap:NotificationHelper.NotificationCount="0">
-                <Frame  Source="/Views/Pages/TimesheetsView.xaml"/>
+            <TabItem Name="timesheetsTab" Header="Timesheets" ap:NotificationHelper.NotificationCount="0">
+                <Frame Source="/Views/Pages/TimesheetsView.xaml" />
             </TabItem>
             <TabItem Name="fdlTab" Header="FDL" ap:NotificationHelper.NotificationCount="{Binding NewFDLCount}">
-                <Frame Source="/Views/Pages/FDLView.xaml"/>
+                <Frame Source="/Views/Pages/FDLView.xaml" />
             </TabItem>
-            <TabItem Name="expenseAccountTab" Header="Expense Account"  ap:NotificationHelper.NotificationCount="{Binding NewExpenseAccountsCount}">
-                <Frame Source="/Views/Pages/ExpenseAccountView.xaml"/>
+            <TabItem Name="expenseAccountTab" Header="Expense Account"
+                     ap:NotificationHelper.NotificationCount="{Binding NewExpenseAccountsCount}">
+                <Frame Source="/Views/Pages/ExpenseAccountView.xaml" />
             </TabItem>
             <TabItem Name="carrentalTab" Header="Car Rental" ap:NotificationHelper.NotificationCount="0">
-                <Frame Source="/Views/Pages/CarRentalView.xaml"/>
+                <Frame Source="/Views/Pages/CarRentalView.xaml" />
             </TabItem>
-            <TabItem Name="factoriesTab" Header="Factories" ap:NotificationHelper.NotificationCount="{Binding NewFactoriesCount}">
-                <Frame Source="/Views/Pages/FactoriesView.xaml"/>
+            <TabItem Name="factoriesTab" Header="Factories"
+                     ap:NotificationHelper.NotificationCount="{Binding NewFactoriesCount}">
+                <Frame Source="/Views/Pages/FactoriesView.xaml" />
             </TabItem>
             <!--<TabItem Name="eventsTab" Header="Events" ap:NotificationHelper.NotificationCount="0">
                 <Frame Source="/Views/Pages/EventsView.xaml"/>
             </TabItem>-->
             <TabItem Name="statsTab" Header="Statistics" ap:NotificationHelper.NotificationCount="0">
-                <Frame Source="/Views/Pages/StatisticsView.xaml"/>
+                <Frame Source="/Views/Pages/StatisticsView.xaml" />
 
             </TabItem>
         </TabControl>
         <Fluent:StatusBar Grid.Row="2" DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <Fluent:StatusBar.Resources>
-                <conv:StringToUpperCaseConverter x:Key="StringToUpperCaseConverter"/>
+                <conv:StringToUpperCaseConverter x:Key="StringToUpperCaseConverter" />
             </Fluent:StatusBar.Resources>
             <Fluent:StatusBarItem Title="Exchange Status" HorizontalAlignment="Left">
-                <TextBlock Margin="5,0,0,0" Text="{Binding ExchangeStatus, Converter={StaticResource StringToUpperCaseConverter}, StringFormat={}EXCHANGE: {0}}"/>
+                <TextBlock Margin="5,0,0,0"
+                           Text="{Binding ExchangeStatus, Converter={StaticResource StringToUpperCaseConverter}, StringFormat={}EXCHANGE: {0}}" />
             </Fluent:StatusBarItem>
         </Fluent:StatusBar>
     </Grid>

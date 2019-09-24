@@ -15,10 +15,12 @@ namespace Great.Models.Database
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Timestamp { get; set; }
+
         public long Type { get; set; }
 
         [ForeignKey("Type")]
         public virtual DayType DayType { get; set; }
+
         public virtual ICollection<Timesheet> Timesheets { get; set; }
     }
 }

@@ -8,12 +8,12 @@ namespace Great.Utils.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName((int)value);
+            return CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName((int) value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return DateTime.ParseExact((string)value, "MMMM", CultureInfo.InvariantCulture).Month;
+            return DateTime.ParseExact((string) value, "MMMM", CultureInfo.InvariantCulture).Month;
         }
     }
 }

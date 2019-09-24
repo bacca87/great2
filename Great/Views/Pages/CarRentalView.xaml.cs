@@ -8,25 +8,21 @@ namespace Great.Views.Pages
     /// </summary>
     public partial class CarRental : Page
     {
-
         public CarRental()
         {
             InitializeComponent();
-
         }
 
         private void ComboBox_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-
         }
 
         private void CmbLicenxePlate_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             if (e.Source is ComboBox)
             {
-                ComboBox cb = (ComboBox)e.Source;
+                ComboBox cb = (ComboBox) e.Source;
                 cb.Text = cb.Text?.ToUpper();
-
             }
         }
 
@@ -40,6 +36,5 @@ namespace Great.Views.Pages
         {
             MaskedTextBoxHelper.PreviewTextInput(sender, e);
         }
-
     }
 }

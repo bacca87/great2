@@ -19,7 +19,9 @@ namespace Great.Models.DTO
         public TimeSpan? WorkStartTimePM_t { get; set; }
         public TimeSpan? WorkEndTimePM_t { get; set; }
 
-        public TimesheetDTO() { }
+        public TimesheetDTO()
+        {
+        }
 
         public TimesheetDTO(Timesheet timesheet)
         {

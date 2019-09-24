@@ -7,11 +7,13 @@ namespace Great.Utils
     public class BaseImport
     {
         #region Properties
+
         protected Logger log = null;
 
         public ConcurrentQueue<string> Output { get; internal set; }
 
         private string _status;
+
         public string Status
         {
             get
@@ -31,6 +33,7 @@ namespace Great.Utils
         }
 
         private bool _IsCompleted;
+
         public bool IsCompleted
         {
             get
@@ -50,6 +53,7 @@ namespace Great.Utils
         }
 
         private bool _IsCancelled;
+
         public bool IsCancelled
         {
             get
@@ -67,6 +71,7 @@ namespace Great.Utils
                 }
             }
         }
+
         #endregion
 
         protected BaseImport(Logger log)
@@ -76,9 +81,17 @@ namespace Great.Utils
             Output = new ConcurrentQueue<string>();
         }
 
-        public virtual void Start() { }
-        public virtual void Cancel() { }
-        public virtual void Close() { }
+        public virtual void Start()
+        {
+        }
+
+        public virtual void Cancel()
+        {
+        }
+
+        public virtual void Close()
+        {
+        }
 
         protected void StatusChanged(string status)
         {

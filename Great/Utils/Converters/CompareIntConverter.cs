@@ -8,12 +8,12 @@ namespace Great.Utils.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (int)parameter == (int)value;
+            return (int) parameter == (int) value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? parameter : Binding.DoNothing;
+            return (bool) value ? parameter : Binding.DoNothing;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Great.Models.Database
         {
             this.Cars = new HashSet<Car>();
         }
+
         public long Id { get; set; }
         public string Name { get; set; }
 

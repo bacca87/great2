@@ -7,7 +7,9 @@ namespace Great.Models.DTO
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public FDLResultDTO() { }
+        public FDLResultDTO()
+        {
+        }
 
         public FDLResultDTO(FDLResult result)
         {
