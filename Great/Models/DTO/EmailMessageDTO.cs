@@ -24,8 +24,8 @@ namespace Great.Models.DTO
 
     public enum EEmailMessageType
     {
-        Message,
-        SAP_Notification,
-        Cancellation_Request
+        Message
+        , SAP_Notification
+        , Cancellation_Request
     }
 }

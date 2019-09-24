@@ -19,6 +19,7 @@ namespace Great.ViewModels
     public class FDLImportWizardViewModel : ViewModelBase
     {
         #region Properties
+
         private readonly Logger log = LogManager.GetLogger("FDLImport");
         private DispatcherTimer refreshTimer = new DispatcherTimer();
         private FDLImport _fdlImport;
@@ -121,10 +122,12 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand StartImportCommand { get; set; }
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand CancelCommand { get; set; }
         public RelayCommand FinishCommand { get; set; }
+
         #endregion
 
         /// <summary>

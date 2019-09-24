@@ -10,9 +10,11 @@ namespace Great.Utils.Converters
         {
             try
             {
-                if (value != null) return ((TimeSpan)value).ToString("hh\\:mm");
+                if (value != null) return ((TimeSpan) value).ToString("hh\\:mm");
             }
-            catch { }
+            catch
+            {
+            }
 
             return value;
         }
@@ -32,7 +34,9 @@ namespace Great.Utils.Converters
                     return time;
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return value;
         }

@@ -12,7 +12,10 @@ namespace Great.Utils.Messages
         //   content:
         //     A value to be passed to recipient(s).
         //       
-        public DeletedItemMessage(T content) : base(content) { }
+        public DeletedItemMessage(T content) : base(content)
+        {
+        }
+
         //
         // Summary:
         //     Initializes a new instance of the DeletedItemMessage class.
@@ -24,6 +27,8 @@ namespace Great.Utils.Messages
         //   content:
         //     A value to be passed to recipient(s).
         //        
-        public DeletedItemMessage(object sender, T content) : base(sender, content) { }
+        public DeletedItemMessage(object sender, T content) : base(sender, content)
+        {
+        }
     }
 }

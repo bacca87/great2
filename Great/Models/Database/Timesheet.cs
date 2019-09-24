@@ -20,6 +20,7 @@ namespace Great.Models.Database
 
         [ForeignKey("Timestamp")]
         public virtual Day Day { get; set; }
+
         [ForeignKey("FDL")]
         public virtual FDL FDL1 { get; set; }
     }

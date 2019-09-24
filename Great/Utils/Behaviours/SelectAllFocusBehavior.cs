@@ -8,7 +8,7 @@ namespace Great.Utils.Behaviours
     {
         public static bool GetEnable(FrameworkElement frameworkElement)
         {
-            return (bool)frameworkElement.GetValue(EnableProperty);
+            return (bool) frameworkElement.GetValue(EnableProperty);
         }
 
         public static void SetEnable(FrameworkElement frameworkElement, bool value)
@@ -17,19 +17,19 @@ namespace Great.Utils.Behaviours
         }
 
         public static readonly DependencyProperty EnableProperty =
-                 DependencyProperty.RegisterAttached("Enable",
-                    typeof(bool), typeof(SelectAllFocusBehavior),
-                    new FrameworkPropertyMetadata(false, OnEnableChanged));
+            DependencyProperty.RegisterAttached("Enable",
+            typeof(bool), typeof(SelectAllFocusBehavior),
+            new FrameworkPropertyMetadata(false, OnEnableChanged));
 
         private static void OnEnableChanged
-                   (DependencyObject d, DependencyPropertyChangedEventArgs e)
+            (DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var frameworkElement = d as FrameworkElement;
             if (frameworkElement == null) return;
 
             if (e.NewValue is bool == false) return;
 
-            if ((bool)e.NewValue)
+            if ((bool) e.NewValue)
             {
                 frameworkElement.GotFocus += SelectAll;
                 frameworkElement.PreviewMouseDown += IgnoreMouseButton;
@@ -45,12 +45,12 @@ namespace Great.Utils.Behaviours
         {
             var frameworkElement = e.OriginalSource as FrameworkElement;
             if (frameworkElement is TextBox)
-                ((TextBoxBase)frameworkElement).SelectAll();
-            else if (frameworkElement is PasswordBox) ((PasswordBox)frameworkElement).SelectAll();
+                ((TextBoxBase) frameworkElement).SelectAll();
+            else if (frameworkElement is PasswordBox) ((PasswordBox) frameworkElement).SelectAll();
         }
 
         private static void IgnoreMouseButton
-                (object sender, System.Windows.Input.MouseButtonEventArgs e)
+            (object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var frameworkElement = sender as FrameworkElement;
             if (frameworkElement == null || frameworkElement.IsKeyboardFocusWithin) return;

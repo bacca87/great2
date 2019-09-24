@@ -69,10 +69,11 @@ namespace Great.Utils.Extensions
 
                 return true;
             }
-            catch { }
+            catch
+            {
+            }
 
             return false;
         }
-
     }
 }

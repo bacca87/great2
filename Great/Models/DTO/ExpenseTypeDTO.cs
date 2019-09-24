@@ -7,7 +7,9 @@ namespace Great.Models.DTO
         public long Id { get; set; }
         public string Description { get; set; }
 
-        public ExpenseTypeDTO() { }
+        public ExpenseTypeDTO()
+        {
+        }
 
         public ExpenseTypeDTO(ExpenseType type)
         {

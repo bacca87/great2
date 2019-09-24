@@ -7,7 +7,7 @@ namespace Great.Utils.AttachedProperties
     {
         public static bool GetAutoScrollToEnd(DependencyObject obj)
         {
-            return (bool)obj.GetValue(AutoScrollToEndProperty);
+            return (bool) obj.GetValue(AutoScrollToEndProperty);
         }
 
         public static void SetAutoScrollToEnd(DependencyObject obj, bool value)
@@ -17,7 +17,7 @@ namespace Great.Utils.AttachedProperties
 
         // Using a DependencyProperty as the backing store for AutoScrollToEnd.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AutoScrollToEndProperty =
-        DependencyProperty.RegisterAttached("AutoScrollToEnd", typeof(bool), typeof(TextBoxHelper), new PropertyMetadata(false, AutoScrollToEndPropertyChanged));
+            DependencyProperty.RegisterAttached("AutoScrollToEnd", typeof(bool), typeof(TextBoxHelper), new PropertyMetadata(false, AutoScrollToEndPropertyChanged));
 
         private static void AutoScrollToEndPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

@@ -17,12 +17,11 @@ namespace Great.Views.Pages
 
         private void Page_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue == true) _viewModel.RefreshAllData();
+            if ((bool) e.NewValue == true) _viewModel.RefreshAllData();
         }
 
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-
         }
 
         private void GeoMapPlants_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -32,7 +31,6 @@ namespace Great.Views.Pages
 
         private void GeoMap_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
-
         }
     }
 }

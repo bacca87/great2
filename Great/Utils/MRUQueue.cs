@@ -15,10 +15,14 @@ namespace Great.Utils
             MaxSize = maxSize;
 
             if (collection != null)
-                foreach (T item in collection.Take(maxSize)) base.Add(item);
+                foreach (T item in collection.Take(maxSize))
+                    base.Add(item);
         }
 
-        public new void Add(T obj) => Insert(0, obj);
+        public new void Add(T obj)
+        {
+            Insert(0, obj);
+        }
 
         protected override void InsertItem(int index, T item)
         {

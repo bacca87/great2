@@ -11,7 +11,9 @@ namespace Great.ViewModels.Database
     public class ExpenseAccountEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
+
         private long _Id;
+
         public long Id
         {
             get => _Id;
@@ -19,6 +21,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _FDL;
+
         public string FDL
         {
             get => _FDL;
@@ -26,6 +29,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _CdC;
+
         public long? CdC
         {
             get => _CdC;
@@ -33,6 +37,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _Currency;
+
         public string Currency
         {
             get => _Currency;
@@ -44,6 +49,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _Notes;
+
         public string Notes
         {
             get => _Notes;
@@ -51,6 +57,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _Status;
+
         public long Status
         {
             get => _Status;
@@ -62,6 +69,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _LastError;
+
         public string LastError
         {
             get => _LastError;
@@ -69,6 +77,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _FileName;
+
         public string FileName
         {
             get => _FileName;
@@ -76,6 +85,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsRefunded;
+
         public bool IsRefunded
         {
             get => _IsRefunded;
@@ -83,6 +93,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _NotifyAsNew;
+
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
@@ -94,6 +105,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsCompiled;
+
         public bool IsCompiled
         {
             get => _IsCompiled;
@@ -101,6 +113,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsReadOnly;
+
         public bool IsReadOnly
         {
             get => _IsReadOnly;
@@ -108,6 +121,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _LastSAPSendTimestamp;
+
         public long? LastSAPSendTimestamp
         {
             get => _LastSAPSendTimestamp;
@@ -115,6 +129,7 @@ namespace Great.ViewModels.Database
         }
 
         private CurrencyDTO _Currency1;
+
         public CurrencyDTO Currency1
         {
             get => _Currency1;
@@ -122,6 +137,7 @@ namespace Great.ViewModels.Database
         }
 
         private ObservableCollectionEx<ExpenseEVM> _Expenses;
+
         public ObservableCollectionEx<ExpenseEVM> Expenses
         {
             get => _Expenses;
@@ -129,6 +145,7 @@ namespace Great.ViewModels.Database
         }
 
         private FDLStatusDTO _FDLStatus;
+
         public FDLStatusDTO FDLStatus
         {
             get => _FDLStatus;
@@ -136,6 +153,7 @@ namespace Great.ViewModels.Database
         }
 
         private FDLDTO _FDL1;
+
         public FDLDTO FDL1
         {
             get => _FDL1;
@@ -145,6 +163,7 @@ namespace Great.ViewModels.Database
         public string FilePath => ApplicationSettings.Directories.ExpenseAccount + FileName;
 
         private bool _IsNew;
+
         public bool IsNew // used for sorting purpose
         {
             get => _IsNew;
@@ -152,6 +171,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _CurrencyCode;
+
         public string CurrencyCode
         {
             get => _CurrencyCode;
@@ -160,10 +180,10 @@ namespace Great.ViewModels.Database
 
         public EFDLStatus EStatus
         {
-            get => (EFDLStatus)Status;
+            get => (EFDLStatus) Status;
             set
             {
-                Status = (long)value;
+                Status = (long) value;
                 IsNew = value == EFDLStatus.New;
                 RaisePropertyChanged();
             }
@@ -179,15 +199,19 @@ namespace Great.ViewModels.Database
         public double? TotalAmount => Expenses?.Sum(x => x.TotalAmount);
 
         private bool _InsertExpenseEnabled;
+
         public bool InsertExpenseEnabled
         {
             get => _InsertExpenseEnabled;
             set => Set(ref _InsertExpenseEnabled, value);
         }
+
         #endregion;
 
         #region Display Properties
+
         public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}";
+
         #endregion
 
         public ExpenseAccountEVM(ExpenseAccount ea = null)
@@ -200,7 +224,6 @@ namespace Great.ViewModels.Database
             if (ea != null) Global.Mapper.Map(ea, this);
 
             IsChanged = false;
-
         }
 
         private void UpdateTotals()
@@ -240,8 +263,8 @@ namespace Great.ViewModels.Database
                 Global.Mapper.Map(exp, this);
                 return true;
             }
+
             return false;
         }
-
     }
 }

@@ -9,7 +9,7 @@ namespace Great.Utils.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var isChecked = (bool)value;
+            var isChecked = (bool) value;
             return isChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 

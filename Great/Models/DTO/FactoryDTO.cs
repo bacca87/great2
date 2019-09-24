@@ -9,7 +9,9 @@ namespace Great.Models.DTO
         public string Address { get; set; }
         public bool OverrideAddressOnFDL { get; set; }
 
-        public FactoryDTO() { }
+        public FactoryDTO()
+        {
+        }
 
         public FactoryDTO(Factory factory)
         {

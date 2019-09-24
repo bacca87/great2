@@ -24,6 +24,7 @@ namespace Great.ViewModels
     public class FDLViewModel : ViewModelBase
     {
         #region Properties
+
         public int PerfDescMaxLength => ApplicationSettings.FDL.PerformanceDescriptionMaxLength;
         public int FinalTestResultMaxLength => ApplicationSettings.FDL.FinalTestResultMaxLength;
         public int OtherNotesMaxLength => ApplicationSettings.FDL.OtherNotesMaxLength;
@@ -32,6 +33,7 @@ namespace Great.ViewModels
         private FDLManager _fdlManager;
 
         private bool _isInputEnabled = false;
+
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
@@ -44,6 +46,7 @@ namespace Great.ViewModels
         }
 
         private bool _showEditMenu;
+
         public bool ShowEditMenu
         {
             get => _showEditMenu;
@@ -51,6 +54,7 @@ namespace Great.ViewModels
         }
 
         private ObservableCollectionEx<FDLEVM> _FDLs;
+
         public ObservableCollectionEx<FDLEVM> FDLs
         {
             get => _FDLs;
@@ -58,6 +62,7 @@ namespace Great.ViewModels
         }
 
         private FDLEVM _selectedFDL;
+
         public FDLEVM SelectedFDL
         {
             get => _selectedFDL;
@@ -73,13 +78,16 @@ namespace Great.ViewModels
                     IsInputEnabled = true;
                 }
                 else
+                {
                     IsInputEnabled = false;
+                }
 
                 ShowEditMenu = false;
             }
         }
 
         private TimesheetDTO _selectedTimesheet;
+
         public TimesheetDTO SelectedTimesheet
         {
             get => _selectedTimesheet;
@@ -90,6 +98,7 @@ namespace Great.ViewModels
         public MRUCollection<string> MRUEmailRecipients { get; set; }
 
         private string _sendToEmailRecipient;
+
         public string SendToEmailRecipient
         {
             get => _sendToEmailRecipient;
@@ -97,6 +106,7 @@ namespace Great.ViewModels
         }
 
         private ObservableCollection<FactoryDTO> _factories;
+
         public ObservableCollection<FactoryDTO> Factories
         {
             get => _factories;
@@ -104,9 +114,11 @@ namespace Great.ViewModels
         }
 
         public Action<long> OnFactoryLink { get; set; }
+
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand ClearCommand { get; set; }
         public RelayCommand<FDLEVM> SaveCommand { get; set; }
 
@@ -123,6 +135,7 @@ namespace Great.ViewModels
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
         public RelayCommand FactoryLinkCommand { get; set; }
+
         #endregion
 
         /// <summary>
@@ -180,10 +193,10 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    if (item.Content != null && !FDLs.Any(f => f.Id == item.Content.Id)) FDLs.Add(item.Content);
-                })
+            new Action(() =>
+            {
+                if (item.Content != null && !FDLs.Any(f => f.Id == item.Content.Id)) FDLs.Add(item.Content);
+            })
             );
         }
 
@@ -193,20 +206,20 @@ namespace Great.ViewModels
 
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
-                    {
-                        FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.Id);
+                    FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                        if (fdl != null)
-                        {
-                            fdl.Status = item.Content.Status;
-                            fdl.NotifyAsNew = item.Content.NotifyAsNew;
-                            fdl.LastError = item.Content.LastError;
-                        }
+                    if (fdl != null)
+                    {
+                        fdl.Status = item.Content.Status;
+                        fdl.NotifyAsNew = item.Content.NotifyAsNew;
+                        fdl.LastError = item.Content.LastError;
                     }
-                })
+                }
+            })
             );
         }
 
@@ -214,27 +227,26 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
+                    FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.FDL1?.Id);
+
+                    if (fdl != null)
                     {
-                        FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.FDL1?.Id);
+                        var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
 
-                        if (fdl != null)
-                        {
-                            var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
+                        if (ts != null)
+                            ts = item.Content;
+                        else
+                            fdl.Timesheets.Add(item.Content);
 
-                            if (ts != null)
-                                ts = item.Content;
-                            else
-                                fdl.Timesheets.Add(item.Content);
-
-                            fdl.IsCompiled = false;
-                            fdl.Save();
-                        }
-
+                        fdl.IsCompiled = false;
+                        fdl.Save();
                     }
-                })
+                }
+            })
             );
         }
 
@@ -242,22 +254,22 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
+                    FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.FDL1?.Id);
+
+                    if (fdl != null)
                     {
-                        FDLEVM fdl = FDLs.SingleOrDefault(x => x.Id == item.Content.FDL1?.Id);
+                        var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
+                        fdl.Timesheets.Remove(ts);
 
-                        if (fdl != null)
-                        {
-                            var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
-                            fdl.Timesheets.Remove(ts);
-
-                            fdl.IsCompiled = false;
-                            fdl.Save();
-                        }
+                        fdl.IsCompiled = false;
+                        fdl.Save();
                     }
-                })
+                }
+            })
             );
         }
 
@@ -265,15 +277,15 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
                 {
-                    if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
-                    {
-                        FactoryDTO factory = new FactoryDTO();
-                        Global.Mapper.Map(item.Content, factory);
-                        Factories.Add(factory);
-                    }
-                })
+                    FactoryDTO factory = new FactoryDTO();
+                    Global.Mapper.Map(item.Content, factory);
+                    Factories.Add(factory);
+                }
+            })
             );
         }
 
@@ -281,19 +293,19 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
-                    {
-                        FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
+                    FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (factory != null) Global.Mapper.Map(item.Content, factory);
+                    if (factory != null) Global.Mapper.Map(item.Content, factory);
 
-                        var fdlToUpdate = FDLs.Where(f => f.Factory.HasValue && f.Factory.Value == item.Content.Id);
+                    var fdlToUpdate = FDLs.Where(f => f.Factory.HasValue && f.Factory.Value == item.Content.Id);
 
-                        foreach (var fdl in fdlToUpdate) fdl.Factory1 = factory;
-                    }
-                })
+                    foreach (var fdl in fdlToUpdate) fdl.Factory1 = factory;
+                }
+            })
             );
         }
 
@@ -301,15 +313,15 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
-                    {
-                        FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
+                    FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (factory != null) Factories.Remove(factory);
-                    }
-                })
+                    if (factory != null) Factories.Remove(factory);
+                }
+            })
             );
         }
 
@@ -343,7 +355,10 @@ namespace Great.ViewModels
                 }
             }
 
-            using (new WaitCursor()) _fdlManager.SendToSAP(fdl);
+            using (new WaitCursor())
+            {
+                _fdlManager.SendToSAP(fdl);
+            }
         }
 
         public void SendByEmail(string address)
@@ -455,7 +470,10 @@ namespace Great.ViewModels
 
             if (MetroMessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
-            using (new WaitCursor()) _fdlManager.SendCancellationRequest(fdl);
+            using (new WaitCursor())
+            {
+                _fdlManager.SendCancellationRequest(fdl);
+            }
         }
 
         private void FactoryLink()

@@ -19,19 +19,23 @@ namespace Great.Utils
         const string sAccessConnectionstring = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0}";
         const string sSqliteConnectionString = @"data source={0}";
         const string sGreatIniFilePath = @"Ini\Setting.ini";
-        string[] sPathToCheck = new string[] { @"C:\Program Files" };
+        string[] sPathToCheck = new string[] {@"C:\Program Files"};
 
         #endregion
 
         #region Properties
+
         private FDLManager FDLManager = SimpleIoc.Default.GetInstance<FDLManager>();
         private volatile bool stopImport;
         private Thread thrd;
 
         public string FDLFolder { get; set; }
+
         #endregion
 
-        public FDLImport() : base(LogManager.GetLogger("FDLImport")) { }
+        public FDLImport() : base(LogManager.GetLogger("FDLImport"))
+        {
+        }
 
         public override void Start()
         {
@@ -46,7 +50,9 @@ namespace Great.Utils
                 return;
             }
             else
+            {
                 Error($"Wrong FDL directory path: {FDLFolder}");
+            }
 
             StatusChanged("Import failed!");
             Finished(false);
@@ -114,19 +120,23 @@ namespace Great.Utils
 
                                 if (currentFdl != null)
                                 {
-                                    currentFdl.Status = (long)EFDLStatus.Accepted;
+                                    currentFdl.Status = (long) EFDLStatus.Accepted;
 
                                     db.FDLs.AddOrUpdate(currentFdl);
                                     db.SaveChanges();
                                 }
                                 else
+                                {
                                     Error("Missing FDL on database. Should never happen.");
+                                }
                             }
 
                             Message($"FDL {fdl.Id} OK");
                         }
                         else
+                        {
                             Error($"Failed to import FDL from file: {file.FullName}");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -177,20 +187,24 @@ namespace Great.Utils
 
                                 if (currentEA != null)
                                 {
-                                    currentEA.Status = (long)EFDLStatus.Accepted;
+                                    currentEA.Status = (long) EFDLStatus.Accepted;
                                     currentEA.IsRefunded = true;
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
                                     db.SaveChanges();
                                 }
                                 else
+                                {
                                     Error("Missing EA on database. Should never happen.");
+                                }
                             }
 
                             Message($"Expense Account {ea.FDL} OK");
                         }
                         else
+                        {
                             Error($"Failed to import EA from file: {file.FullName}");
+                        }
                     }
                     catch (Exception ex)
                     {

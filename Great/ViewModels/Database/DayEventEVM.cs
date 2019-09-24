@@ -8,14 +8,15 @@ namespace Great.ViewModels.Database
     public class DayEventEVM : EntityViewModelBase
     {
         private long _TimeStamp;
+
         public long TimeStamp
         {
             get => _TimeStamp;
             set => Set(ref _TimeStamp, value);
-
         }
 
         private long _EventId;
+
         public long EventId
         {
             get => _EventId;
@@ -24,6 +25,7 @@ namespace Great.ViewModels.Database
 
 
         private DayEVM _day1;
+
         public DayEVM Day1
         {
             get => _day1;
@@ -32,6 +34,7 @@ namespace Great.ViewModels.Database
 
 
         private EventEVM _event1;
+
         public EventEVM Event1
         {
             get => _event1;
@@ -67,8 +70,8 @@ namespace Great.ViewModels.Database
                 db.SaveChanges();
                 return true;
             }
+
             return false;
         }
-
     }
 }

@@ -12,7 +12,10 @@ namespace Great.Utils.Messages
         //   content:
         //     A value to be passed to recipient(s).
         //       
-        public ItemChangedMessage(T content) : base(content) { }
+        public ItemChangedMessage(T content) : base(content)
+        {
+        }
+
         //
         // Summary:
         //     Initializes a new instance of the ItemChangedMessage class.
@@ -24,6 +27,8 @@ namespace Great.Utils.Messages
         //   content:
         //     A value to be passed to recipient(s).
         //        
-        public ItemChangedMessage(object sender, T content) : base(sender, content) { }
+        public ItemChangedMessage(object sender, T content) : base(sender, content)
+        {
+        }
     }
 }

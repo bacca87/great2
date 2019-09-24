@@ -70,6 +70,7 @@ namespace Great.Models
                             ea.Save();
                         }
                     }
+
                     break;
 
                 case EEmailMessageType.Cancellation_Request:
@@ -96,8 +97,7 @@ namespace Great.Models
                             }
                         }
                     }
-                    break;
-                default:
+
                     break;
             }
         }
@@ -157,6 +157,7 @@ namespace Great.Models
                                 db.SaveChanges();
 
                                 #region Expenses
+
                                 if (!ExcludeExpense)
                                 {
                                     foreach (var entry in ApplicationSettings.ExpenseAccount.FieldNames.ExpenseMatrix)
@@ -181,14 +182,13 @@ namespace Great.Models
                                                 continue;
                                         }
 
-                                        Expense expense = new Expense()
+                                        Expense expense = new Expense
                                         {
-                                            ExpenseAccount = ea.Id,
-                                            Type = typeId
+                                            ExpenseAccount = ea.Id, Type = typeId
                                         };
 
                                         // convert string double value to invariant string double culture indipendent
-                                        Func<string, string> ConvertToInvariantDoubleString = (str) => { return str.IndexOf('.') < str.IndexOf(',') ? str.Replace(".", "").Replace(",", ".") : str.Replace(",", ""); };
+                                        Func<string, string> ConvertToInvariantDoubleString = str => { return str.IndexOf('.') < str.IndexOf(',') ? str.Replace(".", "").Replace(",", ".") : str.Replace(",", ""); };
 
                                         if (double.TryParse(ConvertToInvariantDoubleString(fields[entry["Mon_Amount"]].GetValueAsString()), NumberStyles.Any, CultureInfo.InvariantCulture, out double amount)) expense.MondayAmount = amount;
 
@@ -209,6 +209,7 @@ namespace Great.Models
 
                                     db.SaveChanges();
                                 }
+
                                 #endregion
 
                                 transaction.Commit();
@@ -248,8 +249,7 @@ namespace Great.Models
         {
             if (IsXfaPdf)
                 return ImportFDL_XFAForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
-            else
-                return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
+            return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
         }
 
         public FDLEVM ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
@@ -263,7 +263,7 @@ namespace Great.Models
                 pdfDoc = new PdfDocument(new PdfReader(filePath));
                 PdfAcroForm Acroform = PdfAcroForm.GetAcroForm(pdfDoc, true);
                 XfaForm XfaForm = Acroform.GetXfaForm();
-                Func<string, string> GetFieldValue = (fieldName) => { return (XfaForm.FindDatasetsNode(fieldName) as XElement).Value; };
+                Func<string, string> GetFieldValue = fieldName => { return (XfaForm.FindDatasetsNode(fieldName) as XElement).Value; };
 
                 // General info 
                 fdl.Id = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber);
@@ -338,6 +338,7 @@ namespace Great.Models
                             if (tmpFdl == null)
                             {
                                 #region Automatic factories creation/assignment
+
                                 if (!ExcludeFactories)
                                 {
                                     string customer = GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Customer);
@@ -350,12 +351,9 @@ namespace Great.Models
 
                                         if (factory == null && UserSettings.Advanced.AutoAddFactories)
                                         {
-                                            factory = new Factory()
+                                            factory = new Factory
                                             {
-                                                Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength),
-                                                CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength),
-                                                Address = address.Left(ApplicationSettings.Factories.AddressMaxLength),
-                                                NotifyAsNew = true
+                                                Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength), CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength), Address = address.Left(ApplicationSettings.Factories.AddressMaxLength), NotifyAsNew = true
                                             };
 
                                             db.Factories.Add(factory);
@@ -366,14 +364,15 @@ namespace Great.Models
                                         if (factory != null && UserSettings.Advanced.AutoAssignFactories) fdl.Factory = factory.Id;
                                     }
                                 }
+
                                 #endregion
 
                                 db.FDLs.Add(fdl);
                                 db.SaveChanges();
 
                                 #region Timesheets
+
                                 if (!ExcludeTimesheets)
-                                {
                                     foreach (var entry in ApplicationSettings.FDL.XFAFieldNames.TimesMatrix)
                                     {
                                         string strDate = GetFieldValue(entry.Value["Date"]);
@@ -408,9 +407,9 @@ namespace Great.Models
 
                                             // hack for supporting old travel periods
                                             if (timesheet.TravelStartTimeAM_t.HasValue && !timesheet.TravelEndTimeAM_t.HasValue &&
-                                               !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&
-                                               !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
-                                               !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
+                                                !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&
+                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
+                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
                                                 timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
                                                 timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
@@ -429,7 +428,7 @@ namespace Great.Models
                                             }
                                         }
                                     }
-                                }
+
                                 #endregion
 
                                 // sUpdate all navigation properties
@@ -499,7 +498,7 @@ namespace Great.Models
                 fdl.Id = fields[ApplicationSettings.FDL.FieldNames.FDLNumber].GetValueAsString();
                 fdl.FileName = Path.GetFileName(filePath);
                 fdl.IsExtra = fields[ApplicationSettings.FDL.FieldNames.OrderType].GetValueAsString().Contains(ApplicationSettings.FDL.FDL_Extra);
-                fdl.Result = (long)GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
+                fdl.Result = (long) GetFDLResultFromString(fields[ApplicationSettings.FDL.FieldNames.Result].GetValueAsString());
                 fdl.OutwardCar = fields[ApplicationSettings.FDL.FieldNames.OutwardCar].GetValue() != null;
                 fdl.OutwardTaxi = fields[ApplicationSettings.FDL.FieldNames.OutwardTaxi].GetValue() != null;
                 fdl.OutwardAircraft = fields[ApplicationSettings.FDL.FieldNames.OutwardAircraft].GetValue() != null;
@@ -566,6 +565,7 @@ namespace Great.Models
                             if (tmpFdl == null)
                             {
                                 #region Automatic factories creation/assignment
+
                                 if (!ExcludeFactories)
                                 {
                                     string customer = fields[ApplicationSettings.FDL.FieldNames.Customer].GetValueAsString();
@@ -578,12 +578,9 @@ namespace Great.Models
 
                                         if (factory == null && UserSettings.Advanced.AutoAddFactories)
                                         {
-                                            factory = new Factory()
+                                            factory = new Factory
                                             {
-                                                Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength),
-                                                CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength),
-                                                Address = address.Left(ApplicationSettings.Factories.AddressMaxLength),
-                                                NotifyAsNew = true
+                                                Name = customer.Left(ApplicationSettings.Factories.FactoryNameMaxLength), CompanyName = customer.Left(ApplicationSettings.Factories.CompanyNameMaxLength), Address = address.Left(ApplicationSettings.Factories.AddressMaxLength), NotifyAsNew = true
                                             };
 
                                             db.Factories.Add(factory);
@@ -594,14 +591,15 @@ namespace Great.Models
                                         if (factory != null && UserSettings.Advanced.AutoAssignFactories) fdl.Factory = factory.Id;
                                     }
                                 }
+
                                 #endregion
 
                                 db.FDLs.Add(fdl);
                                 db.SaveChanges();
 
                                 #region Timesheets
+
                                 if (!ExcludeTimesheets)
-                                {
                                     foreach (KeyValuePair<DayOfWeek, Dictionary<string, string>> entry in ApplicationSettings.FDL.FieldNames.TimesMatrix)
                                     {
                                         string strDate = fields[entry.Value["Date"]].GetValueAsString();
@@ -636,9 +634,9 @@ namespace Great.Models
 
                                             // hack for supporting old travel periods
                                             if (timesheet.TravelStartTimeAM_t.HasValue && !timesheet.TravelEndTimeAM_t.HasValue &&
-                                               !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&
-                                               !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
-                                               !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
+                                                !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&
+                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
+                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
                                                 timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
                                                 timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
@@ -657,7 +655,7 @@ namespace Great.Models
                                             }
                                         }
                                     }
-                                }
+
                                 #endregion
 
                                 // sUpdate all navigation properties
@@ -709,28 +707,26 @@ namespace Great.Models
 
             // 2) try if there are other FDL with the same order
             if (factory == null)
-            {
                 factory = (from f in db.Factories
                            from d in db.FDLs
                            where d.Order == fdl.Order && d.Factory == f.Id
                            select f).FirstOrDefault();
-            }
 
             // 3) try if the address words are similar to the factory address
             if (factory == null)
-            {
                 try
                 {
-                    string[] newAddress = address.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] newAddress = address.ToLower().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
                     Dictionary<long, int> factoryMatchRate = new Dictionary<long, int>();
 
                     foreach (Factory f in db.Factories)
                     {
                         int matchCount = 0;
-                        string[] exsAddress = f.Address.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] exsAddress = f.Address.ToLower().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 
                         foreach (string word in newAddress)
-                            if (word.Trim() != string.Empty && exsAddress.Any(x => x == word)) matchCount++;
+                            if (word.Trim() != string.Empty && exsAddress.Any(x => x == word))
+                                matchCount++;
 
                         if (matchCount > 0) factoryMatchRate.Add(f.Id, matchCount * 100 / newAddress.Count());
                     }
@@ -743,8 +739,9 @@ namespace Great.Models
                         if (factoryRate.Value > 50) factory = db.Factories.SingleOrDefault(f => f.Id == factoryRate.Key);
                     }
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             return factory;
         }
@@ -753,7 +750,7 @@ namespace Great.Models
         {
             // this is an hack for display fixed fields on saved read only FDL
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            Func<string, string> GetFieldValue = (fieldName) => { return (form.FindDatasetsNode(fieldName) as XElement).Value; };
+            Func<string, string> GetFieldValue = fieldName => { return (form.FindDatasetsNode(fieldName) as XElement).Value; };
 
             fields.Add(ApplicationSettings.FDL.FieldNames.FDLNumber, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.FDLNumber));
             fields.Add(ApplicationSettings.FDL.FieldNames.Order, GetFieldValue(ApplicationSettings.FDL.XFAFieldNames.Order));
@@ -797,10 +794,9 @@ namespace Great.Models
         {
             if (file is FDLEVM)
                 return GetAcroFormFields(file as FDLEVM);
-            else if (file is ExpenseAccountEVM)
+            if (file is ExpenseAccountEVM)
                 return GetAcroFormFields(file as ExpenseAccountEVM, IsReadonly);
-            else
-                return null;
+            return null;
         }
 
         private Dictionary<string, string> GetAcroFormFields(FDLEVM fdl)
@@ -852,8 +848,6 @@ namespace Great.Models
                     break;
                 case 3:
                     fields.Add(ApplicationSettings.FDL.FieldNames.Result, ApplicationSettings.FDL.WithReserve);
-                    break;
-                default:
                     break;
             }
 
@@ -923,14 +917,14 @@ namespace Great.Models
                 IDictionary<string, PdfFormField> fields = form.GetFormFields();
 
                 if (file is FDLEVM)
-                {
                     // this is an hack for display fixed fields on saved read only FDL
                     foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
-                        if (fields.ContainsKey(entry.Key)) fields[entry.Key].SetValue(entry.Value);
-                }
+                        if (fields.ContainsKey(entry.Key))
+                            fields[entry.Key].SetValue(entry.Value);
 
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
-                    if (fields.ContainsKey(entry.Key)) fields[entry.Key].SetValue(entry.Value);
+                    if (fields.ContainsKey(entry.Key))
+                        fields[entry.Key].SetValue(entry.Value);
             }
             catch (Exception)
             {
@@ -1008,7 +1002,6 @@ namespace Great.Models
 
                     foreach (var r in recipients) message.CcRecipients.Add(r);
                 }
-
             }
             else if (file is ExpenseAccountEVM)
             {
@@ -1112,34 +1105,36 @@ namespace Great.Models
                     {
                         FDL accepted = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
 
-                        if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
+                        if (accepted != null && accepted.Status != (long) EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0)) break;
 
-                            accepted.Status = (long)EFDLStatus.Accepted;
+                            accepted.Status = (long) EFDLStatus.Accepted;
                             accepted.LastError = null;
                             accepted.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, new FDLEVM(accepted)));
                         }
                     }
+
                     break;
                 case EMessageType.FDL_Rejected:
                     using (DBArchive db = new DBArchive())
                     {
                         FDL rejected = db.FDLs.SingleOrDefault(f => f.Id == fdlNumber);
 
-                        if (rejected != null && rejected.Status != (long)EFDLStatus.Rejected && rejected.Status != (long)EFDLStatus.Accepted)
+                        if (rejected != null && rejected.Status != (long) EFDLStatus.Rejected && rejected.Status != (long) EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(rejected.LastSAPSendTimestamp ?? 0)) break;
 
-                            rejected.Status = (long)EFDLStatus.Rejected;
+                            rejected.Status = (long) EFDLStatus.Rejected;
                             rejected.LastError = message.Body?.Text.Trim();
                             rejected.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, new FDLEVM(rejected)));
                         }
                     }
+
                     break;
                 case EMessageType.EA_Accepted:
                     using (DBArchive db = new DBArchive())
@@ -1157,17 +1152,18 @@ namespace Great.Models
 
                         ExpenseAccount accepted = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
 
-                        if (accepted != null && accepted.Status != (long)EFDLStatus.Accepted)
+                        if (accepted != null && accepted.Status != (long) EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(accepted.LastSAPSendTimestamp ?? 0)) break;
 
-                            accepted.Status = (long)EFDLStatus.Accepted;
+                            accepted.Status = (long) EFDLStatus.Accepted;
                             accepted.LastError = null;
                             accepted.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(accepted)));
                         }
                     }
+
                     break;
                 case EMessageType.EA_Rejected:
                 case EMessageType.EA_RejectedResubmission:
@@ -1186,17 +1182,18 @@ namespace Great.Models
 
                         ExpenseAccount expenseAccount = db.ExpenseAccounts.SingleOrDefault(ea => ea.FileName.ToLower() == filename);
 
-                        if (expenseAccount != null && expenseAccount.Status != (long)EFDLStatus.Rejected && expenseAccount.Status != (long)EFDLStatus.Accepted)
+                        if (expenseAccount != null && expenseAccount.Status != (long) EFDLStatus.Rejected && expenseAccount.Status != (long) EFDLStatus.Accepted)
                         {
                             if (message.DateTimeReceived < DateTime.Now.FromUnixTimestamp(expenseAccount.LastSAPSendTimestamp ?? 0)) break;
 
-                            expenseAccount.Status = (long)EFDLStatus.Rejected;
+                            expenseAccount.Status = (long) EFDLStatus.Rejected;
                             expenseAccount.LastError = message.Body?.Text.Trim();
                             expenseAccount.NotifyAsNew = false;
                             db.SaveChanges();
                             Messenger.Default.Send(new ItemChangedMessage<ExpenseAccountEVM>(this, new ExpenseAccountEVM(expenseAccount)));
                         }
                     }
+
                     break;
                 case EMessageType.FDL_EA_New:
                     if (message.HasAttachments)
@@ -1219,7 +1216,9 @@ namespace Great.Models
                                         fileAttachment.Load(ApplicationSettings.Directories.FDL + fileAttachment.Name);
 
                                         using (DBArchive db = new DBArchive())
+                                        {
                                             if (db.FDLs.SingleOrDefault(f => f.FileName.ToLower() == fileAttachment.Name.ToLower()) != null) exist = true;
+                                        }
 
                                         if (!exist)
                                         {
@@ -1232,6 +1231,7 @@ namespace Great.Models
                                             }
                                         }
                                     }
+
                                     break;
                                 case EFileType.ExpenseAccount:
                                     if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
@@ -1241,7 +1241,9 @@ namespace Great.Models
                                         fileAttachment.Load(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
 
                                         using (DBArchive db = new DBArchive())
+                                        {
                                             if (db.ExpenseAccounts.SingleOrDefault(e => e.FileName.ToLower() == fileAttachment.Name.ToLower()) != null) exist = true;
+                                        }
 
                                         if (!exist)
                                         {
@@ -1254,8 +1256,7 @@ namespace Great.Models
                                             }
                                         }
                                     }
-                                    break;
-                                default:
+
                                     break;
                             }
 
@@ -1264,9 +1265,7 @@ namespace Great.Models
 
                         if (deleteMessage) message.Delete(DeleteMode.MoveToDeletedItems);
                     }
-                    break;
 
-                default:
                     break;
             }
         }
@@ -1275,25 +1274,27 @@ namespace Great.Models
         {
             if (subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
                 return EMessageType.FDL_Accepted;
-            else if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
-                return EMessageType.FDL_Rejected;
-            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
-                return EMessageType.EA_Accepted;
-            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
-                return EMessageType.EA_Rejected;
-            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
-                return EMessageType.EA_RejectedResubmission;
-            else if (subject.Contains(ApplicationSettings.FDL.Reminder))
-                return EMessageType.Reminder;
-            else
-            {
-                EFileType type = GetFileType(subject);
 
-                if (type == EFileType.FDL || type == EFileType.ExpenseAccount)
-                    return EMessageType.FDL_EA_New;
-                else
-                    return EMessageType.Unknown;
-            }
+            if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
+                return EMessageType.FDL_Rejected;
+
+            if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
+                return EMessageType.EA_Accepted;
+
+            if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
+                return EMessageType.EA_Rejected;
+
+            if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
+                return EMessageType.EA_RejectedResubmission;
+
+            if (subject.Contains(ApplicationSettings.FDL.Reminder))
+                return EMessageType.Reminder;
+
+            EFileType type = GetFileType(subject);
+
+            if (type == EFileType.FDL || type == EFileType.ExpenseAccount)
+                return EMessageType.FDL_EA_New;
+            return EMessageType.Unknown;
         }
 
         public static EFileType GetFileType(string filename)
@@ -1314,15 +1315,17 @@ namespace Great.Models
                     {
                         if (words.LastOrDefault().Contains("R"))
                             return EFileType.ExpenseAccount;
-                        else if (CID.All(char.IsDigit) &&
-                                 WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
-                                 Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
-                                 Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
+                        if (CID.All(char.IsDigit) &&
+                            WeekNr.All(char.IsDigit) && Enumerable.Range(1, 52).Contains(int.Parse(WeekNr)) &&
+                            Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
+                            Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
                             return EFileType.FDL;
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return EFileType.Unknown;
         }
@@ -1335,7 +1338,6 @@ namespace Great.Models
             try
             {
                 if (message.HasAttachments)
-                {
                     foreach (Attachment attachment in message.Attachments)
                     {
                         if (!(attachment is FileAttachment)) continue;
@@ -1352,10 +1354,8 @@ namespace Great.Models
 
                         break;
                     }
-                }
 
                 if (FDL == string.Empty)
-                {
                     // NB In case of missing attachments, there might be an incorrect result if you recive the message regarding an FDL of the previous year in the new year.
                     // there are no solutions for this kind of issue.                    
 
@@ -1386,12 +1386,11 @@ namespace Great.Models
                             if (words.Length > 3) FDL = words[3];
 
                             break;
-                        default:
-                            break;
                     }
-                }
             }
-            catch { }
+            catch
+            {
+            }
 
             return FDL;
         }
@@ -1414,37 +1413,37 @@ namespace Great.Models
 
     public enum EFileType
     {
-        Unknown,
-        FDL,
-        ExpenseAccount
+        Unknown
+        , FDL
+        , ExpenseAccount
     }
 
     public enum EMessageType
     {
-        Unknown,
-        FDL_Accepted,
-        FDL_Rejected,
-        EA_Accepted,
-        EA_Rejected,
-        EA_RejectedResubmission,
-        FDL_EA_New,
-        Reminder
+        Unknown
+        , FDL_Accepted
+        , FDL_Rejected
+        , EA_Accepted
+        , EA_Rejected
+        , EA_RejectedResubmission
+        , FDL_EA_New
+        , Reminder
     }
 
     public enum EFDLStatus
     {
-        New = 0,
-        Waiting = 1,
-        Accepted = 2,
-        Rejected = 3,
-        Cancelled = 4
+        New = 0
+        , Waiting = 1
+        , Accepted = 2
+        , Rejected = 3
+        , Cancelled = 4
     }
 
     public enum EFDLResult
     {
-        None = 0,
-        Positive = 1,
-        Negative = 2,
-        WithReserve = 3
+        None = 0
+        , Positive = 1
+        , Negative = 2
+        , WithReserve = 3
     }
 }

@@ -11,7 +11,9 @@ namespace Great.Models.DTO
         public ICollection<Car> Cars { get; set; }
 
 
-        public CarRentalCompanyDTO() { }
+        public CarRentalCompanyDTO()
+        {
+        }
 
         public CarRentalCompanyDTO(CarRentalCompany company)
         {

@@ -14,7 +14,7 @@ namespace Great.Utils.AttachedProperties
 
         public static int GetNotificationCount(UIElement element)
         {
-            return (int)element.GetValue(NotificationCountProperty);
+            return (int) element.GetValue(NotificationCountProperty);
         }
     }
 }

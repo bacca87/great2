@@ -17,7 +17,9 @@ namespace Great.ViewModels
     public class OrderRecipientsViewModel : ViewModelBase
     {
         #region Properties        
+
         private ObservableCollection<OrderEmailRecipient> _Recipients;
+
         public ObservableCollection<OrderEmailRecipient> Recipients
         {
             get => _Recipients;
@@ -25,6 +27,7 @@ namespace Great.ViewModels
         }
 
         private OrderEmailRecipient _selectedRecipient;
+
         public OrderEmailRecipient SelectedRecipient
         {
             get => _selectedRecipient;
@@ -32,6 +35,7 @@ namespace Great.ViewModels
         }
 
         private long _order;
+
         public long Order
         {
             get => _order;
@@ -39,21 +43,28 @@ namespace Great.ViewModels
             {
                 Set(ref _order, value);
 
-                using (DBArchive db = new DBArchive()) Recipients = new ObservableCollection<OrderEmailRecipient>(db.OrderEmailRecipients.Where(r => r.Order == _order).ToList());
+                using (DBArchive db = new DBArchive())
+                {
+                    Recipients = new ObservableCollection<OrderEmailRecipient>(db.OrderEmailRecipients.Where(r => r.Order == _order).ToList());
+                }
             }
         }
 
         private string _inputAddress;
+
         public string InputAddress
         {
             get => _inputAddress;
             set => Set(ref _inputAddress, value);
         }
+
         #endregion
 
         #region Command Definitions
+
         public RelayCommand<string> AddCommand { get; set; }
         public RelayCommand<OrderEmailRecipient> RemoveCommand { get; set; }
+
         #endregion
 
         public OrderRecipientsViewModel()

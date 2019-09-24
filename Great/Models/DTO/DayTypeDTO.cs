@@ -7,7 +7,9 @@ namespace Great.Models.DTO
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public DayTypeDTO() { }
+        public DayTypeDTO()
+        {
+        }
 
         public DayTypeDTO(DayType type)
         {

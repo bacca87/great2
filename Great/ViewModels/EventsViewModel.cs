@@ -20,9 +20,11 @@ namespace Great.ViewModels
     public class EventsViewModel : ViewModelBase
     {
         #region Properties
+
         MSSharepointProvider _provider;
 
         private bool _isInputEnabled = false;
+
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
@@ -30,6 +32,7 @@ namespace Great.ViewModels
         }
 
         private bool _showEditMenu;
+
         public bool ShowEditMenu
         {
             get => _showEditMenu;
@@ -37,6 +40,7 @@ namespace Great.ViewModels
         }
 
         private bool _ShowHourTimeFields = true;
+
         public bool ShowHourTimeFields
         {
             get => _ShowHourTimeFields;
@@ -48,6 +52,7 @@ namespace Great.ViewModels
         }
 
         private bool _showOnlyVacations = false;
+
         public bool ShowOnlyVacations
         {
             get => _showOnlyVacations;
@@ -59,6 +64,7 @@ namespace Great.ViewModels
         }
 
         private ObservableCollectionEx<EventEVM> _Events;
+
         public ObservableCollectionEx<EventEVM> Events
         {
             get => _Events;
@@ -70,7 +76,7 @@ namespace Great.ViewModels
 
         public bool Filter(object ev)
         {
-            EventEVM e = (EventEVM)ev;
+            EventEVM e = (EventEVM) ev;
             bool result = e.EType != EEventType.Vacations && !ShowOnlyVacations;
             result |= e.EType == EEventType.Vacations;
             return result;
@@ -78,6 +84,7 @@ namespace Great.ViewModels
 
         public ObservableCollection<EventTypeDTO> EventTypes { get; set; }
         private EventEVM _SelectedEvent;
+
         public EventEVM SelectedEvent
         {
             get => _SelectedEvent;
@@ -96,7 +103,6 @@ namespace Great.ViewModels
 
                     ShowEditMenu = false;
                 }
-
             }
         }
 
@@ -108,10 +114,10 @@ namespace Great.ViewModels
         public IList<int> Hours { get; set; }
         public IList<int> Minutes { get; set; }
 
-
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand ClearCommand { get; set; }
         public RelayCommand<EventEVM> SaveCommand { get; set; }
         public RelayCommand<EventEVM> NewCommand { get; set; }
@@ -123,6 +129,7 @@ namespace Great.ViewModels
         #endregion
 
         #region Constructors
+
         public EventsViewModel(MSSharepointProvider pro)
         {
             IsInputEnabled = true;
@@ -160,8 +167,9 @@ namespace Great.ViewModels
             _FilteredEvents.Filter += Filter;
 
             _FilteredEvents.MoveCurrentToFirst();
-            SelectedEvent = (EventEVM)_FilteredEvents.CurrentItem;
+            SelectedEvent = (EventEVM) _FilteredEvents.CurrentItem;
         }
+
         #endregion
 
         #region Methods
@@ -182,6 +190,7 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("Cannot save/edit the event. Please check the errors", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             ev.EStatus = EEventStatus.Pending;
@@ -194,12 +203,10 @@ namespace Great.ViewModels
 
             ShowEditMenu = false;
             FilteredEvents.Refresh();
-
         }
 
         public void DeleteEvent(EventEVM ev)
         {
-
             if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             if (ev.SharePointId > 0)
@@ -215,57 +222,55 @@ namespace Great.ViewModels
                 ev.Delete();
                 Events.Remove(ev);
             }
+
             FilteredEvents.Refresh();
         }
 
         public void EventChanged(ItemChangedMessage<EventEVM> item)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-             new Action(() =>
-             {
-                 if (item.Content != null)
-                 {
-                     EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
+            new Action(() =>
+            {
+                if (item.Content != null)
+                {
+                    EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                     //if user change the event do not update the gui!
-                     if (!v.IsChanged)
-                     {
-                         v.Refresh();
-                         FilteredEvents.Refresh();
-                     }
-                 }
-             }));
+                    //if user change the event do not update the gui!
+                    if (!v.IsChanged)
+                    {
+                        v.Refresh();
+                        FilteredEvents.Refresh();
+                    }
+                }
+            }));
         }
 
         public void EventImportedFromCalendar(NewItemMessage<EventEVM> item)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-              new Action(() =>
-              {
-
-                  if (item.Content != null)
-                  {
-                      if (!Events.Any(x => x.Id == item.Content.Id))
-                      {
-                          Events.Add(item.Content);
-                          FilteredEvents.Refresh();
-                      }
-                  }
-              }));
+            new Action(() =>
+            {
+                if (item.Content != null)
+                    if (!Events.Any(x => x.Id == item.Content.Id))
+                    {
+                        Events.Add(item.Content);
+                        FilteredEvents.Refresh();
+                    }
+            }));
         }
 
         public void EventDeleted(DeletedItemMessage<EventEVM> item)
         {
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-             new Action(() =>
-             {
-                 if (item.Content != null)
-                 {
-                     EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
-                     Events.Remove(v);
-                     FilteredEvents.Refresh();
-                 }
-             }));
+            new Action(() =>
+            {
+                if (item.Content != null)
+                {
+                    EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
+                    Events.Remove(v);
+                    FilteredEvents.Refresh();
+                }
+            }));
         }
 
 
@@ -277,9 +282,7 @@ namespace Great.ViewModels
             SelectedEvent.EStatus = EEventStatus.Pending;
             SelectedEvent.EndDate = DateTime.Now;
             SelectedEvent.StartDate = DateTime.Now;
-
         }
-
 
         #endregion
     }

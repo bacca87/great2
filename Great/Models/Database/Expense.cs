@@ -18,6 +18,7 @@ namespace Great.Models.Database
 
         [ForeignKey("Type")]
         public virtual ExpenseType ExpenseType { get; set; }
+
         [ForeignKey("ExpenseAccount")]
         public virtual ExpenseAccount ExpenseAccount1 { get; set; }
     }

@@ -23,11 +23,12 @@ namespace Great.Utils
         const string sAccessConnectionstring = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0}";
         const string sSqliteConnectionString = @"data source={0}";
         const string sGreatIniFilePath = @"Ini\Setting.ini";
-        string[] sPathToCheck = new string[] { @"C:\Program Files" };
+        string[] sPathToCheck = new string[] {@"C:\Program Files"};
 
         #endregion
 
         #region Properties
+
         private FDLManager FDLManager = SimpleIoc.Default.GetInstance<FDLManager>();
         private volatile bool stopImport;
 
@@ -54,9 +55,12 @@ namespace Great.Utils
         public string _destinationFdlPath { get; private set; }
         public string _destinationEAPath { get; private set; }
         public string GreatPath { get; set; }
+
         #endregion
 
-        public GreatImport() : base(LogManager.GetLogger("GreatImport")) { }
+        public GreatImport() : base(LogManager.GetLogger("GreatImport"))
+        {
+        }
 
         public override void Start()
         {
@@ -97,9 +101,15 @@ namespace Great.Utils
                         }
                     }
                 }
-                else Error($"Database not found on path: {_sourceDatabase}");
+                else
+                {
+                    Error($"Database not found on path: {_sourceDatabase}");
+                }
             }
-            else Error($"Wrong GREAT directory path: {GreatPath}");
+            else
+            {
+                Error($"Wrong GREAT directory path: {GreatPath}");
+            }
 
             StatusChanged("Import failed!");
             Finished(false);
@@ -219,7 +229,6 @@ namespace Great.Utils
             {
                 using (DBArchive db = new DBArchive())
                 {
-
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtCars.Rows.Cast<DataRow>();
 
@@ -411,30 +420,30 @@ namespace Great.Utils
                                 office.Timestamp = d.Timestamp;
 
                                 office.TravelStartTimeAM = null;
-                                office.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
-                                office.WorkEndTimeAM = r.Field<Int16>("Dbf_Uff_Fine_AM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_AM")).TotalSeconds : null;
+                                office.WorkStartTimeAM = r.Field<Int16>("Dbf_Uff_Inizio_AM") > 0 ? (long?) TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_AM")).TotalSeconds : null;
+                                office.WorkEndTimeAM = r.Field<Int16>("Dbf_Uff_Fine_AM") > 0 ? (long?) TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_AM")).TotalSeconds : null;
                                 office.TravelEndTimeAM = null;
                                 office.TravelStartTimePM = null;
-                                office.WorkStartTimePM = r.Field<Int16>("Dbf_Uff_Inizio_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_PM")).TotalSeconds : null;
-                                office.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?)TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
+                                office.WorkStartTimePM = r.Field<Int16>("Dbf_Uff_Inizio_PM") > 0 ? (long?) TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Inizio_PM")).TotalSeconds : null;
+                                office.WorkEndTimePM = r.Field<Int16>("Dbf_Uff_Fine_PM") > 0 ? (long?) TimeSpan.FromMinutes(r.Field<Int16>("Dbf_Uff_Fine_PM")).TotalSeconds : null;
                                 office.TravelEndTimePM = null;
 
-                                db.Timesheets.AddOrUpdate(x => new { x.Timestamp, x.FDL }, office);
+                                db.Timesheets.AddOrUpdate(x => new {x.Timestamp, x.FDL}, office);
                             }
 
                             // Factory association
                             bool IsRestDay = r.Field<Int16>("Dbf_Uff_Inizio_AM") == 0 &&
-                                        r.Field<Int16>("Dbf_Uff_Fine_AM") == 0 &&
-                                        r.Field<Int16>("Dbf_Uff_Inizio_PM") == 0 &&
-                                        r.Field<Int16>("Dbf_Uff_Fine_PM") == 0 &&
-                                        r.Field<Int16>("Dbf_Trasf_Inizio_AM") == 0 &&
-                                        r.Field<Int16>("Dbf_Trasf_Fine_AM") == 0 &&
-                                        r.Field<Int16>("Dbf_Trasf_Inizio_PM") == 0 &&
-                                        r.Field<Int16>("Dbf_Trasf_Fine_PM") == 0 &&
-                                        r.Field<Int16>("Dbf_Partenza_AM") == 0 &&
-                                        r.Field<Int16>("Dbf_Arrivo_AM") == 0 &&
-                                        r.Field<Int16>("Dbf_Partenza_PM") == 0 &&
-                                        r.Field<Int16>("Dbf_Arrivo_PM") == 0;
+                                             r.Field<Int16>("Dbf_Uff_Fine_AM") == 0 &&
+                                             r.Field<Int16>("Dbf_Uff_Inizio_PM") == 0 &&
+                                             r.Field<Int16>("Dbf_Uff_Fine_PM") == 0 &&
+                                             r.Field<Int16>("Dbf_Trasf_Inizio_AM") == 0 &&
+                                             r.Field<Int16>("Dbf_Trasf_Fine_AM") == 0 &&
+                                             r.Field<Int16>("Dbf_Trasf_Inizio_PM") == 0 &&
+                                             r.Field<Int16>("Dbf_Trasf_Fine_PM") == 0 &&
+                                             r.Field<Int16>("Dbf_Partenza_AM") == 0 &&
+                                             r.Field<Int16>("Dbf_Arrivo_AM") == 0 &&
+                                             r.Field<Int16>("Dbf_Partenza_PM") == 0 &&
+                                             r.Field<Int16>("Dbf_Arrivo_PM") == 0;
 
                             short? factoryId = r.Field<short?>("Dbf_Impianto");
                             string fdlId = FormatFDL(r.Field<string>("Dbf_Foglio"));
@@ -462,7 +471,9 @@ namespace Great.Utils
                                     }
                                 }
                                 else
+                                {
                                     Warning($"The FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
+                                }
                             }
 
                             short? factory2Id = r.Field<short?>("Dbf_SecondoImpianto");
@@ -479,7 +490,9 @@ namespace Great.Utils
                                     db.SaveChanges();
                                 }
                                 else
+                                {
                                     Warning($"The second FDL {fdlId} is missing on database. Impossible to assign the factory to the current timesheet. Day: {d.Date.ToShortDateString()}");
+                                }
                             }
 
                             Message($"Day {d.Date.ToShortDateString()} OK");
@@ -541,7 +554,6 @@ namespace Great.Utils
                                                     .FirstOrDefault();
 
                             if (sent != null)
-                            {
                                 using (DBArchive db = new DBArchive())
                                 {
                                     // we must override recived fdl with the same of current dbcontext istance
@@ -550,13 +562,13 @@ namespace Great.Utils
                                     if (currentFdl != null)
                                     {
                                         if (sent.Field<int>("Dbf_NumeroInviiPrima") == 0)
-                                            currentFdl.Status = (long)EFDLStatus.Waiting;
+                                            currentFdl.Status = (long) EFDLStatus.Waiting;
                                         else if (sent.Field<string>("Dbf_Impianto") != string.Empty && sent.Field<string>("Dbf_Commessa") != string.Empty)
-                                            currentFdl.Status = (long)EFDLStatus.Accepted;
+                                            currentFdl.Status = (long) EFDLStatus.Accepted;
                                         else
-                                            currentFdl.Status = (long)EFDLStatus.Cancelled;
+                                            currentFdl.Status = (long) EFDLStatus.Cancelled;
 
-                                        if (currentFdl.Status != (long)EFDLStatus.New)
+                                        if (currentFdl.Status != (long) EFDLStatus.New)
                                         {
                                             currentFdl.IsReadOnly = true;
                                             currentFdl.IsCompiled = true;
@@ -567,14 +579,17 @@ namespace Great.Utils
                                         Message($"FDL {currentFdl.Id} OK");
                                     }
                                     else
+                                    {
                                         Error("Missing FDL on database. Should never happen.");
+                                    }
                                 }
-                            }
                             else
                                 Error("Missing FDL sent status!");
                         }
                         else
+                        {
                             Error($"Failed to import FDL from file: {file.FullName}");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -632,12 +647,12 @@ namespace Great.Utils
                                     if (fdl != null)
                                         currentEA.Status = fdl.Status;
                                     else
-                                        currentEA.Status = (long)EFDLStatus.Accepted;
+                                        currentEA.Status = (long) EFDLStatus.Accepted;
 
                                     var expense = expenses.SingleOrDefault(e => !string.IsNullOrEmpty(e.Field<string>("Dbf_Foglio")) && FormatFDL(e.Field<string>("Dbf_Foglio")) == fdl.Id);
                                     currentEA.IsRefunded = expense != null && expense.Field<bool>("Dbf_Restituito");
 
-                                    if (currentEA.Status != (long)EFDLStatus.New)
+                                    if (currentEA.Status != (long) EFDLStatus.New)
                                     {
                                         currentEA.IsReadOnly = true;
                                         currentEA.IsCompiled = true;
@@ -648,11 +663,15 @@ namespace Great.Utils
                                     Message($"Expense Account {currentEA.FDL} OK");
                                 }
                                 else
+                                {
                                     Error("Missing EA on database. Should never happen.");
+                                }
                             }
                         }
                         else
+                        {
                             Error($"Failed to import EA from file: {file.FullName}");
+                        }
                     }
                     catch (Exception ex)
                     {

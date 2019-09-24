@@ -136,6 +136,7 @@ namespace Great
                             db.Database.ExecuteSqlCommand(File.ReadAllText(f));
                             db.SaveChanges();
                         }
+
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -152,7 +153,6 @@ namespace Great
 
         private void DoBackup(string dbFileName, string dbDirectory)
         {
-
             File.Copy(dbFileName, dbDirectory + "\\" + "archive_" + DateTime.Now.ToString("yyyyMMdd") + ".db3", true);
 
             // get files ordered by creationdatetime
@@ -162,9 +162,8 @@ namespace Great
                                                                   .ToList();
 
             files.Except(files.Take(ApplicationSettings.Database.MaxBackupCount))
-                  .ToList()
-                  .ForEach(x => x.Delete());
+                 .ToList()
+                 .ForEach(x => x.Delete());
         }
-
     }
 }

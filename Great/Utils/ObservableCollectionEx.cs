@@ -32,15 +32,13 @@ namespace Great.Utils
         {
             if (e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                foreach (T item in e.OldItems) item.PropertyChanged -= ChildPropertyChanged;
-            }
+                foreach (T item in e.OldItems)
+                    item.PropertyChanged -= ChildPropertyChanged;
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                foreach (T item in e.NewItems) item.PropertyChanged += ChildPropertyChanged;
-            }
+                foreach (T item in e.NewItems)
+                    item.PropertyChanged += ChildPropertyChanged;
 
             base.OnCollectionChanged(e);
         }
@@ -69,7 +67,7 @@ namespace Great.Utils
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            T typedSender = (T)sender;
+            T typedSender = (T) sender;
             int i = Items.IndexOf(typedSender);
 
             if (i < 0) throw new ArgumentException("Received property notification from item not in collection");
@@ -107,6 +105,7 @@ namespace Great.Utils
         /// <param name="index">The index.</param>
         /// <param name="args">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
         public ItemPropertyChangedEventArgs(int index, PropertyChangedEventArgs args) : this(index, args.PropertyName)
-        { }
+        {
+        }
     }
 }

@@ -14,9 +14,11 @@ namespace Great.ViewModels
     public class StatisticsViewModel : ViewModelBase
     {
         #region Properties
+
         private Func<ChartPoint, string> HoursLabel { get; set; }
 
         private int _WorkedDays;
+
         public int WorkedDays
         {
             get => _WorkedDays;
@@ -24,6 +26,7 @@ namespace Great.ViewModels
         }
 
         private int _WorkedSaturdays;
+
         public int WorkedSaturdays
         {
             get => _WorkedSaturdays;
@@ -31,6 +34,7 @@ namespace Great.ViewModels
         }
 
         private int _WorkedSundays;
+
         public int WorkedSundays
         {
             get => _WorkedSundays;
@@ -38,6 +42,7 @@ namespace Great.ViewModels
         }
 
         private int _WorkedHolidays;
+
         public int WorkedHolidays
         {
             get => _WorkedHolidays;
@@ -45,6 +50,7 @@ namespace Great.ViewModels
         }
 
         private int _TravelCount;
+
         public int TravelCount
         {
             get => _TravelCount;
@@ -53,6 +59,7 @@ namespace Great.ViewModels
 
 
         private SeriesCollection _Factories;
+
         public SeriesCollection Factories
         {
             get => _Factories;
@@ -60,6 +67,7 @@ namespace Great.ViewModels
         }
 
         private Dictionary<string, double> _FactoryCountries;
+
         public Dictionary<string, double> FactoryCountries
         {
             get => _FactoryCountries;
@@ -67,6 +75,7 @@ namespace Great.ViewModels
         }
 
         private SeriesCollection _Km;
+
         public SeriesCollection Km
         {
             get => _Km;
@@ -74,6 +83,7 @@ namespace Great.ViewModels
         }
 
         private SeriesCollection _Hours;
+
         public SeriesCollection Hours
         {
             get => _Hours;
@@ -81,6 +91,7 @@ namespace Great.ViewModels
         }
 
         private SeriesCollection _HourTypes;
+
         public SeriesCollection HourTypes
         {
             get => _HourTypes;
@@ -88,6 +99,7 @@ namespace Great.ViewModels
         }
 
         private SeriesCollection _days;
+
         public SeriesCollection Days
         {
             get => _days;
@@ -95,6 +107,7 @@ namespace Great.ViewModels
         }
 
         private SeriesCollection _FactoryTypes;
+
         public SeriesCollection FactoryTypes
         {
             get => _FactoryTypes;
@@ -102,6 +115,7 @@ namespace Great.ViewModels
         }
 
         private int _SelectedYear;
+
         public int SelectedYear
         {
             get => _SelectedYear;
@@ -113,18 +127,22 @@ namespace Great.ViewModels
         }
 
         private string[] _MonthsLabels;
+
         public string[] MonthsLabels
         {
             get => _MonthsLabels;
             set => Set(ref _MonthsLabels, value);
         }
 
-        private bool IsRefreshEnabled = false;
+        private bool IsRefreshEnabled;
+
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
+
         #endregion
 
         public StatisticsViewModel()
@@ -145,7 +163,7 @@ namespace Great.ViewModels
             SelectedYear = DateTime.Now.Year;
             IsRefreshEnabled = true;
 
-            MonthsLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            MonthsLabels = new[] {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         }
 
         public void RefreshAllData()
@@ -174,17 +192,15 @@ namespace Great.ViewModels
                 factoriesData = (from fdl in db.FDLs
                                  from timesheets in fdl.Timesheets
                                  where fdl.Id.Substring(0, 4) == YearStr && fdl.Factory1 != null
-                                 group fdl.Factory1 by fdl.Factory1.Name into factories
+                                 group fdl.Factory1 by fdl.Factory1.Name
+                                 into factories
                                  select factories).ToDictionary(x => x.Key, x => x.Count());
 
                 foreach (KeyValuePair<string, int> entry in factoriesData)
                 {
                     PieSeries factory = new PieSeries
                     {
-                        Title = entry.Key,
-                        Values = new ChartValues<int> { entry.Value },
-                        DataLabels = true,
-
+                        Title = entry.Key, Values = new ChartValues<int> {entry.Value}, DataLabels = true
                     };
 
                     Factories.Add(factory);
@@ -194,19 +210,15 @@ namespace Great.ViewModels
                     {
                         if (FactoryCountries.Any(x => x.Key == f.CountryCode))
                             FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
-                        else 
+                        else
                             FactoryCountries.Add(f.CountryCode, entry.Value);
                     }
-
                 }
-
-
             }
         }
 
         private void LoadHoursData()
         {
-
             Dictionary<string, int> factoriesData = new Dictionary<string, int>();
 
             using (DBArchive db = new DBArchive())
@@ -217,28 +229,17 @@ namespace Great.ViewModels
                 var AllDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
 
 
-
-
                 var MontlyHours = WorkingDays?.GroupBy(d => d.Date.Month)
-                                       .Select(g => new
-                                       {
-                                           TotalTime = g.Sum(x => x.TotalTime ?? 0),
-                                           Ordinary = g.Sum(x => (x.TotalTime ?? 0) - (x.Overtime34 ?? 0) - (x.Overtime35 ?? 0) - (x.Overtime50 ?? 0) - (x.Overtime100 ?? 0)),
-                                           Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
-                                           Overtime35 = g.Sum(x => x.Overtime35 ?? 0),
-                                           Overtime50 = g.Sum(x => x.Overtime50 ?? 0),
-                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0)
-                                       });
+                                              .Select(g => new
+                                               {
+                                                   TotalTime = g.Sum(x => x.TotalTime ?? 0), Ordinary = g.Sum(x => (x.TotalTime ?? 0) - (x.Overtime34 ?? 0) - (x.Overtime35 ?? 0) - (x.Overtime50 ?? 0) - (x.Overtime100 ?? 0)), Overtime34 = g.Sum(x => x.Overtime34 ?? 0), Overtime35 = g.Sum(x => x.Overtime35 ?? 0), Overtime50 = g.Sum(x => x.Overtime50 ?? 0), Overtime100 = g.Sum(x => x.Overtime100 ?? 0)
+                                               });
 
                 var AllDayMonthlyHours = AllDays?.GroupBy(d => d.Date.Month)
-                       .Select(g => new
-                       {
-                           HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0),
-                           Vacations = g.Sum(x => x.HoursOfVacation ?? 0),
-                           Leave = g.Sum(x => x.HoursOfLeave ?? 0),
-                           SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0),
-                           SickLeave = g.Sum(x => x.HoursOfSicklLeave ?? 0)
-                       });
+                                                 .Select(g => new
+                                                  {
+                                                      HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0), Vacations = g.Sum(x => x.HoursOfVacation ?? 0), Leave = g.Sum(x => x.HoursOfLeave ?? 0), SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0), SickLeave = g.Sum(x => x.HoursOfSicklLeave ?? 0)
+                                                  });
 
 
                 ChartValues<float> TotalTimeValues = new ChartValues<float>();
@@ -253,7 +254,6 @@ namespace Great.ViewModels
                 ChartValues<float> LeaveValues = new ChartValues<float>();
                 ChartValues<float> SickLeaveValues = new ChartValues<float>();
                 ChartValues<float> HomeWorkValues = new ChartValues<float>();
-
 
 
                 foreach (var month in MontlyHours)
@@ -275,95 +275,59 @@ namespace Great.ViewModels
                     SpecialLeaveValues.Add(month.SpecialLeave);
                 }
 
-                Hours = new SeriesCollection()
+                Hours = new SeriesCollection
                 {
-                    new StackedColumnSeries()
+                    new StackedColumnSeries
                     {
-                        Title = "Ordinary Hours",
-                        Values = OrdinaryValues,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
+                        Title = "Ordinary Hours", Values = OrdinaryValues, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
                     {
-                        Title = "Overtime 34%",
-                        Values = Overtime34Values,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
+                        Title = "Overtime 34%", Values = Overtime34Values, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
                     {
-                        Title = "Overtime 35%",
-                        Values = Overtime35Values,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
+                        Title = "Overtime 35%", Values = Overtime35Values, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
                     {
-                        Title = "Overtime 50%",
-                        Values = Overtime50Values,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
+                        Title = "Overtime 50%", Values = Overtime50Values, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
                     {
-                        Title = "Overtime 100%",
-                        Values = Overtime100Values,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new LineSeries
+                        Title = "Overtime 100%", Values = Overtime100Values, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new LineSeries
                     {
-                        Title = "Total",
-                        Values = TotalTimeValues,
-                        DataLabels = true,
-                        LabelPoint = HoursLabel
+                        Title = "Total", Values = TotalTimeValues, DataLabels = true, LabelPoint = HoursLabel
                     }
                 };
 
-                HourTypes = new SeriesCollection()
+                HourTypes = new SeriesCollection
                 {
-                    new StackedColumnSeries()
-                    {
-                        Title = "Office work hours",
-                        Values = TotalTimeValues,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
-                    {
-                        Title = "Home working hours",
-                        Values = HomeWorkValues,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
-                    {
-                        Title = "Vacation Hours",
-                        Values = VacationsValues,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
-                    {
-                        Title = "Leave Hours",
-                        Values = LeaveValues,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
-                    {
-                        Title = "Special Leave Hours",
-                        Values = SpecialLeaveValues,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
                     new StackedColumnSeries
                     {
-                        Title = "Sick Leave Hours",
-                        Values = SickLeaveValues,
-                        DataLabels = true,
-                        LabelPoint = HoursLabel
+                        Title = "Office work hours", Values = TotalTimeValues, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
+                    {
+                        Title = "Home working hours", Values = HomeWorkValues, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
+                    {
+                        Title = "Vacation Hours", Values = VacationsValues, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
+                    {
+                        Title = "Leave Hours", Values = LeaveValues, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
+                    {
+                        Title = "Special Leave Hours", Values = SpecialLeaveValues, DataLabels = false, LabelPoint = HoursLabel
+                    }
+                    , new StackedColumnSeries
+                    {
+                        Title = "Sick Leave Hours", Values = SickLeaveValues, DataLabels = true, LabelPoint = HoursLabel
                     }
                 };
 
@@ -391,166 +355,126 @@ namespace Great.ViewModels
                 var businessTripDays = (from d in db.Days
                                         from ts in d.Timesheets
                                         where ts.FDL1 != null
-                                        && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                           && ts.FDL1.Id.Substring(0, 4) == YearStr
                                         select d).Distinct().Count();
 
                 //count all office days without fdl
                 var officeDays = (from d in db.Days
                                   from ts in d.Timesheets
-                                  where d.DayType.Id == (long)EDayType.WorkDay && ts.FDL1 == null && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                  where d.DayType.Id == (long) EDayType.WorkDay && ts.FDL1 == null && d.Timestamp >= startDate && d.Timestamp <= endDate
                                   select d).Distinct().Count();
 
                 //count all home working days 
                 var homeWorkingDays = (from d in db.Days
-                                       where d.DayType.Id == (long)EDayType.HomeWorkDay && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                       where d.DayType.Id == (long) EDayType.HomeWorkDay && d.Timestamp >= startDate && d.Timestamp <= endDate
                                        select d).Distinct().Count();
 
                 //count all sick leaves 
                 var sickDays = (from d in db.Days
-                                where d.DayType.Id == (long)EDayType.SickLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                where d.DayType.Id == (long) EDayType.SickLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
                                 select d).Distinct().Count();
 
                 //count all vacations days
                 var vacationDays = (from d in db.Days
-                                    where d.DayType.Id == (long)EDayType.VacationDay && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                    where d.DayType.Id == (long) EDayType.VacationDay && d.Timestamp >= startDate && d.Timestamp <= endDate
                                     select d).Distinct().Count();
 
                 //count all special leaves
                 var specialDays = (from d in db.Days
-                                   where d.DayType.Id == (long)EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
+                                   where d.DayType.Id == (long) EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
                                    select d).Distinct().Count();
 
                 //days in italy
                 var transferITA = (from d in db.Days
                                    from ts in d.Timesheets
                                    where ts.FDL1 != null
-                                   && ts.FDL1.Id.Substring(0, 4) == YearStr
-                                   && ts.FDL1.Factory1.TransferType1.Id == 1
+                                      && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                      && ts.FDL1.Factory1.TransferType1.Id == 1
                                    select d).Distinct().Count();
 
                 //days in italy
                 var transferEU = (from d in db.Days
                                   from ts in d.Timesheets
                                   where ts.FDL1 != null
-                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
-                                  && ts.FDL1.Factory1.TransferType1.Id == 2
+                                     && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                     && ts.FDL1.Factory1.TransferType1.Id == 2
                                   select d).Distinct().Count();
 
                 //days in italy
                 var transferExEU = (from d in db.Days
                                     from ts in d.Timesheets
                                     where ts.FDL1 != null
-                                    && ts.FDL1.Id.Substring(0, 4) == YearStr
-                                    && ts.FDL1.Factory1.TransferType1.Id == 3
+                                       && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                       && ts.FDL1.Factory1.TransferType1.Id == 3
                                     select d).Distinct().Count();
 
                 //days no transf
                 var noTransfer = (from d in db.Days
                                   from ts in d.Timesheets
                                   where ts.FDL1 != null
-                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
-                                  && ts.FDL1.Factory1.TransferType1.Id == 0
+                                     && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                     && ts.FDL1.Factory1.TransferType1.Id == 0
                                   select d).Distinct().Count();
 
                 if (officeDays > 0)
-                {
                     Days.Add(new PieSeries
                     {
-                        Title = "Office",
-                        Values = new ChartValues<int> { officeDays },
-                        DataLabels = true
+                        Title = "Office", Values = new ChartValues<int> {officeDays}, DataLabels = true
                     });
-                }
 
                 if (homeWorkingDays > 0)
-                {
                     Days.Add(new PieSeries
                     {
-                        Title = "Home Work",
-                        Values = new ChartValues<int> { homeWorkingDays },
-                        DataLabels = true
+                        Title = "Home Work", Values = new ChartValues<int> {homeWorkingDays}, DataLabels = true
                     });
-                }
 
                 if (businessTripDays > 0)
-                {
                     Days.Add(new PieSeries
                     {
-                        Title = "Business Trip",
-                        Values = new ChartValues<int> { businessTripDays },
-                        DataLabels = true
+                        Title = "Business Trip", Values = new ChartValues<int> {businessTripDays}, DataLabels = true
                     });
-                }
 
                 if (sickDays > 0)
-                {
                     Days?.Add(new PieSeries
                     {
-                        Title = "Sick Leave",
-                        Values = new ChartValues<int> { sickDays },
-                        DataLabels = true
+                        Title = "Sick Leave", Values = new ChartValues<int> {sickDays}, DataLabels = true
                     });
-                }
 
                 if (vacationDays > 0)
-                {
                     Days?.Add(new PieSeries
                     {
-                        Title = "Vacations",
-                        Values = new ChartValues<int> { vacationDays },
-                        DataLabels = true
+                        Title = "Vacations", Values = new ChartValues<int> {vacationDays}, DataLabels = true
                     });
-                }
 
                 if (specialDays > 0)
-                {
                     Days?.Add(new PieSeries
                     {
-                        Title = "Special Leave",
-                        Values = new ChartValues<int> { specialDays },
-                        DataLabels = true
+                        Title = "Special Leave", Values = new ChartValues<int> {specialDays}, DataLabels = true
                     });
-                }
 
                 if (noTransfer > 0)
-                {
                     FactoryTypes?.Add(new PieSeries
                     {
-                        Title = "No Transfer",
-                        Values = new ChartValues<int> { noTransfer },
-                        DataLabels = true
+                        Title = "No Transfer", Values = new ChartValues<int> {noTransfer}, DataLabels = true
                     });
-                }
 
                 if (transferITA > 0)
-                {
                     FactoryTypes?.Add(new PieSeries
                     {
-                        Title = "Italy",
-                        Values = new ChartValues<int> { transferITA },
-                        DataLabels = true
+                        Title = "Italy", Values = new ChartValues<int> {transferITA}, DataLabels = true
                     });
-                }
 
                 if (transferEU > 0)
-                {
                     FactoryTypes?.Add(new PieSeries
                     {
-                        Title = "Europe",
-                        Values = new ChartValues<int> { transferEU },
-                        DataLabels = true
+                        Title = "Europe", Values = new ChartValues<int> {transferEU}, DataLabels = true
                     });
-                }
 
                 if (transferExEU > 0)
-                {
                     FactoryTypes?.Add(new PieSeries
                     {
-                        Title = "Extra Europe",
-                        Values = new ChartValues<int> { transferExEU },
-                        DataLabels = true
+                        Title = "Extra Europe", Values = new ChartValues<int> {transferExEU}, DataLabels = true
                     });
-                }
             }
         }
 
@@ -565,21 +489,18 @@ namespace Great.ViewModels
                 ChartValues<float> TotalKm = new ChartValues<float>();
 
                 var MonthlyKm = Rents?.GroupBy(d => d.RentStartDate.Month)
-                                       .Select(g => new
+                                      .Select(g => new
                                        {
-                                           Km = g.Sum(x => x.EndKm - x.StartKm),
+                                           Km = g.Sum(x => x.EndKm - x.StartKm)
                                        });
 
                 foreach (var month in MonthlyKm) TotalKm.Add(month.Km);
 
-                Km = new SeriesCollection()
+                Km = new SeriesCollection
                 {
-                    new LineSeries()
+                    new LineSeries
                     {
-                        Title = "Driven Km",
-                        Values = TotalKm,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
+                        Title = "Driven Km", Values = TotalKm, DataLabels = false, LabelPoint = HoursLabel
                     }
                 };
             }

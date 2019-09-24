@@ -59,6 +59,7 @@ namespace Great.Views.Pages
         }
 
         #region Time MaskedTextBox Autocomplete Methods 
+
         private void MaskedTextBox_PreviewLostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
             MaskedTextBoxHelper.PreviewLostKeyboardFocus(sender, e);
@@ -67,7 +68,6 @@ namespace Great.Views.Pages
         private void MaskedTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             MaskedTextBoxHelper.PreviewTextInput(sender, e);
-
         }
 
         #endregion
@@ -87,6 +87,5 @@ namespace Great.Views.Pages
             workingDaysDataGrid.UpdateLayout();
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
         }
-
     }
 }

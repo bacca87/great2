@@ -22,9 +22,9 @@ namespace Great.Utils
                 object item = items[key];
 
                 if (item is T)
-                    return (T)item;
+                    return (T) item;
                 else
-                    return (T)Convert.ChangeType(item, typeof(T));
+                    return (T) Convert.ChangeType(item, typeof(T));
             }
 
             return default(T);

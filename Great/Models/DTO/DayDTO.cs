@@ -1,5 +1,4 @@
-﻿
-using Great.Models.Database;
+﻿using Great.Models.Database;
 
 namespace Great.Models.DTO
 {
@@ -10,7 +9,9 @@ namespace Great.Models.DTO
 
         public DayTypeDTO DayType { get; set; }
 
-        public DayDTO() { }
+        public DayDTO()
+        {
+        }
 
         public DayDTO(Day day)
         {

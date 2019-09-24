@@ -15,22 +15,23 @@ namespace Great.ViewModels.Database
         public long Id { get; set; }
 
         private string _licencePlate;
+
         public string LicensePlate
         {
             get => _licencePlate;
             set => SetAndCheckChanged(ref _licencePlate, value);
-
         }
 
         private string _brand;
+
         public string Brand
         {
             get => _brand;
             set => SetAndCheckChanged(ref _brand, value);
-
         }
 
         private string _model;
+
         public string Model
         {
             get => _model;
@@ -38,6 +39,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _carRentalCompany;
+
         public long CarRentalCompany
 
         {
@@ -46,12 +48,11 @@ namespace Great.ViewModels.Database
             {
                 SetAndCheckChanged(ref _carRentalCompany, value);
                 RaisePropertyChanged(nameof(CarRentalCompany1));
-
             }
-
         }
 
         private CarRentalCompanyDTO _carRentalCompany1;
+
         public CarRentalCompanyDTO CarRentalCompany1
         {
             get => _carRentalCompany1;
@@ -63,6 +64,7 @@ namespace Great.ViewModels.Database
         }
 
         private ObservableCollectionEx<CarRentalHistoryEVM> _carRentalHistories;
+
         public ObservableCollectionEx<CarRentalHistoryEVM> CarRentalHistories
         {
             get => _carRentalHistories;
@@ -78,9 +80,9 @@ namespace Great.ViewModels.Database
 
         public bool IsValid =>
             this["LicensePlate"] == null
-            && this["Brand"] == null
-            && this["Model"] == null
-            && this["CarRentalCompany1"] == null;
+         && this["Brand"] == null
+         && this["Model"] == null
+         && this["CarRentalCompany1"] == null;
 
         public string this[string columnName]
         {
@@ -115,7 +117,9 @@ namespace Great.ViewModels.Database
                 return null;
             }
         }
+
         #endregion
+
         public CarEVM(Car car = null)
         {
             if (car != null) Global.Mapper.Map(car, this);
@@ -143,6 +147,7 @@ namespace Great.ViewModels.Database
                 db.SaveChanges();
                 return true;
             }
+
             return false;
         }
 
@@ -154,8 +159,8 @@ namespace Great.ViewModels.Database
                 Global.Mapper.Map(car, this);
                 return true;
             }
+
             return false;
         }
-
     }
 }

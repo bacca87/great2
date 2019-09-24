@@ -21,12 +21,11 @@ namespace Great.Utils
             SymbolsByCode = new Dictionary<string, string>();
 
             var regions = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-                          .Select(x => new RegionInfo(x.LCID));
+                                     .Select(x => new RegionInfo(x.LCID));
 
             foreach (var region in regions)
-            {
-                if (!SymbolsByCode.ContainsKey(region.ISOCurrencySymbol)) SymbolsByCode.Add(region.ISOCurrencySymbol, region.CurrencySymbol);
-            }
+                if (!SymbolsByCode.ContainsKey(region.ISOCurrencySymbol))
+                    SymbolsByCode.Add(region.ISOCurrencySymbol, region.CurrencySymbol);
         }
     }
 }

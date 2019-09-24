@@ -11,14 +11,16 @@ namespace Great.Utils.Converters
             string result = string.Empty;
             try
             {
-                TimeSpan ts = (TimeSpan)value;
+                TimeSpan ts = (TimeSpan) value;
 
                 if (ts.Days > 0) result = result + String.Format("{0}d,", ts.Days);
 
                 result = result + String.Format("{0}h,", ts.Hours);
                 result = result + String.Format("{0}min", ts.Minutes);
             }
-            catch { }
+            catch
+            {
+            }
 
             return result;
         }

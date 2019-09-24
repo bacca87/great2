@@ -22,7 +22,9 @@ namespace Great.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         #region Properties
+
         private CountryCode _Country;
+
         public CountryCode Country
         {
             get => _Country;
@@ -30,6 +32,7 @@ namespace Great.ViewModels
         }
 
         private string _EmailAddress;
+
         public string EmailAddress
         {
             get => _EmailAddress;
@@ -37,6 +40,7 @@ namespace Great.ViewModels
         }
 
         private string _EmailPassword;
+
         public string EmailPassword
         {
             get => _EmailPassword;
@@ -44,6 +48,7 @@ namespace Great.ViewModels
         }
 
         private bool _AutoAddFactories;
+
         public bool AutoAddFactories
         {
             get => _AutoAddFactories;
@@ -51,7 +56,9 @@ namespace Great.ViewModels
         }
 
         #region Appeareance
+
         private ETheme _Skin;
+
         public ETheme Theme
         {
             get => _Skin;
@@ -59,6 +66,7 @@ namespace Great.ViewModels
         }
 
         private EAccentColor _AccentColor;
+
         public EAccentColor AccentColor
         {
             get => _AccentColor;
@@ -67,14 +75,15 @@ namespace Great.ViewModels
 
 
         private bool _IsCustomSaturdayColorUsed;
+
         public bool IsCustomSaturdayColorUsed
         {
             get => _IsCustomSaturdayColorUsed;
             set => Set(ref _IsCustomSaturdayColorUsed, value);
-
         }
 
         private Color _CustomSaturdayColor;
+
         public Color CustomSaturdayColor
         {
             get => _CustomSaturdayColor;
@@ -82,6 +91,7 @@ namespace Great.ViewModels
         }
 
         private bool _IsCustomSundayColorUsed;
+
         public bool IsCustomSundayColorUsed
         {
             get => _IsCustomSundayColorUsed;
@@ -89,6 +99,7 @@ namespace Great.ViewModels
         }
 
         private Color _CustomSundayColor;
+
         public Color CustomSundayColor
         {
             get => _CustomSundayColor;
@@ -96,6 +107,7 @@ namespace Great.ViewModels
         }
 
         private bool _IsCustomHolidayColorUsed;
+
         public bool IsCustomHolidayColorUsed
         {
             get => _IsCustomHolidayColorUsed;
@@ -103,6 +115,7 @@ namespace Great.ViewModels
         }
 
         private Color _CustomHolidayColor;
+
         public Color CustomHolidayColor
         {
             get => _CustomHolidayColor;
@@ -110,6 +123,7 @@ namespace Great.ViewModels
         }
 
         private bool _IsCustomVacationColorUsed;
+
         public bool IsCustomVacationColorUsed
         {
             get => _IsCustomVacationColorUsed;
@@ -117,6 +131,7 @@ namespace Great.ViewModels
         }
 
         private Color _CustomVacationColor;
+
         public Color CustomVacationColor
         {
             get => _CustomVacationColor;
@@ -124,6 +139,7 @@ namespace Great.ViewModels
         }
 
         private bool _IsCustomSickColorUsed;
+
         public bool IsCustomSickColorUsed
         {
             get => _IsCustomSickColorUsed;
@@ -131,6 +147,7 @@ namespace Great.ViewModels
         }
 
         private Color _CustomSickColor;
+
         public Color CustomSickColor
         {
             get => _CustomSickColor;
@@ -138,6 +155,7 @@ namespace Great.ViewModels
         }
 
         private bool _IsCustomHomeworkColorUsed;
+
         public bool IsCustomHomeworkColorUsed
         {
             get => _IsCustomHomeworkColorUsed;
@@ -145,6 +163,7 @@ namespace Great.ViewModels
         }
 
         private Color _CustomHomeworkColor;
+
         public Color CustomHomeworkColor
         {
             get => _CustomHomeworkColor;
@@ -152,6 +171,7 @@ namespace Great.ViewModels
         }
 
         private bool _IsCustomSpecialLeaveColorUsed;
+
         public bool IsCustomSpecialLeaveColorUsed
         {
             get => _IsCustomSpecialLeaveColorUsed;
@@ -159,14 +179,17 @@ namespace Great.ViewModels
         }
 
         private Color _CustomSpecialLeaveColor;
+
         public Color CustomSpecialLeaveColor
         {
             get => _CustomSpecialLeaveColor;
             set => Set(ref _CustomSpecialLeaveColor, value);
         }
+
         #endregion
 
         private bool _AutoAssignFactories;
+
         public bool AutoAssignFactories
         {
             get => _AutoAssignFactories;
@@ -174,6 +197,7 @@ namespace Great.ViewModels
         }
 
         public string _FDLCancelRequestRecipients;
+
         public string FDLCancelRequestRecipients
         {
             get => _FDLCancelRequestRecipients;
@@ -181,6 +205,7 @@ namespace Great.ViewModels
         }
 
         private string _DataDirectory;
+
         public string DataDirectory
         {
             get => _DataDirectory;
@@ -192,17 +217,22 @@ namespace Great.ViewModels
         }
 
         private IProvider Exchange;
+
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand MigrateDataCommand { get; set; }
         public RelayCommand ApplyChangesCommand { get; set; }
         public RelayCommand LoadDataCommand { get; set; }
+
         #endregion
 
         #region Actions
+
         public Action Close { get; set; }
+
         #endregion
 
         /// <summary>
@@ -252,12 +282,12 @@ namespace Great.ViewModels
 
                     //Now Create all of the directories
                     foreach (string dirPath in Directory.GetDirectories(SourcePath, "*",
-                        SearchOption.AllDirectories))
+                    SearchOption.AllDirectories))
                         Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
 
                     //Copy all the files & Replaces any files with the same name
                     foreach (string newPath in Directory.GetFiles(SourcePath, "*.*",
-                        SearchOption.AllDirectories))
+                    SearchOption.AllDirectories))
                         File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
 
                     ApplicationSettings.Directories.Data = DataDirectory;
@@ -334,7 +364,7 @@ namespace Great.ViewModels
                 UserSettings.Advanced.AutoAssignFactories = AutoAssignFactories;
 
                 StringCollection recipients = new StringCollection();
-                string[] addresses = FDLCancelRequestRecipients?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] addresses = FDLCancelRequestRecipients?.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < addresses?.Length; i++) recipients.Add(addresses[i].Trim());
 
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;

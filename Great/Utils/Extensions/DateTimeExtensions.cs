@@ -12,7 +12,7 @@ namespace Great.Utils.Extensions
 
         public static long ToUnixTimestamp(this DateTime datetime)
         {
-            return (long)datetime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+            return (long) datetime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
         }
 
         public static DateTime FromUnixTimestamp(this DateTime datetime, long unixTimestamp)
@@ -37,9 +37,9 @@ namespace Great.Utils.Extensions
         {
             if (unit <= TimeSpan.Zero) throw new ArgumentOutOfRangeException("unit", "value must be positive");
 
-            Decimal units = value.Ticks / (decimal)unit.Ticks;
+            Decimal units = value.Ticks / (decimal) unit.Ticks;
             Decimal roundedUnits = Math.Round(units, style);
-            long roundedTicks = (long)roundedUnits * unit.Ticks;
+            long roundedTicks = (long) roundedUnits * unit.Ticks;
             DateTime instance = new DateTime(roundedTicks);
 
             return instance;

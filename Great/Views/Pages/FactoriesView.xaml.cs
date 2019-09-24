@@ -32,7 +32,7 @@ namespace Great.Views
 
         private FactoriesViewModel _viewModel => DataContext as FactoriesViewModel;
 
-        private bool IsLatLngSelectionMode = false;
+        private bool IsLatLngSelectionMode;
         private GridLength lastGridHeight;
         private Cursor lastCursor;
 
@@ -74,7 +74,7 @@ namespace Great.Views
             // add new updated marker
             var point = GetFactoryCoordsAsync(factory);
 
-            if (point.Result.HasValue) factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
+            if (point.Result.HasValue) factoriesMapControl.Markers.Add(CreateMarker((PointLatLng) point.Result, factory, FactoryMarkerColor.Red));
         }
 
         private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -92,8 +92,9 @@ namespace Great.Views
 
                         var point = GetFactoryCoordsAsync(factory);
 
-                        if (point.Result.HasValue) factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
+                        if (point.Result.HasValue) factoriesMapControl.Markers.Add(CreateMarker((PointLatLng) point.Result, factory, FactoryMarkerColor.Red));
                     }
+
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var obj in e.OldItems)
@@ -103,6 +104,7 @@ namespace Great.Views
 
                         if (marker != null) factoriesMapControl.Markers.Remove(marker);
                     }
+
                     break;
             }
         }
@@ -142,7 +144,7 @@ namespace Great.Views
             {
                 if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
-                tempMarker = CreateMarker(point.Value, new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
+                tempMarker = CreateMarker(point.Value, new FactoryEVM {Name = ApplicationSettings.Map.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng}, FactoryMarkerColor.Green);
                 factoriesMapControl.Markers.Add(tempMarker);
 
                 ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
@@ -167,7 +169,7 @@ namespace Great.Views
                 if (point.HasValue)
                 {
                     ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
-                    FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((FactoryEVM)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
+                    FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((FactoryEVM) ((FactoryMarker) m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
 
                     if (marker != null) marker.PlayBounce();
                 }
@@ -178,20 +180,18 @@ namespace Great.Views
         {
             if (factory.Latitude.HasValue && factory.Longitude.HasValue)
                 return new PointLatLng(factory.Latitude.Value, factory.Longitude.Value);
-            else
+
+            var point = await GetCoordsFromAddressAsync(factory.Address);
+
+            if (point?.Item1 != null)
             {
-                var point = await GetCoordsFromAddressAsync(factory.Address);
-
-                if (point?.Item1 != null)
-                {
-                    factory.Latitude = point.Value.Item1.Lat;
-                    factory.Longitude = point.Value.Item1.Lng;
-                    factory.CountryCode = point.Value.Item2.ToString();
-                    factory.Save();
-                }
-
-                return point?.Item1;
+                factory.Latitude = point.Value.Item1.Lat;
+                factory.Longitude = point.Value.Item1.Lng;
+                factory.CountryCode = point.Value.Item2.ToString();
+                factory.Save();
             }
+
+            return point?.Item1;
         }
 
         private PointLatLng? GetPointFromAddress(string address)
@@ -211,20 +211,20 @@ namespace Great.Views
             try
             {
                 // we call directly the OSM web api in order to prevent GUI freeze. The GetPoint method of Gmap.NET run on GUI thread freezing everything until the end of the computation
-                HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://nominatim.openstreetmap.org") };
+                HttpClient httpClient = new HttpClient {BaseAddress = new Uri("http://nominatim.openstreetmap.org")};
                 httpClient.DefaultRequestHeaders.Add("User-Agent", ApplicationSettings.General.UserAgent);
 
                 HttpResponseMessage httpResult = await httpClient.GetAsync($"search.php?q={address}&format=json&polygon=1&addressdetails=1");
 
                 var result = await httpResult.Content.ReadAsStringAsync();
 
-                var r = (JArray)JsonConvert.DeserializeObject(result);
+                var r = (JArray) JsonConvert.DeserializeObject(result);
 
                 if (r.HasValues)
                 {
-                    var latString = ((JValue)r[0]["lat"]).Value as string;
-                    var lngString = ((JValue)r[0]["lon"]).Value as string;
-                    var countryCode = ((JValue)r[0]["address"]["country_code"]).Value as string;
+                    var latString = ((JValue) r[0]["lat"]).Value as string;
+                    var lngString = ((JValue) r[0]["lon"]).Value as string;
+                    var countryCode = ((JValue) r[0]["address"]["country_code"]).Value as string;
 
                     if (latString != string.Empty && lngString != string.Empty)
                     {
@@ -248,7 +248,7 @@ namespace Great.Views
 
         private GMapMarker CreateMarker(PointLatLng point, FactoryEVM factory, FactoryMarkerColor color)
         {
-            FactoryMarker shape = new FactoryMarker() { DataContext = factory, Color = color };
+            FactoryMarker shape = new FactoryMarker {DataContext = factory, Color = color};
 
             GMapMarker marker = new GMapMarker(point);
             marker.Tag = factory;
@@ -281,7 +281,7 @@ namespace Great.Views
 
                 if (point.HasValue)
                 {
-                    GMapMarker marker = CreateMarker((PointLatLng)point, factory, FactoryMarkerColor.Red);
+                    GMapMarker marker = CreateMarker((PointLatLng) point, factory, FactoryMarkerColor.Red);
                     factoriesMapControl.Markers.Add(marker);
                 }
             }
@@ -312,6 +312,7 @@ namespace Great.Views
                         factoriesMapControl.Markers.Remove(tempPosMarker);
                         tempPosMarker = null;
                     }
+
                     break;
             }
         }
@@ -328,7 +329,6 @@ namespace Great.Views
 
         private void marker_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FactoriesMapControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -338,7 +338,7 @@ namespace Great.Views
                 if (IsLatLngSelectionMode)
                 {
                     Point mousePos = e.GetPosition(factoriesMapControl);
-                    PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
+                    PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int) mousePos.X, (int) mousePos.Y);
 
                     FactoryEVM factory = _viewModel.SelectedFactory;
                     factory.Latitude = mapPosition.Lat;
@@ -355,7 +355,7 @@ namespace Great.Views
                 else
                 {
                     Point mousePos = e.GetPosition(factoriesMapControl);
-                    PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int)mousePos.X, (int)mousePos.Y);
+                    PointLatLng mapPosition = factoriesMapControl.FromLocalToLatLng((int) mousePos.X, (int) mousePos.Y);
 
                     GeoCoderStatusCode status;
                     Placemark? placemark = (factoriesMapControl.MapProvider as GeocodingProvider).GetPlacemark(mapPosition, out status);
@@ -364,7 +364,7 @@ namespace Great.Views
                     {
                         if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
-                        FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
+                        FactoryEVM factory = new FactoryEVM {Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng};
                         GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
                         tempMarker = marker;
                         factoriesMapControl.Markers.Add(marker);
@@ -396,7 +396,7 @@ namespace Great.Views
             {
                 if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
-                FactoryEVM factory = (FactoryEVM)factoriesListView.SelectedItem;
+                FactoryEVM factory = (FactoryEVM) factoriesListView.SelectedItem;
                 ZoomOnFactory(factory);
             }
         }
@@ -425,9 +425,9 @@ namespace Great.Views
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue == false && IsLatLngSelectionMode) LatLngSelectionMode(false);
+            if ((bool) e.NewValue == false && IsLatLngSelectionMode) LatLngSelectionMode(false);
 
-            if ((bool)e.NewValue) RefreshMarkersAsync(new List<FactoryEVM>(_viewModel.Factories));
+            if ((bool) e.NewValue) RefreshMarkersAsync(new List<FactoryEVM>(_viewModel.Factories));
         }
 
         private void OnZoomOnFactoryRequest(FactoryEVM factory)

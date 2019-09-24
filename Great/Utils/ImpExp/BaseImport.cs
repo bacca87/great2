@@ -7,48 +7,71 @@ namespace Great.Utils
     public class BaseImport
     {
         #region Properties
+
         protected Logger log = null;
 
         public ConcurrentQueue<string> Output { get; internal set; }
 
         private string _status;
+
         public string Status
         {
             get
             {
-                lock (this) return _status;
+                lock (this)
+                {
+                    return _status;
+                }
             }
             internal set
             {
-                lock (this) _status = value;
+                lock (this)
+                {
+                    _status = value;
+                }
             }
         }
 
         private bool _IsCompleted;
+
         public bool IsCompleted
         {
             get
             {
-                lock (this) return _IsCompleted;
+                lock (this)
+                {
+                    return _IsCompleted;
+                }
             }
             internal set
             {
-                lock (this) _IsCompleted = value;
+                lock (this)
+                {
+                    _IsCompleted = value;
+                }
             }
         }
 
         private bool _IsCancelled;
+
         public bool IsCancelled
         {
             get
             {
-                lock (this) return _IsCancelled;
+                lock (this)
+                {
+                    return _IsCancelled;
+                }
             }
             internal set
             {
-                lock (this) _IsCancelled = value;
+                lock (this)
+                {
+                    _IsCancelled = value;
+                }
             }
         }
+
         #endregion
 
         protected BaseImport(Logger log)
@@ -58,9 +81,17 @@ namespace Great.Utils
             Output = new ConcurrentQueue<string>();
         }
 
-        public virtual void Start() { }
-        public virtual void Cancel() { }
-        public virtual void Close() { }
+        public virtual void Start()
+        {
+        }
+
+        public virtual void Cancel()
+        {
+        }
+
+        public virtual void Close()
+        {
+        }
 
         protected void StatusChanged(string status)
         {

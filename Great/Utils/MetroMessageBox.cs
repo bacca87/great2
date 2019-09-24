@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -9,7 +8,7 @@ namespace Great
     {
         public static void Show(string message)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke((Action) delegate
             {
                 using (var msg = new MetroMessageBoxWindow())
                 {
@@ -27,12 +26,11 @@ namespace Great
                     msg.ShowDialog();
                 }
             });
-
         }
 
         public static void Show(string message, string title)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke((Action) delegate
             {
                 using (var msg = new MetroMessageBoxWindow())
                 {
@@ -56,7 +54,7 @@ namespace Great
         {
             MessageBoxResult result = MessageBoxResult.None;
 
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke((Action) delegate
             {
                 using (var msg = new MetroMessageBoxWindow())
                 {
@@ -88,6 +86,7 @@ namespace Great
                             msg.BtnNo.IsEnabled = false;
                             break;
                     }
+
                     msg.Title = string.Empty;
                     msg.TxtTitle.Text = string.Empty;
                     msg.TxtMessage.Text = message;
@@ -105,7 +104,7 @@ namespace Great
         {
             MessageBoxResult result = MessageBoxResult.None;
 
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke((Action) delegate
             {
                 using (var msg = new MetroMessageBoxWindow())
                 {
@@ -137,6 +136,7 @@ namespace Great
                             msg.BtnNo.IsEnabled = false;
                             break;
                     }
+
                     msg.Title = title;
                     msg.TxtTitle.Text = title;
                     msg.TxtMessage.Text = message;
@@ -154,7 +154,7 @@ namespace Great
         {
             MessageBoxResult result = MessageBoxResult.None;
 
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke((Action) delegate
             {
                 using (var msg = new MetroMessageBoxWindow())
                 {
@@ -208,6 +208,4 @@ namespace Great
             return result;
         }
     }
-
 }
-

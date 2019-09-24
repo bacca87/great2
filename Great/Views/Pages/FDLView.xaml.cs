@@ -53,7 +53,7 @@ namespace Great.Views.Pages
             if (wnd is MainView && factoriesVM != null)
             {
                 MainView mainView = wnd as MainView;
-                TabItem factoriesTabItem = mainView.NavigationTabControl.Items.Cast<TabItem>().SingleOrDefault(item => (string)item.Header == "Factories");
+                TabItem factoriesTabItem = mainView.NavigationTabControl.Items.Cast<TabItem>().SingleOrDefault(item => (string) item.Header == "Factories");
 
                 if (factoriesTabItem != null)
                 {
@@ -63,6 +63,5 @@ namespace Great.Views.Pages
                 }
             }
         }
-
     }
 }

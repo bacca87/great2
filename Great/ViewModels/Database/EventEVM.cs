@@ -15,6 +15,7 @@ namespace Great.ViewModels.Database
         #region Properties
 
         private long _Id;
+
         public long Id
         {
             get => _Id;
@@ -22,6 +23,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _SharePointId;
+
         public long SharePointId
         {
             get => _SharePointId;
@@ -29,40 +31,41 @@ namespace Great.ViewModels.Database
         }
 
         private long _Type;
+
         public long Type
         {
             get => _Type;
             set => SetAndCheckChanged(ref _Type, value);
-
         }
 
         public EEventType EType
         {
-            get => (EEventType)Type;
+            get => (EEventType) Type;
             set
             {
-                Type = (int)value;
+                Type = (int) value;
                 RaisePropertyChanged(nameof(Type));
             }
         }
 
         private string _Title;
+
         public string Title
         {
             get => _Title;
             set => SetAndCheckChanged(ref _Title, value);
-
         }
 
         private string _Location;
+
         public string Location
         {
             get => _Location;
             set => SetAndCheckChanged(ref _Location, value);
-
         }
 
         private DateTime? _SendDateTime;
+
         public DateTime? SendDateTime
         {
             get => _SendDateTime;
@@ -70,6 +73,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _StartDateTimestamp;
+
         public long StartDateTimeStamp
         {
             get => _StartDateTimestamp;
@@ -78,6 +82,7 @@ namespace Great.ViewModels.Database
 
 
         private long _EndDateTimestamp;
+
         public long EndDateTimeStamp
         {
             get => _EndDateTimestamp;
@@ -98,6 +103,7 @@ namespace Great.ViewModels.Database
                 RaisePropertyChanged(nameof(EndDate));
             }
         }
+
         public DateTime EndDate
         {
             get => DateTime.Now.FromUnixTimestamp(EndDateTimeStamp);
@@ -123,7 +129,6 @@ namespace Great.ViewModels.Database
                 RaisePropertyChanged(nameof(BeginMinutes));
                 RaisePropertyChanged(nameof(EndHour));
                 RaisePropertyChanged(nameof(EndMinutes));
-
             }
         }
 
@@ -168,31 +173,32 @@ namespace Great.ViewModels.Database
 
 
         private string _Description;
+
         public string Description
         {
             get => _Description;
             set => SetAndCheckChanged(ref _Description, value);
-
         }
 
         private string _Notes;
+
         public string Notes
         {
             get => _Notes;
             set => SetAndCheckChanged(ref _Notes, value);
-
         }
 
         private bool _IsAllDay;
+
         public bool IsAllDay
         {
             get => _IsAllDay;
             set => SetAndCheckChanged(ref _IsAllDay, value);
-
         }
 
 
         private bool _IsSent;
+
         public bool IsSent
         {
             get => _IsSent;
@@ -201,6 +207,7 @@ namespace Great.ViewModels.Database
 
 
         private bool _IsCancelRequested;
+
         public bool IsCancelRequested
         {
             get => _IsCancelRequested;
@@ -209,6 +216,7 @@ namespace Great.ViewModels.Database
 
 
         private long _Status;
+
         public long Status
         {
             get => _Status;
@@ -221,6 +229,7 @@ namespace Great.ViewModels.Database
 
 
         private bool _IsNew;
+
         public bool IsNew
         {
             get => _IsNew;
@@ -229,16 +238,17 @@ namespace Great.ViewModels.Database
 
         public EEventStatus EStatus
         {
-            get => (EEventStatus)Status;
+            get => (EEventStatus) Status;
             set
             {
-                Status = (int)value;
+                Status = (int) value;
                 RaisePropertyChanged();
             }
         }
 
 
         private EventStatusDTO _Status1;
+
         public EventStatusDTO Status1
         {
             get => _Status1;
@@ -252,6 +262,7 @@ namespace Great.ViewModels.Database
 
 
         private EventTypeDTO _Type1;
+
         public EventTypeDTO Type1
         {
             get => _Type1;
@@ -265,6 +276,7 @@ namespace Great.ViewModels.Database
 
 
         private bool _IsReadOnly;
+
         public bool IsReadOnly
         {
             get => _IsReadOnly;
@@ -273,6 +285,7 @@ namespace Great.ViewModels.Database
 
 
         private string _Approver;
+
         public string Approver
         {
             get => _Approver;
@@ -281,6 +294,7 @@ namespace Great.ViewModels.Database
 
 
         private DateTime? _ApprovationDate;
+
         public DateTime? ApprovationDate
         {
             get => _ApprovationDate;
@@ -290,16 +304,19 @@ namespace Great.ViewModels.Database
         #endregion
 
         #region Error Validation
+
         public string Error => throw new NotImplementedException();
+
         public bool IsValid =>
             this["Type"] == null
-            && this["Title"] == null
-            && this["StartDate"] == null
-            && this["EndDate"] == null
-            && this["EndHour"] == null
-            && this["EndMinutes"] == null
-            && this["BeginHour"] == null
-            && this["BeginMinutes"] == null;
+         && this["Title"] == null
+         && this["StartDate"] == null
+         && this["EndDate"] == null
+         && this["EndHour"] == null
+         && this["EndMinutes"] == null
+         && this["BeginHour"] == null
+         && this["BeginMinutes"] == null;
+
         public string this[string columnName]
         {
             get
@@ -337,6 +354,7 @@ namespace Great.ViewModels.Database
                 return null;
             }
         }
+
         #endregion
 
         public EventEVM(Event ev = null)
@@ -347,6 +365,7 @@ namespace Great.ViewModels.Database
 
             IsChanged = false;
         }
+
         public override bool Save(DBArchive db)
         {
             Event ev = new Event();
@@ -369,9 +388,10 @@ namespace Great.ViewModels.Database
                 db.SaveChanges();
                 return true;
             }
-            return false;
 
+            return false;
         }
+
         public override bool Refresh(DBArchive db)
         {
             Event ev = db.Events.SingleOrDefault(e => e.Id == Id);
@@ -426,7 +446,7 @@ namespace Great.ViewModels.Database
             //Hack: too much long computation when overriding Object.GetHashCode() and Object.Equals()
             if (obj is EventEVM)
             {
-                EventEVM o = (EventEVM)obj;
+                EventEVM o = (EventEVM) obj;
 
                 return Title == o.Title
                     && Location == o.Location
@@ -434,8 +454,8 @@ namespace Great.ViewModels.Database
                     && StartDate == o.StartDate
                     && EndDate == o.EndDate
                     && Status == o.Status;
-
             }
+
             return false;
         }
 
@@ -453,11 +473,11 @@ namespace Great.ViewModels.Database
                 Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
 
                 if (currentDay == null)
-                    NewDaysInEvent.Add(new DayEVM { Date = d });
+                    NewDaysInEvent.Add(new DayEVM {Date = d});
                 else
                     NewDaysInEvent.Add(new DayEVM(currentDay));
 
-                dayEventToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
+                dayEventToAdd.Add(new DayEventEVM {TimeStamp = timestamp, EventId = Id});
             }
 
             db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == Id));
@@ -467,28 +487,36 @@ namespace Great.ViewModels.Database
             if (EType == EEventType.Vacations)
             {
                 if (EStatus == EEventStatus.Accepted)
-                {
-                    NewDaysInEvent.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
-                        d.Save(db); });
-                }
+                    NewDaysInEvent.ToList().ForEach(d =>
+                    {
+                        if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                        d.Save(db);
+                    });
 
                 if (EStatus == EEventStatus.Rejected)
-                {
-                    NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay;
-                        d.Save(db); });
-                }
+                    NewDaysInEvent.ToList().ForEach(d =>
+                    {
+                        if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay;
+                        d.Save(db);
+                    });
 
                 if (EStatus == EEventStatus.Pending)
-                {
-                    NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
-                        d.Save(db); });
-                }
+                    NewDaysInEvent.ToList().ForEach(d =>
+                    {
+                        if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                        d.Save(db);
+                    });
             }
 
             DaysToBeCleared = NewDaysInEvent.Except(actualDaysInEvent).ToList();
 
-            DaysToBeCleared.ForEach(x => { x.EType = EDayType.WorkDay; x.Save(db); });
+            DaysToBeCleared.ForEach(x =>
+            {
+                x.EType = EDayType.WorkDay;
+                x.Save(db);
+            });
         }
+
         public void AddOrUpdateEventRelations(out List<DayEVM> DaysToBeCleared, out List<DayEVM> NewDaysInEvent)
         {
             NewDaysInEvent = new List<DayEVM>();
@@ -506,11 +534,11 @@ namespace Great.ViewModels.Database
                     Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
 
                     if (currentDay == null)
-                        NewDaysInEvent.Add(new DayEVM { Date = d });
+                        NewDaysInEvent.Add(new DayEVM {Date = d});
                     else
                         NewDaysInEvent.Add(new DayEVM(currentDay));
 
-                    dayEventToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
+                    dayEventToAdd.Add(new DayEventEVM {TimeStamp = timestamp, EventId = Id});
                 }
 
                 db.DayEvents.RemoveRange(db.DayEvents.Where(x => x.EventId == Id));
@@ -520,30 +548,37 @@ namespace Great.ViewModels.Database
                 if (EType == EEventType.Vacations)
                 {
                     if (EStatus == EEventStatus.Accepted)
-                    {
-                        NewDaysInEvent.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
-                            d.Save(db); });
-                    }
+                        NewDaysInEvent.ToList().ForEach(d =>
+                        {
+                            if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                            d.Save(db);
+                        });
 
                     if (EStatus == EEventStatus.Rejected)
-                    {
-                        NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay;
-                            d.Save(db); });
-                    }
+                        NewDaysInEvent.ToList().ForEach(d =>
+                        {
+                            if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay;
+                            d.Save(db);
+                        });
 
                     if (EStatus == EEventStatus.Pending)
-                    {
-                        NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
-                            d.Save(db); });
-                    }
+                        NewDaysInEvent.ToList().ForEach(d =>
+                        {
+                            if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                            d.Save(db);
+                        });
                 }
 
                 DaysToBeCleared = actualDaysInEvent.Except(NewDaysInEvent).ToList();
 
-                DaysToBeCleared.ForEach(x => { x.EType = EDayType.WorkDay; x.Save(db); });
+                DaysToBeCleared.ForEach(x =>
+                {
+                    x.EType = EDayType.WorkDay;
+                    x.Save(db);
+                });
             }
-
         }
+
         public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
         {
             List<DateTime> dates = new List<DateTime>();
@@ -560,6 +595,5 @@ namespace Great.ViewModels.Database
 
             return dates;
         }
-
     }
 }

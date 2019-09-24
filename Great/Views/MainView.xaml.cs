@@ -32,7 +32,7 @@ namespace Great.Views
                 AutoUpdater.HttpUserAgent = ApplicationSettings.General.UserAgent;
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
 
-                CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
+                CheckForUpdatesTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(1)};
                 CheckForUpdatesTimer.Tick += CheckForUpdatesTimer_Tick;
                 CheckForUpdatesTimer.Start();
             }
@@ -46,20 +46,17 @@ namespace Great.Views
 
         private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
-            var json = (JArray)JsonConvert.DeserializeObject(args.RemoteData);
+            var json = (JArray) JsonConvert.DeserializeObject(args.RemoteData);
 
             Func<string, string> GetVersionFromTag = (tag) => { return tag.Remove(0, tag.IndexOf('v') + 1); };
 
-            var CurrentVersion = new Version(GetVersionFromTag(((JValue)json[0]["tag_name"]).Value as string));
+            var CurrentVersion = new Version(GetVersionFromTag(((JValue) json[0]["tag_name"]).Value as string));
             var ChangelogUrl = string.Empty;
-            var DownloadUrl = ((JValue)json[0]["assets"][0]["browser_download_url"]).Value as string;
+            var DownloadUrl = ((JValue) json[0]["assets"][0]["browser_download_url"]).Value as string;
 
             args.UpdateInfo = new UpdateInfoEventArgs
             {
-                CurrentVersion = CurrentVersion,
-                ChangelogURL = ChangelogUrl,
-                Mandatory = false,
-                DownloadURL = DownloadUrl
+                CurrentVersion = CurrentVersion, ChangelogURL = ChangelogUrl, Mandatory = false, DownloadURL = DownloadUrl
             };
         }
 
@@ -96,7 +93,6 @@ namespace Great.Views
             EventsView view = new EventsView();
             view.Owner = this;
             view.ShowDialog();
-
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -116,17 +112,15 @@ namespace Great.Views
         }
 
 
-
         private void NavigationTabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var test = e.Source;
             if (e.Source is TabItem)
             {
-                TabItem t = (TabItem)e.Source;
+                TabItem t = (TabItem) e.Source;
                 this.Dispatcher.Invoke(new Action(() => { CheckEntities(); }), null);
                 t.Focus();
             }
-
         }
 
         private void CheckEntities()
@@ -137,10 +131,5 @@ namespace Great.Views
             SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
-
-
     }
-
-
 }
-

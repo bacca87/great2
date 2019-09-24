@@ -8,7 +8,7 @@ namespace Great.Utils.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && value is double && (double)value == 0)
+            if (value != null && value is double && (double) value == 0)
                 return null;
             else
                 return value;

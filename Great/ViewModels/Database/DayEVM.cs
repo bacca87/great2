@@ -16,7 +16,9 @@ namespace Great.ViewModels.Database
     public class DayEVM : EntityViewModelBase
     {
         #region Properties
+
         public long _Timestamp;
+
         public long Timestamp
         {
             get => _Timestamp;
@@ -24,6 +26,7 @@ namespace Great.ViewModels.Database
         }
 
         public long _Type;
+
         public long Type
         {
             get => _Type;
@@ -35,6 +38,7 @@ namespace Great.ViewModels.Database
         }
 
         public DayType _DayType;
+
         public DayType DayType
         {
             get => _DayType;
@@ -55,6 +59,7 @@ namespace Great.ViewModels.Database
 
         public int WeekNr => Date.WeekNr();
         public bool IsHoliday => DateSystem.IsPublicHoliday(Date, UserSettings.Localization.Country);
+
         public string HolidayLocalName
         {
             get
@@ -66,10 +71,10 @@ namespace Great.ViewModels.Database
 
         public EDayType EType
         {
-            get => (EDayType)Type;
+            get => (EDayType) Type;
             set
             {
-                Type = (long)value;
+                Type = (long) value;
                 RaisePropertyChanged();
             }
         }
@@ -81,6 +86,7 @@ namespace Great.ViewModels.Database
         public bool IsSpecialLeave => EType == EDayType.SpecialLeave;
 
         #region Totals
+
         public float? TotalTime
         {
             get
@@ -90,7 +96,8 @@ namespace Great.ViewModels.Database
                 if (Timesheets == null || Timesheets.Count == 0) return null;
 
                 foreach (TimesheetEVM ts in Timesheets)
-                    if (ts.TotalTime.HasValue) total += ts.TotalTime.Value;
+                    if (ts.TotalTime.HasValue)
+                        total += ts.TotalTime.Value;
 
                 return total > 0 ? total : null;
             }
@@ -105,7 +112,8 @@ namespace Great.ViewModels.Database
                 if (Timesheets == null || Timesheets.Count == 0) return null;
 
                 foreach (TimesheetEVM ts in Timesheets)
-                    if (ts.WorkTime.HasValue) total += ts.WorkTime.Value;
+                    if (ts.WorkTime.HasValue)
+                        total += ts.WorkTime.Value;
 
                 return total > 0 ? total : null;
             }
@@ -120,7 +128,8 @@ namespace Great.ViewModels.Database
                 if (Timesheets == null || Timesheets.Count == 0) return null;
 
                 foreach (TimesheetEVM ts in Timesheets)
-                    if (ts.TravelTime.HasValue) total += ts.TravelTime.Value;
+                    if (ts.TravelTime.HasValue)
+                        total += ts.TravelTime.Value;
 
                 return total > 0 ? total : null;
             }
@@ -155,6 +164,7 @@ namespace Great.ViewModels.Database
                 return null;
             }
         }
+
         public float? HoursOfSpecialLeave
         {
             get
@@ -164,6 +174,7 @@ namespace Great.ViewModels.Database
                 return 8 - (TotalTime ?? 0);
             }
         }
+
         public float? HoursOfSicklLeave
         {
             get
@@ -173,9 +184,11 @@ namespace Great.ViewModels.Database
                 return 8 - (TotalTime ?? 0);
             }
         }
+
         #endregion
 
         #region Time Periods
+
         public TimePeriodCollection TimePeriods
         {
             get
@@ -185,7 +198,8 @@ namespace Great.ViewModels.Database
                 if (Timesheets == null || Timesheets.Count == 0) return null;
 
                 foreach (TimesheetEVM ts in Timesheets)
-                    if (ts.TimePeriods != null) timePeriods.AddAll(ts.TimePeriods);
+                    if (ts.TimePeriods != null)
+                        timePeriods.AddAll(ts.TimePeriods);
 
                 return timePeriods.Count > 0 ? timePeriods : null;
             }
@@ -200,7 +214,8 @@ namespace Great.ViewModels.Database
                 if (Timesheets == null || Timesheets.Count == 0) return null;
 
                 foreach (TimesheetEVM ts in Timesheets)
-                    if (ts.WorkPeriods != null) workingPeriods.AddAll(ts.WorkPeriods);
+                    if (ts.WorkPeriods != null)
+                        workingPeriods.AddAll(ts.WorkPeriods);
 
                 return workingPeriods.Count > 0 ? workingPeriods : null;
             }
@@ -215,14 +230,17 @@ namespace Great.ViewModels.Database
                 if (Timesheets == null || Timesheets.Count == 0) return null;
 
                 foreach (TimesheetEVM ts in Timesheets)
-                    if (ts.TravelPeriods != null) travelPeriods.AddAll(ts.TravelPeriods);
+                    if (ts.TravelPeriods != null)
+                        travelPeriods.AddAll(ts.TravelPeriods);
 
                 return travelPeriods.Count > 0 ? travelPeriods : null;
             }
         }
+
         #endregion
 
         #region Overtimes
+
         public float? Overtime34
         {
             get
@@ -264,9 +282,9 @@ namespace Great.ViewModels.Database
                 {
                     TimePeriodSubtractor<TimeRange> subtractor = new TimePeriodSubtractor<TimeRange>();
 
-                    TimePeriodCollection overtime35period = new TimePeriodCollection() {
-                        new TimeRange(Date, Date + new TimeSpan(6, 0, 0)),
-                        new TimeRange(Date + new TimeSpan(22, 0, 0), Date.AddDays(1) + new TimeSpan(6, 0, 0))
+                    TimePeriodCollection overtime35period = new TimePeriodCollection
+                    {
+                        new TimeRange(Date, Date + new TimeSpan(6, 0, 0)), new TimeRange(Date + new TimeSpan(22, 0, 0), Date.AddDays(1) + new TimeSpan(6, 0, 0))
                     };
 
                     if (TimePeriods != null)
@@ -289,7 +307,9 @@ namespace Great.ViewModels.Database
                 if (!IsHoliday)
                 {
                     if (Date.DayOfWeek == DayOfWeek.Saturday && TotalTime.HasValue && TotalTime.Value > 4)
+                    {
                         overtime50 = TotalTime - 4;
+                    }
                     else
                     {
                         if (TotalTime.HasValue && TotalTime.Value > 10) overtime50 = TotalTime.Value - 10;
@@ -315,7 +335,9 @@ namespace Great.ViewModels.Database
         #endregion
 
         #region Display Properties
+
         public string WeekNr_Display => Date.DayOfWeek == DayOfWeek.Monday ? WeekNr.ToString() : "";
+
         public string Factories_Display
         {
             get
@@ -323,13 +345,15 @@ namespace Great.ViewModels.Database
                 string factories = string.Empty;
 
                 foreach (TimesheetEVM timesheet in Timesheets)
-                    if (!string.IsNullOrEmpty(timesheet.FDL)) factories += timesheet?.FDL1?.Factory1?.Name + "; ";
+                    if (!string.IsNullOrEmpty(timesheet.FDL))
+                        factories += timesheet?.FDL1?.Factory1?.Name + "; ";
 
                 if (!string.IsNullOrEmpty(factories)) factories = factories.Remove(factories.Length - 2);
 
                 return factories;
             }
         }
+
         public string Notes_Display
         {
             get
@@ -337,13 +361,15 @@ namespace Great.ViewModels.Database
                 string notes = string.Empty;
 
                 foreach (TimesheetEVM timesheet in Timesheets)
-                    if (!string.IsNullOrEmpty(timesheet.Notes)) notes += timesheet?.Notes + ";";
+                    if (!string.IsNullOrEmpty(timesheet.Notes))
+                        notes += timesheet?.Notes + ";";
 
                 if (!string.IsNullOrEmpty(notes)) notes = notes.Remove(notes.Length - 1);
 
                 return notes;
             }
         }
+
         #endregion
 
         #endregion
@@ -420,15 +446,14 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-
     }
 
     public enum EDayType
     {
-        WorkDay = 0,
-        VacationDay = 1,
-        SickLeave = 2,
-        HomeWorkDay = 3,
-        SpecialLeave = 4
+        WorkDay = 0
+        , VacationDay = 1
+        , SickLeave = 2
+        , HomeWorkDay = 3
+        , SpecialLeave = 4
     }
 }

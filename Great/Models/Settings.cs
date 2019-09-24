@@ -15,12 +15,15 @@ using System.Windows.Media;
 namespace Great.Models
 {
     #region Application Settings
+
     public static class ApplicationSettings
     {
         #region Database
+
         public static class Database
         {
             public const int MaxBackupCount = 7;
+
             public static string ConnectionString
             {
                 get
@@ -32,6 +35,7 @@ namespace Great.Models
                     return connectionString;
                 }
             }
+
             public static string DBFileName
             {
                 get
@@ -42,9 +46,11 @@ namespace Great.Models
                 }
             }
         }
+
         #endregion
 
         #region Directories
+
         public static class Directories
         {
             public static string Data
@@ -84,9 +90,11 @@ namespace Great.Models
 
             public static string Log => Data + "Log\\";
         }
+
         #endregion
 
         #region Email Recipients
+
         public static class EmailRecipients
         {
             public const int MRUSize = 10;
@@ -96,9 +104,11 @@ namespace Great.Models
             public const string HR = "hr@elettric80.it";
             public const string SAP = "sap @elettric80.it";
         }
+
         #endregion
 
         #region FDL
+
         public static class FDL
         {
             public const int PerformanceDescriptionMaxLength = 575;
@@ -230,126 +240,66 @@ namespace Great.Models
                 #region Helpers
 
                 #region TimesMatrix
+
                 public static readonly Dictionary<DayOfWeek, Dictionary<string, string>> TimesMatrix = new Dictionary<DayOfWeek, Dictionary<string, string>>()
                 {
                     {
-                        DayOfWeek.Monday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Monday, new Dictionary<string, string>
                         {
-                            { "Date",              Mon_Date },
-                            { "TravelStartTimeAM", Mon_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Mon_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Mon_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Mon_TravelEndTimeAM },
-                            { "TravelStartTimePM", Mon_TravelStartTimePM },
-                            { "WorkStartTimePM",   Mon_WorkStartTimePM },
-                            { "WorkEndTimePM",     Mon_WorkEndTimePM },
-                            { "TravelEndTimePM",   Mon_TravelEndTimePM }
+                            {"Date", Mon_Date}, {"TravelStartTimeAM", Mon_TravelStartTimeAM}, {"WorkStartTimeAM", Mon_WorkStartTimeAM}, {"WorkEndTimeAM", Mon_WorkEndTimeAM}, {"TravelEndTimeAM", Mon_TravelEndTimeAM}, {"TravelStartTimePM", Mon_TravelStartTimePM}, {"WorkStartTimePM", Mon_WorkStartTimePM}, {"WorkEndTimePM", Mon_WorkEndTimePM}, {"TravelEndTimePM", Mon_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Tuesday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Tuesday, new Dictionary<string, string>
                         {
-                            { "Date",              Tue_Date },
-                            { "TravelStartTimeAM", Tue_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Tue_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Tue_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Tue_TravelEndTimeAM },
-                            { "TravelStartTimePM", Tue_TravelStartTimePM },
-                            { "WorkStartTimePM",   Tue_WorkStartTimePM },
-                            { "WorkEndTimePM",     Tue_WorkEndTimePM },
-                            { "TravelEndTimePM",   Tue_TravelEndTimePM }
+                            {"Date", Tue_Date}, {"TravelStartTimeAM", Tue_TravelStartTimeAM}, {"WorkStartTimeAM", Tue_WorkStartTimeAM}, {"WorkEndTimeAM", Tue_WorkEndTimeAM}, {"TravelEndTimeAM", Tue_TravelEndTimeAM}, {"TravelStartTimePM", Tue_TravelStartTimePM}, {"WorkStartTimePM", Tue_WorkStartTimePM}, {"WorkEndTimePM", Tue_WorkEndTimePM}, {"TravelEndTimePM", Tue_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Wednesday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Wednesday, new Dictionary<string, string>
                         {
-                            { "Date",              Wed_Date },
-                            { "TravelStartTimeAM", Wed_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Wed_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Wed_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Wed_TravelEndTimeAM },
-                            { "TravelStartTimePM", Wed_TravelStartTimePM },
-                            { "WorkStartTimePM",   Wed_WorkStartTimePM },
-                            { "WorkEndTimePM",     Wed_WorkEndTimePM },
-                            { "TravelEndTimePM",   Wed_TravelEndTimePM }
+                            {"Date", Wed_Date}, {"TravelStartTimeAM", Wed_TravelStartTimeAM}, {"WorkStartTimeAM", Wed_WorkStartTimeAM}, {"WorkEndTimeAM", Wed_WorkEndTimeAM}, {"TravelEndTimeAM", Wed_TravelEndTimeAM}, {"TravelStartTimePM", Wed_TravelStartTimePM}, {"WorkStartTimePM", Wed_WorkStartTimePM}, {"WorkEndTimePM", Wed_WorkEndTimePM}, {"TravelEndTimePM", Wed_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Thursday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Thursday, new Dictionary<string, string>
                         {
-                            { "Date",              Thu_Date },
-                            { "TravelStartTimeAM", Thu_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Thu_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Thu_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Thu_TravelEndTimeAM },
-                            { "TravelStartTimePM", Thu_TravelStartTimePM },
-                            { "WorkStartTimePM",   Thu_WorkStartTimePM },
-                            { "WorkEndTimePM",     Thu_WorkEndTimePM },
-                            { "TravelEndTimePM",   Thu_TravelEndTimePM }
+                            {"Date", Thu_Date}, {"TravelStartTimeAM", Thu_TravelStartTimeAM}, {"WorkStartTimeAM", Thu_WorkStartTimeAM}, {"WorkEndTimeAM", Thu_WorkEndTimeAM}, {"TravelEndTimeAM", Thu_TravelEndTimeAM}, {"TravelStartTimePM", Thu_TravelStartTimePM}, {"WorkStartTimePM", Thu_WorkStartTimePM}, {"WorkEndTimePM", Thu_WorkEndTimePM}, {"TravelEndTimePM", Thu_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Friday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Friday, new Dictionary<string, string>
                         {
-                            { "Date",              Fri_Date },
-                            { "TravelStartTimeAM", Fri_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Fri_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Fri_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Fri_TravelEndTimeAM },
-                            { "TravelStartTimePM", Fri_TravelStartTimePM },
-                            { "WorkStartTimePM",   Fri_WorkStartTimePM },
-                            { "WorkEndTimePM",     Fri_WorkEndTimePM },
-                            { "TravelEndTimePM",   Fri_TravelEndTimePM }
+                            {"Date", Fri_Date}, {"TravelStartTimeAM", Fri_TravelStartTimeAM}, {"WorkStartTimeAM", Fri_WorkStartTimeAM}, {"WorkEndTimeAM", Fri_WorkEndTimeAM}, {"TravelEndTimeAM", Fri_TravelEndTimeAM}, {"TravelStartTimePM", Fri_TravelStartTimePM}, {"WorkStartTimePM", Fri_WorkStartTimePM}, {"WorkEndTimePM", Fri_WorkEndTimePM}, {"TravelEndTimePM", Fri_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Saturday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Saturday, new Dictionary<string, string>
                         {
-                            { "Date",              Sat_Date },
-                            { "TravelStartTimeAM", Sat_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Sat_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Sat_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Sat_TravelEndTimeAM },
-                            { "TravelStartTimePM", Sat_TravelStartTimePM },
-                            { "WorkStartTimePM",   Sat_WorkStartTimePM },
-                            { "WorkEndTimePM",     Sat_WorkEndTimePM },
-                            { "TravelEndTimePM",   Sat_TravelEndTimePM }
+                            {"Date", Sat_Date}, {"TravelStartTimeAM", Sat_TravelStartTimeAM}, {"WorkStartTimeAM", Sat_WorkStartTimeAM}, {"WorkEndTimeAM", Sat_WorkEndTimeAM}, {"TravelEndTimeAM", Sat_TravelEndTimeAM}, {"TravelStartTimePM", Sat_TravelStartTimePM}, {"WorkStartTimePM", Sat_WorkStartTimePM}, {"WorkEndTimePM", Sat_WorkEndTimePM}, {"TravelEndTimePM", Sat_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Sunday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Sunday, new Dictionary<string, string>
                         {
-                            { "Date",              Sun_Date },
-                            { "TravelStartTimeAM", Sun_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Sun_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Sun_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Sun_TravelEndTimeAM },
-                            { "TravelStartTimePM", Sun_TravelStartTimePM },
-                            { "WorkStartTimePM",   Sun_WorkStartTimePM },
-                            { "WorkEndTimePM",     Sun_WorkEndTimePM },
-                            { "TravelEndTimePM",   Sun_TravelEndTimePM }
+                            {"Date", Sun_Date}, {"TravelStartTimeAM", Sun_TravelStartTimeAM}, {"WorkStartTimeAM", Sun_WorkStartTimeAM}, {"WorkEndTimeAM", Sun_WorkEndTimeAM}, {"TravelEndTimeAM", Sun_TravelEndTimeAM}, {"TravelStartTimePM", Sun_TravelStartTimePM}, {"WorkStartTimePM", Sun_WorkStartTimePM}, {"WorkEndTimePM", Sun_WorkEndTimePM}, {"TravelEndTimePM", Sun_TravelEndTimePM}
                         }
                     }
                 };
+
                 #endregion
 
                 public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
                 {
-                    { DayOfWeek.Monday, Mon_Date },
-                    { DayOfWeek.Tuesday, Tue_Date },
-                    { DayOfWeek.Wednesday, Wed_Date },
-                    { DayOfWeek.Thursday, Thu_Date },
-                    { DayOfWeek.Friday, Fri_Date },
-                    { DayOfWeek.Saturday, Sat_Date },
-                    { DayOfWeek.Sunday, Sun_Date }
+                    {DayOfWeek.Monday, Mon_Date}, {DayOfWeek.Tuesday, Tue_Date}, {DayOfWeek.Wednesday, Wed_Date}, {DayOfWeek.Thursday, Thu_Date}, {DayOfWeek.Friday, Fri_Date}, {DayOfWeek.Saturday, Sat_Date}, {DayOfWeek.Sunday, Sun_Date}
                 };
+
                 #endregion
             }
 
@@ -454,132 +404,74 @@ namespace Great.Models
                 #region Helpers
 
                 #region TimesMatrix
+
                 public static readonly Dictionary<DayOfWeek, Dictionary<string, string>> TimesMatrix = new Dictionary<DayOfWeek, Dictionary<string, string>>()
                 {
                     {
-                        DayOfWeek.Monday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Monday, new Dictionary<string, string>
                         {
-                            { "Date",              Mon_Date },
-                            { "TravelStartTimeAM", Mon_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Mon_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Mon_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Mon_TravelEndTimeAM },
-                            { "TravelStartTimePM", Mon_TravelStartTimePM },
-                            { "WorkStartTimePM",   Mon_WorkStartTimePM },
-                            { "WorkEndTimePM",     Mon_WorkEndTimePM },
-                            { "TravelEndTimePM",   Mon_TravelEndTimePM }
+                            {"Date", Mon_Date}, {"TravelStartTimeAM", Mon_TravelStartTimeAM}, {"WorkStartTimeAM", Mon_WorkStartTimeAM}, {"WorkEndTimeAM", Mon_WorkEndTimeAM}, {"TravelEndTimeAM", Mon_TravelEndTimeAM}, {"TravelStartTimePM", Mon_TravelStartTimePM}, {"WorkStartTimePM", Mon_WorkStartTimePM}, {"WorkEndTimePM", Mon_WorkEndTimePM}, {"TravelEndTimePM", Mon_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Tuesday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Tuesday, new Dictionary<string, string>
                         {
-                            { "Date",              Tue_Date },
-                            { "TravelStartTimeAM", Tue_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Tue_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Tue_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Tue_TravelEndTimeAM },
-                            { "TravelStartTimePM", Tue_TravelStartTimePM },
-                            { "WorkStartTimePM",   Tue_WorkStartTimePM },
-                            { "WorkEndTimePM",     Tue_WorkEndTimePM },
-                            { "TravelEndTimePM",   Tue_TravelEndTimePM }
+                            {"Date", Tue_Date}, {"TravelStartTimeAM", Tue_TravelStartTimeAM}, {"WorkStartTimeAM", Tue_WorkStartTimeAM}, {"WorkEndTimeAM", Tue_WorkEndTimeAM}, {"TravelEndTimeAM", Tue_TravelEndTimeAM}, {"TravelStartTimePM", Tue_TravelStartTimePM}, {"WorkStartTimePM", Tue_WorkStartTimePM}, {"WorkEndTimePM", Tue_WorkEndTimePM}, {"TravelEndTimePM", Tue_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Wednesday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Wednesday, new Dictionary<string, string>
                         {
-                            { "Date",              Wed_Date },
-                            { "TravelStartTimeAM", Wed_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Wed_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Wed_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Wed_TravelEndTimeAM },
-                            { "TravelStartTimePM", Wed_TravelStartTimePM },
-                            { "WorkStartTimePM",   Wed_WorkStartTimePM },
-                            { "WorkEndTimePM",     Wed_WorkEndTimePM },
-                            { "TravelEndTimePM",   Wed_TravelEndTimePM }
+                            {"Date", Wed_Date}, {"TravelStartTimeAM", Wed_TravelStartTimeAM}, {"WorkStartTimeAM", Wed_WorkStartTimeAM}, {"WorkEndTimeAM", Wed_WorkEndTimeAM}, {"TravelEndTimeAM", Wed_TravelEndTimeAM}, {"TravelStartTimePM", Wed_TravelStartTimePM}, {"WorkStartTimePM", Wed_WorkStartTimePM}, {"WorkEndTimePM", Wed_WorkEndTimePM}, {"TravelEndTimePM", Wed_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Thursday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Thursday, new Dictionary<string, string>
                         {
-                            { "Date",              Thu_Date },
-                            { "TravelStartTimeAM", Thu_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Thu_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Thu_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Thu_TravelEndTimeAM },
-                            { "TravelStartTimePM", Thu_TravelStartTimePM },
-                            { "WorkStartTimePM",   Thu_WorkStartTimePM },
-                            { "WorkEndTimePM",     Thu_WorkEndTimePM },
-                            { "TravelEndTimePM",   Thu_TravelEndTimePM }
+                            {"Date", Thu_Date}, {"TravelStartTimeAM", Thu_TravelStartTimeAM}, {"WorkStartTimeAM", Thu_WorkStartTimeAM}, {"WorkEndTimeAM", Thu_WorkEndTimeAM}, {"TravelEndTimeAM", Thu_TravelEndTimeAM}, {"TravelStartTimePM", Thu_TravelStartTimePM}, {"WorkStartTimePM", Thu_WorkStartTimePM}, {"WorkEndTimePM", Thu_WorkEndTimePM}, {"TravelEndTimePM", Thu_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Friday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Friday, new Dictionary<string, string>
                         {
-                            { "Date",              Fri_Date },
-                            { "TravelStartTimeAM", Fri_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Fri_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Fri_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Fri_TravelEndTimeAM },
-                            { "TravelStartTimePM", Fri_TravelStartTimePM },
-                            { "WorkStartTimePM",   Fri_WorkStartTimePM },
-                            { "WorkEndTimePM",     Fri_WorkEndTimePM },
-                            { "TravelEndTimePM",   Fri_TravelEndTimePM }
+                            {"Date", Fri_Date}, {"TravelStartTimeAM", Fri_TravelStartTimeAM}, {"WorkStartTimeAM", Fri_WorkStartTimeAM}, {"WorkEndTimeAM", Fri_WorkEndTimeAM}, {"TravelEndTimeAM", Fri_TravelEndTimeAM}, {"TravelStartTimePM", Fri_TravelStartTimePM}, {"WorkStartTimePM", Fri_WorkStartTimePM}, {"WorkEndTimePM", Fri_WorkEndTimePM}, {"TravelEndTimePM", Fri_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Saturday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Saturday, new Dictionary<string, string>
                         {
-                            { "Date",              Sat_Date },
-                            { "TravelStartTimeAM", Sat_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Sat_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Sat_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Sat_TravelEndTimeAM },
-                            { "TravelStartTimePM", Sat_TravelStartTimePM },
-                            { "WorkStartTimePM",   Sat_WorkStartTimePM },
-                            { "WorkEndTimePM",     Sat_WorkEndTimePM },
-                            { "TravelEndTimePM",   Sat_TravelEndTimePM }
+                            {"Date", Sat_Date}, {"TravelStartTimeAM", Sat_TravelStartTimeAM}, {"WorkStartTimeAM", Sat_WorkStartTimeAM}, {"WorkEndTimeAM", Sat_WorkEndTimeAM}, {"TravelEndTimeAM", Sat_TravelEndTimeAM}, {"TravelStartTimePM", Sat_TravelStartTimePM}, {"WorkStartTimePM", Sat_WorkStartTimePM}, {"WorkEndTimePM", Sat_WorkEndTimePM}, {"TravelEndTimePM", Sat_TravelEndTimePM}
                         }
-                    },
+                    }
+                    ,
                     {
-                        DayOfWeek.Sunday,
-                        new Dictionary<string, string>
+                        DayOfWeek.Sunday, new Dictionary<string, string>
                         {
-                            { "Date",              Sun_Date },
-                            { "TravelStartTimeAM", Sun_TravelStartTimeAM },
-                            { "WorkStartTimeAM",   Sun_WorkStartTimeAM },
-                            { "WorkEndTimeAM",     Sun_WorkEndTimeAM },
-                            { "TravelEndTimeAM",   Sun_TravelEndTimeAM },
-                            { "TravelStartTimePM", Sun_TravelStartTimePM },
-                            { "WorkStartTimePM",   Sun_WorkStartTimePM },
-                            { "WorkEndTimePM",     Sun_WorkEndTimePM },
-                            { "TravelEndTimePM",   Sun_TravelEndTimePM }
+                            {"Date", Sun_Date}, {"TravelStartTimeAM", Sun_TravelStartTimeAM}, {"WorkStartTimeAM", Sun_WorkStartTimeAM}, {"WorkEndTimeAM", Sun_WorkEndTimeAM}, {"TravelEndTimeAM", Sun_TravelEndTimeAM}, {"TravelStartTimePM", Sun_TravelStartTimePM}, {"WorkStartTimePM", Sun_WorkStartTimePM}, {"WorkEndTimePM", Sun_WorkEndTimePM}, {"TravelEndTimePM", Sun_TravelEndTimePM}
                         }
                     }
                 };
+
                 #endregion
 
                 public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
                 {
-                    { DayOfWeek.Monday, Mon_Date },
-                    { DayOfWeek.Tuesday, Tue_Date },
-                    { DayOfWeek.Wednesday, Wed_Date },
-                    { DayOfWeek.Thursday, Thu_Date },
-                    { DayOfWeek.Friday, Fri_Date },
-                    { DayOfWeek.Saturday, Sat_Date },
-                    { DayOfWeek.Sunday, Sun_Date }
+                    {DayOfWeek.Monday, Mon_Date}, {DayOfWeek.Tuesday, Tue_Date}, {DayOfWeek.Wednesday, Wed_Date}, {DayOfWeek.Thursday, Thu_Date}, {DayOfWeek.Friday, Fri_Date}, {DayOfWeek.Saturday, Sat_Date}, {DayOfWeek.Sunday, Sun_Date}
                 };
+
                 #endregion
             }
         }
+
         #endregion
 
         #region Expense Account
+
         public static class ExpenseAccount
         {
             public const int MaxExpenseCount = 15;
@@ -778,207 +670,86 @@ namespace Great.Models
                 #region Helpers
 
                 #region ExpenseMatrix
+
                 public static readonly Dictionary<string, string>[] ExpenseMatrix = new Dictionary<string, string>[]
                 {
                     new Dictionary<string, string>
                     {
-                        { "Type",       EX1_Type},
-                        { "Mon_Amount", EX1_Mon_Amount},
-                        { "Tue_Amount", EX1_Tue_Amount},
-                        { "Wed_Amount", EX1_Wed_Amount},
-                        { "Thu_Amount", EX1_Thu_Amount},
-                        { "Fri_Amount", EX1_Fri_Amount},
-                        { "Sat_Amount", EX1_Sat_Amount},
-                        { "Sun_Amount", EX1_Sun_Amount},
-                        { "Total",      EX1_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX1_Type}, {"Mon_Amount", EX1_Mon_Amount}, {"Tue_Amount", EX1_Tue_Amount}, {"Wed_Amount", EX1_Wed_Amount}, {"Thu_Amount", EX1_Thu_Amount}, {"Fri_Amount", EX1_Fri_Amount}, {"Sat_Amount", EX1_Sat_Amount}, {"Sun_Amount", EX1_Sun_Amount}, {"Total", EX1_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX2_Type},
-                        { "Mon_Amount", EX2_Mon_Amount},
-                        { "Tue_Amount", EX2_Tue_Amount},
-                        { "Wed_Amount", EX2_Wed_Amount},
-                        { "Thu_Amount", EX2_Thu_Amount},
-                        { "Fri_Amount", EX2_Fri_Amount},
-                        { "Sat_Amount", EX2_Sat_Amount},
-                        { "Sun_Amount", EX2_Sun_Amount},
-                        { "Total",      EX2_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX2_Type}, {"Mon_Amount", EX2_Mon_Amount}, {"Tue_Amount", EX2_Tue_Amount}, {"Wed_Amount", EX2_Wed_Amount}, {"Thu_Amount", EX2_Thu_Amount}, {"Fri_Amount", EX2_Fri_Amount}, {"Sat_Amount", EX2_Sat_Amount}, {"Sun_Amount", EX2_Sun_Amount}, {"Total", EX2_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX3_Type},
-                        { "Mon_Amount", EX3_Mon_Amount},
-                        { "Tue_Amount", EX3_Tue_Amount},
-                        { "Wed_Amount", EX3_Wed_Amount},
-                        { "Thu_Amount", EX3_Thu_Amount},
-                        { "Fri_Amount", EX3_Fri_Amount},
-                        { "Sat_Amount", EX3_Sat_Amount},
-                        { "Sun_Amount", EX3_Sun_Amount},
-                        { "Total",      EX3_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX3_Type}, {"Mon_Amount", EX3_Mon_Amount}, {"Tue_Amount", EX3_Tue_Amount}, {"Wed_Amount", EX3_Wed_Amount}, {"Thu_Amount", EX3_Thu_Amount}, {"Fri_Amount", EX3_Fri_Amount}, {"Sat_Amount", EX3_Sat_Amount}, {"Sun_Amount", EX3_Sun_Amount}, {"Total", EX3_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX4_Type},
-                        { "Mon_Amount", EX4_Mon_Amount},
-                        { "Tue_Amount", EX4_Tue_Amount},
-                        { "Wed_Amount", EX4_Wed_Amount},
-                        { "Thu_Amount", EX4_Thu_Amount},
-                        { "Fri_Amount", EX4_Fri_Amount},
-                        { "Sat_Amount", EX4_Sat_Amount},
-                        { "Sun_Amount", EX4_Sun_Amount},
-                        { "Total",      EX4_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX4_Type}, {"Mon_Amount", EX4_Mon_Amount}, {"Tue_Amount", EX4_Tue_Amount}, {"Wed_Amount", EX4_Wed_Amount}, {"Thu_Amount", EX4_Thu_Amount}, {"Fri_Amount", EX4_Fri_Amount}, {"Sat_Amount", EX4_Sat_Amount}, {"Sun_Amount", EX4_Sun_Amount}, {"Total", EX4_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX5_Type},
-                        { "Mon_Amount", EX5_Mon_Amount},
-                        { "Tue_Amount", EX5_Tue_Amount},
-                        { "Wed_Amount", EX5_Wed_Amount},
-                        { "Thu_Amount", EX5_Thu_Amount},
-                        { "Fri_Amount", EX5_Fri_Amount},
-                        { "Sat_Amount", EX5_Sat_Amount},
-                        { "Sun_Amount", EX5_Sun_Amount},
-                        { "Total",      EX5_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX5_Type}, {"Mon_Amount", EX5_Mon_Amount}, {"Tue_Amount", EX5_Tue_Amount}, {"Wed_Amount", EX5_Wed_Amount}, {"Thu_Amount", EX5_Thu_Amount}, {"Fri_Amount", EX5_Fri_Amount}, {"Sat_Amount", EX5_Sat_Amount}, {"Sun_Amount", EX5_Sun_Amount}, {"Total", EX5_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX6_Type},
-                        { "Mon_Amount", EX6_Mon_Amount},
-                        { "Tue_Amount", EX6_Tue_Amount},
-                        { "Wed_Amount", EX6_Wed_Amount},
-                        { "Thu_Amount", EX6_Thu_Amount},
-                        { "Fri_Amount", EX6_Fri_Amount},
-                        { "Sat_Amount", EX6_Sat_Amount},
-                        { "Sun_Amount", EX6_Sun_Amount},
-                        { "Total",      EX6_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX6_Type}, {"Mon_Amount", EX6_Mon_Amount}, {"Tue_Amount", EX6_Tue_Amount}, {"Wed_Amount", EX6_Wed_Amount}, {"Thu_Amount", EX6_Thu_Amount}, {"Fri_Amount", EX6_Fri_Amount}, {"Sat_Amount", EX6_Sat_Amount}, {"Sun_Amount", EX6_Sun_Amount}, {"Total", EX6_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX7_Type},
-                        { "Mon_Amount", EX7_Mon_Amount},
-                        { "Tue_Amount", EX7_Tue_Amount},
-                        { "Wed_Amount", EX7_Wed_Amount},
-                        { "Thu_Amount", EX7_Thu_Amount},
-                        { "Fri_Amount", EX7_Fri_Amount},
-                        { "Sat_Amount", EX7_Sat_Amount},
-                        { "Sun_Amount", EX7_Sun_Amount},
-                        { "Total",      EX7_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX7_Type}, {"Mon_Amount", EX7_Mon_Amount}, {"Tue_Amount", EX7_Tue_Amount}, {"Wed_Amount", EX7_Wed_Amount}, {"Thu_Amount", EX7_Thu_Amount}, {"Fri_Amount", EX7_Fri_Amount}, {"Sat_Amount", EX7_Sat_Amount}, {"Sun_Amount", EX7_Sun_Amount}, {"Total", EX7_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX8_Type},
-                        { "Mon_Amount", EX8_Mon_Amount},
-                        { "Tue_Amount", EX8_Tue_Amount},
-                        { "Wed_Amount", EX8_Wed_Amount},
-                        { "Thu_Amount", EX8_Thu_Amount},
-                        { "Fri_Amount", EX8_Fri_Amount},
-                        { "Sat_Amount", EX8_Sat_Amount},
-                        { "Sun_Amount", EX8_Sun_Amount},
-                        { "Total",      EX8_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX8_Type}, {"Mon_Amount", EX8_Mon_Amount}, {"Tue_Amount", EX8_Tue_Amount}, {"Wed_Amount", EX8_Wed_Amount}, {"Thu_Amount", EX8_Thu_Amount}, {"Fri_Amount", EX8_Fri_Amount}, {"Sat_Amount", EX8_Sat_Amount}, {"Sun_Amount", EX8_Sun_Amount}, {"Total", EX8_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX9_Type},
-                        { "Mon_Amount", EX9_Mon_Amount},
-                        { "Tue_Amount", EX9_Tue_Amount},
-                        { "Wed_Amount", EX9_Wed_Amount},
-                        { "Thu_Amount", EX9_Thu_Amount},
-                        { "Fri_Amount", EX9_Fri_Amount},
-                        { "Sat_Amount", EX9_Sat_Amount},
-                        { "Sun_Amount", EX9_Sun_Amount},
-                        { "Total",      EX9_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX9_Type}, {"Mon_Amount", EX9_Mon_Amount}, {"Tue_Amount", EX9_Tue_Amount}, {"Wed_Amount", EX9_Wed_Amount}, {"Thu_Amount", EX9_Thu_Amount}, {"Fri_Amount", EX9_Fri_Amount}, {"Sat_Amount", EX9_Sat_Amount}, {"Sun_Amount", EX9_Sun_Amount}, {"Total", EX9_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX10_Type},
-                        { "Mon_Amount", EX10_Mon_Amount},
-                        { "Tue_Amount", EX10_Tue_Amount},
-                        { "Wed_Amount", EX10_Wed_Amount},
-                        { "Thu_Amount", EX10_Thu_Amount},
-                        { "Fri_Amount", EX10_Fri_Amount},
-                        { "Sat_Amount", EX10_Sat_Amount},
-                        { "Sun_Amount", EX10_Sun_Amount},
-                        { "Total",      EX10_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX10_Type}, {"Mon_Amount", EX10_Mon_Amount}, {"Tue_Amount", EX10_Tue_Amount}, {"Wed_Amount", EX10_Wed_Amount}, {"Thu_Amount", EX10_Thu_Amount}, {"Fri_Amount", EX10_Fri_Amount}, {"Sat_Amount", EX10_Sat_Amount}, {"Sun_Amount", EX10_Sun_Amount}, {"Total", EX10_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX11_Type},
-                        { "Mon_Amount", EX11_Mon_Amount},
-                        { "Tue_Amount", EX11_Tue_Amount},
-                        { "Wed_Amount", EX11_Wed_Amount},
-                        { "Thu_Amount", EX11_Thu_Amount},
-                        { "Fri_Amount", EX11_Fri_Amount},
-                        { "Sat_Amount", EX11_Sat_Amount},
-                        { "Sun_Amount", EX11_Sun_Amount},
-                        { "Total",      EX11_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX11_Type}, {"Mon_Amount", EX11_Mon_Amount}, {"Tue_Amount", EX11_Tue_Amount}, {"Wed_Amount", EX11_Wed_Amount}, {"Thu_Amount", EX11_Thu_Amount}, {"Fri_Amount", EX11_Fri_Amount}, {"Sat_Amount", EX11_Sat_Amount}, {"Sun_Amount", EX11_Sun_Amount}, {"Total", EX11_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX12_Type},
-                        { "Mon_Amount", EX12_Mon_Amount},
-                        { "Tue_Amount", EX12_Tue_Amount},
-                        { "Wed_Amount", EX12_Wed_Amount},
-                        { "Thu_Amount", EX12_Thu_Amount},
-                        { "Fri_Amount", EX12_Fri_Amount},
-                        { "Sat_Amount", EX12_Sat_Amount},
-                        { "Sun_Amount", EX12_Sun_Amount},
-                        { "Total",      EX12_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX12_Type}, {"Mon_Amount", EX12_Mon_Amount}, {"Tue_Amount", EX12_Tue_Amount}, {"Wed_Amount", EX12_Wed_Amount}, {"Thu_Amount", EX12_Thu_Amount}, {"Fri_Amount", EX12_Fri_Amount}, {"Sat_Amount", EX12_Sat_Amount}, {"Sun_Amount", EX12_Sun_Amount}, {"Total", EX12_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX13_Type},
-                        { "Mon_Amount", EX13_Mon_Amount},
-                        { "Tue_Amount", EX13_Tue_Amount},
-                        { "Wed_Amount", EX13_Wed_Amount},
-                        { "Thu_Amount", EX13_Thu_Amount},
-                        { "Fri_Amount", EX13_Fri_Amount},
-                        { "Sat_Amount", EX13_Sat_Amount},
-                        { "Sun_Amount", EX13_Sun_Amount},
-                        { "Total",      EX13_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX13_Type}, {"Mon_Amount", EX13_Mon_Amount}, {"Tue_Amount", EX13_Tue_Amount}, {"Wed_Amount", EX13_Wed_Amount}, {"Thu_Amount", EX13_Thu_Amount}, {"Fri_Amount", EX13_Fri_Amount}, {"Sat_Amount", EX13_Sat_Amount}, {"Sun_Amount", EX13_Sun_Amount}, {"Total", EX13_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX14_Type},
-                        { "Mon_Amount", EX14_Mon_Amount},
-                        { "Tue_Amount", EX14_Tue_Amount},
-                        { "Wed_Amount", EX14_Wed_Amount},
-                        { "Thu_Amount", EX14_Thu_Amount},
-                        { "Fri_Amount", EX14_Fri_Amount},
-                        { "Sat_Amount", EX14_Sat_Amount},
-                        { "Sun_Amount", EX14_Sun_Amount},
-                        { "Total",      EX14_Total}
-                    },
-                    new Dictionary<string, string>
+                        {"Type", EX14_Type}, {"Mon_Amount", EX14_Mon_Amount}, {"Tue_Amount", EX14_Tue_Amount}, {"Wed_Amount", EX14_Wed_Amount}, {"Thu_Amount", EX14_Thu_Amount}, {"Fri_Amount", EX14_Fri_Amount}, {"Sat_Amount", EX14_Sat_Amount}, {"Sun_Amount", EX14_Sun_Amount}, {"Total", EX14_Total}
+                    }
+                    , new Dictionary<string, string>
                     {
-                        { "Type",       EX15_Type},
-                        { "Mon_Amount", EX15_Mon_Amount},
-                        { "Tue_Amount", EX15_Tue_Amount},
-                        { "Wed_Amount", EX15_Wed_Amount},
-                        { "Thu_Amount", EX15_Thu_Amount},
-                        { "Fri_Amount", EX15_Fri_Amount},
-                        { "Sat_Amount", EX15_Sat_Amount},
-                        { "Sun_Amount", EX15_Sun_Amount},
-                        { "Total",      EX15_Total}
+                        {"Type", EX15_Type}, {"Mon_Amount", EX15_Mon_Amount}, {"Tue_Amount", EX15_Tue_Amount}, {"Wed_Amount", EX15_Wed_Amount}, {"Thu_Amount", EX15_Thu_Amount}, {"Fri_Amount", EX15_Fri_Amount}, {"Sat_Amount", EX15_Sat_Amount}, {"Sun_Amount", EX15_Sun_Amount}, {"Total", EX15_Total}
                     }
                 };
+
                 #endregion
 
                 public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
                 {
-                    { DayOfWeek.Monday, Mon_Date },
-                    { DayOfWeek.Tuesday, Tue_Date },
-                    { DayOfWeek.Wednesday, Wed_Date },
-                    { DayOfWeek.Thursday, Thu_Date },
-                    { DayOfWeek.Friday, Fri_Date },
-                    { DayOfWeek.Saturday, Sat_Date },
-                    { DayOfWeek.Sunday, Sun_Date }
+                    {DayOfWeek.Monday, Mon_Date}, {DayOfWeek.Tuesday, Tue_Date}, {DayOfWeek.Wednesday, Wed_Date}, {DayOfWeek.Thursday, Thu_Date}, {DayOfWeek.Friday, Fri_Date}, {DayOfWeek.Saturday, Sat_Date}, {DayOfWeek.Sunday, Sun_Date}
                 };
+
                 #endregion
             }
         }
+
         #endregion
 
         #region General
+
         public static class General
         {
             public const int WaitForNextConnectionRetry = 10000;
@@ -998,53 +769,64 @@ namespace Great.Models
                 }
             }
         }
+
         #endregion
 
         #region Map
+
         public static class Map
         {
             public const double ZoomMarker = 15;
             public const string NewFactoryName = "New Factory";
         }
+
         #endregion
 
         #region Timesheets
+
         public static class Timesheets
         {
             public const int MinYear = 1900;
             public const int MaxYear = 2100;
         }
+
         #endregion
 
         #region Factories
+
         public static class Factories
         {
             public const int FactoryNameMaxLength = 50;
             public const int CompanyNameMaxLength = 100;
             public const int AddressMaxLength = 255;
         }
+
         #endregion
     }
+
     #endregion
 
     #region User Settings
+
     public static class UserSettings
     {
         #region Events
+
         public static Action<string> SettingsChanged;
+
         #endregion
 
         #region Constructor
+
         static UserSettings()
         {
-            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
-            {
-                SettingsChanged?.Invoke(e.PropertyName);
-            };
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) => { SettingsChanged?.Invoke(e.PropertyName); };
         }
+
         #endregion
 
         #region Localization
+
         public static class Localization
         {
             public static CountryCode Country
@@ -1057,9 +839,11 @@ namespace Great.Models
                 }
             }
         }
+
         #endregion
 
         #region Email
+
         public static class Email
         {
             public static string EmailAddress
@@ -1071,6 +855,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static string Username => Settings.Default.EmailAddress.Split('@')[0];
 
             public static string EmailPassword
@@ -1110,9 +895,11 @@ namespace Great.Models
                 }
             }
         }
+
         #endregion
 
         #region Advanced
+
         public static class Advanced
         {
             public static bool AutoAddFactories
@@ -1135,6 +922,7 @@ namespace Great.Models
                 }
             }
         }
+
         #endregion
 
         #region Themes
@@ -1143,6 +931,7 @@ namespace Great.Models
         {
             //used to compare with origina theme settings without restarting the application
             private static ResourceDictionary _LightSkinDictionary;
+
             private static ResourceDictionary LightSkinDictionary
             {
                 get
@@ -1152,13 +941,13 @@ namespace Great.Models
                         _LightSkinDictionary = new ResourceDictionary();
                         _LightSkinDictionary.Source = new Uri("Skins/LightSkin.xaml", UriKind.Relative);
                     }
+
                     return _LightSkinDictionary;
-
                 }
-
             }
 
             private static ResourceDictionary _DarkSkinDictionary;
+
             private static ResourceDictionary DarkSkinDictionary
             {
                 get
@@ -1168,27 +957,27 @@ namespace Great.Models
                         _DarkSkinDictionary = new ResourceDictionary();
                         _DarkSkinDictionary.Source = new Uri("Skins/DarkSkin.xaml", UriKind.Relative);
                     }
+
                     return _DarkSkinDictionary;
-
                 }
-
             }
 
             public static ETheme Theme
             {
-                get => (ETheme)Settings.Default.Skin;
+                get => (ETheme) Settings.Default.Skin;
                 set
                 {
-                    Settings.Default.Skin = (int)value;
+                    Settings.Default.Skin = (int) value;
                     Settings.Default.Save();
                 }
             }
+
             public static EAccentColor AccentColor
             {
-                get => (EAccentColor)Settings.Default.AccentColor;
+                get => (EAccentColor) Settings.Default.AccentColor;
                 set
                 {
-                    Settings.Default.AccentColor = (int)value;
+                    Settings.Default.AccentColor = (int) value;
                     Settings.Default.Save();
                 }
             }
@@ -1200,9 +989,9 @@ namespace Great.Models
                 {
                     Settings.Default.CustomSaturdayColorUsed = value;
                     Settings.Default.Save();
-
                 }
             }
+
             public static SolidColorBrush CustomSaturdayColor
             {
                 get => Settings.Default.SaturdayColor;
@@ -1222,6 +1011,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomSundayColor
             {
                 get => Settings.Default.SundayColor;
@@ -1241,6 +1031,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomHolidayColor
             {
                 get => Settings.Default.HolidayColor;
@@ -1260,6 +1051,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomVacationColor
             {
                 get => Settings.Default.VacationColor;
@@ -1279,6 +1071,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomSickColor
             {
                 get => Settings.Default.SickColor;
@@ -1298,6 +1091,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomHomeworkColor
             {
                 get => Settings.Default.HomeworkColor;
@@ -1317,6 +1111,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomSpecialLeaveColor
             {
                 get => Settings.Default.SpecialLeaveColor;
@@ -1330,10 +1125,8 @@ namespace Great.Models
             public static void ApplySingleColor(string resourceName, SolidColorBrush color)
             {
                 if (App.Current.Resources[resourceName] is SolidColorBrush)
-                {
                     if ((App.Current.Resources[resourceName] as SolidColorBrush).Color != color.Color)
                         App.Current.Resources[resourceName] = color;
-                }
             }
 
             public static void ApplyAllColors()
@@ -1362,29 +1155,23 @@ namespace Great.Models
 
                 if (IsCustomSpecialLeaveColorUsed) ApplySingleColor("DefaultSpecialLeaveColor", CustomSpecialLeaveColor);
                 else ApplySingleColor("DefaultSpecialLeaveColor", usedDict["DefaultSpecialLeaveColor"] as SolidColorBrush);
-
             }
 
             public static void ApplyThemeAccent(ETheme theme, EAccentColor accent)
             {
                 try
                 {
-
                     Fluent.ThemeManager.ChangeAppStyle(Application.Current,
-                        Fluent.ThemeManager.GetAccent(accent.ToString()),
-                        Fluent.ThemeManager.GetAppTheme(theme.ToString()));
+                    Fluent.ThemeManager.GetAccent(accent.ToString()),
+                    Fluent.ThemeManager.GetAppTheme(theme.ToString()));
 
                     MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
-                        MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
-                        MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+                    MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
+                    MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
                 }
                 catch (Exception)
                 {
-
-
                 }
-
-
             }
 
             public static void AttachCustomThemes()
@@ -1395,45 +1182,46 @@ namespace Great.Models
                 MahApps.Metro.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
                 MahApps.Metro.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
             }
-
         }
 
         #endregion
     }
+
     #endregion
 
     public enum ETheme : int
     {
-        DarkSkin = 0,
-        LightSkin = 1
+        DarkSkin = 0
+        , LightSkin = 1
     }
 
     public enum EAccentColor : int
     {
         //Default:Cobalt
 
-        Colalt = 0,
-        Red = 1,
-        Green = 2,
-        Blue = 3,
-        Purple = 4,
-        Orange = 5,
-        Lime = 6,
-        Emerald = 7,
-        Teal = 8,
-        Cyan = 9,
-        Indigo = 10,
-        Violet = 11,
-        Pink = 12,
-        Magenta = 13,
-        Crimson = 14,
-        Amber = 15,
-        Yellow = 16,
-        Brown = 17,
-        Olive = 18,
-        Steel = 19,
-        Mauve = 20,
-        Taupe = 21,
-        Sienna = 22,
+        Colalt = 0
+        , Red = 1
+        , Green = 2
+        , Blue = 3
+        , Purple = 4
+        , Orange = 5
+        , Lime = 6
+        , Emerald = 7
+        , Teal = 8
+        , Cyan = 9
+        , Indigo = 10
+        , Violet = 11
+        , Pink = 12
+        , Magenta = 13
+        , Crimson = 14
+        , Amber = 15
+        , Yellow = 16
+        , Brown = 17
+        , Olive = 18
+        , Steel = 19
+        , Mauve = 20
+        , Taupe = 21
+        , Sienna = 22
+        ,
     }
 }

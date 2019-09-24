@@ -10,7 +10,9 @@ namespace Great.ViewModels.Database
     public class FactoryEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
+
         private long _Id;
+
         public long Id
         {
             get => _Id;
@@ -18,47 +20,47 @@ namespace Great.ViewModels.Database
         }
 
         private string _Name;
+
         public string Name
         {
             get => _Name;
             set => SetAndCheckChanged(ref _Name, value);
-
-
         }
 
         private string _CompanyName;
+
         public string CompanyName
         {
             get => _CompanyName;
             set => SetAndCheckChanged(ref _CompanyName, value);
-
         }
 
         private string _Address;
+
         public string Address
         {
             get => _Address;
             set => SetAndCheckChanged(ref _Address, value);
-
         }
 
         private double? _Latitude;
+
         public double? Latitude
         {
             get => _Latitude;
             set => SetAndCheckChanged(ref _Latitude, value);
-
         }
 
         private double? _Longitude;
+
         public double? Longitude
         {
             get => _Longitude;
             set => SetAndCheckChanged(ref _Longitude, value);
-
         }
 
         private long _TransferType;
+
         public long TransferType
         {
             get => _TransferType;
@@ -66,14 +68,15 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsForfait;
+
         public bool IsForfait
         {
             get => _IsForfait;
             set => SetAndCheckChanged(ref _IsForfait, value);
-
         }
 
         private bool _NotifyAsNew;
+
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
@@ -85,6 +88,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _OverrideAddressOnFDL;
+
         public bool OverrideAddressOnFDL
         {
             get => _OverrideAddressOnFDL;
@@ -92,6 +96,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _CountryCode;
+
         public string CountryCode
         {
             get => _CountryCode;
@@ -99,26 +104,29 @@ namespace Great.ViewModels.Database
         }
 
         private TransferTypeDTO _TransferType1;
+
         public TransferTypeDTO TransferType1
         {
             get => _TransferType1;
             set => Set(ref _TransferType1, value);
-
         }
 
         #endregion
 
         #region Display Properties
+
         public string Factory_New_Display => $"{(NotifyAsNew ? "*" : "")}{Name}";
+
         #endregion
 
         #region Error Validation
 
         public string Error => throw new NotImplementedException();
+
         public bool IsValid =>
-           this["Name"] == null
-            && this["CompanyName"] == null
-            && this["Address"] == null;
+            this["Name"] == null
+         && this["CompanyName"] == null
+         && this["Address"] == null;
 
         public string this[string columnName]
         {

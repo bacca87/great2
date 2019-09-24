@@ -8,7 +8,6 @@ namespace Great.Models.Database
     {
         public DayEvent()
         {
-
         }
 
         [Key]

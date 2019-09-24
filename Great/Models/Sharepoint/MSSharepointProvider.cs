@@ -51,7 +51,6 @@ namespace Great.Models
             e.AddOrUpdateEventRelations(out DaysToClear, out DaysInEvent);
             Messenger.Default.Send(new DeletedItemMessage<EventEVM>(this, e));
             DaysToClear.ForEach(x => { Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, x)); });
-
         }
 
         protected void NotifyEventImported(EventEVM e)
@@ -73,7 +72,6 @@ namespace Great.Models
                 using (DBArchive db = new DBArchive())
                 {
                     foreach (EventEVM ev in db.Events.ToList().Select(v => new EventEVM(v)).Where(e => !e.IsSent))
-                    {
                         try
                         {
                             XmlDocument xdoc;
@@ -133,7 +131,6 @@ namespace Great.Models
                         {
                             continue;
                         }
-                    }
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEmailCheck);
@@ -155,7 +152,7 @@ namespace Great.Models
                         // try to get user Id
                         if (sharepointUserId == 0)
                         {
-                            request = (HttpWebRequest)WebRequest.Create($"{ApplicationSettings.General.IntranetAddress}/_api/web/currentuser");
+                            request = (HttpWebRequest) WebRequest.Create($"{ApplicationSettings.General.IntranetAddress}/_api/web/currentuser");
                             request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
                             request.Method = "GET";
 
@@ -170,7 +167,7 @@ namespace Great.Models
                             // try to get all submitted events
                             string req = $"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {sharepointUserId}";
 
-                            request = (HttpWebRequest)WebRequest.Create(req);
+                            request = (HttpWebRequest) WebRequest.Create(req);
                             request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
                             request.Method = "GET";
 
@@ -224,7 +221,6 @@ namespace Great.Models
                                 }
 
 
-
                                 if (db.Events.SingleOrDefault(x => x.SharepointId == shpid) == null)
                                 {
                                     tmp.Save(db);
@@ -249,7 +245,6 @@ namespace Great.Models
                 }
                 catch (Exception)
                 {
-
                 }
 
                 Thread.Sleep(ApplicationSettings.General.WaitForNextEventCheck);
@@ -262,18 +257,18 @@ namespace Great.Models
             var e = DateTime.Now.FromUnixTimestamp(ev.EndDateTimeStamp);
 
             var doc = new XDocument(
-              new XElement("Batch",
-              new XAttribute("OnError", "Continue"),
-              new XAttribute("ListVersion", "1"),
-              new XAttribute("ViewName", "Vacations ITA"),
-              new XElement("Method",
-                new XAttribute("ID", "1"),
-                new XAttribute("Cmd", "New"),
-                new XElement("Field", new XAttribute("Name", "Title"), ev.Description),
-                new XElement("Field", new XAttribute("Name", "EventDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", s)),
-                new XElement("Field", new XAttribute("Name", "EndDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", e)),
-                new XElement("Field", new XAttribute("Name", "fAllDayEvent"), ev.IsAllDay ? 1 : 0),
-                new XElement("Field", new XAttribute("Name", "EventType"), ev.Type - 1))));
+            new XElement("Batch",
+            new XAttribute("OnError", "Continue"),
+            new XAttribute("ListVersion", "1"),
+            new XAttribute("ViewName", "Vacations ITA"),
+            new XElement("Method",
+            new XAttribute("ID", "1"),
+            new XAttribute("Cmd", "New"),
+            new XElement("Field", new XAttribute("Name", "Title"), ev.Description),
+            new XElement("Field", new XAttribute("Name", "EventDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", s)),
+            new XElement("Field", new XAttribute("Name", "EndDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", e)),
+            new XElement("Field", new XAttribute("Name", "fAllDayEvent"), ev.IsAllDay ? 1 : 0),
+            new XElement("Field", new XAttribute("Name", "EventType"), ev.Type - 1))));
 
             XmlDocument d = new XmlDocument();
             d.LoadXml(doc.ToString());
@@ -286,19 +281,19 @@ namespace Great.Models
             var e = DateTime.Now.FromUnixTimestamp(ev.EndDateTimeStamp);
 
             var doc = new XDocument(
-              new XElement("Batch",
-              new XAttribute("OnError", "Continue"),
-              new XAttribute("ListVersion", "1"),
-              new XAttribute("ViewName", "Vacations ITA"),
-              new XElement("Method",
-                new XAttribute("ID", "1"),
-                new XAttribute("Cmd", "Update"),
-                new XElement("Field", new XAttribute("Name", "ID"), ev.SharePointId),
-                new XElement("Field", new XAttribute("Name", "Title"), ev.Description),
-                new XElement("Field", new XAttribute("Name", "EventDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", s)),
-                new XElement("Field", new XAttribute("Name", "EndDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", e)),
-                new XElement("Field", new XAttribute("Name", "fAllDayEvent"), ev.IsAllDay ? 0 : 1),
-                new XElement("Field", new XAttribute("Name", "EventType"), ev.Type - 1))));
+            new XElement("Batch",
+            new XAttribute("OnError", "Continue"),
+            new XAttribute("ListVersion", "1"),
+            new XAttribute("ViewName", "Vacations ITA"),
+            new XElement("Method",
+            new XAttribute("ID", "1"),
+            new XAttribute("Cmd", "Update"),
+            new XElement("Field", new XAttribute("Name", "ID"), ev.SharePointId),
+            new XElement("Field", new XAttribute("Name", "Title"), ev.Description),
+            new XElement("Field", new XAttribute("Name", "EventDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", s)),
+            new XElement("Field", new XAttribute("Name", "EndDate"), String.Format("{0:yyyy'-'MM'-'dd HH':'mm':'ss}", e)),
+            new XElement("Field", new XAttribute("Name", "fAllDayEvent"), ev.IsAllDay ? 0 : 1),
+            new XElement("Field", new XAttribute("Name", "EventType"), ev.Type - 1))));
 
             XmlDocument d = new XmlDocument();
             d.LoadXml(doc.ToString());
@@ -310,16 +305,15 @@ namespace Great.Models
             var doc = new XDocument(
             new XElement("Batch",
             new XAttribute("OnError", "Continue"),
-                new XElement("Method",
-                new XAttribute("ID", "1"),
-                new XAttribute("Cmd", "Delete"),
-                new XElement("Field", new XAttribute("Name", "ID"), ev.SharePointId))));
+            new XElement("Method",
+            new XAttribute("ID", "1"),
+            new XAttribute("Cmd", "Delete"),
+            new XElement("Field", new XAttribute("Name", "ID"), ev.SharePointId))));
 
             XmlDocument d = new XmlDocument();
             d.LoadXml(doc.ToString());
             return d;
         }
-
     }
 
     public class EventChangedEventArgs : EventArgs

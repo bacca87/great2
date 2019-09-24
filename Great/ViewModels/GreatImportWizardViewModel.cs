@@ -19,6 +19,7 @@ namespace Great.ViewModels
     public class GreatImportWizardViewModel : ViewModelBase
     {
         #region Properties
+
         private readonly Logger log = LogManager.GetLogger("GreatImport");
         private DispatcherTimer refreshTimer = new DispatcherTimer();
         private GreatImport _greatMigra;
@@ -117,13 +118,16 @@ namespace Great.ViewModels
                 RaisePropertyChanged(nameof(LogText));
             }
         }
+
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand StartImportCommand { get; set; }
         public RelayCommand SelectFolderCommand { get; set; }
         public RelayCommand CancelCommand { get; set; }
         public RelayCommand FinishCommand { get; set; }
+
         #endregion
 
         /// <summary>

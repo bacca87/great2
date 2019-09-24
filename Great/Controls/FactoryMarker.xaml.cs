@@ -11,12 +11,10 @@ namespace Great.Controls
     public partial class FactoryMarker : UserControl
     {
         #region Properties
+
         public FactoryMarkerColor Color
         {
-            get
-            {
-                return _color;
-            }
+            get => _color;
             set
             {
                 _color = value;
@@ -40,6 +38,7 @@ namespace Great.Controls
 
         private Storyboard BounceAnimation { get; set; }
         private FactoryMarkerColor _color = FactoryMarkerColor.Red;
+
         #endregion
 
         public FactoryMarker()
@@ -60,8 +59,8 @@ namespace Great.Controls
 
     public enum FactoryMarkerColor
     {
-        Red,
-        Green,
-        Blue
+        Red
+        , Green
+        , Blue
     }
 }

@@ -13,7 +13,9 @@ namespace Great.ViewModels.Database
     public class TimesheetEVM : EntityViewModelBase, IDataErrorInfo
     {
         #region Properties
+
         private long _Id;
+
         public long Id
         {
             get => _Id;
@@ -21,6 +23,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _Timestamp;
+
         public long Timestamp
         {
             get => _Timestamp;
@@ -32,6 +35,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _TravelStartTimeAM;
+
         public long? TravelStartTimeAM
         {
             get => _TravelStartTimeAM;
@@ -44,6 +48,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _TravelEndTimeAM;
+
         public long? TravelEndTimeAM
         {
             get => _TravelEndTimeAM;
@@ -56,6 +61,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _TravelStartTimePM;
+
         public long? TravelStartTimePM
         {
             get => _TravelStartTimePM;
@@ -68,6 +74,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _TravelEndTimePM;
+
         public long? TravelEndTimePM
         {
             get => _TravelEndTimePM;
@@ -80,6 +87,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _WorkStartTimeAM;
+
         public long? WorkStartTimeAM
         {
             get => _WorkStartTimeAM;
@@ -92,6 +100,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _WorkEndTimeAM;
+
         public long? WorkEndTimeAM
         {
             get => _WorkEndTimeAM;
@@ -104,6 +113,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _WorkStartTimePM;
+
         public long? WorkStartTimePM
         {
             get => _WorkStartTimePM;
@@ -116,6 +126,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _WorkEndTimePM;
+
         public long? WorkEndTimePM
         {
             get => _WorkEndTimePM;
@@ -128,6 +139,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _FDL;
+
         public string FDL
         {
             get => _FDL;
@@ -135,6 +147,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _Notes;
+
         public string Notes
         {
             get => _Notes;
@@ -142,6 +155,7 @@ namespace Great.ViewModels.Database
         }
 
         private DayDTO _Day;
+
         public DayDTO Day
         {
             get => _Day;
@@ -149,6 +163,7 @@ namespace Great.ViewModels.Database
         }
 
         private FDLEVM _FDL1;
+
         public FDLEVM FDL1
         {
             get => _FDL1;
@@ -156,6 +171,7 @@ namespace Great.ViewModels.Database
         }
 
         #region Converted Properties
+
         public DateTime Date
         {
             get => DateTime.Now.FromUnixTimestamp(Timestamp);
@@ -164,62 +180,66 @@ namespace Great.ViewModels.Database
 
         public TimeSpan? TravelStartTimeAM_t
         {
-            get => TravelStartTimeAM.HasValue ? TimeSpan.FromSeconds(TravelStartTimeAM.Value) : (TimeSpan?)null;
-            set => TravelStartTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => TravelStartTimeAM.HasValue ? TimeSpan.FromSeconds(TravelStartTimeAM.Value) : (TimeSpan?) null;
+            set => TravelStartTimeAM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? TravelEndTimeAM_t
         {
-            get => TravelEndTimeAM.HasValue ? TimeSpan.FromSeconds(TravelEndTimeAM.Value) : (TimeSpan?)null;
-            set => TravelEndTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => TravelEndTimeAM.HasValue ? TimeSpan.FromSeconds(TravelEndTimeAM.Value) : (TimeSpan?) null;
+            set => TravelEndTimeAM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? TravelStartTimePM_t
         {
-            get => TravelStartTimePM.HasValue ? TimeSpan.FromSeconds(TravelStartTimePM.Value) : (TimeSpan?)null;
-            set => TravelStartTimePM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => TravelStartTimePM.HasValue ? TimeSpan.FromSeconds(TravelStartTimePM.Value) : (TimeSpan?) null;
+            set => TravelStartTimePM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? TravelEndTimePM_t
         {
-            get => TravelEndTimePM.HasValue ? TimeSpan.FromSeconds(TravelEndTimePM.Value) : (TimeSpan?)null;
-            set => TravelEndTimePM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => TravelEndTimePM.HasValue ? TimeSpan.FromSeconds(TravelEndTimePM.Value) : (TimeSpan?) null;
+            set => TravelEndTimePM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? WorkStartTimeAM_t
         {
-            get => WorkStartTimeAM.HasValue ? TimeSpan.FromSeconds(WorkStartTimeAM.Value) : (TimeSpan?)null;
-            set => WorkStartTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => WorkStartTimeAM.HasValue ? TimeSpan.FromSeconds(WorkStartTimeAM.Value) : (TimeSpan?) null;
+            set => WorkStartTimeAM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? WorkEndTimeAM_t
         {
-            get => WorkEndTimeAM.HasValue ? TimeSpan.FromSeconds(WorkEndTimeAM.Value) : (TimeSpan?)null;
-            set => WorkEndTimeAM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => WorkEndTimeAM.HasValue ? TimeSpan.FromSeconds(WorkEndTimeAM.Value) : (TimeSpan?) null;
+            set => WorkEndTimeAM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? WorkStartTimePM_t
         {
-            get => WorkStartTimePM.HasValue ? TimeSpan.FromSeconds(WorkStartTimePM.Value) : (TimeSpan?)null;
-            set => WorkStartTimePM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => WorkStartTimePM.HasValue ? TimeSpan.FromSeconds(WorkStartTimePM.Value) : (TimeSpan?) null;
+            set => WorkStartTimePM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
 
         public TimeSpan? WorkEndTimePM_t
         {
-            get => WorkEndTimePM.HasValue ? TimeSpan.FromSeconds(WorkEndTimePM.Value) : (TimeSpan?)null;
-            set => WorkEndTimePM = value.HasValue ? (long?)value?.TotalSeconds : null;
+            get => WorkEndTimePM.HasValue ? TimeSpan.FromSeconds(WorkEndTimePM.Value) : (TimeSpan?) null;
+            set => WorkEndTimePM = value.HasValue ? (long?) value?.TotalSeconds : null;
         }
+
         #endregion
 
         #region Totals
+
         public float? TotalTime => TimePeriods.GetRoundedTotalDuration();
 
         public float? WorkTime => WorkPeriods.GetRoundedTotalDuration();
 
         public float? TravelTime => TravelPeriods.GetRoundedTotalDuration();
+
         #endregion
 
         #region Time Periods
+
         public TimePeriodCollection TimePeriods
         {
             get
@@ -281,24 +301,28 @@ namespace Great.ViewModels.Database
                     end = TravelStartTimeAM_t.Value < WorkStartTimeAM_t.Value ? Date + WorkStartTimeAM_t.Value : Date.AddDays(1) + WorkStartTimeAM_t.Value;
                     travelPeriods.Add(new TimeRange(start, end));
                 }
+
                 if (!TravelStartTimeAM_t.HasValue && TravelEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue)
                 {
                     start = Date + WorkEndTimeAM_t.Value;
                     end = WorkEndTimeAM_t.Value < TravelEndTimeAM_t.Value ? Date + TravelEndTimeAM_t.Value : Date.AddDays(1) + TravelEndTimeAM_t.Value;
                     travelPeriods.Add(new TimeRange(start, end));
                 }
+
                 if (TravelStartTimePM_t.HasValue && TravelEndTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue)
                 {
                     start = Date + TravelStartTimePM_t.Value;
                     end = TravelStartTimePM_t.Value < TravelEndTimePM_t.Value ? Date + TravelEndTimePM_t.Value : Date.AddDays(1) + TravelEndTimePM_t.Value;
                     travelPeriods.Add(new TimeRange(start, end));
                 }
+
                 if (TravelStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue)
                 {
                     start = Date + TravelStartTimePM_t.Value;
                     end = TravelStartTimePM_t.Value < WorkStartTimePM_t.Value ? Date + WorkStartTimePM_t.Value : Date.AddDays(1) + WorkStartTimePM_t.Value;
                     travelPeriods.Add(new TimeRange(start, end));
                 }
+
                 if (!TravelStartTimePM_t.HasValue && TravelEndTimePM_t.HasValue && WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue)
                 {
                     start = Date + WorkEndTimePM_t.Value;
@@ -309,11 +333,13 @@ namespace Great.ViewModels.Database
                 return travelPeriods.Count > 0 ? travelPeriods : null;
             }
         }
+
         #endregion
 
         #endregion
 
         #region Error Validation
+
         public string Error => throw new NotImplementedException();
 
         public string this[string columnName]
@@ -393,6 +419,7 @@ namespace Great.ViewModels.Database
 
             return false;
         }
+
         #endregion
 
         public TimesheetEVM(Timesheet timesheet = null)
@@ -422,6 +449,7 @@ namespace Great.ViewModels.Database
                 Id = 0;
                 return true;
             }
+
             return false;
         }
 
@@ -442,6 +470,5 @@ namespace Great.ViewModels.Database
             RaisePropertyChanged(nameof(WorkTime));
             RaisePropertyChanged(nameof(TravelTime));
         }
-
     }
 }

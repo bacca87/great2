@@ -12,7 +12,10 @@ namespace Great.Utils.Messages
         //   content:
         //     A value to be passed to recipient(s).
         //       
-        public StatusChangeMessage(T content) : base(content) { }
+        public StatusChangeMessage(T content) : base(content)
+        {
+        }
+
         //
         // Summary:
         //     Initializes a new instance of the StatusChangeMessage class.
@@ -24,6 +27,8 @@ namespace Great.Utils.Messages
         //   content:
         //     A value to be passed to recipient(s).
         //        
-        public StatusChangeMessage(object sender, T content) : base(sender, content) { }
+        public StatusChangeMessage(object sender, T content) : base(sender, content)
+        {
+        }
     }
 }

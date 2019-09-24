@@ -30,11 +30,13 @@ namespace Great.ViewModels
     public class ExpenseAccountViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Properties
+
         private FDLManager _fdlManager;
 
         public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
 
         private bool _isInputEnabled = false;
+
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
@@ -48,6 +50,7 @@ namespace Great.ViewModels
         public ObservableCollectionEx<ExpenseAccountEVM> ExpenseAccounts { get; set; }
 
         private ExpenseAccountEVM _selectedEA;
+
         public ExpenseAccountEVM SelectedEA
         {
             get => _selectedEA;
@@ -64,13 +67,16 @@ namespace Great.ViewModels
                     UpdateDaysOfWeek();
                 }
                 else
+                {
                     IsInputEnabled = false;
+                }
 
                 ShowEditMenu = false;
             }
         }
 
         private ExpenseEVM _selectedExpense;
+
         public ExpenseEVM SelectedExpense
         {
             get => _selectedExpense;
@@ -83,6 +89,7 @@ namespace Great.ViewModels
         public MRUCollection<string> MRUEmailRecipients { get; set; }
 
         private string _sendToEmailRecipient;
+
         public string SendToEmailRecipient
         {
             get => _sendToEmailRecipient;
@@ -90,6 +97,7 @@ namespace Great.ViewModels
         }
 
         private DateTime?[] _DaysOfWeek;
+
         public DateTime?[] DaysOfWeek
         {
             get => _DaysOfWeek;
@@ -98,6 +106,7 @@ namespace Great.ViewModels
 
 
         private bool _showEditMenu;
+
         public bool ShowEditMenu
         {
             get => _showEditMenu;
@@ -107,6 +116,7 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> CompileCommand { get; set; }
@@ -119,9 +129,11 @@ namespace Great.ViewModels
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
+
         #endregion
 
         #region Errors Validation
+
         public string CurrencyText { get; set; }
         public string ExpenseTypeText { get; set; }
 
@@ -150,6 +162,7 @@ namespace Great.ViewModels
                 return null;
             }
         }
+
         #endregion
 
         /// <summary>
@@ -174,7 +187,6 @@ namespace Great.ViewModels
             PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
 
 
-
             using (DBArchive db = new DBArchive())
             {
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
@@ -196,15 +208,14 @@ namespace Great.ViewModels
         }
 
 
-
         public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    if (item.Content != null && !ExpenseAccounts.Any(ea => ea.Id == item.Content.Id)) ExpenseAccounts.Add(item.Content);
-                })
+            new Action(() =>
+            {
+                if (item.Content != null && !ExpenseAccounts.Any(ea => ea.Id == item.Content.Id)) ExpenseAccounts.Add(item.Content);
+            })
             );
         }
 
@@ -214,20 +225,20 @@ namespace Great.ViewModels
 
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
-                    {
-                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == item.Content.Id);
+                    ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.Id == item.Content.Id);
 
-                        if (ea != null)
-                        {
-                            ea.Status = item.Content.Status;
-                            ea.NotifyAsNew = item.Content.NotifyAsNew;
-                            ea.LastError = item.Content.LastError;
-                        }
+                    if (ea != null)
+                    {
+                        ea.Status = item.Content.Status;
+                        ea.NotifyAsNew = item.Content.NotifyAsNew;
+                        ea.LastError = item.Content.LastError;
                     }
-                })
+                }
+            })
             );
         }
 
@@ -235,24 +246,24 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
+                    FactoryDTO factory = Global.Mapper.Map<FactoryDTO>(item.Content);
+
+                    if (factory != null)
                     {
-                        FactoryDTO factory = Global.Mapper.Map<FactoryDTO>(item.Content);
+                        var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1.Factory.HasValue && e.FDL1.Factory.Value == item.Content.Id);
 
-                        if (factory != null)
+                        foreach (var ea in eaToUpdate)
                         {
-                            var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1.Factory.HasValue && e.FDL1.Factory.Value == item.Content.Id);
-
-                            foreach (var ea in eaToUpdate)
-                            {
-                                ea.FDL1.Factory1 = factory;
-                                ea.FDL1 = ea.FDL1; // hack to force the View to update the factory name
-                            }
+                            ea.FDL1.Factory1 = factory;
+                            ea.FDL1 = ea.FDL1; // hack to force the View to update the factory name
                         }
                     }
-                })
+                }
+            })
             );
         }
 
@@ -260,14 +271,14 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
+            new Action(() =>
+            {
+                if (item.Content != null)
                 {
-                    if (item.Content != null)
-                    {
-                        var eaToUpdate = ExpenseAccounts.SingleOrDefault(e => e.FDL1.Id == item.Content.Id);
-                        eaToUpdate.FDL1.Factory1 = item.Content.Factory1;
-                    }
-                })
+                    var eaToUpdate = ExpenseAccounts.SingleOrDefault(e => e.FDL1.Id == item.Content.Id);
+                    eaToUpdate.FDL1.Factory1 = item.Content.Factory1;
+                }
+            })
             );
         }
 
@@ -276,12 +287,12 @@ namespace Great.ViewModels
             if (SelectedEA == null) return;
 
             DateTime StartDay = DateTime.Now.FromUnixTimestamp(SelectedEA.FDL1.StartDay);
-            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
+            DateTime StartDayOfWeek = StartDay.AddDays((int) DayOfWeek.Monday - (int) StartDay.DayOfWeek);
             var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
 
             DateTime?[] tmpDays = new DateTime?[7];
 
-            for (int i = 0; i < 7; i++) tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
+            for (int i = 0; i < 7; i++) tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?) null;
 
             DaysOfWeek = tmpDays;
         }
@@ -340,7 +351,10 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            using (new WaitCursor()) _fdlManager.SendToSAP(ea);
+            using (new WaitCursor())
+            {
+                _fdlManager.SendToSAP(ea);
+            }
         }
 
         public void SendByEmail(string address)
@@ -403,7 +417,10 @@ namespace Great.ViewModels
         {
             List<DateTime> timesheetDates = new List<DateTime>();
 
-            using (DBArchive db = new DBArchive()) db.Timesheets.Where(x => x.FDL == ea.FDL).ToList().ForEach(x => timesheetDates.Add(DateTime.Now.FromUnixTimestamp(x.Timestamp)));
+            using (DBArchive db = new DBArchive())
+            {
+                db.Timesheets.Where(x => x.FDL == ea.FDL).ToList().ForEach(x => timesheetDates.Add(DateTime.Now.FromUnixTimestamp(x.Timestamp)));
+            }
 
             bool showWarning = false;
 
@@ -418,7 +435,8 @@ namespace Great.ViewModels
                 showWarning |= exp.SundayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Sunday);
 
                 if (showWarning)
-                    if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No) return;
+                    if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                        return;
             }
 
 

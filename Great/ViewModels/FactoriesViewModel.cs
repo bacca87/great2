@@ -19,6 +19,7 @@ namespace Great.ViewModels
         #region Properties
 
         private bool _showEditMenu;
+
         public bool ShowEditMenu
         {
             get => _showEditMenu;
@@ -27,17 +28,19 @@ namespace Great.ViewModels
 
 
         private bool _ShowExpandable;
+
         public bool ShowExpandable
         {
             get => _ShowExpandable;
             set => Set(ref _ShowExpandable, value);
-
         }
+
         public ObservableCollection<TransferTypeDTO> TransferTypes { get; set; }
 
         public ObservableCollectionEx<FactoryEVM> Factories { get; set; }
 
         private FactoryEVM _selectedFactory;
+
         public FactoryEVM SelectedFactory
         {
             get => _selectedFactory;
@@ -51,9 +54,11 @@ namespace Great.ViewModels
 
         public Action<FactoryEVM> OnZoomOnFactoryRequest { get; set; }
         public Action<FactoryEVM> OnFactoryUpdated { get; set; }
+
         #endregion
 
         #region Commands
+
         public RelayCommand<FactoryEVM> DeleteFactoryCommand { get; set; }
         public RelayCommand<FactoryEVM> SaveFactoryCommand { get; set; }
         public RelayCommand<FactoryEVM> NewFactoryCommand { get; set; }
@@ -63,6 +68,7 @@ namespace Great.ViewModels
         public RelayCommand PageUnloadedCommand { get; set; }
 
         public RelayCommand ClearSelectionCommand { get; set; }
+
         #endregion
 
         /// <summary>
@@ -91,7 +97,6 @@ namespace Great.ViewModels
         }
 
 
-
         private void NewFactory(FactoryEVM obj)
         {
             SelectedFactory = new FactoryEVM();
@@ -102,10 +107,10 @@ namespace Great.ViewModels
         {
             // Using the dispatcher for preventing thread conflicts
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id)) Factories.Add(item.Content);
-                })
+            new Action(() =>
+            {
+                if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id)) Factories.Add(item.Content);
+            })
             );
         }
 

@@ -41,7 +41,10 @@ namespace Great.Models
         {
             get
             {
-                lock (this) return exchangeStatus;
+                lock (this)
+                {
+                    return exchangeStatus;
+                }
             }
             set
             {
@@ -63,6 +66,7 @@ namespace Great.Models
         }
 
         #region Threads
+
         private void MainThread()
         {
             ExchangeTraceListener trace = new ExchangeTraceListener();
@@ -100,9 +104,12 @@ namespace Great.Models
                         return;
                     }
                     else
+                    {
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    }
                 }
-            } while (exService.Url == null && !exitToken.IsCancellationRequested);
+            }
+            while (exService.Url == null && !exitToken.IsCancellationRequested);
 
             if (exitToken.IsCancellationRequested) return;
 
@@ -140,11 +147,7 @@ namespace Great.Models
             ExchangeTraceListener trace = new ExchangeTraceListener();
             ExchangeService service = new ExchangeService
             {
-                TraceListener = trace,
-                TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,
-                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
-                Url = exServiceUri
+                TraceListener = trace, TraceFlags = TraceFlags.AutodiscoverConfiguration, TraceEnabled = true, Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword), Url = exServiceUri
             };
 
             while (!exitToken.IsCancellationRequested)
@@ -184,7 +187,9 @@ namespace Great.Models
                                 return;
                             }
                             else
+                            {
                                 Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                            }
                         }
                     }
                     while (!IsSent);
@@ -199,11 +204,7 @@ namespace Great.Models
             ExchangeTraceListener trace = new ExchangeTraceListener();
             ExchangeService service = new ExchangeService
             {
-                TraceListener = trace,
-                TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,
-                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
-                Url = exServiceUri
+                TraceListener = trace, TraceFlags = TraceFlags.AutodiscoverConfiguration, TraceEnabled = true, Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword), Url = exServiceUri
             };
 
             subconn = new StreamingSubscriptionConnection(service, 30);
@@ -228,9 +229,12 @@ namespace Great.Models
                         return;
                     }
                     else
+                    {
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    }
                 }
-            } while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
+            }
+            while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
         }
 
         private void ExchangeSync()
@@ -238,11 +242,7 @@ namespace Great.Models
             ExchangeTraceListener trace = new ExchangeTraceListener();
             ExchangeService service = new ExchangeService
             {
-                TraceListener = trace,
-                TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,
-                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
-                Url = exServiceUri
+                TraceListener = trace, TraceFlags = TraceFlags.AutodiscoverConfiguration, TraceEnabled = true, Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword), Url = exServiceUri
             };
 
             bool IsSynced = false;
@@ -252,21 +252,21 @@ namespace Great.Models
             {
                 try
                 {
-                    ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
-                    FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
+                    ItemView itemView = new ItemView(int.MaxValue) {PropertySet = new PropertySet(BasePropertySet.IdOnly)};
+                    FolderView folderView = new FolderView(int.MaxValue) {PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep};
                     folderView.PropertySet.Add(FolderSchema.WellKnownFolderName);
 
                     itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
 
                     string aqsQuery = $"from:(" +
-                        $"\"{ApplicationSettings.EmailRecipients.FDLSystem}\"" +
-                        $" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\"" +
-                        $" OR \"{ApplicationSettings.EmailRecipients.SAP}\"" +
-                        $" OR \"fdl\"" +
-                        $" OR \"SAP MAIL\"" +
-                        $" OR \"Sistema FDL\"" +
-                        $" OR \"fdl_chk\"" +
-                        ")";
+                                      $"\"{ApplicationSettings.EmailRecipients.FDLSystem}\"" +
+                                      $" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\"" +
+                                      $" OR \"{ApplicationSettings.EmailRecipients.SAP}\"" +
+                                      $" OR \"fdl\"" +
+                                      $" OR \"SAP MAIL\"" +
+                                      $" OR \"Sistema FDL\"" +
+                                      $" OR \"fdl_chk\"" +
+                                      ")";
 
                     // try to get last week messages (high priority)
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery + " received:>=lastweek", folderView, itemView))
@@ -301,18 +301,23 @@ namespace Great.Models
                         return;
                     }
                     else
+                    {
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    }
                 }
-            } while (!IsSynced && !exitToken.IsCancellationRequested);
+            }
+            while (!IsSynced && !exitToken.IsCancellationRequested);
         }
+
         #endregion
 
         #region Subscription Events Handling
+
         private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
         {
             foreach (NotificationEvent e in args.Events)
             {
-                var itemEvent = (ItemEvent)e;
+                var itemEvent = (ItemEvent) e;
                 EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
 
                 switch (e.EventType)
@@ -356,16 +361,20 @@ namespace Great.Models
             Status = EProviderStatus.Error;
             Connect();
         }
+
         #endregion
 
         #region Private Methods
+
         private void Wait(int milliseconds)
         {
             try
             {
                 System.Threading.Tasks.Task.Delay(milliseconds, exitToken.Token).Wait();
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
@@ -405,11 +414,13 @@ namespace Great.Models
                         foreach (Item item in itemsResults) yield return item;
 
                         if (itemsResults.MoreAvailable) itemView.Offset += itemView.PageSize;
-                    } while (itemsResults.MoreAvailable);
+                    }
+                    while (itemsResults.MoreAvailable);
                 }
 
                 if (foldersResults.MoreAvailable) folderView.Offset += folderView.PageSize;
-            } while (foldersResults.MoreAvailable);
+            }
+            while (foldersResults.MoreAvailable);
 
             // reset the offset for a new search in current folder
             itemView.Offset = 0;
@@ -423,7 +434,8 @@ namespace Great.Models
                 foreach (Item item in itemsResults) yield return item;
 
                 if (itemsResults.MoreAvailable) itemView.Offset += itemView.PageSize;
-            } while (itemsResults.MoreAvailable);
+            }
+            while (itemsResults.MoreAvailable);
         }
 
         protected void NotifyNewMessage(EmailMessage e)
@@ -435,9 +447,11 @@ namespace Great.Models
         {
             OnMessageSent?.Invoke(this, new MessageEventArgs(e));
         }
+
         #endregion
 
         #region Public Methods
+
         public void Connect()
         {
             if (mainThread == null || !mainThread.IsAlive)
@@ -452,68 +466,68 @@ namespace Great.Models
         public void Disconnect()
         {
             if (subconn != null)
-            {
                 try
                 {
                     if (subconn.IsOpen) subconn.Close();
 
                     subconn.Dispose();
                 }
-                catch { }
+                catch
+                {
+                }
                 finally
                 {
                     subconn = null;
                 }
-            }
 
             if (exitToken != null)
-            {
                 try
                 {
                     exitToken.Cancel(false);
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             if (mainThread != null && !mainThread.Join(3000))
-            {
                 try
                 {
                     Debugger.Break();
                     mainThread.Abort();
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             if (emailSenderThread != null && !emailSenderThread.Join(3000))
-            {
                 try
                 {
                     Debugger.Break();
                     emailSenderThread.Abort();
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             if (subscribeThread != null && !subscribeThread.Join(3000))
-            {
                 try
                 {
                     Debugger.Break();
                     subscribeThread.Abort();
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             if (syncThread != null && !syncThread.Join(3000))
-            {
                 try
                 {
                     Debugger.Break();
                     syncThread.Abort();
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             mainThread = null;
             subscribeThread = null;
@@ -523,7 +537,9 @@ namespace Great.Models
             {
                 exitToken.Dispose();
             }
-            catch { }
+            catch
+            {
+            }
             finally
             {
                 exitToken = new CancellationTokenSource();
@@ -565,7 +581,7 @@ namespace Great.Models
             {
                 if (exServiceUri == null) return false;
 
-                var request = (HttpWebRequest)WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
+                var request = (HttpWebRequest) WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
                 request.UserAgent = ApplicationSettings.General.UserAgent;
                 request.KeepAlive = false;
                 request.AllowAutoRedirect = true;
@@ -573,7 +589,7 @@ namespace Great.Models
                 request.CookieContainer = new CookieContainer();
                 request.Method = "GET";
 
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse) request.GetResponse())
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                         return true;
@@ -586,6 +602,7 @@ namespace Great.Models
                 return false;
             }
         }
+
         #endregion
     }
 
@@ -613,9 +630,9 @@ namespace Great.Models
     {
         public enum ETraceResult
         {
-            Ok,
-            LoginError,
-            AutodiscoverError
+            Ok
+            , LoginError
+            , AutodiscoverError
         }
 
         public ETraceResult Result { get; internal set; }

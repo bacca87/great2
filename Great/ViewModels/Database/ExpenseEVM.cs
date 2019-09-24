@@ -1,5 +1,4 @@
-﻿
-using Great.Models.Database;
+﻿using Great.Models.Database;
 using Great.Models.DTO;
 using System.Data.Entity.Migrations;
 
@@ -8,7 +7,9 @@ namespace Great.ViewModels.Database
     public class ExpenseEVM : EntityViewModelBase
     {
         #region Properties
+
         public long _Id;
+
         public long Id
         {
             get => _Id;
@@ -16,6 +17,7 @@ namespace Great.ViewModels.Database
         }
 
         public long _ExpenseAccount;
+
         public long ExpenseAccount
         {
             get => _ExpenseAccount;
@@ -23,6 +25,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _Type;
+
         public long Type
         {
             get => _Type;
@@ -30,6 +33,7 @@ namespace Great.ViewModels.Database
         }
 
         private double? _MondayAmount;
+
         public double? MondayAmount
         {
             get => _MondayAmount;
@@ -41,6 +45,7 @@ namespace Great.ViewModels.Database
         }
 
         private double? _TuesdayAmount;
+
         public double? TuesdayAmount
         {
             get => _TuesdayAmount;
@@ -52,6 +57,7 @@ namespace Great.ViewModels.Database
         }
 
         private double? _WednesdayAmount;
+
         public double? WednesdayAmount
         {
             get => _WednesdayAmount;
@@ -59,11 +65,11 @@ namespace Great.ViewModels.Database
             {
                 SetAndCheckChanged(ref _WednesdayAmount, value);
                 RaisePropertyChanged(nameof(TotalAmount));
-
             }
         }
 
         private double? _ThursdayAmount;
+
         public double? ThursdayAmount
         {
             get => _ThursdayAmount;
@@ -75,6 +81,7 @@ namespace Great.ViewModels.Database
         }
 
         private double? _FridayAmount;
+
         public double? FridayAmount
         {
             get => _FridayAmount;
@@ -86,6 +93,7 @@ namespace Great.ViewModels.Database
         }
 
         private double? _SaturdayAmount;
+
         public double? SaturdayAmount
         {
             get => _SaturdayAmount;
@@ -97,6 +105,7 @@ namespace Great.ViewModels.Database
         }
 
         private double? _SundayAmount;
+
         public double? SundayAmount
         {
             get => _SundayAmount;
@@ -110,15 +119,19 @@ namespace Great.ViewModels.Database
         public double TotalAmount => (MondayAmount ?? 0) + (TuesdayAmount ?? 0) + (WednesdayAmount ?? 0) + (ThursdayAmount ?? 0) + (FridayAmount ?? 0) + (SaturdayAmount ?? 0) + (SundayAmount ?? 0);
 
         public ExpenseTypeDTO _ExpenseType;
+
         public ExpenseTypeDTO ExpenseType
         {
             get => _ExpenseType;
             set => Set(ref _ExpenseType, value);
         }
+
         #endregion
 
         // hack because XAML didnt support default parameters
-        public ExpenseEVM() { }
+        public ExpenseEVM()
+        {
+        }
 
         public ExpenseEVM(Expense expense = null)
         {
@@ -147,6 +160,5 @@ namespace Great.ViewModels.Database
         {
             throw new System.NotImplementedException();
         }
-
     }
 }

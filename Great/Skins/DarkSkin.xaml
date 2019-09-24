@@ -3,8 +3,8 @@
                     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        
-        <!--Fluent Ribbon Styles-->      
+
+        <!--Fluent Ribbon Styles-->
         <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseDark.xaml" />
 
         <!-- Accent and AppTheme setting -->
@@ -25,23 +25,23 @@
         <ResourceDictionary>
 
             <!--Default Colors overridden by usersettings-->
-            <SolidColorBrush x:Key="DefaultSaturdayColor" Color="#0D47A1"/>
-            <SolidColorBrush x:Key="DefaultSundayColor" Color="#B71C1C"/>
-            <SolidColorBrush x:Key="DefaultHolidayColor" Color="#B71C1C"/>
-            <SolidColorBrush x:Key="DefaultVacationColor" Color="#4A148C"/>
-            <SolidColorBrush x:Key="DefaultSickColor" Color="#880E4F"/>
-            <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#827717"/>
-            <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#BF360C"/>
+            <SolidColorBrush x:Key="DefaultSaturdayColor" Color="#0D47A1" />
+            <SolidColorBrush x:Key="DefaultSundayColor" Color="#B71C1C" />
+            <SolidColorBrush x:Key="DefaultHolidayColor" Color="#B71C1C" />
+            <SolidColorBrush x:Key="DefaultVacationColor" Color="#4A148C" />
+            <SolidColorBrush x:Key="DefaultSickColor" Color="#880E4F" />
+            <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#827717" />
+            <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#BF360C" />
 
-            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc"/>
-            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc"/>
-            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8"/>
-            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8"/>
+            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc" />
+            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc" />
+            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8" />
+            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8" />
 
-            <Style x:Key="AutoCompleteBoxStyle"  TargetType="toolkit:AutoCompleteBox">
-                <Setter Property="Background" Value="#212121"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderBrush" Value="White"/>
+            <Style x:Key="AutoCompleteBoxStyle" TargetType="toolkit:AutoCompleteBox">
+                <Setter Property="Background" Value="#212121" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="BorderBrush" Value="White" />
             </Style>
 
         </ResourceDictionary>

@@ -24,6 +24,7 @@ namespace Great.ViewModels
         #region Properties
 
         private bool _isInputEnabled = false;
+
         public bool IsInputEnabled
         {
             get => _isInputEnabled;
@@ -36,11 +37,11 @@ namespace Great.ViewModels
                 _isInputEnabled = value;
 
                 RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
-
             }
         }
 
         private bool _showEditMenu;
+
         public bool ShowEditMenu
         {
             get => _showEditMenu;
@@ -50,6 +51,7 @@ namespace Great.ViewModels
         public ObservableCollectionEx<CarRentalHistoryEVM> Rentals { get; set; }
 
         private ObservableCollection<string> _CarModels;
+
         public ObservableCollection<string> CarModels
         {
             get => _CarModels;
@@ -57,6 +59,7 @@ namespace Great.ViewModels
         }
 
         private ObservableCollection<string> _CarBrands;
+
         public ObservableCollection<string> CarBrands
         {
             get => _CarBrands;
@@ -64,6 +67,7 @@ namespace Great.ViewModels
         }
 
         private ObservableCollection<string> _Locations;
+
         public ObservableCollection<string> Locations
         {
             get => _Locations;
@@ -74,14 +78,17 @@ namespace Great.ViewModels
         public ICollectionView FilteredRentals => _FilteredRentals;
 
         private ObservableCollectionEx<CarEVM> _Cars;
+
         public ObservableCollectionEx<CarEVM> Cars
         {
             get => _Cars;
             set => Set(ref _Cars, value);
         }
+
         public ObservableCollection<CarRentalCompanyDTO> RentalCompanies { get; set; }
 
         private CarRentalHistoryEVM _selectedRent;
+
         public CarRentalHistoryEVM SelectedRent
         {
             get => _selectedRent;
@@ -97,6 +104,7 @@ namespace Great.ViewModels
         }
 
         private CarEVM _selectedCar;
+
         public CarEVM SelectedCar
         {
             get => _selectedCar;
@@ -110,6 +118,7 @@ namespace Great.ViewModels
         }
 
         private string _LicensePlate;
+
         public string LicensePlate
         {
             get => _LicensePlate;
@@ -122,23 +131,24 @@ namespace Great.ViewModels
             }
         }
 
-
         #endregion
 
         #region Filter properties
+
         public bool EnableStartDateFilter { get; set; }
         public bool EnableEndDateFilter { get; set; }
 
         private DateTime? _rentStartDateFilter;
+
         public DateTime? RentStartDateFilter
         {
             get => _rentStartDateFilter;
             set => Set(ref _rentStartDateFilter, value);
-
         }
 
 
         private DateTime? _rentEndDateFilter;
+
         public DateTime? RentEndDateFilter
         {
             get => _rentEndDateFilter;
@@ -147,6 +157,7 @@ namespace Great.ViewModels
 
 
         private string _modelBrandFilter;
+
         public string ModelBrandFilter
         {
             get => _modelBrandFilter;
@@ -156,6 +167,7 @@ namespace Great.ViewModels
 
 
         private string _licensePlateFilter;
+
         public string LicencePlateFilter
         {
             get => _licensePlateFilter;
@@ -166,6 +178,7 @@ namespace Great.ViewModels
         #endregion
 
         #region Commands Definitions
+
         public RelayCommand ClearCommand { get; set; }
         public RelayCommand<CarRentalHistoryEVM> SaveCommand { get; set; }
         public RelayCommand<CarRentalHistoryEVM> DeleteCommand { get; set; }
@@ -184,7 +197,6 @@ namespace Great.ViewModels
         /// </summary>
         public CarRentalViewModel()
         {
-
             IsInputEnabled = true;
 
             SaveCommand = new RelayCommand<CarRentalHistoryEVM>(SaveRent);
@@ -192,7 +204,11 @@ namespace Great.ViewModels
             NewCommand = new RelayCommand<CarRentalHistoryEVM>(NewRent);
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
-            PageUnloadedCommand = new RelayCommand(() => { SelectedRent?.CheckChangedEntity(); SelectedCar?.CheckChangedEntity(); });
+            PageUnloadedCommand = new RelayCommand(() =>
+            {
+                SelectedRent?.CheckChangedEntity();
+                SelectedCar?.CheckChangedEntity();
+            });
 
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
@@ -222,10 +238,8 @@ namespace Great.ViewModels
             _FilteredRentals.Filter += Filter;
 
             FilteredRentals.MoveCurrentToFirst();
-            SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem;
+            SelectedRent = (CarRentalHistoryEVM) FilteredRentals.CurrentItem;
         }
-
-
 
 
         private void RemoveFiltersCommand()
@@ -246,7 +260,7 @@ namespace Great.ViewModels
 
         public bool Filter(object cr)
         {
-            CarRentalHistoryEVM crh = (CarRentalHistoryEVM)cr;
+            CarRentalHistoryEVM crh = (CarRentalHistoryEVM) cr;
 
             string model = ModelBrandFilter ?? string.Empty;
             string plate = LicencePlateFilter ?? string.Empty;
@@ -273,7 +287,6 @@ namespace Great.ViewModels
             if (cr.Id == 0) return;
 
             if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
-            {
                 using (DBArchive db = new DBArchive())
                 {
                     var rentalsWithSameCar = db.CarRentalHistories.Where(c => c.Car == cr.Car && c.Id != cr.Id).ToList();
@@ -294,7 +307,6 @@ namespace Great.ViewModels
                     db.SaveChanges();
                     FilteredRentals.Refresh();
                 }
-            }
         }
 
         public void SaveRent(CarRentalHistoryEVM rc)
@@ -306,6 +318,7 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("Cannot save/edit the rent. Please check the errors", "Save Rent", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             var existingRent = Rentals.SingleOrDefault(r => r.Id == SelectedRent.Id);
             var existingCar = Cars.SingleOrDefault(r => r.Id == SelectedCar.Id);
 
@@ -330,13 +343,11 @@ namespace Great.ViewModels
             if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null) Locations.Add(rc.StartLocation);
 
             if (!String.IsNullOrEmpty(rc.EndLocation))
-            {
-                if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null) Locations.Add(rc.EndLocation);
-            }
+                if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null)
+                    Locations.Add(rc.EndLocation);
 
             ShowEditMenu = false;
             FilteredRentals.Refresh();
-
         }
     }
 }

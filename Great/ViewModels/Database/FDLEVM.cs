@@ -12,7 +12,9 @@ namespace Great.ViewModels.Database
     public class FDLEVM : EntityViewModelBase, IFDLFile
     {
         #region Properties
+
         private string _Id;
+
         public string Id
         {
             get => _Id;
@@ -20,6 +22,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _WeekNr;
+
         public long WeekNr
         {
             get => _WeekNr;
@@ -27,6 +30,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _StartDay;
+
         public long StartDay
         {
             get => _StartDay;
@@ -34,6 +38,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsExtra;
+
         public bool IsExtra
         {
             get => _IsExtra;
@@ -41,6 +46,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _Order;
+
         public long Order
         {
             get => _Order;
@@ -48,6 +54,7 @@ namespace Great.ViewModels.Database
         }
 
         private long? _Factory;
+
         public long? Factory
         {
             get => _Factory;
@@ -55,6 +62,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _OutwardCar;
+
         public bool OutwardCar
         {
             get => _OutwardCar;
@@ -62,6 +70,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _ReturnCar;
+
         public bool ReturnCar
         {
             get => _ReturnCar;
@@ -69,6 +78,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _OutwardTaxi;
+
         public bool OutwardTaxi
         {
             get => _OutwardTaxi;
@@ -76,6 +86,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _ReturnTaxi;
+
         public bool ReturnTaxi
         {
             get => _ReturnTaxi;
@@ -83,6 +94,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _OutwardAircraft;
+
         public bool OutwardAircraft
         {
             get => _OutwardAircraft;
@@ -90,6 +102,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _ReturnAircraft;
+
         public bool ReturnAircraft
         {
             get => _ReturnAircraft;
@@ -97,6 +110,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _PerformanceDescription;
+
         public string PerformanceDescription
         {
             get => _PerformanceDescription;
@@ -104,6 +118,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _Result;
+
         public long Result
         {
             get => _Result;
@@ -115,6 +130,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _ResultNotes;
+
         public string ResultNotes
         {
             get => _ResultNotes;
@@ -122,6 +138,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _Notes;
+
         public string Notes
         {
             get => _Notes;
@@ -129,6 +146,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _PerformanceDescriptionDetails;
+
         public string PerformanceDescriptionDetails
         {
             get => _PerformanceDescriptionDetails;
@@ -136,6 +154,7 @@ namespace Great.ViewModels.Database
         }
 
         private long _Status;
+
         public long Status
         {
             get => _Status;
@@ -147,6 +166,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _LastError;
+
         public string LastError
         {
             get => _LastError;
@@ -154,6 +174,7 @@ namespace Great.ViewModels.Database
         }
 
         private string _FileName;
+
         public string FileName
         {
             get => _FileName;
@@ -161,6 +182,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _NotifyAsNew;
+
         public bool NotifyAsNew
         {
             get => _NotifyAsNew;
@@ -172,6 +194,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsCompiled;
+
         public bool IsCompiled
         {
             get => _IsCompiled;
@@ -179,6 +202,7 @@ namespace Great.ViewModels.Database
         }
 
         private bool _IsReadOnly;
+
         public bool IsReadOnly
         {
             get => _IsReadOnly;
@@ -187,6 +211,7 @@ namespace Great.ViewModels.Database
 
 
         private long? _LastSAPSendTimestamp;
+
         public long? LastSAPSendTimestamp
         {
             get => _LastSAPSendTimestamp;
@@ -194,6 +219,7 @@ namespace Great.ViewModels.Database
         }
 
         private FactoryDTO _Factory1;
+
         public FactoryDTO Factory1
         {
             get => _Factory1;
@@ -201,11 +227,11 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _Factory1, value);
                 RaisePropertyChanged(nameof(FDL_Factory_Display));
-
             }
         }
 
         private FDLStatusDTO _FDLStatus;
+
         public FDLStatusDTO FDLStatus
         {
             get => _FDLStatus;
@@ -213,6 +239,7 @@ namespace Great.ViewModels.Database
         }
 
         private FDLResultDTO _FDLResult;
+
         public FDLResultDTO FDLResult
         {
             get => _FDLResult;
@@ -226,6 +253,7 @@ namespace Great.ViewModels.Database
         public int Year => Convert.ToInt32(Id.Substring(0, 4));
 
         private bool _IsNew;
+
         public bool IsNew // used for sorting purpose
         {
             get => _IsNew;
@@ -236,10 +264,10 @@ namespace Great.ViewModels.Database
 
         public EFDLStatus EStatus
         {
-            get => (EFDLStatus)Status;
+            get => (EFDLStatus) Status;
             set
             {
-                Status = (long)value;
+                Status = (long) value;
                 IsNew = value == EFDLStatus.New;
                 RaisePropertyChanged();
             }
@@ -247,19 +275,22 @@ namespace Great.ViewModels.Database
 
         public EFDLResult EResult
         {
-            get => (EFDLResult)Result;
+            get => (EFDLResult) Result;
             set
             {
-                Result = (long)value;
+                Result = (long) value;
                 RaisePropertyChanged();
             }
         }
+
         #endregion
 
         #region Display Properties
+
         public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{Id}";
         public string FDL_Display => $"{Id}{(IsExtra ? " (EXTRA)" : "")}";
         public string FDL_Factory_Display => $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}";
+
         #endregion
 
         // hack because XAML didnt support default parameters
@@ -310,6 +341,5 @@ namespace Great.ViewModels.Database
 
             return false;
         }
-
     }
 }
