@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Great.Utils.AttachedProperties
@@ -24,9 +24,7 @@ namespace Great.Utils.AttachedProperties
             // only handle this event when the property is attached to a PasswordBox
             // and when the BindPassword attached property has been set to true
             if (d == null || !GetBindPassword(d))
-            {
                 return;
-            }
 
             // avoid recursive updating by ignoring the box's changed event
             box.PasswordChanged -= HandlePasswordChanged;
@@ -34,9 +32,7 @@ namespace Great.Utils.AttachedProperties
             string newPassword = (string)e.NewValue;
 
             if (!GetUpdatingPassword(box))
-            {
                 box.Password = newPassword;
-            }
 
             box.PasswordChanged += HandlePasswordChanged;
         }
@@ -49,22 +45,16 @@ namespace Great.Utils.AttachedProperties
             PasswordBox box = dp as PasswordBox;
 
             if (box == null)
-            {
                 return;
-            }
 
             bool wasBound = (bool)(e.OldValue);
             bool needToBind = (bool)(e.NewValue);
 
             if (wasBound)
-            {
                 box.PasswordChanged -= HandlePasswordChanged;
-            }
 
             if (needToBind)
-            {
                 box.PasswordChanged += HandlePasswordChanged;
-            }
         }
 
         private static void HandlePasswordChanged(object sender, RoutedEventArgs e)

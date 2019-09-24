@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
@@ -22,9 +22,7 @@ namespace Great.Utils.Converters
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             if (converter == null)
-            {
                 converter = new DataGridItemConverter();
-            }
 
             return converter;
         }

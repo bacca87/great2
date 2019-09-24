@@ -1,4 +1,4 @@
-﻿using Great.Models;
+using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
 using Great.Views;
@@ -32,9 +32,7 @@ namespace Great
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
             if (!Debugger.IsAttached)
-            {
                 splash.Show();
-            }
 
             // themes
             UserSettings.Themes.AttachCustomThemes();
@@ -113,9 +111,7 @@ namespace Great
             Directory.CreateDirectory(dbDirectory);
 
             if (!File.Exists(dbFileName))
-            {
                 File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
-            }
             else
             {
                 DoBackup(dbFileName, dbDirectory); //Backup before migrations
@@ -137,14 +133,10 @@ namespace Great
                         foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
                         {
                             if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
-                            {
                                 continue;
-                            }
 
                             if (db_version >= scriptVersion)
-                            {
                                 continue;
-                            }
 
                             db.Database.ExecuteSqlCommand(File.ReadAllText(f));
                             db.SaveChanges();

@@ -1,4 +1,4 @@
-﻿using Great.Properties;
+using Great.Properties;
 using Great.Utils.Extensions;
 using Nager.Date;
 using System;
@@ -28,9 +28,7 @@ namespace Great.Models
                     string connectionString = ConfigurationManager.ConnectionStrings["DBArchive"].ConnectionString;
 
                     if (connectionString == null || connectionString == string.Empty)
-                    {
                         throw new ConfigurationErrorsException("Missing DBEntities connection string!");
-                    }
 
                     return connectionString;
                 }
@@ -57,9 +55,7 @@ namespace Great.Models
                     string dataDirectoryPath = Settings.Default.DataDirectoryPath;
 
                     if (dataDirectoryPath == null || dataDirectoryPath == string.Empty)
-                    {
                         throw new ConfigurationErrorsException("Missing or invalid DataDirectoryPath configuration!");
-                    }
 
                     dataDirectoryPath = Environment.ExpandEnvironmentVariables(dataDirectoryPath);
                     return dataDirectoryPath + (!dataDirectoryPath.EndsWith("\\") ? "\\" : "");
@@ -82,9 +78,7 @@ namespace Great.Models
                     string cacheDirectoryPath = ConfigurationManager.AppSettings["CacheDirectoryPath"];
 
                     if (cacheDirectoryPath == null || cacheDirectoryPath == string.Empty)
-                    {
                         throw new ConfigurationErrorsException("Missing or invalid CacheDirectoryPath configuration!");
-                    }
 
                     cacheDirectoryPath = Environment.ExpandEnvironmentVariables(cacheDirectoryPath);
                     return cacheDirectoryPath + (!cacheDirectoryPath.EndsWith("\\") ? "\\" : "");

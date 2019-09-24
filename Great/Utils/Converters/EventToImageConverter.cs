@@ -1,4 +1,4 @@
-﻿using Great.Models;
+using Great.Models;
 using Great.ViewModels.Database;
 using System;
 using System.Globalization;
@@ -21,19 +21,13 @@ namespace Great.Utils.Converters
                 case EEventType.OldVacations:
 
                     if (ev.EStatus == EEventStatus.Pending)
-                    {
                         result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/clock.png"));
-                    }
 
                     if (ev.EStatus == EEventStatus.Accepted)
-                    {
                         result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-check.png"));
-                    }
 
                     if (ev.EStatus == EEventStatus.Rejected)
-                    {
                         result = new BitmapImage(new Uri(@"pack://application:,,,/Great2;component/Images/16/sign-ban.png"));
-                    }
 
                     break;
 

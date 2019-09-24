@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Messaging;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils.Messages;
@@ -91,9 +91,7 @@ namespace Great.Models
                         // callback, the redirection URL is considered valid if it is using HTTPS
                         // to encrypt the authentication credentials. 
                         if (redirectionUri.Scheme == "https")
-                        {
                             result = true;
-                        }
 
                         return result;
                     });
@@ -113,9 +111,7 @@ namespace Great.Models
             } while (exService.Url == null && !exitToken.IsCancellationRequested);
 
             if (exitToken.IsCancellationRequested)
-            {
                 return;
-            }
 
             Status = EProviderStatus.Connecting;
 
@@ -166,9 +162,7 @@ namespace Great.Models
                     bool IsSent = false;
 
                     if (!emailQueue.TryDequeue(out message))
-                    {
                         continue;
-                    }
 
                     do
                     {
@@ -293,14 +287,10 @@ namespace Great.Models
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery + " received:>=lastweek", folderView, itemView))
                     {
                         if (exitToken.IsCancellationRequested)
-                        {
                             break;
-                        }
 
                         if (!(item is EmailMessage))
-                        {
                             continue;
-                        }
 
                         EmailMessage message = EmailMessage.Bind(service, item.Id);
                         NotifyNewMessage(message);
@@ -310,14 +300,10 @@ namespace Great.Models
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery, folderView, itemView))
                     {
                         if (exitToken.IsCancellationRequested)
-                        {
                             break;
-                        }
 
                         if (!(item is EmailMessage))
-                        {
                             continue;
-                        }
 
                         EmailMessage message = EmailMessage.Bind(service, item.Id);
                         NotifyNewMessage(message);
@@ -373,9 +359,7 @@ namespace Great.Models
             catch (Exception)
             {
                 if (Status != EProviderStatus.Error)
-                {
                     Status = EProviderStatus.Offline;
-                }
 
                 connection.Dispose();
                 Connect();
@@ -389,9 +373,7 @@ namespace Great.Models
             StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
             if (!connection.IsOpen)
-            {
                 connection.Close();
-            }
 
             connection.Dispose();
             Status = EProviderStatus.Error;
@@ -417,18 +399,14 @@ namespace Great.Models
             do
             {
                 if (exitToken.IsCancellationRequested)
-                {
                     break;
-                }
 
                 foldersResults = service.FindFolders(root, folderView);
 
                 foreach (Folder folder in foldersResults)
                 {
                     if (exitToken.IsCancellationRequested)
-                    {
                         break;
-                    }
 
                     if (folder.WellKnownFolderName == WellKnownFolderName.DeletedItems ||
                         folder.WellKnownFolderName == WellKnownFolderName.SentItems ||
@@ -448,9 +426,7 @@ namespace Great.Models
                     do
                     {
                         if (exitToken.IsCancellationRequested)
-                        {
                             break;
-                        }
 
                         itemsResults = service.FindItems(folder.Id, query, itemView);
 
@@ -460,16 +436,12 @@ namespace Great.Models
                         }
 
                         if (itemsResults.MoreAvailable)
-                        {
                             itemView.Offset += itemView.PageSize;
-                        }
                     } while (itemsResults.MoreAvailable);
                 }
 
                 if (foldersResults.MoreAvailable)
-                {
                     folderView.Offset += folderView.PageSize;
-                }
             } while (foldersResults.MoreAvailable);
 
             // reset the offset for a new search in current folder
@@ -478,9 +450,7 @@ namespace Great.Models
             do
             {
                 if (exitToken.IsCancellationRequested)
-                {
                     break;
-                }
 
                 itemsResults = service.FindItems(root, query, itemView);
 
@@ -490,9 +460,7 @@ namespace Great.Models
                 }
 
                 if (itemsResults.MoreAvailable)
-                {
                     itemView.Offset += itemView.PageSize;
-                }
             } while (itemsResults.MoreAvailable);
         }
 
@@ -526,9 +494,7 @@ namespace Great.Models
                 try
                 {
                     if (subconn.IsOpen)
-                    {
                         subconn.Close();
-                    }
 
                     subconn.Dispose();
                 }
@@ -606,9 +572,7 @@ namespace Great.Models
         public NameResolutionCollection ResolveName(string filter)
         {
             if (exService.Url != null)
-            {
                 return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
-            }
             else
             {
                 return null;
@@ -641,9 +605,7 @@ namespace Great.Models
             try
             {
                 if (exServiceUri == null)
-                {
                     return false;
-                }
 
                 var request = (HttpWebRequest)WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
                 request.UserAgent = ApplicationSettings.General.UserAgent;
@@ -656,9 +618,7 @@ namespace Great.Models
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
-                    {
                         return true;
-                    }
                     else
                     {
                         return false;
@@ -712,14 +672,10 @@ namespace Great.Models
         public void Trace(string traceType, string traceMessage)
         {
             if (traceMessage.Contains("(401)"))
-            {
                 Result = ETraceResult.LoginError;
-            }
 
             if (traceMessage.Contains("No matching Autodiscover DNS SRV records were found."))
-            {
                 Result = ETraceResult.AutodiscoverError;
-            }
         }
     }
 }

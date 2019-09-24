@@ -1,4 +1,4 @@
-﻿using Great.Models.Database;
+using Great.Models.Database;
 using Great.Models.DTO;
 using System;
 using System.ComponentModel;
@@ -128,9 +128,7 @@ namespace Great.ViewModels.Database
                 {
                     case "Name":
                         if (string.IsNullOrEmpty(Name) || string.IsNullOrWhiteSpace(Name))
-                        {
                             return "Name of the factory must be set";
-                        }
 
                         break;
                     case "CompanyName":
@@ -139,9 +137,7 @@ namespace Great.ViewModels.Database
 
                     case "Address":
                         if (string.IsNullOrEmpty(Address) || string.IsNullOrWhiteSpace(Address))
-                        {
                             return "Address must be set";
-                        }
 
                         break;
                     default:
@@ -157,9 +153,7 @@ namespace Great.ViewModels.Database
         public FactoryEVM(Factory factory = null)
         {
             if (factory != null)
-            {
                 Global.Mapper.Map(factory, this);
-            }
 
             IsChanged = false;
         }

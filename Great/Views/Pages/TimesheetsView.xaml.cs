@@ -1,4 +1,4 @@
-﻿using Great.Utils;
+using Great.Utils;
 using Great.Utils.Extensions;
 using Great.ViewModels;
 using Great.ViewModels.Database;
@@ -81,9 +81,7 @@ namespace Great.Views.Pages
         private void TimesheetPanel_Expanded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (!timesheetPanel.IsExpanded)
-            {
                 return;
-            }
 
             // hack for scrolling to the selected day 
             scrollViewer.ScrollToHome();

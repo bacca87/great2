@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Ioc;
 using Great.Models;
 using Great.Models.Database;
 using Great.ViewModels.Database;
@@ -85,9 +85,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing FDL files...");
 
@@ -96,14 +94,10 @@ namespace Great.Utils
                 foreach (FileInfo file in new DirectoryInfo(FDLFolder).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
                     if (stopImport)
-                    {
                         break;
-                    }
 
                     if (FDLManager.GetFileType(file.Name) != EFileType.FDL)
-                    {
                         continue;
-                    }
 
                     FDLEVM fdl = null;
 
@@ -113,9 +107,7 @@ namespace Great.Utils
 
                         // try with XFA format
                         if (fdl == null)
-                        {
                             fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, false, false);
-                        }
 
                         if (fdl != null)
                         {
@@ -167,9 +159,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing Expense Account files...");
 
@@ -178,14 +168,10 @@ namespace Great.Utils
                 foreach (FileInfo file in new DirectoryInfo(FDLFolder).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
                     if (stopImport)
-                    {
                         break;
-                    }
 
                     if (FDLManager.GetFileType(file.Name) != EFileType.ExpenseAccount)
-                    {
                         continue;
-                    }
 
                     ExpenseAccountEVM ea = null;
 

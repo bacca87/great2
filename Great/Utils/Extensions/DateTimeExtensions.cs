@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 
 namespace Great.Utils.Extensions
@@ -36,9 +36,7 @@ namespace Great.Utils.Extensions
         public static DateTime Round(this DateTime value, TimeSpan unit, MidpointRounding style)
         {
             if (unit <= TimeSpan.Zero)
-            {
                 throw new ArgumentOutOfRangeException("unit", "value must be positive");
-            }
 
             Decimal units = value.Ticks / (decimal)unit.Ticks;
             Decimal roundedUnits = Math.Round(units, style);

@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Great.Models.Interfaces;
@@ -237,17 +237,13 @@ namespace Great.ViewModels
             dialog.ShowPlacesList = true;
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
                 DataDirectory = dialog.FileName;
-            }
         }
 
         private void MigrateData()
         {
             if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
             try
             {

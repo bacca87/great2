@@ -1,4 +1,4 @@
-﻿using Great.Models;
+using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
@@ -275,9 +275,7 @@ namespace Great.ViewModels.Database
             Timesheets = new ObservableCollection<TimesheetEVM>();
 
             if (fdl != null)
-            {
                 Global.Mapper.Map(fdl, this);
-            }
 
             IsChanged = false;
         }

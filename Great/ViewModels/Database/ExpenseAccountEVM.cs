@@ -1,4 +1,4 @@
-﻿using Great.Models;
+using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
@@ -198,9 +198,7 @@ namespace Great.ViewModels.Database
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             if (ea != null)
-            {
                 Global.Mapper.Map(ea, this);
-            }
 
             IsChanged = false;
 

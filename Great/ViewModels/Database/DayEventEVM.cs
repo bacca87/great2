@@ -1,4 +1,4 @@
-﻿using Great.Models.Database;
+using Great.Models.Database;
 using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -41,9 +41,7 @@ namespace Great.ViewModels.Database
         public DayEventEVM(DayEvent de = null)
         {
             if (de != null)
-            {
                 Global.Mapper.Map(de, this);
-            }
         }
 
         public override bool Refresh(DBArchive db)

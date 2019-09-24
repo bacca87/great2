@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -152,32 +152,22 @@ namespace Great.ViewModels
                 string text;
 
                 if (!_fdlImport.Output.TryDequeue(out text))
-                {
                     continue;
-                }
 
                 newText += text + Environment.NewLine;
             }
 
             if (newText != string.Empty)
-            {
                 LogText += newText;
-            }
 
             if (Status != _fdlImport.Status)
-            {
                 Status = _fdlImport.Status;
-            }
 
             if (Completed != _fdlImport.IsCompleted)
-            {
                 Completed = _fdlImport.IsCompleted;
-            }
 
             if (CanSelectPreviousPage != _fdlImport.IsCancelled)
-            {
                 CanSelectPreviousPage = _fdlImport.IsCancelled;
-            }
         }
 
         private void Reset()
@@ -206,9 +196,7 @@ namespace Great.ViewModels
             dialog.ShowPlacesList = true;
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
                 FDLFolder = dialog.FileName;
-            }
         }
 
         public void StartImport()

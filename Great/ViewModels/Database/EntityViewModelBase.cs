@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using Great.Models.Database;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -49,14 +49,10 @@ namespace Great.ViewModels.Database
 
             //incomplete management
             if (!IsChanged)
-            {
                 return;
-            }
 
             if (MetroMessageBox.Show("Do you want to commit changes before leave selection?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
                 Save();
-            }
             else
             {
                 Refresh();

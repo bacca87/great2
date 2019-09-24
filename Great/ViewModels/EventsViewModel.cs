@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models;
 using Great.Models.Database;
@@ -44,9 +44,7 @@ namespace Great.ViewModels
             set
             {
                 if (SelectedEvent != null)
-                {
                     Set(ref _ShowHourTimeFields, value);
-                }
             }
         }
 
@@ -106,9 +104,7 @@ namespace Great.ViewModels
         private void _SelectedEvent_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == (nameof(SelectedEvent.IsAllDay)))
-            {
                 ShowHourTimeFields = !SelectedEvent.IsAllDay;
-            }
 
         }
 
@@ -189,9 +185,7 @@ namespace Great.ViewModels
         public void SaveEvent(EventEVM ev)
         {
             if (ev == null)
-            {
                 return;
-            }
 
             if (!ev.IsValid)
             {
@@ -199,9 +193,7 @@ namespace Great.ViewModels
                 return;
             }
             if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
             ev.EStatus = EEventStatus.Pending;
             ev.IsSent = false;
@@ -210,9 +202,7 @@ namespace Great.ViewModels
 
             //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
-            {
                 Events.Add(ev);
-            }
 
             ShowEditMenu = false;
             FilteredEvents.Refresh();
@@ -223,9 +213,7 @@ namespace Great.ViewModels
         {
 
             if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
             if (ev.SharePointId > 0)
             {

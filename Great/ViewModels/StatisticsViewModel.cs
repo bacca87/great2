@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
 using Great.Utils.Extensions;
@@ -151,9 +151,7 @@ namespace Great.ViewModels
         public void RefreshAllData()
         {
             if (!IsRefreshEnabled)
-            {
                 return;
-            }
 
             using (new WaitCursor())
             {

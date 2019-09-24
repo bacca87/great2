@@ -1,4 +1,4 @@
-﻿using Great.ViewModels;
+using Great.ViewModels;
 using MahApps.Metro.Controls;
 
 namespace Great.Views.Dialogs
@@ -15,9 +15,7 @@ namespace Great.Views.Dialogs
             InitializeComponent();
 
             if (_viewModel != null)
-            {
                 _viewModel.Close = new System.Action(() => Close());
-            }
         }
 
         private void CancelButton_Click(object sender, System.Windows.RoutedEventArgs e)

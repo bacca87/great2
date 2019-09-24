@@ -1,4 +1,4 @@
-﻿using Great.Models;
+using Great.Models;
 using Great.Models.Database;
 using Great.Utils;
 using Great.Utils.Extensions;
@@ -88,16 +88,12 @@ namespace Great.ViewModels.Database
                 float? total = 0;
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                {
                     return null;
-                }
 
                 foreach (TimesheetEVM ts in Timesheets)
                 {
                     if (ts.TotalTime.HasValue)
-                    {
                         total += ts.TotalTime.Value;
-                    }
                 }
 
                 return total > 0 ? total : null;
@@ -111,16 +107,12 @@ namespace Great.ViewModels.Database
                 float? total = 0;
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                {
                     return null;
-                }
 
                 foreach (TimesheetEVM ts in Timesheets)
                 {
                     if (ts.WorkTime.HasValue)
-                    {
                         total += ts.WorkTime.Value;
-                    }
                 }
 
                 return total > 0 ? total : null;
@@ -134,16 +126,12 @@ namespace Great.ViewModels.Database
                 float? total = 0;
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                {
                     return null;
-                }
 
                 foreach (TimesheetEVM ts in Timesheets)
                 {
                     if (ts.TravelTime.HasValue)
-                    {
                         total += ts.TravelTime.Value;
-                    }
                 }
 
                 return total > 0 ? total : null;
@@ -155,9 +143,7 @@ namespace Great.ViewModels.Database
             get
             {
                 if (TotalTime == null || TotalTime >= 8)
-                {
                     return null;
-                }
 
                 return 8 - TotalTime;
             }
@@ -168,9 +154,7 @@ namespace Great.ViewModels.Database
             get
             {
                 if (EType != EDayType.VacationDay || TotalTime >= 8)
-                {
                     return null;
-                }
 
                 return 8 - (TotalTime ?? 0);
             }
@@ -190,9 +174,7 @@ namespace Great.ViewModels.Database
             get
             {
                 if (EType != EDayType.SpecialLeave || TotalTime >= 8)
-                {
                     return null;
-                }
 
                 return 8 - (TotalTime ?? 0);
             }
@@ -202,9 +184,7 @@ namespace Great.ViewModels.Database
             get
             {
                 if (EType != EDayType.SickLeave || TotalTime >= 8)
-                {
                     return null;
-                }
 
                 return 8 - (TotalTime ?? 0);
             }
@@ -219,16 +199,12 @@ namespace Great.ViewModels.Database
                 TimePeriodCollection timePeriods = new TimePeriodCollection();
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                {
                     return null;
-                }
 
                 foreach (TimesheetEVM ts in Timesheets)
                 {
                     if (ts.TimePeriods != null)
-                    {
                         timePeriods.AddAll(ts.TimePeriods);
-                    }
                 }
 
                 return timePeriods.Count > 0 ? timePeriods : null;
@@ -242,16 +218,12 @@ namespace Great.ViewModels.Database
                 TimePeriodCollection workingPeriods = new TimePeriodCollection();
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                {
                     return null;
-                }
 
                 foreach (TimesheetEVM ts in Timesheets)
                 {
                     if (ts.WorkPeriods != null)
-                    {
                         workingPeriods.AddAll(ts.WorkPeriods);
-                    }
                 }
 
                 return workingPeriods.Count > 0 ? workingPeriods : null;
@@ -265,16 +237,12 @@ namespace Great.ViewModels.Database
                 TimePeriodCollection travelPeriods = new TimePeriodCollection();
 
                 if (Timesheets == null || Timesheets.Count == 0)
-                {
                     return null;
-                }
 
                 foreach (TimesheetEVM ts in Timesheets)
                 {
                     if (ts.TravelPeriods != null)
-                    {
                         travelPeriods.AddAll(ts.TravelPeriods);
-                    }
                 }
 
                 return travelPeriods.Count > 0 ? travelPeriods : null;
@@ -294,9 +262,7 @@ namespace Great.ViewModels.Database
                     if (Date.DayOfWeek == DayOfWeek.Saturday)
                     {
                         if (TotalTime.HasValue && TotalTime.Value > 4)
-                        {
                             overtime34 = 4;
-                        }
                         else
                         {
                             overtime34 = TotalTime;
@@ -307,9 +273,7 @@ namespace Great.ViewModels.Database
                         if (TotalTime.HasValue && TotalTime.Value > 8)
                         {
                             if (TotalTime.Value >= 10)
-                            {
                                 overtime34 = 2;
-                            }
                             else
                             {
                                 overtime34 = TotalTime.Value - 8;
@@ -357,15 +321,11 @@ namespace Great.ViewModels.Database
                 if (!IsHoliday)
                 {
                     if (Date.DayOfWeek == DayOfWeek.Saturday && TotalTime.HasValue && TotalTime.Value > 4)
-                    {
                         overtime50 = TotalTime - 4;
-                    }
                     else
                     {
                         if (TotalTime.HasValue && TotalTime.Value > 10)
-                        {
                             overtime50 = TotalTime.Value - 10;
-                        }
                     }
                 }
 
@@ -380,9 +340,7 @@ namespace Great.ViewModels.Database
                 float? overtime100 = null;
 
                 if (Date.DayOfWeek == DayOfWeek.Sunday || IsHoliday)
-                {
                     overtime100 = TotalTime;
-                }
 
                 return overtime100;
             }
@@ -401,15 +359,11 @@ namespace Great.ViewModels.Database
                 foreach (TimesheetEVM timesheet in Timesheets)
                 {
                     if (!string.IsNullOrEmpty(timesheet.FDL))
-                    {
                         factories += timesheet?.FDL1?.Factory1?.Name + "; ";
-                    }
                 }
 
                 if (!string.IsNullOrEmpty(factories))
-                {
                     factories = factories.Remove(factories.Length - 2);
-                }
 
                 return factories;
             }
@@ -423,15 +377,11 @@ namespace Great.ViewModels.Database
                 foreach (TimesheetEVM timesheet in Timesheets)
                 {
                     if (!string.IsNullOrEmpty(timesheet.Notes))
-                    {
                         notes += timesheet?.Notes + ";";
-                    }
                 }
 
                 if (!string.IsNullOrEmpty(notes))
-                {
                     notes = notes.Remove(notes.Length - 1);
-                }
 
                 return notes;
             }
@@ -445,9 +395,7 @@ namespace Great.ViewModels.Database
             Timesheets = new ObservableCollectionEx<TimesheetEVM>();
 
             if (day != null)
-            {
                 Global.Mapper.Map(day, this);
-            }
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();

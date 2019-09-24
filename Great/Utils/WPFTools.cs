@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Great.Utils
@@ -15,13 +15,9 @@ namespace Great.Utils
                 Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
                 child = v as T;
                 if (child == null)
-                {
                     child = GetVisualChild<T>(v);
-                }
                 if (child != null)
-                {
                     break;
-                }
             }
             return child;
         }
