@@ -307,10 +307,7 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "Type":
-                        if (Type == 0)
-                        {
-                            return "Type of event must be set";
-                        }
+                        if (Type == 0) return "Type of event must be set";
 
                         break;
                     case "Title":
@@ -329,10 +326,7 @@ namespace Great.ViewModels.Database
                     case "EndHour":
                     case "EndMinutes":
 
-                        if (EndDate < StartDate)
-                        {
-                            return "Dates not valid: End Date < Start Date";
-                        }
+                        if (EndDate < StartDate) return "Dates not valid: End Date < Start Date";
 
                         break;
 
@@ -349,10 +343,7 @@ namespace Great.ViewModels.Database
         {
             StartDate = DateTime.Now;
             EndDate = DateTime.Now;
-            if (ev != null)
-            {
-                Global.Mapper.Map(ev, this);
-            }
+            if (ev != null) Global.Mapper.Map(ev, this);
 
             IsChanged = false;
         }
@@ -462,13 +453,9 @@ namespace Great.ViewModels.Database
                 Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
 
                 if (currentDay == null)
-                {
                     NewDaysInEvent.Add(new DayEVM { Date = d });
-                }
                 else
-                {
                     NewDaysInEvent.Add(new DayEVM(currentDay));
-                }
 
                 dayEventToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
             }
@@ -481,17 +468,20 @@ namespace Great.ViewModels.Database
             {
                 if (EStatus == EEventStatus.Accepted)
                 {
-                    NewDaysInEvent.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) { d.EType = EDayType.VacationDay; } d.Save(db); });
+                    NewDaysInEvent.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                        d.Save(db); });
                 }
 
                 if (EStatus == EEventStatus.Rejected)
                 {
-                    NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) { d.EType = EDayType.WorkDay; } d.Save(db); });
+                    NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay;
+                        d.Save(db); });
                 }
 
                 if (EStatus == EEventStatus.Pending)
                 {
-                    NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) { d.EType = EDayType.VacationDay; } d.Save(db); });
+                    NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                        d.Save(db); });
                 }
             }
 
@@ -516,13 +506,9 @@ namespace Great.ViewModels.Database
                     Day currentDay = db.Days.SingleOrDefault(x => x.Timestamp == timestamp);
 
                     if (currentDay == null)
-                    {
                         NewDaysInEvent.Add(new DayEVM { Date = d });
-                    }
                     else
-                    {
                         NewDaysInEvent.Add(new DayEVM(currentDay));
-                    }
 
                     dayEventToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
                 }
@@ -535,17 +521,20 @@ namespace Great.ViewModels.Database
                 {
                     if (EStatus == EEventStatus.Accepted)
                     {
-                        NewDaysInEvent.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) { d.EType = EDayType.VacationDay; } d.Save(db); });
+                        NewDaysInEvent.ToList().ForEach(d => { if (d.TotalTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                            d.Save(db); });
                     }
 
                     if (EStatus == EEventStatus.Rejected)
                     {
-                        NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) { d.EType = EDayType.WorkDay; } d.Save(db); });
+                        NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.WorkDay;
+                            d.Save(db); });
                     }
 
                     if (EStatus == EEventStatus.Pending)
                     {
-                        NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) { d.EType = EDayType.VacationDay; } d.Save(db); });
+                        NewDaysInEvent.ToList().ForEach(d => { if (d.WorkTime == null && !d.IsHoliday && d.Date.DayOfWeek != DayOfWeek.Saturday && d.Date.DayOfWeek != DayOfWeek.Sunday) d.EType = EDayType.VacationDay;
+                            d.Save(db); });
                     }
                 }
 

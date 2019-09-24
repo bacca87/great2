@@ -236,18 +236,12 @@ namespace Great.ViewModels
             dialog.Multiselect = false;
             dialog.ShowPlacesList = true;
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                DataDirectory = dialog.FileName;
-            }
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok) DataDirectory = dialog.FileName;
         }
 
         private void MigrateData()
         {
-            if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             try
             {
@@ -259,16 +253,12 @@ namespace Great.ViewModels
                     //Now Create all of the directories
                     foreach (string dirPath in Directory.GetDirectories(SourcePath, "*",
                         SearchOption.AllDirectories))
-                    {
                         Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
-                    }
 
                     //Copy all the files & Replaces any files with the same name
                     foreach (string newPath in Directory.GetFiles(SourcePath, "*.*",
                         SearchOption.AllDirectories))
-                    {
                         File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
-                    }
 
                     ApplicationSettings.Directories.Data = DataDirectory;
                     MigrateDataCommand.RaiseCanExecuteChanged();
@@ -302,10 +292,7 @@ namespace Great.ViewModels
             {
                 FDLCancelRequestRecipients = string.Empty;
 
-                foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
-                {
-                    FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
-                }
+                foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest) FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
             }
 
             Theme = UserSettings.Themes.Theme;
@@ -348,10 +335,7 @@ namespace Great.ViewModels
 
                 StringCollection recipients = new StringCollection();
                 string[] addresses = FDLCancelRequestRecipients?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < addresses?.Length; i++)
-                {
-                    recipients.Add(addresses[i].Trim());
-                }
+                for (int i = 0; i < addresses?.Length; i++) recipients.Add(addresses[i].Trim());
 
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
 

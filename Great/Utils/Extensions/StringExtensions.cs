@@ -8,7 +8,7 @@ namespace Great.Utils.Extensions
     {
         public static string Left(this string input, int length)
         {
-            return (input.Length < length) ? input : input.Substring(0, length);
+            return input.Length < length ? input : input.Substring(0, length);
         }
 
         /// <summary>
@@ -27,10 +27,7 @@ namespace Great.Utils.Extensions
         /// is a null reference.</exception>
         public static string Encrypt(this string plainText)
         {
-            if (plainText == null)
-            {
-                throw new ArgumentNullException("plainText");
-            }
+            if (plainText == null) throw new ArgumentNullException("plainText");
 
             //encrypt data
             var data = Encoding.Unicode.GetBytes(plainText);
@@ -54,10 +51,7 @@ namespace Great.Utils.Extensions
         /// is a null reference.</exception>
         public static string Decrypt(this string cipher)
         {
-            if (cipher == null)
-            {
-                throw new ArgumentNullException("cipher");
-            }
+            if (cipher == null) throw new ArgumentNullException("cipher");
 
             //parse base64 string
             byte[] data = Convert.FromBase64String(cipher);

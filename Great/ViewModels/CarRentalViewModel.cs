@@ -30,10 +30,7 @@ namespace Great.ViewModels
 
             set
             {
-                if (_isInputEnabled == value)
-                {
-                    return;
-                }
+                if (_isInputEnabled == value) return;
 
                 var oldValue = _isInputEnabled;
                 _isInputEnabled = value;
@@ -108,10 +105,7 @@ namespace Great.ViewModels
             {
                 _selectedCar?.CheckChangedEntity();
 
-                if (value != null)
-                {
-                    Set(ref _selectedCar, value);
-                }
+                if (value != null) Set(ref _selectedCar, value);
             }
         }
 
@@ -123,10 +117,7 @@ namespace Great.ViewModels
             {
                 Set(ref _LicensePlate, value);
                 var car = Cars.SingleOrDefault(x => x.LicensePlate == _LicensePlate);
-                if (car != null)
-                {
-                    SelectedCar = car;
-                }
+                if (car != null) SelectedCar = car;
                 //   SelectedCar.LicensePlate = value;
             }
         }
@@ -279,10 +270,7 @@ namespace Great.ViewModels
 
         private void DeleteRent(CarRentalHistoryEVM cr)
         {
-            if (cr.Id == 0)
-            {
-                return;
-            }
+            if (cr.Id == 0) return;
 
             if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
@@ -311,10 +299,7 @@ namespace Great.ViewModels
 
         public void SaveRent(CarRentalHistoryEVM rc)
         {
-            if (rc == null || SelectedCar == null)
-            {
-                return;
-            }
+            if (rc == null || SelectedCar == null) return;
 
             if (!rc.IsValid || !SelectedCar.IsValid)
             {
@@ -334,37 +319,19 @@ namespace Great.ViewModels
                 db.SaveChanges();
             }
 
-            if (existingRent == null)
-            {
-                Rentals.Add(rc);
-            }
+            if (existingRent == null) Rentals.Add(rc);
 
-            if (existingCar == null)
-            {
-                Cars.Add(rc.Car1);
-            }
+            if (existingCar == null) Cars.Add(rc.Car1);
 
-            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Brand) == null)
-            {
-                CarBrands.Add(rc.Car1.Brand);
-            }
+            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Brand) == null) CarBrands.Add(rc.Car1.Brand);
 
-            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Model) == null)
-            {
-                CarModels.Add(rc.Car1.Model);
-            }
+            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Model) == null) CarModels.Add(rc.Car1.Model);
 
-            if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null)
-            {
-                Locations.Add(rc.StartLocation);
-            }
+            if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null) Locations.Add(rc.StartLocation);
 
             if (!String.IsNullOrEmpty(rc.EndLocation))
             {
-                if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null)
-                {
-                    Locations.Add(rc.EndLocation);
-                }
+                if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null) Locations.Add(rc.EndLocation);
             }
 
             ShowEditMenu = false;

@@ -9,13 +9,10 @@ namespace Great.Utils.Extensions
 
         public static float? GetRoundedTotalDuration(this ITimePeriodCollection periods)
         {
-            if (periods == null || periods.Count == 0)
-            {
-                return null;
-            }
+            if (periods == null || periods.Count == 0) return null;
 
             TimeSpan totalDuration = periods.GetTotalDuration(roundByQuarterHour);
-            float total = totalDuration.Hours + (totalDuration.Minutes / 100f);
+            float total = totalDuration.Hours + totalDuration.Minutes / 100f;
 
             return total > 0 ? total : 24;
         }

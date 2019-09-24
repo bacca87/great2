@@ -157,33 +157,18 @@ namespace Great.ViewModels
             {
                 string text;
 
-                if (!_greatMigra.Output.TryDequeue(out text))
-                {
-                    continue;
-                }
+                if (!_greatMigra.Output.TryDequeue(out text)) continue;
 
                 newText += text + Environment.NewLine;
             }
 
-            if (newText != string.Empty)
-            {
-                LogText += newText;
-            }
+            if (newText != string.Empty) LogText += newText;
 
-            if (Status != _greatMigra.Status)
-            {
-                Status = _greatMigra.Status;
-            }
+            if (Status != _greatMigra.Status) Status = _greatMigra.Status;
 
-            if (Completed != _greatMigra.IsCompleted)
-            {
-                Completed = _greatMigra.IsCompleted;
-            }
+            if (Completed != _greatMigra.IsCompleted) Completed = _greatMigra.IsCompleted;
 
-            if (CanSelectPreviousPage != _greatMigra.IsCancelled)
-            {
-                CanSelectPreviousPage = _greatMigra.IsCancelled;
-            }
+            if (CanSelectPreviousPage != _greatMigra.IsCancelled) CanSelectPreviousPage = _greatMigra.IsCancelled;
         }
 
         public void SelectFolder()
@@ -204,10 +189,7 @@ namespace Great.ViewModels
             dialog.Multiselect = false;
             dialog.ShowPlacesList = true;
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                InstallationFolder = dialog.FileName;
-            }
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok) InstallationFolder = dialog.FileName;
         }
 
         public void StartImport()

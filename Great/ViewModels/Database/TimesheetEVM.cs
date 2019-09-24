@@ -226,15 +226,9 @@ namespace Great.ViewModels.Database
             {
                 TimePeriodCollection timePeriods = new TimePeriodCollection();
 
-                if (WorkPeriods != null)
-                {
-                    timePeriods.AddAll(WorkPeriods);
-                }
+                if (WorkPeriods != null) timePeriods.AddAll(WorkPeriods);
 
-                if (TravelPeriods != null)
-                {
-                    timePeriods.AddAll(TravelPeriods);
-                }
+                if (TravelPeriods != null) timePeriods.AddAll(TravelPeriods);
 
                 return timePeriods.Count > 0 ? timePeriods : null;
             }
@@ -366,37 +360,21 @@ namespace Great.ViewModels.Database
         {
             get
             {
-                if ((WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue) || (!WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue))
-                {
-                    return false;
-                }
+                if (WorkStartTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue || !WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue) return false;
 
-                if ((WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue) || (!WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue))
-                {
-                    return false;
-                }
+                if (WorkStartTimePM_t.HasValue && !WorkEndTimePM_t.HasValue || !WorkStartTimePM_t.HasValue && WorkEndTimePM_t.HasValue) return false;
 
-                if ((TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue) ||
-                    (TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue))
-                {
+                if (TravelStartTimeAM_t.HasValue && !WorkStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue ||
+                    TravelEndTimeAM_t.HasValue && !WorkEndTimeAM_t.HasValue && !TravelStartTimeAM_t.HasValue)
                     return false;
-                }
 
-                if ((TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue) ||
-                    (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
-                {
+                if (TravelStartTimePM_t.HasValue && !WorkStartTimePM_t.HasValue && !TravelEndTimePM_t.HasValue ||
+                    TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue)
                     return false;
-                }
 
-                if (TimePeriods == null && FDL == null && Notes == null)
-                {
-                    return false;
-                }
+                if (TimePeriods == null && FDL == null && Notes == null) return false;
 
-                if (TimePeriods != null && TimePeriods.HasOverlaps())
-                {
-                    return false;
-                }
+                if (TimePeriods != null && TimePeriods.HasOverlaps()) return false;
 
                 return true;
             }
@@ -404,22 +382,13 @@ namespace Great.ViewModels.Database
 
         public bool HasOverlaps(IEnumerable<TimesheetEVM> timesheets)
         {
-            if (TimePeriods == null)
-            {
-                return false;
-            }
+            if (TimePeriods == null) return false;
 
             foreach (TimesheetEVM timesheet in timesheets)
             {
-                if (timesheet.TimePeriods == null)
-                {
-                    continue;
-                }
+                if (timesheet.TimePeriods == null) continue;
 
-                if (TimePeriods.HasOverlapPeriods(timesheet.TimePeriods))
-                {
-                    return true;
-                }
+                if (TimePeriods.HasOverlapPeriods(timesheet.TimePeriods)) return true;
             }
 
             return false;
@@ -428,10 +397,7 @@ namespace Great.ViewModels.Database
 
         public TimesheetEVM(Timesheet timesheet = null)
         {
-            if (timesheet != null)
-            {
-                Global.Mapper.Map(timesheet, this);
-            }
+            if (timesheet != null) Global.Mapper.Map(timesheet, this);
 
             IsChanged = false;
         }
@@ -464,10 +430,7 @@ namespace Great.ViewModels.Database
             var timesheet = db.Timesheets.SingleOrDefault(t => t.Id == Id);
             db.Entry(timesheet).Reference(p => p.FDL1).Load();
 
-            if (timesheet != null)
-            {
-                return Global.Mapper.Map(timesheet, this) != null;
-            }
+            if (timesheet != null) return Global.Mapper.Map(timesheet, this) != null;
 
             return false;
         }

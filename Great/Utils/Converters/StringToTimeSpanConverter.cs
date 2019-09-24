@@ -10,10 +10,7 @@ namespace Great.Utils.Converters
         {
             try
             {
-                if (value != null)
-                {
-                    return ((TimeSpan)value).ToString("hh\\:mm");
-                }
+                if (value != null) return ((TimeSpan)value).ToString("hh\\:mm");
             }
             catch { }
 
@@ -29,10 +26,7 @@ namespace Great.Utils.Converters
                     TimeSpan time;
                     string valueString = value as string;
 
-                    if (valueString.Trim().Length < 5)
-                    {
-                        return null;
-                    }
+                    if (valueString.Trim().Length < 5) return null;
 
                     TimeSpan.TryParse(valueString, out time);
                     return time;

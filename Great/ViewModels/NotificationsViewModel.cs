@@ -116,13 +116,19 @@ namespace Great.ViewModels
         {
             RefreshTotals();
 
-            MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => { if (x.Content.NotifyAsNew) { NewFDLCount++; } });
-            MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Content.NotifyAsNew) { NewFactoriesCount++; } });
-            MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => { if (x.Content.NotifyAsNew) { NewExpenseAccountsCount++; } });
+            MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => { if (x.Content.NotifyAsNew) NewFDLCount++;
+            });
+            MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Content.NotifyAsNew) NewFactoriesCount++;
+            });
+            MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => { if (x.Content.NotifyAsNew) NewExpenseAccountsCount++;
+            });
 
-            MessengerInstance.Register(this, (ItemChangedMessage<FDLEVM> x) => { using (DBArchive db = new DBArchive()) { NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew); } });
-            MessengerInstance.Register(this, (ItemChangedMessage<ExpenseAccountEVM> x) => { using (DBArchive db = new DBArchive()) { NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); } });
-            MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) { NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); } });
+            MessengerInstance.Register(this, (ItemChangedMessage<FDLEVM> x) => { using (DBArchive db = new DBArchive()) NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew);
+            });
+            MessengerInstance.Register(this, (ItemChangedMessage<ExpenseAccountEVM> x) => { using (DBArchive db = new DBArchive()) NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew);
+            });
+            MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew);
+            });
 
             MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }

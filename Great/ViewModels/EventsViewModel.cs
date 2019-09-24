@@ -43,10 +43,7 @@ namespace Great.ViewModels
 
             set
             {
-                if (SelectedEvent != null)
-                {
-                    Set(ref _ShowHourTimeFields, value);
-                }
+                if (SelectedEvent != null) Set(ref _ShowHourTimeFields, value);
             }
         }
 
@@ -105,11 +102,7 @@ namespace Great.ViewModels
 
         private void _SelectedEvent_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == (nameof(SelectedEvent.IsAllDay)))
-            {
-                ShowHourTimeFields = !SelectedEvent.IsAllDay;
-            }
-
+            if (e.PropertyName == nameof(SelectedEvent.IsAllDay)) ShowHourTimeFields = !SelectedEvent.IsAllDay;
         }
 
         public IList<int> Hours { get; set; }
@@ -138,15 +131,9 @@ namespace Great.ViewModels
             Minutes = new List<int>();
             Hours = new List<int>();
 
-            for (int i = 0; i < 24; i++)
-            {
-                Hours.Add(i);
-            }
+            for (int i = 0; i < 24; i++) Hours.Add(i);
 
-            for (int i = 0; i < 60; i = i + 5)
-            {
-                Minutes.Add(i);
-            }
+            for (int i = 0; i < 60; i = i + 5) Minutes.Add(i);
 
             ClearCommand = new RelayCommand(ClearEvent, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<EventEVM>(SaveEvent, (EventEVM v) => { return IsInputEnabled; });
@@ -188,20 +175,14 @@ namespace Great.ViewModels
 
         public void SaveEvent(EventEVM ev)
         {
-            if (ev == null)
-            {
-                return;
-            }
+            if (ev == null) return;
 
             if (!ev.IsValid)
             {
                 MetroMessageBox.Show("Cannot save/edit the event. Please check the errors", "Save Event", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             ev.EStatus = EEventStatus.Pending;
             ev.IsSent = false;
@@ -209,10 +190,7 @@ namespace Great.ViewModels
             // ev.AddOrUpdateEventRelations();
 
             //if the event is new
-            if (!Events.Any(x => x.Id == ev.Id))
-            {
-                Events.Add(ev);
-            }
+            if (!Events.Any(x => x.Id == ev.Id)) Events.Add(ev);
 
             ShowEditMenu = false;
             FilteredEvents.Refresh();
@@ -222,10 +200,7 @@ namespace Great.ViewModels
         public void DeleteEvent(EventEVM ev)
         {
 
-            if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             if (ev.SharePointId > 0)
             {

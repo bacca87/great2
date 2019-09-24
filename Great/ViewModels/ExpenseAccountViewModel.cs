@@ -64,9 +64,7 @@ namespace Great.ViewModels
                     UpdateDaysOfWeek();
                 }
                 else
-                {
                     IsInputEnabled = false;
-                }
 
                 ShowEditMenu = false;
             }
@@ -136,18 +134,12 @@ namespace Great.ViewModels
                 switch (columnName)
                 {
                     case "CurrencyText":
-                        if (!string.IsNullOrEmpty(CurrencyText) && !Currencies.Any(c => c.Description == CurrencyText))
-                        {
-                            return "Select a valid currency from the combo list!";
-                        }
+                        if (!string.IsNullOrEmpty(CurrencyText) && !Currencies.Any(c => c.Description == CurrencyText)) return "Select a valid currency from the combo list!";
 
                         break;
 
                     case "ExpenseTypeText":
-                        if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText))
-                        {
-                            return "Select a valid expense type from the combo list!";
-                        }
+                        if (!string.IsNullOrEmpty(ExpenseTypeText) && !ExpenseTypes.Any(t => t.Description == ExpenseTypeText)) return "Select a valid expense type from the combo list!";
 
                         break;
 
@@ -198,13 +190,9 @@ namespace Great.ViewModels
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
             if (recipients != null)
-            {
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
-            }
             else
-            {
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
-            }
         }
 
 
@@ -215,20 +203,14 @@ namespace Great.ViewModels
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null && !ExpenseAccounts.Any(ea => ea.Id == item.Content.Id))
-                    {
-                        ExpenseAccounts.Add(item.Content);
-                    }
+                    if (item.Content != null && !ExpenseAccounts.Any(ea => ea.Id == item.Content.Id)) ExpenseAccounts.Add(item.Content);
                 })
             );
         }
 
         public void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
         {
-            if (item.Sender == this)
-            {
-                return;
-            }
+            if (item.Sender == this) return;
 
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -291,10 +273,7 @@ namespace Great.ViewModels
 
         private void UpdateDaysOfWeek()
         {
-            if (SelectedEA == null)
-            {
-                return;
-            }
+            if (SelectedEA == null) return;
 
             DateTime StartDay = DateTime.Now.FromUnixTimestamp(SelectedEA.FDL1.StartDay);
             DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
@@ -302,20 +281,14 @@ namespace Great.ViewModels
 
             DateTime?[] tmpDays = new DateTime?[7];
 
-            for (int i = 0; i < 7; i++)
-            {
-                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
-            }
+            for (int i = 0; i < 7; i++) tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
 
             DaysOfWeek = tmpDays;
         }
 
         public void SaveEA(ExpenseAccountEVM ea)
         {
-            if (ea == null || ea.IsReadOnly)
-            {
-                return;
-            }
+            if (ea == null || ea.IsReadOnly) return;
 
             if (string.IsNullOrEmpty(ea.Currency))
             {
@@ -330,13 +303,9 @@ namespace Great.ViewModels
                 ea.Save(db);
 
                 if (ea.Id == 0)
-                {
                     db.SaveChanges();
-                }
                 else
-                {
                     db.Expenses.RemoveRange(db.Expenses.Where(e => e.ExpenseAccount == ea.Id));
-                }
 
                 foreach (var expense in ea.Expenses)
                 {
@@ -369,14 +338,9 @@ namespace Great.ViewModels
 
             if (ea.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
-            using (new WaitCursor())
-            {
-                _fdlManager.SendToSAP(ea);
-            }
+            using (new WaitCursor()) _fdlManager.SendToSAP(ea);
         }
 
         public void SendByEmail(string address)
@@ -419,10 +383,7 @@ namespace Great.ViewModels
 
         public void SaveAs(ExpenseAccountEVM ea)
         {
-            if (ea == null)
-            {
-                return;
-            }
+            if (ea == null) return;
 
             using (new WaitCursor())
             {
@@ -434,10 +395,7 @@ namespace Great.ViewModels
                 dlg.AddExtension = true;
                 dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                if (dlg.ShowDialog() == true)
-                {
-                    _fdlManager.SaveAs(ea, dlg.FileName);
-                }
+                if (dlg.ShowDialog() == true) _fdlManager.SaveAs(ea, dlg.FileName);
             }
         }
 
@@ -445,10 +403,7 @@ namespace Great.ViewModels
         {
             List<DateTime> timesheetDates = new List<DateTime>();
 
-            using (DBArchive db = new DBArchive())
-            {
-                db.Timesheets.Where(x => x.FDL == ea.FDL).ToList().ForEach(x => timesheetDates.Add(DateTime.Now.FromUnixTimestamp(x.Timestamp)));
-            }
+            using (DBArchive db = new DBArchive()) db.Timesheets.Where(x => x.FDL == ea.FDL).ToList().ForEach(x => timesheetDates.Add(DateTime.Now.FromUnixTimestamp(x.Timestamp)));
 
             bool showWarning = false;
 
@@ -463,20 +418,11 @@ namespace Great.ViewModels
                 showWarning |= exp.SundayAmount > 0 && !timesheetDates.Any(d => d.DayOfWeek == DayOfWeek.Sunday);
 
                 if (showWarning)
-                {
-                    if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                    {
-                        return;
-                    }
-                }
-
+                    if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No) return;
             }
 
 
-            if (ea == null)
-            {
-                return;
-            }
+            if (ea == null) return;
 
             using (new WaitCursor())
             {
@@ -494,10 +440,7 @@ namespace Great.ViewModels
 
         public void Open(ExpenseAccountEVM ea)
         {
-            if (ea == null)
-            {
-                return;
-            }
+            if (ea == null) return;
 
             Process.Start(ea.FilePath);
         }
@@ -510,10 +453,7 @@ namespace Great.ViewModels
                 return;
             }
 
-            if (MetroMessageBox.Show("Are you sure to change the \"Refunded\" status of the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to change the \"Refunded\" status of the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             ea.IsRefunded = !ea.IsRefunded;
             ea.NotifyAsNew = false;
@@ -522,10 +462,7 @@ namespace Great.ViewModels
 
         public void MarkAsAccepted(ExpenseAccountEVM ea)
         {
-            if (MetroMessageBox.Show("Are you sure to mark as \"Accepted\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to mark as \"Accepted\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             ea.EStatus = EFDLStatus.Accepted;
             ea.NotifyAsNew = false;
@@ -534,10 +471,7 @@ namespace Great.ViewModels
 
         public void MarkAsCancelled(ExpenseAccountEVM ea)
         {
-            if (MetroMessageBox.Show("Are you sure to mark as \"Cancelled\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to mark as \"Cancelled\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             ea.EStatus = EFDLStatus.Cancelled;
             ea.NotifyAsNew = false;

@@ -69,18 +69,12 @@ namespace Great.Views
             // remove existing marker
             var marker = factoriesMapControl.Markers.SingleOrDefault(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
 
-            if (marker != null)
-            {
-                factoriesMapControl.Markers.Remove(marker);
-            }
+            if (marker != null) factoriesMapControl.Markers.Remove(marker);
 
             // add new updated marker
             var point = GetFactoryCoordsAsync(factory);
 
-            if (point.Result.HasValue)
-            {
-                factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
-            }
+            if (point.Result.HasValue) factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
         }
 
         private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -92,22 +86,13 @@ namespace Great.Views
                     {
                         FactoryEVM factory = obj as FactoryEVM;
 
-                        if (tempMarker != null)
-                        {
-                            factoriesMapControl.Markers.Remove(tempMarker);
-                        }
+                        if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
-                        if (factoriesMapControl.Markers.Any(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id))
-                        {
-                            return;
-                        }
+                        if (factoriesMapControl.Markers.Any(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id)) return;
 
                         var point = GetFactoryCoordsAsync(factory);
 
-                        if (point.Result.HasValue)
-                        {
-                            factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
-                        }
+                        if (point.Result.HasValue) factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -116,10 +101,7 @@ namespace Great.Views
                         FactoryEVM factory = obj as FactoryEVM;
                         var marker = factoriesMapControl.Markers.SingleOrDefault(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
 
-                        if (marker != null)
-                        {
-                            factoriesMapControl.Markers.Remove(marker);
-                        }
+                        if (marker != null) factoriesMapControl.Markers.Remove(marker);
                     }
                     break;
             }
@@ -131,10 +113,7 @@ namespace Great.Views
 
             if (enable)
             {
-                if (tempMarker != null)
-                {
-                    factoriesMapControl.Markers.Remove(tempMarker);
-                }
+                if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
                 lastCursor = Mouse.OverrideCursor;
                 Mouse.OverrideCursor = Cursors.Cross;
@@ -161,10 +140,7 @@ namespace Great.Views
 
             if (point.HasValue)
             {
-                if (tempMarker != null)
-                {
-                    factoriesMapControl.Markers.Remove(tempMarker);
-                }
+                if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
                 tempMarker = CreateMarker(point.Value, new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
                 factoriesMapControl.Markers.Add(tempMarker);
@@ -193,10 +169,7 @@ namespace Great.Views
                     ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
                     FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((FactoryEVM)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
 
-                    if (marker != null)
-                    {
-                        marker.PlayBounce();
-                    }
+                    if (marker != null) marker.PlayBounce();
                 }
             }
         }
@@ -204,9 +177,7 @@ namespace Great.Views
         public async Task<PointLatLng?> GetFactoryCoordsAsync(FactoryEVM factory)
         {
             if (factory.Latitude.HasValue && factory.Longitude.HasValue)
-            {
                 return new PointLatLng(factory.Latitude.Value, factory.Longitude.Value);
-            }
             else
             {
                 var point = await GetCoordsFromAddressAsync(factory.Address);
@@ -299,10 +270,7 @@ namespace Great.Views
 
             var factoriesToAdd = factories.Where(f => !factoriesMapControl.Markers.Any(m => m.Tag != null && (m.Tag as FactoryEVM).Id == f.Id));
 
-            foreach (FactoryEVM factory in factoriesToAdd)
-            {
-                tasks.Add(factory, GetFactoryCoordsAsync(factory));
-            }
+            foreach (FactoryEVM factory in factoriesToAdd) tasks.Add(factory, GetFactoryCoordsAsync(factory));
 
             await Task.WhenAll(tasks.Values);
 
@@ -376,10 +344,7 @@ namespace Great.Views
                     factory.Latitude = mapPosition.Lat;
                     factory.Longitude = mapPosition.Lng;
 
-                    if (tempPosMarker != null)
-                    {
-                        factoriesMapControl.Markers.Remove(tempPosMarker);
-                    }
+                    if (tempPosMarker != null) factoriesMapControl.Markers.Remove(tempPosMarker);
 
                     GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Blue);
                     tempPosMarker = marker;
@@ -397,10 +362,7 @@ namespace Great.Views
 
                     if (status == GeoCoderStatusCode.OK && placemark.HasValue)
                     {
-                        if (tempMarker != null)
-                        {
-                            factoriesMapControl.Markers.Remove(tempMarker);
-                        }
+                        if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
                         FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
                         GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
@@ -420,10 +382,7 @@ namespace Great.Views
 
         private void searchEntryTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                SearchLocation();
-            }
+            if (e.Key == Key.Enter) SearchLocation();
         }
 
         private void zoomOutButton_Click(object sender, RoutedEventArgs e)
@@ -435,10 +394,7 @@ namespace Great.Views
         {
             if (e.ChangedButton == MouseButton.Left && factoriesListView.SelectedItem != null)
             {
-                if (tempMarker != null)
-                {
-                    factoriesMapControl.Markers.Remove(tempMarker);
-                }
+                if (tempMarker != null) factoriesMapControl.Markers.Remove(tempMarker);
 
                 FactoryEVM factory = (FactoryEVM)factoriesListView.SelectedItem;
                 ZoomOnFactory(factory);
@@ -469,15 +425,9 @@ namespace Great.Views
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue == false && IsLatLngSelectionMode)
-            {
-                LatLngSelectionMode(false);
-            }
+            if ((bool)e.NewValue == false && IsLatLngSelectionMode) LatLngSelectionMode(false);
 
-            if ((bool)e.NewValue)
-            {
-                RefreshMarkersAsync(new List<FactoryEVM>(_viewModel.Factories));
-            }
+            if ((bool)e.NewValue) RefreshMarkersAsync(new List<FactoryEVM>(_viewModel.Factories));
         }
 
         private void OnZoomOnFactoryRequest(FactoryEVM factory)

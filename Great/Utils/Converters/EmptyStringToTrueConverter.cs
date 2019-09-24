@@ -8,7 +8,7 @@ namespace Great.Utils.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(value != null && (value as string) != string.Empty);
+            return !(value != null && value as string != string.Empty);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

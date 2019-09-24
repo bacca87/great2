@@ -21,10 +21,7 @@ namespace Great.Utils.AttachedProperties
 
         private static void AutoScrollToEndPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is TextBox textbox && e.NewValue is bool mustAutoScroll)
-            {
-                textbox.TextChanged += (s, ee) => AutoScrollToEnd(s, ee, textbox);
-            }
+            if (d is TextBox textbox && e.NewValue is bool mustAutoScroll) textbox.TextChanged += (s, ee) => AutoScrollToEnd(s, ee, textbox);
         }
 
         private static void AutoScrollToEnd(object sender, TextChangedEventArgs e, TextBox textbox)

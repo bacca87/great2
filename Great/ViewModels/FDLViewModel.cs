@@ -73,9 +73,7 @@ namespace Great.ViewModels
                     IsInputEnabled = true;
                 }
                 else
-                {
                     IsInputEnabled = false;
-                }
 
                 ShowEditMenu = false;
             }
@@ -172,13 +170,9 @@ namespace Great.ViewModels
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
             if (recipients != null)
-            {
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
-            }
             else
-            {
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
-            }
         }
 
 
@@ -188,20 +182,14 @@ namespace Great.ViewModels
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null && !FDLs.Any(f => f.Id == item.Content.Id))
-                    {
-                        FDLs.Add(item.Content);
-                    }
+                    if (item.Content != null && !FDLs.Any(f => f.Id == item.Content.Id)) FDLs.Add(item.Content);
                 })
             );
         }
 
         public void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
-            if (item.Sender == this)
-            {
-                return;
-            }
+            if (item.Sender == this) return;
 
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -237,13 +225,9 @@ namespace Great.ViewModels
                             var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
 
                             if (ts != null)
-                            {
                                 ts = item.Content;
-                            }
                             else
-                            {
                                 fdl.Timesheets.Add(item.Content);
-                            }
 
                             fdl.IsCompiled = false;
                             fdl.Save();
@@ -303,17 +287,11 @@ namespace Great.ViewModels
                     {
                         FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (factory != null)
-                        {
-                            Global.Mapper.Map(item.Content, factory);
-                        }
+                        if (factory != null) Global.Mapper.Map(item.Content, factory);
 
                         var fdlToUpdate = FDLs.Where(f => f.Factory.HasValue && f.Factory.Value == item.Content.Id);
 
-                        foreach (var fdl in fdlToUpdate)
-                        {
-                            fdl.Factory1 = factory;
-                        }
+                        foreach (var fdl in fdlToUpdate) fdl.Factory1 = factory;
                     }
                 })
             );
@@ -329,10 +307,7 @@ namespace Great.ViewModels
                     {
                         FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
-                        if (factory != null)
-                        {
-                            Factories.Remove(factory);
-                        }
+                        if (factory != null) Factories.Remove(factory);
                     }
                 })
             );
@@ -354,9 +329,7 @@ namespace Great.ViewModels
 
             if (fdl.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
             using (DBArchive db = new DBArchive())
             {
@@ -370,10 +343,7 @@ namespace Great.ViewModels
                 }
             }
 
-            using (new WaitCursor())
-            {
-                _fdlManager.SendToSAP(fdl);
-            }
+            using (new WaitCursor()) _fdlManager.SendToSAP(fdl);
         }
 
         public void SendByEmail(string address)
@@ -416,10 +386,7 @@ namespace Great.ViewModels
 
         public void SaveAs(FDLEVM fdl)
         {
-            if (fdl == null)
-            {
-                return;
-            }
+            if (fdl == null) return;
 
             using (new WaitCursor())
             {
@@ -431,19 +398,13 @@ namespace Great.ViewModels
                 dlg.AddExtension = true;
                 dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                if (dlg.ShowDialog() == true)
-                {
-                    _fdlManager.SaveAs(fdl, dlg.FileName);
-                }
+                if (dlg.ShowDialog() == true) _fdlManager.SaveAs(fdl, dlg.FileName);
             }
         }
 
         public void Compile(FDLEVM fdl)
         {
-            if (fdl == null)
-            {
-                return;
-            }
+            if (fdl == null) return;
 
             using (new WaitCursor())
             {
@@ -461,20 +422,14 @@ namespace Great.ViewModels
 
         public void Open(FDLEVM fdl)
         {
-            if (fdl == null)
-            {
-                return;
-            }
+            if (fdl == null) return;
 
             Process.Start(fdl.FilePath);
         }
 
         public void MarkAsAccepted(FDLEVM fdl)
         {
-            if (MetroMessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to mark as accepted the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             fdl.EStatus = EFDLStatus.Accepted;
             fdl.NotifyAsNew = false;
@@ -483,10 +438,7 @@ namespace Great.ViewModels
 
         public void MarkAsCancelled(FDLEVM fdl)
         {
-            if (MetroMessageBox.Show("Are you sure to mark as Cancelled the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to mark as Cancelled the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
             fdl.EStatus = EFDLStatus.Cancelled;
             fdl.NotifyAsNew = false;
@@ -501,23 +453,14 @@ namespace Great.ViewModels
                 return;
             }
 
-            if (MetroMessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
-                return;
-            }
+            if (MetroMessageBox.Show("Are you sure to send a cancellation request for the selected FDL?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
 
-            using (new WaitCursor())
-            {
-                _fdlManager.SendCancellationRequest(fdl);
-            }
+            using (new WaitCursor()) _fdlManager.SendCancellationRequest(fdl);
         }
 
         private void FactoryLink()
         {
-            if (SelectedFDL.Factory.HasValue)
-            {
-                OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
-            }
+            if (SelectedFDL.Factory.HasValue) OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
         }
 
         public void ClearFDL()
@@ -538,10 +481,7 @@ namespace Great.ViewModels
 
         public void SaveFDL(FDLEVM fdl)
         {
-            if (fdl == null || fdl.IsReadOnly)
-            {
-                return;
-            }
+            if (fdl == null || fdl.IsReadOnly) return;
 
             if (fdl.Factory == null || fdl.Factory == -1)
             {

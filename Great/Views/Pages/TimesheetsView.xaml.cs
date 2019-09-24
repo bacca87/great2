@@ -80,10 +80,7 @@ namespace Great.Views.Pages
 
         private void TimesheetPanel_Expanded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (!timesheetPanel.IsExpanded)
-            {
-                return;
-            }
+            if (!timesheetPanel.IsExpanded) return;
 
             // hack for scrolling to the selected day 
             scrollViewer.ScrollToHome();

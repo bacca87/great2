@@ -44,24 +44,15 @@ namespace Great.ViewModels
                 int year = 0;
 
                 if (value < ApplicationSettings.Timesheets.MinYear)
-                {
                     year = ApplicationSettings.Timesheets.MinYear;
-                }
                 else if (value > ApplicationSettings.Timesheets.MaxYear)
-                {
                     year = ApplicationSettings.Timesheets.MaxYear;
-                }
                 else
-                {
                     year = value;
-                }
 
                 Set(ref _currentYear, year);
 
-                if (updateDays)
-                {
-                    UpdateWorkingDays();
-                }
+                if (updateDays) UpdateWorkingDays();
             }
         }
 
@@ -103,9 +94,7 @@ namespace Great.ViewModels
                     SelectedFDL = FDLs.SingleOrDefault(f => f.Id == SelectedTimesheet.FDL);
                 }
                 else
-                {
                     IsInputEnabled = false;
-                }
             }
         }
 
@@ -115,10 +104,7 @@ namespace Great.ViewModels
             get => _selectedTimesheet;
             set
             {
-                if (value == null)
-                {
-                    value = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
-                }
+                if (value == null) value = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
 
                 Set(ref _selectedTimesheet, value);
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
@@ -217,13 +203,9 @@ namespace Great.ViewModels
                         Day currentDay = db.Days.SingleOrDefault(d => d.Timestamp == timestamp);
 
                         if (currentDay != null)
-                        {
                             days.Add(new DayEVM(currentDay));
-                        }
                         else
-                        {
                             days.Add(new DayEVM { Date = day });
-                        }
                     }
                 }
             }
@@ -235,10 +217,7 @@ namespace Great.ViewModels
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
         {
             int days = DateTime.DaysInMonth(year, month);
-            for (int day = 1; day <= days; day++)
-            {
-                yield return new DateTime(year, month, day);
-            }
+            for (int day = 1; day <= days; day++) yield return new DateTime(year, month, day);
         }
 
         public void SelectFirstDayInMonth(int month)
@@ -292,27 +271,19 @@ namespace Great.ViewModels
         {
             bool cancel = false;
 
-            if (day == null || day.EType == type)
-            {
-                cancel = true;
-            }
+            if (day == null || day.EType == type) cancel = true;
 
-            if (!cancel && (type != EDayType.WorkDay && type != EDayType.HomeWorkDay) && day.Timesheets.Count() > 0)
+            if (!cancel && type != EDayType.WorkDay && type != EDayType.HomeWorkDay && day.Timesheets.Count() > 0)
             {
                 if (MetroMessageBox.Show("The selected day contains some timesheets.\nAre you sure to change the day type?\n\nAll the existing timesheets will be deleted!", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
-                    using (DBArchive db = new DBArchive())
-                    {
-                        db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == day.Timestamp));
-                    }
+                    using (DBArchive db = new DBArchive()) db.Timesheets.RemoveRange(db.Timesheets.Where(t => t.Timestamp == day.Timestamp));
 
                     day.Timesheets.Clear();
                 }
 
                 else
-                {
                     cancel = true;
-                }
             }
 
             if (!cancel)
@@ -326,10 +297,7 @@ namespace Great.ViewModels
         }
         public void CopyDay(DayEVM day)
         {
-            if (day == null)
-            {
-                return;
-            }
+            if (day == null) return;
 
             DayEVM dayClone = new DayEVM();
             Global.Mapper.Map(day, dayClone);
@@ -344,17 +312,11 @@ namespace Great.ViewModels
         }
         public void PasteDay(DayEVM destinationDay)
         {
-            if (destinationDay == null || !ClipboardX.Contains("Day"))
-            {
-                return;
-            }
+            if (destinationDay == null || !ClipboardX.Contains("Day")) return;
 
             DayEVM sourceDay = ClipboardX.GetItem<DayEVM>("Day");
 
-            if (sourceDay == null)
-            {
-                return;
-            }
+            if (sourceDay == null) return;
 
             destinationDay.Type = sourceDay.Type;
 
@@ -365,10 +327,7 @@ namespace Great.ViewModels
                 {
                     try
                     {
-                        foreach (var timesheet in destinationDay.Timesheets)
-                        {
-                            timesheet.Delete(db);
-                        }
+                        foreach (var timesheet in destinationDay.Timesheets) timesheet.Delete(db);
 
                         destinationDay.Timesheets.Clear();
                         destinationDay.Save(db);
@@ -391,26 +350,17 @@ namespace Great.ViewModels
                 }
             }
 
-            foreach (var timesheet in destinationDay.Timesheets)
-            {
-                Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
-            }
+            foreach (var timesheet in destinationDay.Timesheets) Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
         }
         public void ResetDay(DayEVM day)
         {
             day.Timesheets?.ToList().ForEach(x => DeleteTimesheet(x));
 
-            if (day.Delete())
-            {
-                day.EType = EDayType.WorkDay;
-            }
+            if (day.Delete()) day.EType = EDayType.WorkDay;
         }
         public void DeleteTimesheet(TimesheetEVM timesheet)
         {
-            if (timesheet == null)
-            {
-                return;
-            }
+            if (timesheet == null) return;
 
             if (timesheet.Delete())
             {
@@ -422,10 +372,7 @@ namespace Great.ViewModels
         }
         public void SaveTimesheet(TimesheetEVM timesheet)
         {
-            if (timesheet == null)
-            {
-                return;
-            }
+            if (timesheet == null) return;
 
             if (!timesheet.IsValid)
             {
@@ -479,10 +426,7 @@ namespace Great.ViewModels
                 new Action(() =>
                 {
 
-                    if (WorkingDays == null)
-                    {
-                        return;
-                    }
+                    if (WorkingDays == null) return;
 
                     DayEVM d = WorkingDays.SingleOrDefault(x => x.Timestamp == day.Content.Timestamp);
 
@@ -510,18 +454,10 @@ namespace Great.ViewModels
                         {
                             // update days and timesheets
                             if (daysToRefresh != null)
-                            {
-                                foreach (var day in daysToRefresh)
-                                {
-                                    day.Refresh(db);
-                                }
-                            }
+                                foreach (var day in daysToRefresh) day.Refresh(db);
 
                             // update fdls combo
-                            if (fdl != null)
-                            {
-                                fdl.Refresh(db);
-                            }
+                            if (fdl != null) fdl.Refresh(db);
 
                             db.SaveChanges();
                         }
@@ -547,12 +483,7 @@ namespace Great.ViewModels
                             foreach (var day in dayToUpdate)
                             {
                                 foreach (var timesheet in day.Timesheets)
-                                {
-                                    if (timesheet.FDL1 != null)
-                                    {
-                                        timesheet.FDL1.Factory1 = factory;
-                                    }
-                                }
+                                    if (timesheet.FDL1 != null) timesheet.FDL1.Factory1 = factory;
 
                                 day.RaisePropertyChanged(nameof(day.Factories_Display)); // hack to force the View to update the factory name
                             }

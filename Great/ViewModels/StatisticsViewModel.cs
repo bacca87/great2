@@ -150,10 +150,7 @@ namespace Great.ViewModels
 
         public void RefreshAllData()
         {
-            if (!IsRefreshEnabled)
-            {
-                return;
-            }
+            if (!IsRefreshEnabled) return;
 
             using (new WaitCursor())
             {
@@ -225,7 +222,7 @@ namespace Great.ViewModels
                 var MontlyHours = WorkingDays?.GroupBy(d => d.Date.Month)
                                        .Select(g => new
                                        {
-                                           TotalTime = g.Sum(x => (x.TotalTime ?? 0)),
+                                           TotalTime = g.Sum(x => x.TotalTime ?? 0),
                                            Ordinary = g.Sum(x => (x.TotalTime ?? 0) - (x.Overtime34 ?? 0) - (x.Overtime35 ?? 0) - (x.Overtime50 ?? 0) - (x.Overtime100 ?? 0)),
                                            Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
                                            Overtime35 = g.Sum(x => x.Overtime35 ?? 0),
@@ -570,13 +567,10 @@ namespace Great.ViewModels
                 var MonthlyKm = Rents?.GroupBy(d => d.RentStartDate.Month)
                                        .Select(g => new
                                        {
-                                           Km = g.Sum(x => (x.EndKm - x.StartKm)),
+                                           Km = g.Sum(x => x.EndKm - x.StartKm),
                                        });
 
-                foreach (var month in MonthlyKm)
-                {
-                    TotalKm.Add(month.Km);
-                }
+                foreach (var month in MonthlyKm) TotalKm.Add(month.Km);
 
                 Km = new SeriesCollection()
                 {

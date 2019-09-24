@@ -274,10 +274,7 @@ namespace Great.ViewModels.Database
         {
             Timesheets = new ObservableCollection<TimesheetEVM>();
 
-            if (fdl != null)
-            {
-                Global.Mapper.Map(fdl, this);
-            }
+            if (fdl != null) Global.Mapper.Map(fdl, this);
 
             IsChanged = false;
         }

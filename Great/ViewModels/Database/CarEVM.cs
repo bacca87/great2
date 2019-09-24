@@ -89,33 +89,21 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "LicensePlate":
-                        if (string.IsNullOrEmpty(LicensePlate) || string.IsNullOrWhiteSpace(LicensePlate))
-                        {
-                            return "License Plate not valid";
-                        }
+                        if (string.IsNullOrEmpty(LicensePlate) || string.IsNullOrWhiteSpace(LicensePlate)) return "License Plate not valid";
 
                         break;
 
                     case "Brand":
-                        if (string.IsNullOrEmpty(Brand) || string.IsNullOrWhiteSpace(Brand))
-                        {
-                            return "Brand not valid";
-                        }
+                        if (string.IsNullOrEmpty(Brand) || string.IsNullOrWhiteSpace(Brand)) return "Brand not valid";
 
                         break;
 
                     case "Model":
-                        if (string.IsNullOrEmpty(Model) || string.IsNullOrWhiteSpace(Model))
-                        {
-                            return "Model not valid";
-                        }
+                        if (string.IsNullOrEmpty(Model) || string.IsNullOrWhiteSpace(Model)) return "Model not valid";
 
                         break;
                     case "CarRentalCompany1":
-                        if (CarRentalCompany1 == null || CarRentalCompany1?.Id == 0)
-                        {
-                            return "Rental company not valid";
-                        }
+                        if (CarRentalCompany1 == null || CarRentalCompany1?.Id == 0) return "Rental company not valid";
 
                         break;
 
@@ -130,10 +118,7 @@ namespace Great.ViewModels.Database
         #endregion
         public CarEVM(Car car = null)
         {
-            if (car != null)
-            {
-                Global.Mapper.Map(car, this);
-            }
+            if (car != null) Global.Mapper.Map(car, this);
 
             IsChanged = false;
         }

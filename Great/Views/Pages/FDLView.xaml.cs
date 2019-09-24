@@ -37,10 +37,7 @@ namespace Great.Views.Pages
             }
 
             // hack for selecting the first datagrid row by default in a hidden page
-            if (fdlDataGridView.SelectedIndex == -1 && fdlDataGridView.Items.Count > 0)
-            {
-                fdlDataGridView.SelectedIndex = 0;
-            }
+            if (fdlDataGridView.SelectedIndex == -1 && fdlDataGridView.Items.Count > 0) fdlDataGridView.SelectedIndex = 0;
         }
 
         private void FactoryHyperlink_OnNavigate(object sender, RequestNavigateEventArgs e)

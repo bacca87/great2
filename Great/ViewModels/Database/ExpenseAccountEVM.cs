@@ -197,10 +197,7 @@ namespace Great.ViewModels.Database
             Expenses.CollectionChanged += (sender, e) => InsertExpenseEnabled = Expenses.Count < ApplicationSettings.ExpenseAccount.MaxExpenseCount;
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
-            if (ea != null)
-            {
-                Global.Mapper.Map(ea, this);
-            }
+            if (ea != null) Global.Mapper.Map(ea, this);
 
             IsChanged = false;
 

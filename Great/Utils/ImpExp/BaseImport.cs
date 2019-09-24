@@ -16,17 +16,11 @@ namespace Great.Utils
         {
             get
             {
-                lock (this)
-                {
-                    return _status;
-                }
+                lock (this) return _status;
             }
             internal set
             {
-                lock (this)
-                {
-                    _status = value;
-                }
+                lock (this) _status = value;
             }
         }
 
@@ -35,17 +29,11 @@ namespace Great.Utils
         {
             get
             {
-                lock (this)
-                {
-                    return _IsCompleted;
-                }
+                lock (this) return _IsCompleted;
             }
             internal set
             {
-                lock (this)
-                {
-                    _IsCompleted = value;
-                }
+                lock (this) _IsCompleted = value;
             }
         }
 
@@ -54,17 +42,11 @@ namespace Great.Utils
         {
             get
             {
-                lock (this)
-                {
-                    return _IsCancelled;
-                }
+                lock (this) return _IsCancelled;
             }
             internal set
             {
-                lock (this)
-                {
-                    _IsCancelled = value;
-                }
+                lock (this) _IsCancelled = value;
             }
         }
         #endregion

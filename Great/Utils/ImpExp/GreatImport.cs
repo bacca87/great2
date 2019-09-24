@@ -678,7 +678,7 @@ namespace Great.Utils
             if (File.Exists(virtualStorePath))
                 return virtualStorePath;
             else
-                return (Path.Combine(folder, "DB\\Archivio.mdb"));
+                return Path.Combine(folder, "DB\\Archivio.mdb");
         }
 
         private string FormatFDL(string fdl_Id)

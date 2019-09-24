@@ -104,10 +104,7 @@ namespace Great.ViewModels
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
                 new Action(() =>
                 {
-                    if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
-                    {
-                        Factories.Add(item.Content);
-                    }
+                    if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id)) Factories.Add(item.Content);
                 })
             );
         }
@@ -146,10 +143,7 @@ namespace Great.ViewModels
 
         private void SaveFactory(FactoryEVM factory)
         {
-            if (factory == null)
-            {
-                return;
-            }
+            if (factory == null) return;
 
             if (!factory.IsValid)
             {

@@ -127,10 +127,7 @@ namespace Great.ViewModels.Database
                 switch (columnName)
                 {
                     case "Name":
-                        if (string.IsNullOrEmpty(Name) || string.IsNullOrWhiteSpace(Name))
-                        {
-                            return "Name of the factory must be set";
-                        }
+                        if (string.IsNullOrEmpty(Name) || string.IsNullOrWhiteSpace(Name)) return "Name of the factory must be set";
 
                         break;
                     case "CompanyName":
@@ -138,10 +135,7 @@ namespace Great.ViewModels.Database
                         break;
 
                     case "Address":
-                        if (string.IsNullOrEmpty(Address) || string.IsNullOrWhiteSpace(Address))
-                        {
-                            return "Address must be set";
-                        }
+                        if (string.IsNullOrEmpty(Address) || string.IsNullOrWhiteSpace(Address)) return "Address must be set";
 
                         break;
                     default:
@@ -156,10 +150,7 @@ namespace Great.ViewModels.Database
 
         public FactoryEVM(Factory factory = null)
         {
-            if (factory != null)
-            {
-                Global.Mapper.Map(factory, this);
-            }
+            if (factory != null) Global.Mapper.Map(factory, this);
 
             IsChanged = false;
         }

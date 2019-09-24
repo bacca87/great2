@@ -151,33 +151,18 @@ namespace Great.ViewModels
             {
                 string text;
 
-                if (!_fdlImport.Output.TryDequeue(out text))
-                {
-                    continue;
-                }
+                if (!_fdlImport.Output.TryDequeue(out text)) continue;
 
                 newText += text + Environment.NewLine;
             }
 
-            if (newText != string.Empty)
-            {
-                LogText += newText;
-            }
+            if (newText != string.Empty) LogText += newText;
 
-            if (Status != _fdlImport.Status)
-            {
-                Status = _fdlImport.Status;
-            }
+            if (Status != _fdlImport.Status) Status = _fdlImport.Status;
 
-            if (Completed != _fdlImport.IsCompleted)
-            {
-                Completed = _fdlImport.IsCompleted;
-            }
+            if (Completed != _fdlImport.IsCompleted) Completed = _fdlImport.IsCompleted;
 
-            if (CanSelectPreviousPage != _fdlImport.IsCancelled)
-            {
-                CanSelectPreviousPage = _fdlImport.IsCancelled;
-            }
+            if (CanSelectPreviousPage != _fdlImport.IsCancelled) CanSelectPreviousPage = _fdlImport.IsCancelled;
         }
 
         private void Reset()
@@ -205,10 +190,7 @@ namespace Great.ViewModels
             dialog.Multiselect = false;
             dialog.ShowPlacesList = true;
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                FDLFolder = dialog.FileName;
-            }
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok) FDLFolder = dialog.FileName;
         }
 
         public void StartImport()
