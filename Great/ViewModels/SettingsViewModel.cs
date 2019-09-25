@@ -245,9 +245,7 @@ namespace Great.ViewModels
         private void MigrateData()
         {
             if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
             try
             {
@@ -259,16 +257,12 @@ namespace Great.ViewModels
                     //Now Create all of the directories
                     foreach (string dirPath in Directory.GetDirectories(SourcePath, "*",
                         SearchOption.AllDirectories))
-                    {
                         Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
-                    }
 
                     //Copy all the files & Replaces any files with the same name
                     foreach (string newPath in Directory.GetFiles(SourcePath, "*.*",
                         SearchOption.AllDirectories))
-                    {
                         File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
-                    }
 
                     ApplicationSettings.Directories.Data = DataDirectory;
                     MigrateDataCommand.RaiseCanExecuteChanged();
@@ -303,10 +297,8 @@ namespace Great.ViewModels
                 FDLCancelRequestRecipients = string.Empty;
 
                 foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
-                {
                     FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
                 }
-            }
 
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;

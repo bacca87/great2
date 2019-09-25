@@ -158,32 +158,22 @@ namespace Great.ViewModels
                 string text;
 
                 if (!_greatMigra.Output.TryDequeue(out text))
-                {
                     continue;
-                }
 
                 newText += text + Environment.NewLine;
             }
 
             if (newText != string.Empty)
-            {
                 LogText += newText;
-            }
 
             if (Status != _greatMigra.Status)
-            {
                 Status = _greatMigra.Status;
-            }
 
             if (Completed != _greatMigra.IsCompleted)
-            {
                 Completed = _greatMigra.IsCompleted;
-            }
 
             if (CanSelectPreviousPage != _greatMigra.IsCancelled)
-            {
                 CanSelectPreviousPage = _greatMigra.IsCancelled;
-            }
         }
 
         public void SelectFolder()

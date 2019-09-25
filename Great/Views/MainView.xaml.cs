@@ -80,9 +80,7 @@ namespace Great.Views
             FDLViewModel FdlVM = SimpleIoc.Default.GetInstance<FDLViewModel>();
 
             if (recipientsVM == null || FdlVM == null || FdlVM.SelectedFDL == null)
-            {
                 return;
-            }
 
             recipientsVM.Order = FdlVM.SelectedFDL.Order;
 
@@ -95,14 +93,11 @@ namespace Great.Views
             EventsViewModel eventVM = SimpleIoc.Default.GetInstance<EventsViewModel>();
 
             if (eventVM == null)
-            {
                 return;
-            }
 
             EventsView view = new EventsView();
             view.Owner = this;
             view.ShowDialog();
-
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -110,9 +105,7 @@ namespace Great.Views
             SettingsViewModel settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
             if (settingsVM == null)
-            {
                 return;
-            }
 
             SettingsView view = new SettingsView();
             view.Owner = this;
@@ -150,6 +143,5 @@ namespace Great.Views
 
     }
 
-
 }
-
+}

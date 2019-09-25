@@ -151,9 +151,7 @@ namespace Great.ViewModels
         public void RefreshAllData()
         {
             if (!IsRefreshEnabled)
-            {
                 return;
-            }
 
             using (new WaitCursor())
             {

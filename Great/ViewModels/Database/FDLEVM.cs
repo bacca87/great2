@@ -263,22 +263,14 @@ namespace Great.ViewModels.Database
         #endregion
 
         // hack because XAML didnt support default parameters
-        public FDLEVM()
-        {
-            Timesheets = new ObservableCollection<TimesheetEVM>();
-
-            IsChanged = false;
-        }
+        public FDLEVM() => Timesheets = new ObservableCollection<TimesheetEVM>();
 
         public FDLEVM(FDL fdl = null)
         {
             Timesheets = new ObservableCollection<TimesheetEVM>();
 
             if (fdl != null)
-            {
                 Global.Mapper.Map(fdl, this);
-            }
-
             IsChanged = false;
         }
 

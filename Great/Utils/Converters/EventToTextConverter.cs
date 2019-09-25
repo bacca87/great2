@@ -18,44 +18,17 @@ namespace Great.Utils.Converters
                 case EEventType.Vacations:
                 case EEventType.OldVacations:
 
-                    if (ev.EStatus == EEventStatus.Pending)
-                    {
-                        result = "Vacations Pending";
-                    }
-
-                    if (ev.EStatus == EEventStatus.Accepted)
-                    {
-                        result = "Vacations Accepted";
-                    }
-
-                    if (ev.EStatus == EEventStatus.Rejected)
-                    {
-                        result = "Vacations Rejected";
-                    }
+                    if (ev.EStatus == EEventStatus.Pending) result = "Vacations Pending";
+                    if (ev.EStatus == EEventStatus.Accepted) result = "Vacations Accepted";
+                    if (ev.EStatus == EEventStatus.Rejected) result = "Vacations Rejected";
 
                     break;
 
                 default:
-                    if (ev?.EType == EEventType.BusinessTrip)
-                    {
-                        result = "Business Trip";
-                    }
-
-                    if (ev?.EType == EEventType.CustomerVisit)
-                    {
-                        result = "Customer Visit";
-                    }
-
-                    if (ev?.EType == EEventType.Education)
-                    {
-                        result = "Education";
-                    }
-
-                    if (ev?.EType == EEventType.Other)
-                    {
-                        result = "Other";
-                    }
-
+                    if (ev?.EType == EEventType.BusinessTrip) result = "Business Trip";
+                    if (ev?.EType == EEventType.CustomerVisit) result = "Customer Visit";
+                    if (ev?.EType == EEventType.Education) result = "Education";
+                    if (ev?.EType == EEventType.Other) result = "Other";
                     break;
             }
 

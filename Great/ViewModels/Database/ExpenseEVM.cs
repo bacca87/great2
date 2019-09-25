@@ -123,10 +123,7 @@ namespace Great.ViewModels.Database
         public ExpenseEVM(Expense expense = null)
         {
             if (expense != null)
-            {
                 Global.Mapper.Map(expense, this);
-            }
-
             IsChanged = false;
         }
 

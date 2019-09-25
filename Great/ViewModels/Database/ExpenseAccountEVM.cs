@@ -198,10 +198,7 @@ namespace Great.ViewModels.Database
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             if (ea != null)
-            {
                 Global.Mapper.Map(ea, this);
-            }
-
             IsChanged = false;
 
         }

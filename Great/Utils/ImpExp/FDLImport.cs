@@ -45,10 +45,7 @@ namespace Great.Utils
                 thrd.Start();
                 return;
             }
-            else
-            {
-                Error($"Wrong FDL directory path: {FDLFolder}");
-            }
+            else Error($"Wrong FDL directory path: {FDLFolder}");
 
             StatusChanged("Import failed!");
             Finished(false);
@@ -85,9 +82,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing FDL files...");
 
@@ -96,14 +91,10 @@ namespace Great.Utils
                 foreach (FileInfo file in new DirectoryInfo(FDLFolder).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
                     if (stopImport)
-                    {
                         break;
-                    }
 
                     if (FDLManager.GetFileType(file.Name) != EFileType.FDL)
-                    {
                         continue;
-                    }
 
                     FDLEVM fdl = null;
 
@@ -113,9 +104,7 @@ namespace Great.Utils
 
                         // try with XFA format
                         if (fdl == null)
-                        {
                             fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, false, false);
-                        }
 
                         if (fdl != null)
                         {
@@ -134,18 +123,14 @@ namespace Great.Utils
                                     db.SaveChanges();
                                 }
                                 else
-                                {
                                     Error("Missing FDL on database. Should never happen.");
                                 }
-                            }
 
                             Message($"FDL {fdl.Id} OK");
                         }
                         else
-                        {
                             Error($"Failed to import FDL from file: {file.FullName}");
                         }
-                    }
                     catch (Exception ex)
                     {
                         Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
@@ -167,9 +152,7 @@ namespace Great.Utils
             bool result = false;
 
             if (stopImport)
-            {
                 return result;
-            }
 
             StatusChanged("Importing Expense Account files...");
 
@@ -178,14 +161,10 @@ namespace Great.Utils
                 foreach (FileInfo file in new DirectoryInfo(FDLFolder).GetFiles("*.pdf", SearchOption.AllDirectories))
                 {
                     if (stopImport)
-                    {
                         break;
-                    }
 
                     if (FDLManager.GetFileType(file.Name) != EFileType.ExpenseAccount)
-                    {
                         continue;
-                    }
 
                     ExpenseAccountEVM ea = null;
 
@@ -211,17 +190,13 @@ namespace Great.Utils
                                     db.SaveChanges();
                                 }
                                 else
-                                {
                                     Error("Missing EA on database. Should never happen.");
                                 }
-                            }
 
                             Message($"Expense Account {ea.FDL} OK");
                         }
                         else
-                        {
                             Error($"Failed to import EA from file: {file.FullName}");
-                        }
                     }
                     catch (Exception ex)
                     {

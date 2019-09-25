@@ -25,15 +25,9 @@ namespace Great.Utils.Behaviours
                    (DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var frameworkElement = d as FrameworkElement;
-            if (frameworkElement == null)
-            {
-                return;
-            }
+            if (frameworkElement == null) return;
 
-            if (e.NewValue is bool == false)
-            {
-                return;
-            }
+            if (e.NewValue is bool == false) return;
 
             if ((bool)e.NewValue)
             {
@@ -51,24 +45,16 @@ namespace Great.Utils.Behaviours
         {
             var frameworkElement = e.OriginalSource as FrameworkElement;
             if (frameworkElement is TextBox)
-            {
                 ((TextBoxBase)frameworkElement).SelectAll();
-            }
             else if (frameworkElement is PasswordBox)
-            {
                 ((PasswordBox)frameworkElement).SelectAll();
             }
-        }
 
         private static void IgnoreMouseButton
                 (object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var frameworkElement = sender as FrameworkElement;
-            if (frameworkElement == null || frameworkElement.IsKeyboardFocusWithin)
-            {
-                return;
-            }
-
+            if (frameworkElement == null || frameworkElement.IsKeyboardFocusWithin) return;
             e.Handled = true;
             frameworkElement.Focus();
         }

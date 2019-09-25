@@ -41,9 +41,7 @@ namespace Great.ViewModels.Database
         public DayEventEVM(DayEvent de = null)
         {
             if (de != null)
-            {
                 Global.Mapper.Map(de, this);
-            }
         }
 
         public override bool Refresh(DBArchive db)

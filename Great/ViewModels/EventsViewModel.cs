@@ -44,11 +44,9 @@ namespace Great.ViewModels
             set
             {
                 if (SelectedEvent != null)
-                {
                     Set(ref _ShowHourTimeFields, value);
                 }
             }
-        }
 
         private bool _showOnlyVacations = false;
         public bool ShowOnlyVacations
@@ -139,14 +137,10 @@ namespace Great.ViewModels
             Hours = new List<int>();
 
             for (int i = 0; i < 24; i++)
-            {
                 Hours.Add(i);
-            }
 
             for (int i = 0; i < 60; i = i + 5)
-            {
                 Minutes.Add(i);
-            }
 
             ClearCommand = new RelayCommand(ClearEvent, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<EventEVM>(SaveEvent, (EventEVM v) => { return IsInputEnabled; });
@@ -188,10 +182,7 @@ namespace Great.ViewModels
 
         public void SaveEvent(EventEVM ev)
         {
-            if (ev == null)
-            {
-                return;
-            }
+            if (ev == null) return;
 
             if (!ev.IsValid)
             {
@@ -199,9 +190,7 @@ namespace Great.ViewModels
                 return;
             }
             if (MetroMessageBox.Show("Are you sure to save the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
 
             ev.EStatus = EEventStatus.Pending;
             ev.IsSent = false;
@@ -210,9 +199,8 @@ namespace Great.ViewModels
 
             //if the event is new
             if (!Events.Any(x => x.Id == ev.Id))
-            {
+
                 Events.Add(ev);
-            }
 
             ShowEditMenu = false;
             FilteredEvents.Refresh();
@@ -223,10 +211,7 @@ namespace Great.ViewModels
         {
 
             if (MetroMessageBox.Show("Are you sure to delete the selected event? It will update the intranet calendar", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-            {
                 return;
-            }
-
             if (ev.SharePointId > 0)
             {
                 ev.IsSent = false;

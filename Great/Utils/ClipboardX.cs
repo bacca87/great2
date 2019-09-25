@@ -10,9 +10,7 @@ namespace Great.Utils
         public static bool AddItem(string key, object value)
         {
             if (items.ContainsKey(key))
-            {
                 return false;
-            }
 
             items.Add(key, value);
             return true;
@@ -25,13 +23,9 @@ namespace Great.Utils
                 object item = items[key];
 
                 if (item is T)
-                {
                     return (T)item;
-                }
                 else
-                {
                     return (T)Convert.ChangeType(item, typeof(T));
-                }
             }
 
             return default(T);

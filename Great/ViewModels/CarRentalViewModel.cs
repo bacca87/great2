@@ -279,10 +279,7 @@ namespace Great.ViewModels
 
         private void DeleteRent(CarRentalHistoryEVM cr)
         {
-            if (cr.Id == 0)
-            {
-                return;
-            }
+            if (cr.Id == 0) return;
 
             if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
@@ -312,9 +309,7 @@ namespace Great.ViewModels
         public void SaveRent(CarRentalHistoryEVM rc)
         {
             if (rc == null || SelectedCar == null)
-            {
                 return;
-            }
 
             if (!rc.IsValid || !SelectedCar.IsValid)
             {
@@ -334,37 +329,25 @@ namespace Great.ViewModels
                 db.SaveChanges();
             }
 
-            if (existingRent == null)
-            {
+            if (existingRent == null)           
                 Rentals.Add(rc);
-            }
 
             if (existingCar == null)
-            {
                 Cars.Add(rc.Car1);
-            }
 
             if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Brand) == null)
-            {
                 CarBrands.Add(rc.Car1.Brand);
-            }
 
             if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Model) == null)
-            {
                 CarModels.Add(rc.Car1.Model);
-            }
 
             if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null)
-            {
                 Locations.Add(rc.StartLocation);
-            }
 
             if (!String.IsNullOrEmpty(rc.EndLocation))
             {
                 if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null)
-                {
                     Locations.Add(rc.EndLocation);
-                }
             }
 
             ShowEditMenu = false;

@@ -103,14 +103,8 @@ namespace Great.Models
                             }
                             else
                             {
-                                if (ev.SharePointId > 0)
-                                {
-                                    request = GenerateBatchUpdateXML(ev);
-                                }
-                                else
-                                {
-                                    request = GenerateBatchInsertXML(ev);
-                                }
+                                if (ev.SharePointId > 0) request = GenerateBatchUpdateXML(ev);
+                                else request = GenerateBatchInsertXML(ev);
 
                                 using (SharepointReference.Lists l = new SharepointReference.Lists())
                                 {
@@ -186,10 +180,7 @@ namespace Great.Models
                                 Int64 shpid = Convert.ToInt64(el.GetElementsByTagName("content")[0]?.FirstChild["d:Id"].InnerText);
                                 int status = Convert.ToInt32(el.GetElementsByTagName("content")[0]?.FirstChild["d:OData__ModerationStatus"].InnerText);
 
-                                if (shpid == 0)
-                                {
-                                    continue;
-                                }
+                                if (shpid == 0) continue;
 
                                 EventEVM tmp = new EventEVM();
                                 tmp.IsSent = true; // the event is on calendar. Not necessary to send it
@@ -212,30 +203,12 @@ namespace Great.Models
                                     tmp.EndDate = Convert.ToDateTime(el.GetElementsByTagName("content")[0]?.FirstChild["d:EndDate"].InnerText);
                                 }
 
-                                if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations")
-                                {
-                                    tmp.EType = EEventType.Vacations;
-                                }
-                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit")
-                                {
-                                    tmp.EType = EEventType.CustomerVisit;
-                                }
-                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip")
-                                {
-                                    tmp.EType = EEventType.BusinessTrip;
-                                }
-                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education")
-                                {
-                                    tmp.EType = EEventType.Education;
-                                }
-                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other")
-                                {
-                                    tmp.EType = EEventType.Other;
-                                }
-                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations")
-                                {
-                                    tmp.EType = EEventType.OldVacations;
-                                }
+                                if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Vacations") tmp.EType = EEventType.Vacations;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Customer Visit") tmp.EType = EEventType.CustomerVisit;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Business Trip") tmp.EType = EEventType.BusinessTrip;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Education") tmp.EType = EEventType.Education;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Other") tmp.EType = EEventType.Other;
+                                else if (el.GetElementsByTagName("content")[0]?.FirstChild["d:Category"].InnerText == "Old Vacations") tmp.EType = EEventType.OldVacations;
 
                                 if (tmp.EStatus == EEventStatus.Accepted)
                                 {
@@ -267,7 +240,7 @@ namespace Great.Models
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
                 }

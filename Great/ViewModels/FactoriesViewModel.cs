@@ -105,9 +105,7 @@ namespace Great.ViewModels
                 new Action(() =>
                 {
                     if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
-                    {
                         Factories.Add(item.Content);
-                    }
                 })
             );
         }
@@ -146,10 +144,7 @@ namespace Great.ViewModels
 
         private void SaveFactory(FactoryEVM factory)
         {
-            if (factory == null)
-            {
-                return;
-            }
+            if (factory == null) return;
 
             if (!factory.IsValid)
             {

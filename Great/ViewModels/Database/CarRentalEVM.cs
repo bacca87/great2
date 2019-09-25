@@ -39,7 +39,6 @@ namespace Great.ViewModels.Database
             {
                 SetAndCheckChanged(ref _startKm, value);
                 RaisePropertyChanged(nameof(EndKm));
-
             }
         }
 
@@ -135,24 +134,14 @@ namespace Great.ViewModels.Database
         {
             get
             {
-                if (EndDate > 0)
-                {
-                    return DateTime.Now.FromUnixTimestamp(EndDate);
-                }
-
+                if (EndDate > 0) return DateTime.Now.FromUnixTimestamp(EndDate);
                 return null;
             }
             set
             {
-                if (value == null)
-                {
-                    EndDate = 0;
-                }
+                if (value == null) EndDate = 0;
                 else
-                {
                     EndDate = ((DateTime)value).ToUnixTimestamp();
-                }
-
                 RaisePropertyChanged(nameof(EndKm));
                 RaisePropertyChanged(nameof(RentStartDate));
                 RaisePropertyChanged(nameof(RentStartTime));
@@ -166,20 +155,21 @@ namespace Great.ViewModels.Database
         public TimeSpan RentStartTime
         {
             get => RentStartDate.TimeOfDay;
-            set => RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0);
+            set
+            {
+                RentStartDate = new DateTime(RentStartDate.Year, RentStartDate.Month, RentStartDate.Day, value.Hours, value.Minutes, 0);
+            }
         }
 
         public TimeSpan? RentEndTime
         {
-            get { if (RentEndDate.HasValue) { return RentEndDate.Value.TimeOfDay; } return null; }
+            get { if (RentEndDate.HasValue) return RentEndDate.Value.TimeOfDay; return null; }
             set
             {
                 if (value.HasValue)
-                {
                     RentEndDate = new DateTime(RentEndDate.Value.Year, RentEndDate.Value.Month, RentEndDate.Value.Day, value.Value.Hours, value.Value.Minutes, 0);
                 }
             }
-        }
 
         public TimeSpan? RentDuration => RentEndDate?.Subtract(RentStartDate);
 
@@ -191,10 +181,8 @@ namespace Great.ViewModels.Database
                 {
                     return EndKm - StartKm;
                 }
-                else
-                {
-                    return StartKm;
-                }
+                else return StartKm;
+
             }
         }
 
@@ -223,78 +211,51 @@ namespace Great.ViewModels.Database
                 {
                     case "StartKm":
                         if (EndKm < StartKm && EndKm > 0)
-                        {
                             return "Start Km must be lower than End Km";
-                        }
-
                         break;
 
                     case "EndKm":
                         if (EndKm < StartKm && EndKm > 0)
-                        {
                             return "Start Km must be lower than End Km";
-                        }
 
                         if (EndKm == 0 && RentEndDate.HasValue)
-                        {
                             return "End Km must be set when defining end date";
-                        }
 
                         if (!String.IsNullOrWhiteSpace(EndLocation) && EndKm == 0)
-                        {
                             return "End Km must be set when defining end location";
-                        }
-
                         break;
 
                     case "RentStartDate":
                     case "RentStartTime":
 
                         if (RentStartDate != null && RentEndDate < RentStartDate)
-                        {
                             return "Dates not valid: End Date < Start Date";
-                        }
-
                         break;
 
                     case "RentEndDate":
                     case "RentEndTime":
 
                         if (RentStartDate != null && RentEndDate < RentStartDate)
-                        {
                             return "Dates not valid: End Date < Start Date";
-                        }
 
                         if (!RentEndDate.HasValue && EndKm > StartKm)
-                        {
                             return "End Date must be set when defining end km";
-                        }
 
                         if (!RentEndDate.HasValue && !String.IsNullOrWhiteSpace(EndLocation))
-                        {
                             return "End Date must be set when defining end location";
-                        }
-
                         break;
 
                     case "StartLocation":
                         if (string.IsNullOrEmpty(StartLocation) || string.IsNullOrWhiteSpace(StartLocation))
-                        {
                             return "Start Location not valid";
-                        }
-
                         break;
 
                     case "EndLocation":
                         if (RentEndDate.HasValue && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
-                        {
                             return "End location is required when setting End Date";
-                        }
 
                         if (EndKm > StartKm && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
-                        {
                             return "End location is required when setting End Km";
-                        }
 
                         break;
 
@@ -315,10 +276,7 @@ namespace Great.ViewModels.Database
             RentStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
             if (rent != null)
-            {
                 Global.Mapper.Map(rent, this);
-            }
-
             IsChanged = false;
         }
 

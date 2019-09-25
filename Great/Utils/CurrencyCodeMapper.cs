@@ -11,11 +11,8 @@ namespace Great.Utils
         public static string GetSymbol(string code)
         {
             if (!string.IsNullOrEmpty(code) && SymbolsByCode.ContainsKey(code))
-            {
                 return SymbolsByCode[code];
-            }
             else
-            {
                 return string.Empty;
             }
         }
@@ -28,12 +25,8 @@ namespace Great.Utils
                           .Select(x => new RegionInfo(x.LCID));
 
             foreach (var region in regions)
-            {
                 if (!SymbolsByCode.ContainsKey(region.ISOCurrencySymbol))
-                {
                     SymbolsByCode.Add(region.ISOCurrencySymbol, region.CurrencySymbol);
-                }
-            }
         }
     }
 }
