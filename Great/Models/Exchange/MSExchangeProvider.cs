@@ -105,7 +105,7 @@ namespace Great.Models
                     }
                     else
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
-                    }
+                }
             } while (exService.Url == null && !exitToken.IsCancellationRequested);
 
             if (exitToken.IsCancellationRequested)
@@ -192,8 +192,8 @@ namespace Great.Models
                             }
                             else
                                 Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
-                            }
                         }
+                    }
                     while (!IsSent);
                 }
 
@@ -236,7 +236,7 @@ namespace Great.Models
                     }
                     else
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
-                    }
+                }
             } while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
         }
 
@@ -311,7 +311,7 @@ namespace Great.Models
                     }
                     else
                         Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
-                    }
+                }
             } while (!IsSynced && !exitToken.IsCancellationRequested);
         }
         #endregion
@@ -556,7 +556,7 @@ namespace Great.Models
                 return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
             else
                 return null;
-            }
+        }
 
         public void SendEmail(EmailMessageDTO message)
         {
@@ -600,8 +600,8 @@ namespace Great.Models
                         return true;
                     else
                         return false;
-                    }
                 }
+            }
             catch (Exception)
             {
                 return false;

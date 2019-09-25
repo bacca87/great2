@@ -182,7 +182,7 @@ namespace Great.Models
 
                                             if (typeId == 0) // unknown expense type
                                                 continue;
-                                            }
+                                        }
 
                                         Expense expense = new Expense()
                                         {
@@ -254,7 +254,7 @@ namespace Great.Models
                 return ImportFDL_XFAForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
             else
                 return ImportFDL_AcroForm(filePath, NotifyAsNew, ExcludeTimesheets, ExcludeFactories, OverrideIfExist);
-            }
+        }
 
         public FDLEVM ImportFDL_XFAForm(string filePath, bool NotifyAsNew = true, bool ExcludeTimesheets = false, bool ExcludeFactories = false, bool OverrideIfExist = false)
         {
@@ -371,8 +371,8 @@ namespace Great.Models
 
                                         if (factory != null && UserSettings.Advanced.AutoAssignFactories)
                                             fdl.Factory = factory.Id;
-                                        }
                                     }
+                                }
                                 #endregion
 
                                 db.FDLs.Add(fdl);
@@ -415,8 +415,8 @@ namespace Great.Models
                                                 timesheet.TravelEndTimePM_t = time;
 
                                             // hack for supporting old travel periods
-                                            if (timesheet.TravelStartTimeAM_t.HasValue && !timesheet.TravelEndTimeAM_t.HasValue &&
-                                               !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&
+                                            if(timesheet.TravelStartTimeAM_t.HasValue && !timesheet.TravelEndTimeAM_t.HasValue &&
+                                               !timesheet.WorkStartTimeAM_t.HasValue && !timesheet.WorkEndTimeAM_t.HasValue &&                                                 
                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
@@ -602,8 +602,8 @@ namespace Great.Models
 
                                         if (factory != null && UserSettings.Advanced.AutoAssignFactories)
                                             fdl.Factory = factory.Id;
-                                        }
                                     }
+                                }
                                 #endregion
 
                                 db.FDLs.Add(fdl);
@@ -745,11 +745,11 @@ namespace Great.Models
                         {
                             if (word.Trim() != string.Empty && exsAddress.Any(x => x == word))
                                 matchCount++;
-                            }
+                        }
 
                         if (matchCount > 0)
                             factoryMatchRate.Add(f.Id, (matchCount * 100) / newAddress.Count());
-                        }
+                    }
 
                     if (factoryMatchRate.Count > 0)
                     {
@@ -758,8 +758,8 @@ namespace Great.Models
 
                         if (factoryRate.Value > 50)
                             factory = db.Factories.SingleOrDefault(f => f.Id == factoryRate.Key);
-                        }
                     }
+                }
                 catch { }
             }
 
@@ -818,7 +818,7 @@ namespace Great.Models
                 return GetAcroFormFields(file as ExpenseAccountEVM, IsReadonly);
             else
                 return null;
-            }
+        }
 
         private Dictionary<string, string> GetAcroFormFields(FDLEVM fdl)
         {
@@ -906,7 +906,7 @@ namespace Great.Models
 
                 if (IsReadonly)
                     fields.Add(entry["Total"], expense.TotalAmount > 0 ? expenses[i].TotalAmount.ToString() : string.Empty);
-                }
+            }
 
             fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.Currency, ea.Currency1 != null ? ea.Currency1.Description : string.Empty);
 
@@ -951,15 +951,15 @@ namespace Great.Models
                     {
                         if (fields.ContainsKey(entry.Key))
                             fields[entry.Key].SetValue(entry.Value);
-                        }
                     }
+                }
 
                 foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
                 {
                     if (fields.ContainsKey(entry.Key))
                         fields[entry.Key].SetValue(entry.Value);
-                    }
                 }
+            }
             catch (Exception)
             {
                 Debugger.Break();
@@ -1037,7 +1037,7 @@ namespace Great.Models
 
                     foreach (var r in recipients)
                         message.CcRecipients.Add(r);
-                    }
+                }
 
             }
             else if (file is ExpenseAccountEVM)
@@ -1265,9 +1265,9 @@ namespace Great.Models
                                         {
                                             if (db.FDLs.SingleOrDefault(f => f.FileName.ToLower() == fileAttachment.Name.ToLower()) != null)
                                                 exist = true;
-                                            }
+                                        }
 
-                                        if (!exist)
+                                        if(!exist)
                                         {
                                             FDLEVM fdl = ImportFDLFromFile(ApplicationSettings.Directories.FDL + fileAttachment.Name, true, true, true);
 
@@ -1290,7 +1290,7 @@ namespace Great.Models
                                         {
                                             if (db.ExpenseAccounts.SingleOrDefault(e => e.FileName.ToLower() == fileAttachment.Name.ToLower()) != null)
                                                 exist = true;
-                                            }
+                                        }
 
                                         if (!exist)
                                         {
@@ -1310,11 +1310,11 @@ namespace Great.Models
 
                             if (deleteMessage)
                                 break;
-                            }
-
-                        if (deleteMessage)
-                            message.Delete(DeleteMode.MoveToDeletedItems);
                         }
+
+                        if(deleteMessage)
+                            message.Delete(DeleteMode.MoveToDeletedItems);
+                    }
                     break;
 
                 default:
@@ -1344,8 +1344,8 @@ namespace Great.Models
                     return EMessageType.FDL_EA_New;
                 else
                     return EMessageType.Unknown;
-                }
             }
+        }
 
         public static EFileType GetFileType(string filename)
         {
@@ -1370,9 +1370,9 @@ namespace Great.Models
                                  Month.All(char.IsDigit) && Enumerable.Range(1, 12).Contains(int.Parse(Month)) &&
                                  Year.All(char.IsDigit) && Enumerable.Range(ApplicationSettings.Timesheets.MinYear, ApplicationSettings.Timesheets.MaxYear).Contains(int.Parse(Year)))
                             return EFileType.FDL;
-                        }
                     }
                 }
+            }
             catch { }
 
             return EFileType.Unknown;

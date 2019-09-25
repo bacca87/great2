@@ -48,7 +48,7 @@ namespace Great.Utils.Behaviours
                 ((TextBoxBase)frameworkElement).SelectAll();
             else if (frameworkElement is PasswordBox)
                 ((PasswordBox)frameworkElement).SelectAll();
-            }
+        }
 
         private static void IgnoreMouseButton
                 (object sender, System.Windows.Input.MouseButtonEventArgs e)
