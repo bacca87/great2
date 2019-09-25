@@ -15,7 +15,7 @@ namespace Great.Utils.Extensions
             }
 
             TimeSpan totalDuration = periods.GetTotalDuration(roundByQuarterHour);
-            float total = totalDuration.Hours + (totalDuration.Minutes / 100f);
+            float total = totalDuration.Hours + (totalDuration.Minutes / 60f);
 
             return total > 0 ? total : 24;
         }
