@@ -24,6 +24,9 @@ where Event.Type =1);
 
 DELETE FROM Event;
 
+-- Add WidheldAmount to ea
+ALTER TABLE [ExpenseAccount] ADD COLUMN WidheldAmount REAL NULL DEFAULT NULL;
+
 --=========================================================================
 -- MANDATORY: Increment internal db version
 PRAGMA user_version = 12;

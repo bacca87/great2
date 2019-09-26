@@ -3,6 +3,7 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -41,6 +42,13 @@ namespace Great.ViewModels.Database
                 SetAndCheckChanged(ref _Currency, value);
                 CurrencyCode = CurrencyCodeMapper.GetSymbol(_Currency);
             }
+        }
+
+        private float _WidheldAmount;
+        public float WidheldAmount
+        {
+            get => _WidheldAmount;
+            set => SetAndCheckChanged(ref _WidheldAmount, value);
         }
 
         private string _Notes;
@@ -188,6 +196,8 @@ namespace Great.ViewModels.Database
 
         #region Display Properties
         public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}";
+
+
         #endregion
 
         public ExpenseAccountEVM(ExpenseAccount ea = null)
