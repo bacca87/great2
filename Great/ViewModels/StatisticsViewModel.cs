@@ -614,8 +614,9 @@ namespace Great.ViewModels
                                                                                                       d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
                                                                                                       e = new ExpenseAccountEVM(e)
                                                                                                      });
+                var porcodio = expenses.ToList();
 
-                var ExpensesMonth = expenses?.GroupBy(x=> x.d.Timesheets)
+                var ExpensesMonth = expenses?.GroupBy(x=> x.d.Timesheets.FirstOrDefault().Date.Month)
                                        .Select(g => new
                                        {
                                            Total = g.Sum(x => (x.e.Expenses.Sum(y=> y.TotalAmount))),
