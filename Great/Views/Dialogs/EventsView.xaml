@@ -152,75 +152,76 @@
                     <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDate, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Column="1"  Margin="10,0,0,0">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="GotFocus">
-                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="LostFocus">
-                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <CheckBox   Grid.Row="0" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event"  IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock  Margin="5" Grid.Row="1" Text="Category:" VerticalAlignment="Center"/>
-                <ComboBox  Grid.Row="2"
+            <ScrollViewer Grid.Column="1"  Margin="10,0,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <Grid >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="GotFocus">
+                            <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox   Grid.Row="0" Margin="5" FlowDirection="LeftToRight"  Content="All Day Event"  IsChecked="{Binding SelectedEvent.IsAllDay, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock  Margin="5" Grid.Row="1" Text="Category:" VerticalAlignment="Center"/>
+                    <ComboBox  Grid.Row="2"
                                   SelectedItem="{Binding SelectedEvent.Type1}" 
                                   SelectedValue="{Binding SelectedEvent.Type, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
                                   SelectedValuePath="Id">
-                    <ComboBox.Resources>
-                        <CollectionViewSource x:Key="Items" Source="{Binding EventTypes}" />
-                    </ComboBox.Resources>
-                    <ComboBox.ItemsSource>
-                        <CompositeCollection>
-                            <m:EventTypeDTO/>
-                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                        </CompositeCollection>
-                    </ComboBox.ItemsSource>
-                </ComboBox>
-                <TextBlock  Margin="5" Grid.Row="3" Text="Title:" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="4" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock   Margin="5" Grid.Row="5" Text="Location:" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="6" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock  Margin="5" Grid.Row="7" Text="Start Date:" VerticalAlignment="Center"/>
-                <Grid Grid.Row="8" VerticalAlignment="Center" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Items" Source="{Binding EventTypes}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <m:EventTypeDTO/>
+                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <TextBlock  Margin="5" Grid.Row="3" Text="Title:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="4" Text="{Binding SelectedEvent.Title, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock   Margin="5" Grid.Row="5" Text="Location:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="6" Text="{Binding SelectedEvent.Location, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock  Margin="5" Grid.Row="7" Text="Start Date:" VerticalAlignment="Center"/>
+                    <Grid Grid.Row="8" VerticalAlignment="Center" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  />
-                    <ComboBox  Grid.Column="2"
+                        <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0" SelectedDate="{Binding SelectedEvent.StartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  />
+                        <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding SelectedEvent.BeginHour}" 
                                   SelectedValue="{Binding SelectedEvent.BeginHour,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}"  
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
-                    </ComboBox>
-                    <ComboBox  Grid.Column="6"
+                        </ComboBox>
+                        <ComboBox  Grid.Column="6"
                            ItemsSource="{Binding Minutes}"
                                   SelectedItem="{Binding SelectedEvent.BeginMinutes}" 
                                   SelectedValue="{Binding SelectedEvent.BeginMinutes,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
@@ -228,29 +229,28 @@
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
 
-                    </ComboBox>
-                </Grid>
+                        </ComboBox>
+                    </Grid>
+                    <TextBlock  Margin="5" Grid.Row="9" Text="End Date:" VerticalAlignment="Center"/>
+                    <Grid Grid.Row="10" VerticalAlignment="Center" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                <TextBlock  Margin="5" Grid.Row="9" Text="End Date:" VerticalAlignment="Center"/>
-                <Grid Grid.Row="10" VerticalAlignment="Center" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true,UpdateSourceTrigger=PropertyChanged}"/>
-                    <ComboBox  Grid.Column="2"
+                        <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0" SelectedDate="{Binding SelectedEvent.EndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true,UpdateSourceTrigger=PropertyChanged}"/>
+                        <ComboBox  Grid.Column="2"
                            ItemsSource="{Binding Hours}"
                                   SelectedItem="{Binding SelectedEvent.EndHour}" 
                                   SelectedValue="{Binding SelectedEvent.EndHour,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
-                    </ComboBox>
-                    <ComboBox  Grid.Column="6"
+                        </ComboBox>
+                        <ComboBox  Grid.Column="6"
                            ItemsSource="{Binding Minutes}"
                                   SelectedItem="{Binding SelectedEvent.EndMinutes}" 
                                   SelectedValue="{Binding SelectedEvent.EndMinutes ,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
@@ -258,14 +258,15 @@
                                   Visibility="{Binding ShowHourTimeFields, Converter={StaticResource BoolToVisibilityConverter}}"
                                   SelectedIndex="0">
 
-                    </ComboBox>
+                        </ComboBox>
+                    </Grid>
+                    <TextBlock   Grid.Row="11" Margin="5" Text="Description:" VerticalAlignment="Center"/>
+                    <TextBox    Grid.Row="12" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock   Grid.Row="13" Margin="5" Text="Notes:" VerticalAlignment="Center"/>
+                    <TextBox    Grid.Row="14" Text="{Binding SelectedEvent.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
                 </Grid>
-                <TextBlock   Grid.Row="11" Margin="5" Text="Description:" VerticalAlignment="Center"/>
-                <TextBox    Grid.Row="12" Text="{Binding SelectedEvent.Description, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock   Grid.Row="13" Margin="5" Text="Notes:" VerticalAlignment="Center"/>
-                <TextBox    Grid.Row="14" Text="{Binding SelectedEvent.Notes, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"></TextBlock>
-            </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 
