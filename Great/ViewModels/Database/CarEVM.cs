@@ -131,7 +131,9 @@ namespace Great.ViewModels.Database
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
             Id = car.Id;
+            IsChanged = false;
             return true;
+
         }
 
         public override bool Delete(DBArchive db)

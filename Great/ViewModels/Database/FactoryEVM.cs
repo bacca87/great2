@@ -191,6 +191,7 @@ namespace Great.ViewModels.Database
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();
             Id = factory.Id;
+            IsChanged = false;
             return true;
         }
     }

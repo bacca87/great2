@@ -288,6 +288,7 @@ namespace Great.ViewModels.Database
             db.CarRentalHistories.AddOrUpdate(rent);
             db.SaveChanges();
             Id = rent.Id;
+            IsChanged = false;
             return true;
         }
 

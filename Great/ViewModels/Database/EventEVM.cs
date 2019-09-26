@@ -355,6 +355,7 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, ev);
             db.Events.AddOrUpdate(ev);
             db.SaveChanges();
+            IsChanged = false;
             Id = ev.Id;
 
             return true;

@@ -135,6 +135,7 @@ namespace Great.ViewModels.Database
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;
+            IsChanged = false;
             return true;
         }
 

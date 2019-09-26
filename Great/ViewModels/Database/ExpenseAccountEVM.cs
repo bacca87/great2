@@ -234,6 +234,7 @@ namespace Great.ViewModels.Database
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;
+            IsChanged = false;
             return true;
         }
 
