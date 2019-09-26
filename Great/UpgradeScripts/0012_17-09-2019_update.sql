@@ -15,6 +15,15 @@ UPDATE ExpenseAccount SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 O
 -- New factory field
 ALTER TABLE [Factory] ADD COLUMN CountryCode NVARCHAR(2) NULL DEFAULT NULL;
 
+-- Fix weekend type connected to events: delete all and reimport it from exchange
+UPDATE  Day Set Type =0, Event = null 
+where Day.Timestamp in (
+Select Day.Timestamp FROM Day JOIN DayEvent on Day.TimeStamp = Day.TimeStamp
+JOIN Event on DayEvent.EventId = Event.Id
+where Event.Type =1);
+
+DELETE FROM Event;
+
 --=========================================================================
 -- MANDATORY: Increment internal db version
 PRAGMA user_version = 12;
