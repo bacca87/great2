@@ -353,7 +353,7 @@
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBox FontSize="20" PreviewTextInput="TextBox_PreviewTextInput"    
-                        Text="{Binding SelectedEA.WidheldAmount}" 
+                        Text="{Binding SelectedEA.WitheldAmount}" 
                     />
                     <TextBlock  FontSize="20">
                         <TextBlock.Text>

@@ -44,11 +44,11 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private float _WidheldAmount;
-        public float WidheldAmount
+        private float _WitheldAmount;
+        public float WitheldAmount
         {
-            get => _WidheldAmount;
-            set => SetAndCheckChanged(ref _WidheldAmount, value);
+            get => _WitheldAmount;
+            set => SetAndCheckChanged(ref _WitheldAmount, value);
         }
 
         private string _Notes;
