@@ -127,7 +127,6 @@
                             </MultiBinding>
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="test" Binding="{Binding SelectedEA.DeductionAmount}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Currency" Binding="{Binding Currency1.Id}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="CdC" Binding="{Binding CdC}" CellStyle="{StaticResource CenterAligned}"/>
