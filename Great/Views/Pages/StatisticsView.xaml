@@ -266,7 +266,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="Hours"
+                        <lvc:Axis Title="Amount"
                           Foreground="{DynamicResource TextBrush}">
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">

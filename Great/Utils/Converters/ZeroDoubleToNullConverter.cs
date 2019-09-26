@@ -10,13 +10,15 @@ namespace Great.Utils.Converters
         {
             if (value != null && value is double && (double)value == 0)
                 return null;
+            else if (value != null && value is float && (float)value == 0)
+                return null;
             else
                 return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return value;
         }
     }
 }

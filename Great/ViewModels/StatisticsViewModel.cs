@@ -15,6 +15,7 @@ namespace Great.ViewModels
     {
         #region Properties
         private Func<ChartPoint, string> HoursLabel { get; set; }
+        private Func<ChartPoint, string> CurrencyLabel { get; set; }
 
         private int _WorkedDays;
         public int WorkedDays
@@ -149,6 +150,7 @@ namespace Great.ViewModels
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
 
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
+            
 
             SelectedYear = DateTime.Now.Year;
             IsRefreshEnabled = true;
@@ -600,7 +602,6 @@ namespace Great.ViewModels
 
         private void LoadExpensesData()
         {
-
             Dictionary<string, int> factoriesData = new Dictionary<string, int>();
 
             using (DBArchive db = new DBArchive())
@@ -614,40 +615,40 @@ namespace Great.ViewModels
                                                                                                       d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
                                                                                                       e = new ExpenseAccountEVM(e)
                                                                                                      });
-                var porcodio = expenses.ToList();
 
                 var ExpensesMonth = expenses?.GroupBy(x=> x.d.Timesheets.FirstOrDefault().Date.Month)
                                        .Select(g => new
                                        {
-                                           Total = g.Sum(x => (x.e.Expenses.Sum(y=> y.TotalAmount))),
-                                           Deducted = g.Sum(x => (x.e.DeductionAmount))
+                                           Total = g.Sum(x => (x.e.Expenses.Sum(y=> y.TotalAmount)- x.e.DeductionAmount ??0)),
+                                           Deducted = g.Sum(x => (x.e.DeductionAmount ??0))
                                        });
                
                 ChartValues<double> TotalAmount = new ChartValues<double>();
                 ChartValues<double> DeductedAmount = new ChartValues<double>();
 
+                CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") +" "+ expenses.FirstOrDefault().e.Currency;
+
                 foreach (var e in ExpensesMonth)
                 {
                     TotalAmount.Add(e.Total);
                     DeductedAmount.Add(e.Deducted);
-
                 }
 
                 Expenses = new SeriesCollection()
                 {
                     new StackedColumnSeries()
                     {
-                        Title = "Total Expenses",
+                        Title = "Refound Expenses",
                         Values = TotalAmount,
                         DataLabels = false,
-                        LabelPoint = HoursLabel
+                        LabelPoint = CurrencyLabel
                     },
                     new StackedColumnSeries()
                     {
                         Title = "Deductions",
                         Values = DeductedAmount,
                         DataLabels = false,
-                        LabelPoint = HoursLabel
+                        LabelPoint = CurrencyLabel
                     }
                 };
 
