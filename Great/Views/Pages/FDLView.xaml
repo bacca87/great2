@@ -13,7 +13,6 @@
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView"
-
       Style="{DynamicResource MetroPage}">
 
     <Page.Resources>

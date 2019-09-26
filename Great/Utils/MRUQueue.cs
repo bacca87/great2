@@ -19,8 +19,8 @@ namespace Great.Utils
             {
                 foreach (T item in collection.Take(maxSize))
                     base.Add(item);
+                }
             }
-        }
 
         public new void Add(T obj) => Insert(0, obj);
 

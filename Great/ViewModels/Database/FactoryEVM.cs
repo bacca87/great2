@@ -21,7 +21,7 @@ namespace Great.ViewModels.Database
         public string Name
         {
             get => _Name;
-            set=> Set(ref _Name, value);
+            set => SetAndCheckChanged(ref _Name, value);
 
 
         }
@@ -30,15 +30,15 @@ namespace Great.ViewModels.Database
         public string CompanyName
         {
             get => _CompanyName;
-            set => Set(ref _CompanyName, value);
- 
+            set => SetAndCheckChanged(ref _CompanyName, value);
+
         }
 
         private string _Address;
         public string Address
         {
             get => _Address;
-            set=> Set(ref _Address, value);
+            set => SetAndCheckChanged(ref _Address, value);
 
         }
 
@@ -46,7 +46,7 @@ namespace Great.ViewModels.Database
         public double? Latitude
         {
             get => _Latitude;
-            set=> Set(ref _Latitude, value);
+            set => SetAndCheckChanged(ref _Latitude, value);
 
         }
 
@@ -54,7 +54,7 @@ namespace Great.ViewModels.Database
         public double? Longitude
         {
             get => _Longitude;
-            set => Set(ref _Longitude, value);
+            set => SetAndCheckChanged(ref _Longitude, value);
 
         }
 
@@ -62,14 +62,14 @@ namespace Great.ViewModels.Database
         public long TransferType
         {
             get => _TransferType;
-            set=> Set(ref _TransferType, value);
+            set => SetAndCheckChanged(ref _TransferType, value);
         }
 
         private bool _IsForfait;
         public bool IsForfait
         {
             get => _IsForfait;
-            set=> Set(ref _IsForfait, value);
+            set => SetAndCheckChanged(ref _IsForfait, value);
 
         }
 
@@ -88,14 +88,21 @@ namespace Great.ViewModels.Database
         public bool OverrideAddressOnFDL
         {
             get => _OverrideAddressOnFDL;
-            set=> Set(ref _OverrideAddressOnFDL, value);
+            set => SetAndCheckChanged(ref _OverrideAddressOnFDL, value);
+        }
+
+        private string _CountryCode;
+        public string CountryCode
+        {
+            get => _CountryCode;
+            set => SetAndCheckChanged(ref _CountryCode, value);
         }
 
         private TransferTypeDTO _TransferType1;
         public TransferTypeDTO TransferType1
         {
             get => _TransferType1;
-            set=> Set(ref _TransferType1, value);
+            set => Set(ref _TransferType1, value);
 
         }
 

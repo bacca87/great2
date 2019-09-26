@@ -3,6 +3,28 @@
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:Great">
+    <ResourceDictionary.MergedDictionaries>
+
+        <!--Fluent Ribbon Styles-->
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+
+
+        <!--Live Charts Styles-->
+        <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Size/l.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/light.xaml" />
+
+        <!--this is required always-->
+        <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
+
+
     <Style TargetType="Image" x:Key="DisabledImageStyle">
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
@@ -43,8 +65,9 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Background" Value="{x:Null}"/>
     </Style>
-    
+
     <Style x:Key="FormattedDatePicker"  TargetType="DatePicker">
+        <Setter Property="FirstDayOfWeek" Value="Monday"/>
         <Style.Resources>
             <Style TargetType="{x:Type DatePickerTextBox}">
                 <Setter Property="Control.Template">
@@ -60,12 +83,54 @@
         </Style.Resources>
     </Style>
 
-
     <Style x:Key="MaskedTextBoxBaseTimeSheet" BasedOn="{StaticResource MaskedTextBoxBase}" TargetType="xctk:MaskedTextBox">
         <Setter Property="Margin" Value="2.5" />
         <Setter Property="MaxLength" Value="5" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Width" Value="70" />
+    </Style>
+
+    <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+        <Setter Property="BorderThickness" Value="0.5"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
+                <Setter Property="Background" Value="{DynamicResource DefaultSaturdayColor}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
+                <Setter Property="Background" Value="{DynamicResource DefaultSundayColor}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsHoliday}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource DefaultHolidayColor}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="1">
+                <Setter Property="Background" Value="{DynamicResource DefaultVacationColor}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="2">
+                <Setter Property="Background" Value="{DynamicResource DefaultSickColor}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="3">
+                <Setter Property="Background" Value="{DynamicResource DefaultHomeworkColor}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="4">
+                <Setter Property="Background" Value="{DynamicResource DefaultSpecialLeaveColor}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
+        <Setter Property="Background" Value="{DynamicResource DefaultTravelStartColor}" />
+    </Style>
+
+    <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
+        <Setter Property="Background" Value="{DynamicResource DefaultTravelEndColor}" />
+    </Style>
+
+    <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
+        <Setter Property="Background" Value="{DynamicResource DefaultWorkStartColor}" />
+    </Style>
+
+    <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
+        <Setter Property="Background" Value="{DynamicResource DefaultWorkEndColor}" />
     </Style>
 
 </ResourceDictionary>

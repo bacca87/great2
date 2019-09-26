@@ -131,14 +131,14 @@ namespace Great.ViewModels.Database
         public string FDL
         {
             get => _FDL;
-            set => Set(ref _FDL, value);
+            set => SetAndCheckChanged(ref _FDL, value);
         }
 
         private string _Notes;
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value); 
+            set => SetAndCheckChanged(ref _Notes, value);
         }
 
         private DayDTO _Day;
@@ -398,7 +398,7 @@ namespace Great.ViewModels.Database
 
                 if (TimePeriods.HasOverlapPeriods(timesheet.TimePeriods))
                     return true;
-            }
+                }
 
             return false;
         }

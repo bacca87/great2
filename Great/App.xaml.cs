@@ -1,7 +1,6 @@
 ﻿using Great.Models;
 using Great.Models.Database;
 using Great.Properties;
-using Great.Utils;
 using Great.Views;
 using NLog;
 using System;
@@ -33,7 +32,13 @@ namespace Great
             SplashScreen splash = new SplashScreen();
             MainWindow = splash;
             if (!Debugger.IsAttached)
-            splash.Show();
+                splash.Show();
+
+            // themes
+            UserSettings.Themes.AttachCustomThemes();
+            UserSettings.Themes.ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
+            UserSettings.Themes.ApplyAllColors();
+
 
             //in order to ensure the UI stays responsive, we need to
             //do the work on a different thread
@@ -60,8 +65,6 @@ namespace Great
                     Settings.Default.UpgradeSettings = false;
                     Settings.Default.Save();
                 }
-
-                ApplySkin(UserSettings.Themes.Skin);
 
                 GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
                 InitializeDirectoryTree();
@@ -162,16 +165,5 @@ namespace Great
                   .ForEach(x => x.Delete());
         }
 
-        public void ApplySkin(ESkin newSkin)
-        {
-            foreach (ResourceDictionary dict in Resources.MergedDictionaries)
-            {
-                if (dict is SkinResourceDictionary skinDict)
-                    skinDict.UpdateSource();
-                else
-                    dict.Source = dict.Source;
-            }
-
-        }
     }
 }

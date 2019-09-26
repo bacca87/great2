@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight.Command;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
-using Great.Utils.Extensions;
 using Great.ViewModels.Database;
 using System;
 using System.Collections.ObjectModel;
@@ -75,10 +74,7 @@ namespace Great.ViewModels
         }
 
         private ICollectionView _FilteredRentals;
-        public ICollectionView FilteredRentals
-        {
-            get { return _FilteredRentals; }
-        }
+        public ICollectionView FilteredRentals => _FilteredRentals;
 
         private ObservableCollectionEx<CarEVM> _Cars;
         public ObservableCollectionEx<CarEVM> Cars
@@ -96,8 +92,8 @@ namespace Great.ViewModels
             set
             {
                 _selectedRent?.CheckChangedEntity();
-                Set(ref _selectedRent, value);
-                SelectedCar = _selectedRent?.Car1;
+                Set(ref _selectedRent, value ?? new CarRentalHistoryEVM());
+                LicensePlate = _selectedRent?.Car1.LicensePlate;
 
                 ShowEditMenu = false;
             }
@@ -112,10 +108,9 @@ namespace Great.ViewModels
             {
                 _selectedCar?.CheckChangedEntity();
 
-                if (value != null && value != _selectedCar)
+                if (value != null)
                 {
                     Set(ref _selectedCar, value);
-                    LicensePlate = SelectedCar.LicensePlate;
                 }
             }
         }
@@ -129,8 +124,10 @@ namespace Great.ViewModels
                 Set(ref _LicensePlate, value);
                 var car = Cars.SingleOrDefault(x => x.LicensePlate == _LicensePlate);
                 if (car != null)
+                {
                     SelectedCar = car;
-                    SelectedCar.LicensePlate = value;
+                }
+                //   SelectedCar.LicensePlate = value;
             }
         }
 
@@ -332,15 +329,27 @@ namespace Great.ViewModels
                 db.SaveChanges();
             }
 
-            if (existingRent == null) Rentals.Add(rc);
-            if (existingCar == null) Cars.Add(rc.Car1);
+            if (existingRent == null)           
+                Rentals.Add(rc);
 
-            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Brand) == null) CarBrands.Add(rc.Car1.Brand);
-            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Model) == null) CarModels.Add(rc.Car1.Model);
-            if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null) Locations.Add(rc.StartLocation);
+            if (existingCar == null)
+                Cars.Add(rc.Car1);
+
+            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Brand) == null)
+                CarBrands.Add(rc.Car1.Brand);
+
+            if (CarBrands.SingleOrDefault(x => x == rc.Car1?.Model) == null)
+                CarModels.Add(rc.Car1.Model);
+
+            if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null)
+                Locations.Add(rc.StartLocation);
+
             if (!String.IsNullOrEmpty(rc.EndLocation))
-            if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null)
-                Locations.Add(rc.EndLocation);
+            {
+                if (Locations.SingleOrDefault(x => x == rc.EndLocation) == null)
+                    Locations.Add(rc.EndLocation);
+            }
+
             ShowEditMenu = false;
             FilteredRentals.Refresh();
 

@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Great.Utils.Extensions;
-using Great.ViewModels;
+﻿using Great.Utils.Extensions;
 using System.Windows.Controls;
 
 namespace Great.Views.Pages

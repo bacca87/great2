@@ -7,24 +7,18 @@ using System.Windows;
 
 namespace Great.ViewModels.Database
 {
-    public abstract class EntityViewModelBase : ViewModelBase
+    public abstract class EntityViewModelBase : ViewModelBase, IChangeTracking
     {
-        public bool IsChanged { get; protected set; }
-        public EntityViewModelBase()
-        {
-            PropertyChanged += EntityViewModelBase_PropertyChanged;
-        }
-
-        private void EntityViewModelBase_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            IsChanged = true;
-        }
+        #region IChangeTracking
+        public bool IsChanged { get; set; }
+        public void AcceptChanges() => throw new System.NotImplementedException();
+        #endregion
 
         public bool Refresh()
         {
             using (DBArchive db = new DBArchive())
                 return Refresh(db);
-        }
+            }
 
         public abstract bool Refresh(DBArchive db);
 
@@ -32,7 +26,7 @@ namespace Great.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Save(db);
-        }
+            }
 
         public abstract bool Save(DBArchive db);
 
@@ -40,23 +34,36 @@ namespace Great.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Delete(db);
-        }
+            }
 
         public abstract bool Delete(DBArchive db);
 
         public void CheckChangedEntity()
         {
-            return;
+
             //incomplete management
-            if (!IsChanged) return;
+            if (!IsChanged)
+            {
+                return;
+            }
 
-            if (MetroMessageBox.Show("Do you want to commit changes before leave selecion?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MetroMessageBox.Show("Do you want to commit changes before leave selection?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)           
                 Save();
-            else
+            
+            else          
                 Refresh();
-
             IsChanged = false;
         }
+
+        protected bool SetAndCheckChanged<T>(ref T field, T newValue = default, bool broadcast = false, [CallerMemberName] string propertyName = null)
+        {
+
+
+            IsChanged = !EqualityComparer<T>.Default.Equals(field, newValue);
+
+            return Set(ref field, newValue);
+        }
+
 
     }
 }

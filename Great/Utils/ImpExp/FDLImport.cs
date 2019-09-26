@@ -124,13 +124,13 @@ namespace Great.Utils
                                 }
                                 else
                                     Error("Missing FDL on database. Should never happen.");
-                            }
+                                }
 
                             Message($"FDL {fdl.Id} OK");
                         }
                         else
                             Error($"Failed to import FDL from file: {file.FullName}");
-                    }
+                        }
                     catch (Exception ex)
                     {
                         Error($"Failed importing FDL {fdl?.Id}. {ex}", ex);
@@ -191,7 +191,7 @@ namespace Great.Utils
                                 }
                                 else
                                     Error("Missing EA on database. Should never happen.");
-                            }
+                                }
 
                             Message($"Expense Account {ea.FDL} OK");
                         }

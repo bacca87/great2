@@ -193,7 +193,7 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
-        }
+            }
 
 
 
@@ -406,8 +406,8 @@ namespace Great.ViewModels
 
                 if (dlg.ShowDialog() == true)
                     _fdlManager.SaveAs(ea, dlg.FileName);
+                }
             }
-        }
 
         public void Compile(ExpenseAccountEVM ea)
         {
@@ -434,7 +434,7 @@ namespace Great.ViewModels
                 {
                     if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                         return;
-                }
+                    }
 
             }
 
@@ -472,10 +472,11 @@ namespace Great.ViewModels
                 return;
             }
 
-            if (MetroMessageBox.Show("Are you sure to mark as \"Refunded\" the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to change the \"Refunded\" status of the selected expense account?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            ea.IsRefunded = true;
+
+            ea.IsRefunded = !ea.IsRefunded;
             ea.NotifyAsNew = false;
             ea.Save();
         }

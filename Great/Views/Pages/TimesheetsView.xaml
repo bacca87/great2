@@ -152,10 +152,11 @@
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
                 <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Expander  x:Name="timesheetPanel" Header="TIMESHEET INFO"  Grid.Row="2" IsExpanded="False" Expanded="TimesheetPanel_Expanded"   >
+        <Expander x:Name="timesheetPanel" Header="TIMESHEET INFO"    Grid.Row="2" IsExpanded="False" Expanded="TimesheetPanel_Expanded"    >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

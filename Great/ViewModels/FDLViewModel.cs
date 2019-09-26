@@ -173,7 +173,7 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
-        }
+            }
 
 
         public void NewFDL(NewItemMessage<FDLEVM> item)
@@ -296,7 +296,7 @@ namespace Great.ViewModels
 
                         foreach (var fdl in fdlToUpdate)
                             fdl.Factory1 = factory;
-                    }
+                        }
                 })
             );
         }
@@ -313,7 +313,7 @@ namespace Great.ViewModels
 
                         if (factory != null)
                             Factories.Remove(factory);
-                    }
+                        }
                 })
             );
         }
@@ -409,8 +409,8 @@ namespace Great.ViewModels
 
                 if (dlg.ShowDialog() == true)
                     _fdlManager.SaveAs(fdl, dlg.FileName);
+                }
             }
-        }
 
         public void Compile(FDLEVM fdl)
         {
@@ -480,7 +480,7 @@ namespace Great.ViewModels
         {
             if (SelectedFDL.Factory.HasValue)
                 OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
-        }
+            }
 
         public void ClearFDL()
         {

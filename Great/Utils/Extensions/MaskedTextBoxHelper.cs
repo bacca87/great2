@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 
@@ -28,7 +24,7 @@ namespace Great.Utils.Extensions
 
             if (hours.HasValue || minutes.HasValue)
                 textbox.Text = textbox.Text.Replace(textbox.PromptChar, '0');
-        }
+            }
 
         public static void PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -59,7 +55,7 @@ namespace Great.Utils.Extensions
 
             if (minutes.HasValue && (minutes.Value < 0 || minutes.Value > 59))
                 e.Handled = true;
-        }
+            }
 
         private static bool ParseTimeSpanMask(string mask, char promptChar, out int? hours, out int? minutes)
         {

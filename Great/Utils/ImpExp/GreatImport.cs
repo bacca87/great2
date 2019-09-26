@@ -560,7 +560,7 @@ namespace Great.Utils
                                         {
                                             currentFdl.IsReadOnly = true;
                                             currentFdl.IsCompiled = true;
-                                        }   
+                                        }
 
                                         db.FDLs.AddOrUpdate(currentFdl);
                                         db.SaveChanges();
@@ -641,7 +641,7 @@ namespace Great.Utils
                                     {
                                         currentEA.IsReadOnly = true;
                                         currentEA.IsCompiled = true;
-                                    }   
+                                    }
 
                                     db.ExpenseAccounts.AddOrUpdate(currentEA);
                                     db.SaveChanges();

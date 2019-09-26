@@ -3,79 +3,47 @@
                     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
+
         <!--Fluent Ribbon Styles-->
-        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Accents/Cobalt.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseLight.xaml" />
-        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+
         <!-- Accent and AppTheme setting -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+        
+         <!--Needed also if overridden. I used a random color--> 
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+
         <!--Live Charts Styles-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Size/l.xaml" />
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/light.xaml" />
+
         <!--this is required always-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
 
         <!--Custom Styles-->
         <ResourceDictionary>
+
+            <!--Default Colors overridden by usersettings-->
+            <SolidColorBrush x:Key="DefaultSaturdayColor" Color="#90caf9"/>
+            <SolidColorBrush x:Key="DefaultSundayColor" Color="#ef9a9a"/>
+            <SolidColorBrush x:Key="DefaultHolidayColor" Color="#ffcc80"/>
+            <SolidColorBrush x:Key="DefaultVacationColor" Color="#c5e1a5"/>
+            <SolidColorBrush x:Key="DefaultSickColor" Color="#f48fb1"/>
+            <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#eeeeee"/>
+            <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#ccffcc"/>
+
+            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc"/>
+            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc"/>
+            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8"/>
+            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8"/>
+
             <Style x:Key="AutoCompleteBoxStyle"  TargetType="toolkit:AutoCompleteBox">
-            </Style>
-            <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                <Setter Property="BorderThickness" Value="0.5"></Setter>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
-                        <Setter Property="Background" Value="#90caf9" />
-                        <!--Light Blue-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                        <Setter Property="Background" Value="#ef9a9a" />
-                        <!--Light Red-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                        <Setter Property="Background" Value="#ffcc80" />
-                        <!--Light orange-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="1">
-                        <!--Vacation-->
-                        <Setter Property="Background" Value="#c5e1a5" />
-                        <!--light green -->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="2">
-                        <!--Day Of Sick-->
-                        <Setter Property="Background" Value="#f48fb1" />
-                        <!--Purple-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="3">
-                        <!--Day of Home Work-->
-                        <Setter Property="Background" Value="#eeeeee" />
-                        <!--Purple-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="4">
-                        <!--Special Leave-->
-                        <Setter Property="Background" Value="#ccffcc" />
-                        <!--Purple-->
-                    </DataTrigger>
-                </Style.Triggers>
+                
+                
+                
             </Style>
 
-            <!--TODO allineare con material palette -->
-            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
-                <Setter Property="Background" Value="#b3e5fc" />
-            </Style>
-            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
-                <Setter Property="Background" Value="#b3e5fc" />
-            </Style>
-            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
-                <Setter Property="Background" Value="#dcedc8" />
-            </Style>
-            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
-                <Setter Property="Background" Value="#dcedc8" />
-            </Style>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

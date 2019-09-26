@@ -55,117 +55,33 @@ namespace Great.ViewModels
             SimpleIoc.Default.Register<EventsViewModel>(true);
         }
 
-        public TimesheetsViewModel Timesheets
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
-            }
-        }
+        public TimesheetsViewModel Timesheets => SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
 
-        public FactoriesViewModel Factories
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<FactoriesViewModel>();
-            }
-        }
+        public FactoriesViewModel Factories => SimpleIoc.Default.GetInstance<FactoriesViewModel>();
 
-        public InformationsViewModel Informations
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<InformationsViewModel>();
-            }
-        }
+        public InformationsViewModel Informations => SimpleIoc.Default.GetInstance<InformationsViewModel>();
 
-        public FDLViewModel FDL
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<FDLViewModel>();
-            }
-        }
+        public FDLViewModel FDL => SimpleIoc.Default.GetInstance<FDLViewModel>();
 
-        public ExpenseAccountViewModel ExpenseAccount
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
-            }
-        }
+        public ExpenseAccountViewModel ExpenseAccount => SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
 
-        public SettingsViewModel Settings
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<SettingsViewModel>();
-            }
-        }
+        public SettingsViewModel Settings => SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
-        public NotificationsViewModel Notifications
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-            }
-        }
+        public NotificationsViewModel Notifications => SimpleIoc.Default.GetInstance<NotificationsViewModel>();
 
-        public ImportExportViewModel ImportExport
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<ImportExportViewModel>();
-            }
-        }
+        public ImportExportViewModel ImportExport => SimpleIoc.Default.GetInstance<ImportExportViewModel>();
 
-        public GreatImportWizardViewModel GreatImportWizard
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
-            }
-        }
+        public GreatImportWizardViewModel GreatImportWizard => SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
 
-        public OrderRecipientsViewModel OrderRecipients
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
-            }
-        }
+        public OrderRecipientsViewModel OrderRecipients => SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
 
-        public StatisticsViewModel Statistics
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<StatisticsViewModel>();
-            }
-        }
+        public StatisticsViewModel Statistics => SimpleIoc.Default.GetInstance<StatisticsViewModel>();
 
-        public CarRentalViewModel CarRental
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<CarRentalViewModel>();
-            }
-        }
+        public CarRentalViewModel CarRental => SimpleIoc.Default.GetInstance<CarRentalViewModel>();
 
-        public FDLImportWizardViewModel FDLImportWizard
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<FDLImportWizardViewModel>();
-            }
-        }
+        public FDLImportWizardViewModel FDLImportWizard => SimpleIoc.Default.GetInstance<FDLImportWizardViewModel>();
 
-        public EventsViewModel Events
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<EventsViewModel>();
-            }
-        }
+        public EventsViewModel Events => SimpleIoc.Default.GetInstance<EventsViewModel>();
 
         public static void Cleanup()
         {

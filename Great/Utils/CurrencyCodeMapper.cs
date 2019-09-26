@@ -13,7 +13,7 @@ namespace Great.Utils
             if (!string.IsNullOrEmpty(code) && SymbolsByCode.ContainsKey(code))
                 return SymbolsByCode[code];
             else
-                return string.Empty;
+                return string.Empty;           
         }
 
         static CurrencyCodeMapper()

@@ -9,6 +9,8 @@ using System.Configuration;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Great.Models
 {
@@ -65,21 +67,9 @@ namespace Great.Models
                 }
             }
 
-            public static string FDL
-            {
-                get
-                {
-                    return Data + "FDL\\";
-                }
-            }
+            public static string FDL => Data + "FDL\\";
 
-            public static string ExpenseAccount
-            {
-                get
-                {
-                    return Data + "Expense Account\\";
-                }
-            }
+            public static string ExpenseAccount => Data + "Expense Account\\";
 
             public static string Cache
             {
@@ -95,13 +85,7 @@ namespace Great.Models
                 }
             }
 
-            public static string Log
-            {
-                get
-                {
-                    return Data + "Log\\";
-                }
-            }
+            public static string Log => Data + "Log\\";
         }
         #endregion
 
@@ -1002,7 +986,7 @@ namespace Great.Models
         {
             public const int WaitForNextConnectionRetry = 10000;
             public const int WaitForNextEmailCheck = 1000;
-            public const int WaitForNextEventChek = 600000; //10 minutes
+            public const int WaitForNextEventCheck = 600000; //10 minutes
             public const int WaitForCredentialsCheck = 1000;
 
             public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
@@ -1068,10 +1052,7 @@ namespace Great.Models
         {
             public static CountryCode Country
             {
-                get
-                {
-                    return Settings.Default.CountryCode;
-                }
+                get => Settings.Default.CountryCode;
                 set
                 {
                     Settings.Default.CountryCode = value;
@@ -1086,17 +1067,14 @@ namespace Great.Models
         {
             public static string EmailAddress
             {
-                get { return Settings.Default.EmailAddress; }
+                get => Settings.Default.EmailAddress;
                 set
                 {
                     Settings.Default.EmailAddress = value;
                     Settings.Default.Save();
                 }
             }
-            public static string Username
-            {
-                get { return Settings.Default.EmailAddress.Split('@')[0]; }
-            }
+            public static string Username => Settings.Default.EmailAddress.Split('@')[0];
 
             public static string EmailPassword
             {
@@ -1116,10 +1094,7 @@ namespace Great.Models
             {
                 public static StringCollection MRU
                 {
-                    get
-                    {
-                        return Settings.Default.MRUEmailRecipients;
-                    }
+                    get => Settings.Default.MRUEmailRecipients;
                     set
                     {
                         Settings.Default.MRUEmailRecipients = value;
@@ -1129,10 +1104,7 @@ namespace Great.Models
 
                 public static StringCollection FDLCancelRequest
                 {
-                    get
-                    {
-                        return Settings.Default.FDLCancelRequestRecipients;
-                    }
+                    get => Settings.Default.FDLCancelRequestRecipients;
                     set
                     {
                         Settings.Default.FDLCancelRequestRecipients = value;
@@ -1148,7 +1120,7 @@ namespace Great.Models
         {
             public static bool AutoAddFactories
             {
-                get { return Settings.Default.AutoAddFactories; }
+                get => Settings.Default.AutoAddFactories;
                 set
                 {
                     Settings.Default.AutoAddFactories = value;
@@ -1158,7 +1130,7 @@ namespace Great.Models
 
             public static bool AutoAssignFactories
             {
-                get { return Settings.Default.AutoAssignFactories; }
+                get => Settings.Default.AutoAssignFactories;
                 set
                 {
                     Settings.Default.AutoAssignFactories = value;
@@ -1172,27 +1144,299 @@ namespace Great.Models
 
         public static class Themes
         {
-            private static ESkin _skin;
-            public static ESkin Skin
+            //used to compare with origina theme settings without restarting the application
+            private static ResourceDictionary _LightSkinDictionary;
+            private static ResourceDictionary LightSkinDictionary
             {
-                get => (ESkin)Settings.Default.Skin;
+                get
+                {
+                    if (_LightSkinDictionary == null)
+                    {
+                        _LightSkinDictionary = new ResourceDictionary();
+                        _LightSkinDictionary.Source = new Uri("Skins/LightSkin.xaml", UriKind.Relative);
+                    }
+                    return _LightSkinDictionary;
+
+                }
+
+            }
+
+            private static ResourceDictionary _DarkSkinDictionary;
+            private static ResourceDictionary DarkSkinDictionary
+            {
+                get
+                {
+                    if (_DarkSkinDictionary == null)
+                    {
+                        _DarkSkinDictionary = new ResourceDictionary();
+                        _DarkSkinDictionary.Source = new Uri("Skins/DarkSkin.xaml", UriKind.Relative);
+                    }
+                    return _DarkSkinDictionary;
+
+                }
+
+            }
+
+            public static ETheme Theme
+            {
+                get => (ETheme)Settings.Default.Skin;
                 set
                 {
-                    _skin = value;
                     Settings.Default.Skin = (int)value;
                     Settings.Default.Save();
-                    (App.Current as App).ApplySkin(value);
                 }
             }
+            public static EAccentColor AccentColor
+            {
+                get => (EAccentColor)Settings.Default.AccentColor;
+                set
+                {
+                    Settings.Default.AccentColor = (int)value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomSaturdayColorUsed
+            {
+                get => Settings.Default.CustomSaturdayColorUsed;
+                set
+                {
+                    Settings.Default.CustomSaturdayColorUsed = value;
+                    Settings.Default.Save();
+
+                }
+            }
+            public static SolidColorBrush CustomSaturdayColor
+            {
+                get => Settings.Default.SaturdayColor;
+                set
+                {
+                    Settings.Default.SaturdayColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomSundayColorUsed
+            {
+                get => Settings.Default.CustomSundayColorUsed;
+                set
+                {
+                    Settings.Default.CustomSundayColorUsed = value;
+                    Settings.Default.Save();
+                }
+            }
+            public static SolidColorBrush CustomSundayColor
+            {
+                get => Settings.Default.SundayColor;
+                set
+                {
+                    Settings.Default.SundayColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomHolidayColorUsed
+            {
+                get => Settings.Default.CustomHolidayColorUsed;
+                set
+                {
+                    Settings.Default.CustomHolidayColorUsed = value;
+                    Settings.Default.Save();
+                }
+            }
+            public static SolidColorBrush CustomHolidayColor
+            {
+                get => Settings.Default.HolidayColor;
+                set
+                {
+                    Settings.Default.HolidayColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomVacationColorUsed
+            {
+                get => Settings.Default.CustomVacationColorUsed;
+                set
+                {
+                    Settings.Default.CustomVacationColorUsed = value;
+                    Settings.Default.Save();
+                }
+            }
+            public static SolidColorBrush CustomVacationColor
+            {
+                get => Settings.Default.VacationColor;
+                set
+                {
+                    Settings.Default.VacationColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomSickColorUsed
+            {
+                get => Settings.Default.CustomSickColorUsed;
+                set
+                {
+                    Settings.Default.CustomSickColorUsed = value;
+                    Settings.Default.Save();
+                }
+            }
+            public static SolidColorBrush CustomSickColor
+            {
+                get => Settings.Default.SickColor;
+                set
+                {
+                    Settings.Default.SickColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomHomeworkColorUsed
+            {
+                get => Settings.Default.CustomHomeworkColorUsed;
+                set
+                {
+                    Settings.Default.CustomHomeworkColorUsed = value;
+                    Settings.Default.Save();
+                }
+            }
+            public static SolidColorBrush CustomHomeworkColor
+            {
+                get => Settings.Default.HomeworkColor;
+                set
+                {
+                    Settings.Default.HomeworkColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool IsCustomSpecialLeaveColorUsed
+            {
+                get => Settings.Default.CustomSpecialLeaveColorUsed;
+                set
+                {
+                    Settings.Default.CustomSpecialLeaveColorUsed = value;
+                    Settings.Default.Save();
+                }
+            }
+            public static SolidColorBrush CustomSpecialLeaveColor
+            {
+                get => Settings.Default.SpecialLeaveColor;
+                set
+                {
+                    Settings.Default.SpecialLeaveColor = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static void ApplySingleColor(string resourceName, SolidColorBrush color)
+            {
+                if (App.Current.Resources[resourceName] is SolidColorBrush)
+                {
+                    if ((App.Current.Resources[resourceName] as SolidColorBrush).Color != color.Color)
+                        App.Current.Resources[resourceName] = color;
+                }
+            }
+
+            public static void ApplyAllColors()
+            {
+                // Get the original resource dictionary and compare it with the selected one
+
+                var usedDict = Theme == ETheme.LightSkin ? LightSkinDictionary : DarkSkinDictionary;
+
+                if (IsCustomSaturdayColorUsed) ApplySingleColor("DefaultSaturdayColor", CustomSaturdayColor);
+                else ApplySingleColor("DefaultSaturdayColor", usedDict["DefaultSaturdayColor"] as SolidColorBrush);
+
+                if (IsCustomSundayColorUsed) ApplySingleColor("DefaultSundayColor", CustomSundayColor);
+                else ApplySingleColor("DefaultSundayColor", usedDict["DefaultSundayColor"] as SolidColorBrush);
+
+                if (IsCustomHolidayColorUsed) ApplySingleColor("DefaultHolidayColor", CustomHolidayColor);
+                else ApplySingleColor("DefaultHolidayColor", usedDict["DefaultHolidayColor"] as SolidColorBrush);
+
+                if (IsCustomVacationColorUsed) ApplySingleColor("DefaultVacationColor", CustomVacationColor);
+                else ApplySingleColor("DefaultVacationColor", usedDict["DefaultVacationColor"] as SolidColorBrush);
+
+                if (IsCustomSickColorUsed) ApplySingleColor("DefaultSickColor", CustomSickColor);
+                else ApplySingleColor("DefaultSickColor", usedDict["DefaultSickColor"] as SolidColorBrush);
+
+                if (IsCustomHomeworkColorUsed) ApplySingleColor("DefaultHomeworkColor", CustomHomeworkColor);
+                else ApplySingleColor("DefaultHomeworkColor", usedDict["DefaultHomeworkColor"] as SolidColorBrush);
+
+                if (IsCustomSpecialLeaveColorUsed) ApplySingleColor("DefaultSpecialLeaveColor", CustomSpecialLeaveColor);
+                else ApplySingleColor("DefaultSpecialLeaveColor", usedDict["DefaultSpecialLeaveColor"] as SolidColorBrush);
+
+            }
+
+            public static void ApplyThemeAccent(ETheme theme, EAccentColor accent)
+            {
+                try
+                {
+
+                    Fluent.ThemeManager.ChangeAppStyle(Application.Current,
+                        Fluent.ThemeManager.GetAccent(accent.ToString()),
+                        Fluent.ThemeManager.GetAppTheme(theme.ToString()));
+
+                    MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
+                        MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
+                        MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+                }
+                catch (Exception)
+                {
+
+
+                }
+
+
+            }
+
+            public static void AttachCustomThemes()
+            {
+                Fluent.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                Fluent.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+
+                MahApps.Metro.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                MahApps.Metro.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+            }
+
         }
 
         #endregion
     }
     #endregion
 
-    public enum ESkin : int
+    public enum ETheme : int
     {
-        Light = 1,
-        Dark = 0
+        DarkSkin = 0,
+        LightSkin = 1
+    }
+
+    public enum EAccentColor : int
+    {
+        //Default:Cobalt
+
+        Colalt = 0,
+        Red = 1,
+        Green = 2,
+        Blue = 3,
+        Purple = 4,
+        Orange = 5,
+        Lime = 6,
+        Emerald = 7,
+        Teal = 8,
+        Cyan = 9,
+        Indigo = 10,
+        Violet = 11,
+        Pink = 12,
+        Magenta = 13,
+        Crimson = 14,
+        Amber = 15,
+        Yellow = 16,
+        Brown = 17,
+        Olive = 18,
+        Steel = 19,
+        Mauve = 20,
+        Taupe = 21,
+        Sienna = 22,
     }
 }

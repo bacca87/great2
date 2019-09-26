@@ -35,14 +35,14 @@ namespace Great.Utils
             {
                 foreach (T item in e.OldItems)
                     item.PropertyChanged -= ChildPropertyChanged;
-            }
+                }
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.NewItems)
                     item.PropertyChanged += ChildPropertyChanged;
-            }
+                }
 
             base.OnCollectionChanged(e);
         }
@@ -69,7 +69,7 @@ namespace Great.Utils
         {
             foreach (T item in Items)
                 item.PropertyChanged += ChildPropertyChanged;
-        }
+            }
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

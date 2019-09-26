@@ -5,10 +5,13 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:Gmap="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
       xmlns:c="clr-namespace:Great.Controls"
+      xmlns:enm="clr-namespace:Great.Models.Database"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+      xmlns:System="clr-namespace:System;assembly=mscorlib"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
+      xmlns:date="clr-namespace:Nager.Date;assembly=Nager.Date"
       mc:Ignorable="d"
       DataContext="{Binding Factories, Source={StaticResource Locator}}"
 	  Title="FactoriesManagerPage"
@@ -18,6 +21,12 @@
       IsVisibleChanged="Page_IsVisibleChanged"
       Style="{DynamicResource MetroPage}">
     <Page.Resources>
+        <ObjectDataProvider x:Key="enumCountries" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="date:CountryCode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
         <CollectionViewSource x:Key="FactoriesCollectionView" Source="{Binding Factories}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name" />
@@ -43,7 +52,7 @@
         </Gmap:GMapControl>
         <WrapPanel Grid.Row="0" Margin="10" Orientation="Horizontal">
             <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3" KeyUp="searchEntryTextBox_KeyUp" />
-            <Button Name="goButton" Click="goButton_Click">Go</Button>            
+            <Button Name="goButton" Click="goButton_Click">Go</Button>
         </WrapPanel>
         <Button Name="zoomOutButton" Grid.Row="0" Margin="10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
             <Image Source="pack://application:,,,/Images/24/map-map-marker.png" Stretch="None" />
@@ -52,7 +61,7 @@
             <Slider Name="zoomSlider" Orientation="Vertical" Height="100" ToolTip="Zoom level" ValueChanged="zoomSlider_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" HorizontalAlignment="Right"/>
             <Label Name="zoomLabel" Content="5x" />
         </WrapPanel>
-        
+
         <GridSplitter Name="splitter" Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Cursor="SizeNS"/>
 
         <Grid Grid.Row="2">
@@ -60,7 +69,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            
+
             <ListView Name="factoriesListView" 
                       ItemsSource="{Binding Source={StaticResource FactoriesCollectionView}}" 
                       SelectedItem="{Binding SelectedFactory}" Grid.Column="0">
@@ -108,22 +117,23 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Label Grid.Column="0" Grid.Row="0" Content="Name:"/>
                 <Label Grid.Column="0" Grid.Row="1" Content="Company Name:"/>
                 <Label Grid.Column="0" Grid.Row="2" Content="Address:"/>
-                <ToggleButton Name="latlngButton" Grid.Column="0" Grid.Row="3" Content="+" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="latlngButton_Click"/>
-                <Label Grid.Column="0" Grid.Row="4" Content="Transfer Type:"/>
-                <Label Grid.Column="0" Grid.Row="5" Content="Is Forfait:"/>
-                <Label Grid.Column="0" Grid.Row="6" Content="Override Address:"/>
+                <Label Grid.Column="0" Grid.Row="3" Content="State:"/>
+                <ToggleButton Name="latlngButton" Grid.Column="0" Grid.Row="4" Content="+" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="latlngButton_Click"/>
+                <Label Grid.Column="0" Grid.Row="5" Content="Transfer Type:"/>
+                <Label Grid.Column="0" Grid.Row="6" Content="Is Forfait:"/>
+                <Label Grid.Column="0" Grid.Row="7" Content="Override Address:"/>
 
                 <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding SelectedFactory.Name, Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" />
                 <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedFactory.CompanyName,Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
                 <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedFactory.Address,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Height="50"/>
-
-                <WrapPanel Grid.Column="1" Grid.Row="3">
+                <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding Source={StaticResource enumCountries}}" Text="{Binding SelectedFactory.CountryCode,Mode=TwoWay}" IsTextSearchEnabled="True" />
+                <WrapPanel Grid.Column="1" Grid.Row="4">
                     <Label>
                         <TextBlock>
                             <TextBlock.Text>
@@ -136,10 +146,12 @@
                     </Label>
                 </WrapPanel>
 
-                <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactory.TransferType1}" SelectedValue="{Binding SelectedFactory.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                <ComboBox Grid.Column="1" Grid.Row="5" ItemsSource="{Binding TransferTypes}" SelectedItem="{Binding SelectedFactory.TransferType1}" SelectedValue="{Binding SelectedFactory.TransferType}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
 
-                <CheckBox Grid.Column="1" Grid.Row="5" Margin="7" IsChecked="{Binding SelectedFactory.IsForfait}"/>
-                <CheckBox Grid.Column="1" Grid.Row="6" Margin="7" IsChecked="{Binding SelectedFactory.OverrideAddressOnFDL}"/>
+                <CheckBox Grid.Column="1" Grid.Row="6" Margin="7" IsChecked="{Binding SelectedFactory.IsForfait}"/>
+                <CheckBox Grid.Column="1" Grid.Row="7" Margin="7" IsChecked="{Binding SelectedFactory.OverrideAddressOnFDL}"/>
+
+
 
                 <!--<StackPanel Grid.ColumnSpan="2" Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <Button Margin="10" Content="Delete" Command="{Binding DeleteFactoryCommand}" CommandParameter="{Binding SelectedFactory}"/>

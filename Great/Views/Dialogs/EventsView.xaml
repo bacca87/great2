@@ -15,6 +15,7 @@
     xmlns:Fluent="urn:fluent-ribbon"
     mc:Ignorable="d"
         Title="Events"
+    Closing="MetroWindow_Closing"   
         DataContext="{Binding Events, Source={StaticResource Locator}}">
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -146,7 +147,7 @@
                     <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate,StringFormat='dd/MM/yyyy' }"/>
                     <DataGridTextColumn Header="End Date" Binding="{Binding EndDate,StringFormat='dd/MM/yyyy'}"/>
                     <DataGridTextColumn Header="Description"  Binding="{Binding Description}" />
-                    <DataGridTextColumn Header="Description"  Binding="{Binding Notes}" />
+                    <DataGridTextColumn Header="Notes"  Binding="{Binding Notes}" />
                     <DataGridTextColumn Header="Approver"  Binding="{Binding Approver}" />
                     <DataGridTextColumn Header="Approved Date" Binding="{Binding ApprovationDate, StringFormat='dd/MM/yyyy HH:mm:ss'}" />
                 </DataGrid.Columns>

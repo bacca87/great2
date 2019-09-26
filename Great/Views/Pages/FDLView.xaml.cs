@@ -13,7 +13,7 @@ namespace Great.Views.Pages
     public partial class FDLView : Page
     {
         private bool runonce = true;
-        private FDLViewModel _viewModel { get { return DataContext as FDLViewModel; } }
+        private FDLViewModel _viewModel => DataContext as FDLViewModel;
 
         public FDLView()
         {
@@ -38,7 +38,9 @@ namespace Great.Views.Pages
 
             // hack for selecting the first datagrid row by default in a hidden page
             if (fdlDataGridView.SelectedIndex == -1 && fdlDataGridView.Items.Count > 0)
+            {
                 fdlDataGridView.SelectedIndex = 0;
+            }
         }
 
         private void FactoryHyperlink_OnNavigate(object sender, RequestNavigateEventArgs e)

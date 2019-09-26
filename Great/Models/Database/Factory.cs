@@ -15,6 +15,7 @@ namespace Great.Models.Database
         public bool IsForfait { get; set; }
         public bool NotifyAsNew { get; set; }
         public bool OverrideAddressOnFDL { get; set; }
+        public string CountryCode { get; set; }
 
         [ForeignKey("TransferType")]
         public virtual TransferType TransferType1 { get; set; }

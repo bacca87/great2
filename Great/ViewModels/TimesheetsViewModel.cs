@@ -54,8 +54,8 @@ namespace Great.ViewModels
 
                 if (updateDays)
                     UpdateWorkingDays();
+                }
             }
-        }
 
         private int _currentMonth = DateTime.Now.Month;
         public int CurrentMonth
@@ -123,7 +123,7 @@ namespace Great.ViewModels
         }
 
         public ObservableCollection<FDLEVM> FDLs { get; set; }
-        
+
         public Action<DayEVM> OnSelectFirstDayInMonth;
         public Action<DayEVM> OnSelectToday;
         #endregion
@@ -177,7 +177,7 @@ namespace Great.ViewModels
             PasteDayCommand = new RelayCommand<DayEVM>(PasteDay);
 
             PageLoadedCommand = new RelayCommand(() => { });
-            PageUnloadedCommand = new RelayCommand(() => {});
+            PageUnloadedCommand = new RelayCommand(() => { });
 
             ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
@@ -210,9 +210,9 @@ namespace Great.ViewModels
                             days.Add(new DayEVM(currentDay));
                         else
                             days.Add(new DayEVM { Date = day });
+                        }
                     }
                 }
-            }
 
             WorkingDays = days;
         }
@@ -272,7 +272,7 @@ namespace Great.ViewModels
 
                 else
                     cancel = true;
-            }
+                }
 
             if (!cancel)
             {
@@ -344,7 +344,7 @@ namespace Great.ViewModels
 
             foreach (var timesheet in destinationDay.Timesheets)
                 Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
-        }
+            }
         public void ResetDay(DayEVM day)
         {
             day.Timesheets?.ToList().ForEach(x => DeleteTimesheet(x));
@@ -390,7 +390,7 @@ namespace Great.ViewModels
                 return;
             }
 
-            if(SelectedFDL != null)
+            if (SelectedFDL != null)
             {
                 timesheet.FDL1 = SelectedFDL;
                 timesheet.FDL = SelectedFDL.Id;
@@ -456,7 +456,7 @@ namespace Great.ViewModels
                             {
                                 foreach (var day in daysToRefresh)
                                     day.Refresh(db);
-                            }
+                                }
 
                             // update fdls combo
                             if (fdl != null)

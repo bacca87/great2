@@ -12,6 +12,9 @@ ALTER TABLE [Event] ADD COLUMN Notes NVARCHAR(50)  NULL DEFAULT NULL;
 UPDATE FDL SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 OR [Status] = 3;
 UPDATE ExpenseAccount SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 OR [Status] = 3;
 
+-- New factory field
+ALTER TABLE [Factory] ADD COLUMN CountryCode NVARCHAR(2) NULL DEFAULT NULL;
+
 --=========================================================================
 -- MANDATORY: Increment internal db version
 PRAGMA user_version = 12;

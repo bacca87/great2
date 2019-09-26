@@ -45,8 +45,8 @@ namespace Great.ViewModels
             {
                 if (SelectedEvent != null)
                     Set(ref _ShowHourTimeFields, value);
+                }
             }
-        }
 
         private bool _showOnlyVacations = false;
         public bool ShowOnlyVacations
@@ -67,10 +67,7 @@ namespace Great.ViewModels
         }
 
         private ICollectionView _FilteredEvents;
-        public ICollectionView FilteredEvents
-        {
-            get => _FilteredEvents;
-        }
+        public ICollectionView FilteredEvents => _FilteredEvents;
 
         public bool Filter(object ev)
         {
@@ -239,11 +236,13 @@ namespace Great.ViewModels
                  if (item.Content != null)
                  {
                      EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
-                     v = item.Content;
-                     //Global.Mapper.Map(item.Content, v);
-                     //v.Save();
 
-                     FilteredEvents.Refresh();
+                     //if user change the event do not update the gui!
+                     if (!v.IsChanged)
+                     {
+                         v.Refresh();
+                         FilteredEvents.Refresh();
+                     }
                  }
              }));
         }

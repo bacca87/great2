@@ -12,7 +12,7 @@ namespace Great.Utils.Converters
             {
                 if (value != null)
                     return ((TimeSpan)value).ToString("hh\\:mm");
-            }
+                }
             catch { }
 
             return value;

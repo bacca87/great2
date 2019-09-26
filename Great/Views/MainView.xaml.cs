@@ -114,6 +114,25 @@ namespace Great.Views
 
         private void RibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            CheckEntities();
+        }
+
+
+
+        private void NavigationTabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var test = e.Source;
+            if (e.Source is TabItem)
+            {
+                TabItem t = (TabItem)e.Source;
+                this.Dispatcher.Invoke(new Action(() => { CheckEntities(); }), null);
+                t.Focus();
+            }
+
+        }
+
+        private void CheckEntities()
+        {
             SimpleIoc.Default.GetInstance<FDLViewModel>().SelectedFDL?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
@@ -121,19 +140,7 @@ namespace Great.Views
             SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
 
-        private void NavigationTabControl_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.Source is TabItem)
-            {
-                SimpleIoc.Default.GetInstance<FDLViewModel>().SelectedFDL?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
-                SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
-            }
-
-
-        }
 
     }
+
 }

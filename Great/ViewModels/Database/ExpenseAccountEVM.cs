@@ -3,7 +3,6 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
-using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -39,7 +38,7 @@ namespace Great.ViewModels.Database
             get => _Currency;
             set
             {
-                Set(ref _Currency, value);
+                SetAndCheckChanged(ref _Currency, value);
                 CurrencyCode = CurrencyCodeMapper.GetSymbol(_Currency);
             }
         }
@@ -48,7 +47,7 @@ namespace Great.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => Set(ref _Notes, value);
+            set => SetAndCheckChanged(ref _Notes, value);
         }
 
         private long _Status;
@@ -206,6 +205,7 @@ namespace Great.ViewModels.Database
 
         private void UpdateTotals()
         {
+            IsChanged = true;
             RaisePropertyChanged(nameof(MondayAmount));
             RaisePropertyChanged(nameof(TuesdayAmount));
             RaisePropertyChanged(nameof(WednesdayAmount));

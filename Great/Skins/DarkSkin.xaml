@@ -3,86 +3,47 @@
                     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <!--Fluent Ribbon Styles-->
-        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Accents/Cobalt.xaml" />
+        
+        <!--Fluent Ribbon Styles-->      
         <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseDark.xaml" />
-        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+
         <!-- Accent and AppTheme setting -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+
+        <!-- Needed also if overridden. I used a random color -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+
         <!--Live Charts Styles-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Size/l.xaml" />
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/light.xaml" />
+
         <!--this is required always-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
 
         <!--Custom Styles-->
         <ResourceDictionary>
+
+            <!--Default Colors overridden by usersettings-->
+            <SolidColorBrush x:Key="DefaultSaturdayColor" Color="#0D47A1"/>
+            <SolidColorBrush x:Key="DefaultSundayColor" Color="#B71C1C"/>
+            <SolidColorBrush x:Key="DefaultHolidayColor" Color="#B71C1C"/>
+            <SolidColorBrush x:Key="DefaultVacationColor" Color="#4A148C"/>
+            <SolidColorBrush x:Key="DefaultSickColor" Color="#880E4F"/>
+            <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#827717"/>
+            <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#BF360C"/>
+
+            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc"/>
+            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc"/>
+            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8"/>
+            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8"/>
+
             <Style x:Key="AutoCompleteBoxStyle"  TargetType="toolkit:AutoCompleteBox">
                 <Setter Property="Background" Value="#212121"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="White"/>
             </Style>
 
-            <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                <Setter Property="BorderThickness" Value="0.5"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
-                        <Setter Property="Background" Value="#0D47A1" />
-                        <!--Blue 50 -->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
-                        <Setter Property="Background" Value="#B71C1C" />
-                        <!--Red 50 -->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsHoliday}" Value="True">
-                        <Setter Property="Background" Value="#B71C1C" />
-                        <!--Red 50 -->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="1">
-                        <!--Vacation-->
-                        <Setter Property="Background" Value="#4A148C" />
-                        <!--Purple 50-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="2">
-                        <!--Day Of Sick-->
-                        <Setter Property="Background" Value="#880E4F" />
-                        <!--Pink 50-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="3">
-                        <!--Day of Home Work-->
-                        <Setter Property="Background" Value="#827717" />
-                        <!--Lime 50 -->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="4">
-                        <!--Special Leave-->
-                        <Setter Property="Background" Value="#BF360C" />
-                        <!--Deep Orange 50-->
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
-                <!--Light Blue 50 -->
-                <Setter Property="Background" Value="#01579B" />
-            </Style>
-            <Style x:Key="travelendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}">
-                <!--Light Blue 50 -->
-                <Setter Property="Background" Value="#01579B" />
-            </Style>
-            <Style x:Key="workstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}">
-                <!--Light Green 50 -->
-                <Setter Property="Background" Value="#33691E" />
-            </Style>
-            <Style x:Key="workendTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}">
-                <!--Light Green 50 -->
-                <Setter Property="Background" Value="#33691E" />
-            </Style>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

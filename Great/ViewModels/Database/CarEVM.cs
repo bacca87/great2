@@ -18,14 +18,15 @@ namespace Great.ViewModels.Database
         public string LicensePlate
         {
             get => _licencePlate;
-            set =>Set(ref _licencePlate, value);
+            set => SetAndCheckChanged(ref _licencePlate, value);
+
         }
 
         private string _brand;
         public string Brand
         {
             get => _brand;
-            set =>  Set(ref _brand, value);
+            set => SetAndCheckChanged(ref _brand, value);
 
         }
 
@@ -33,7 +34,7 @@ namespace Great.ViewModels.Database
         public string Model
         {
             get => _model;
-            set => Set(ref _model, value);
+            set => SetAndCheckChanged(ref _model, value);
         }
 
         private long _carRentalCompany;
@@ -43,8 +44,9 @@ namespace Great.ViewModels.Database
             get => _carRentalCompany;
             set
             {
-                Set(ref _carRentalCompany, value);
+                SetAndCheckChanged(ref _carRentalCompany, value);
                 RaisePropertyChanged(nameof(CarRentalCompany1));
+
             }
 
         }
@@ -74,7 +76,7 @@ namespace Great.ViewModels.Database
 
         public string Error => throw new NotImplementedException();
 
-        public bool IsValid => 
+        public bool IsValid =>
             this["LicensePlate"] == null
             && this["Brand"] == null
             && this["Model"] == null

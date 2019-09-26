@@ -8,7 +8,6 @@ using Nager.Date.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Globalization;
 using System.Linq;
 using Day = Great.Models.Database.Day;
 
@@ -138,10 +137,58 @@ namespace Great.ViewModels.Database
             get
             {
                 if (TotalTime == null || TotalTime >= 8)
+                {
                     return null;
-
+                }
 
                 return 8 - TotalTime;
+            }
+        }
+
+        public float? HoursOfVacation
+        {
+            get
+            {
+                if (EType != EDayType.VacationDay || TotalTime >= 8)
+                {
+                    return null;
+                }
+
+                return 8 - (TotalTime ?? 0);
+            }
+        }
+
+        public float? HoursOfHomeWorking
+        {
+            get
+            {
+                if (EType == EDayType.HomeWorkDay)
+                    return TotalTime;
+                return null;
+            }
+        }
+        public float? HoursOfSpecialLeave
+        {
+            get
+            {
+                if (EType != EDayType.SpecialLeave || TotalTime >= 8)
+                {
+                    return null;
+                }
+
+                return 8 - (TotalTime ?? 0);
+            }
+        }
+        public float? HoursOfSicklLeave
+        {
+            get
+            {
+                if (EType != EDayType.SickLeave || TotalTime >= 8)
+                {
+                    return null;
+                }
+
+                return 8 - (TotalTime ?? 0);
             }
         }
         #endregion
@@ -214,7 +261,7 @@ namespace Great.ViewModels.Database
                             overtime34 = 4;
                         else
                             overtime34 = TotalTime;
-                    }
+                        }
                     else
                     {
                         if (TotalTime.HasValue && TotalTime.Value > 8)
@@ -223,9 +270,9 @@ namespace Great.ViewModels.Database
                                 overtime34 = 2;
                             else
                                 overtime34 = TotalTime.Value - 8;
+                            }
                         }
                     }
-                }
 
                 return overtime34;
             }
@@ -308,18 +355,39 @@ namespace Great.ViewModels.Database
                 foreach (TimesheetEVM timesheet in Timesheets)
                 {
                     if (!string.IsNullOrEmpty(timesheet.FDL))
-                        factories += timesheet?.FDL1?.Factory1?.Name + "; ";
-
-                    if (!string.IsNullOrEmpty(timesheet.Notes))
                     {
-                        factories += timesheet?.Notes + "; ";
+                        factories += timesheet?.FDL1?.Factory1?.Name + "; ";
                     }
                 }
 
                 if (!string.IsNullOrEmpty(factories))
+                {
                     factories = factories.Remove(factories.Length - 2);
+                }
 
                 return factories;
+            }
+        }
+        public string Notes_Display
+        {
+            get
+            {
+                string notes = string.Empty;
+
+                foreach (TimesheetEVM timesheet in Timesheets)
+                {
+                    if (!string.IsNullOrEmpty(timesheet.Notes))
+                    {
+                        notes += timesheet?.Notes + ";";
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(notes))
+                {
+                    notes = notes.Remove(notes.Length - 1);
+                }
+
+                return notes;
             }
         }
         #endregion
@@ -374,12 +442,12 @@ namespace Great.ViewModels.Database
         {
             var day = db.Days.SingleOrDefault(d => d.Timestamp == Timestamp);
 
-            if(day != null)
+            if (day != null)
             {
                 db.Days.Remove(day);
                 db.SaveChanges();
             }
-            
+
             Timesheets.Clear();
             return true;
         }
