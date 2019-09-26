@@ -44,7 +44,7 @@ namespace Great.ViewModels
             set
             {
                 _selectedFactory?.CheckChangedEntity();
-                Set(ref _selectedFactory, value);
+                Set(ref _selectedFactory, value ?? new FactoryEVM());
                 ShowEditMenu = false;
             }
         }
