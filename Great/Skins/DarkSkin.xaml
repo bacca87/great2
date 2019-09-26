@@ -33,16 +33,10 @@
             <SolidColorBrush x:Key="DefaultHomeworkColor" Color="#827717"/>
             <SolidColorBrush x:Key="DefaultSpecialLeaveColor" Color="#BF360C"/>
 
-            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#b3e5fc"/>
-            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#b3e5fc"/>
-            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8"/>
-            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8"/>
-
-            <Style x:Key="AutoCompleteBoxStyle"  TargetType="toolkit:AutoCompleteBox">
-                <Setter Property="Background" Value="#212121"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderBrush" Value="White"/>
-            </Style>
+            <SolidColorBrush x:Key="DefaultTravelStartColor" Color="#01579B"/>
+            <SolidColorBrush x:Key="DefaultTravelEndColor" Color="#01579B"/>
+            <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#33691E"/>
+            <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#33691E"/>
 
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>

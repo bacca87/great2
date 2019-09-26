@@ -424,9 +424,9 @@
                             <Fluent:ScreenTip Title="Compile EA" Text="Compile and save the selected EA." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Mark as Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/money-bag.png">
+                    <Fluent:Button Header="Toggle Refunded" Command="{Binding MarkAsRefundedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/money-bag.png">
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Mark as Refunded" Text="Mark the selected EA as refunded." />
+                            <Fluent:ScreenTip Title="Toggle Refunded Flag" Text="Toggle the refounded flag of the selected EA." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                     <Fluent:Button Header="Mark as Accepted" Command="{Binding MarkAsAcceptedCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/sign-check.png">

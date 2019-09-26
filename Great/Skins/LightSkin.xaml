@@ -38,12 +38,6 @@
             <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#dcedc8"/>
             <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#dcedc8"/>
 
-            <Style x:Key="AutoCompleteBoxStyle"  TargetType="toolkit:AutoCompleteBox">
-                
-                
-                
-            </Style>
-
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

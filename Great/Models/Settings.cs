@@ -1415,7 +1415,7 @@ namespace Great.Models
     {
         //Default:Cobalt
 
-        Colalt = 0,
+        Cobalt = 0,
         Red = 1,
         Green = 2,
         Blue = 3,
