@@ -25,7 +25,7 @@ where Event.Type =1);
 DELETE FROM Event;
 
 -- Add WidheldAmount to ea
-ALTER TABLE [ExpenseAccount] ADD COLUMN WitheldAmount REAL NULL DEFAULT NULL;
+ALTER TABLE [ExpenseAccount] ADD COLUMN Deductions REAL NULL DEFAULT NULL;
 
 --=========================================================================
 -- MANDATORY: Increment internal db version

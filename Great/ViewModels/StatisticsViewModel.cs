@@ -80,6 +80,13 @@ namespace Great.ViewModels
             set => Set(ref _Hours, value);
         }
 
+        private SeriesCollection _Expenses;
+        public SeriesCollection Expenses
+        {
+            get => _Expenses;
+            set => Set(ref _Expenses, value);
+        }
+
         private SeriesCollection _HourTypes;
         public SeriesCollection HourTypes
         {
@@ -136,6 +143,7 @@ namespace Great.ViewModels
             Days = new SeriesCollection();
             Km = new SeriesCollection();
             FactoryCountries = new Dictionary<string, double>();
+            Expenses = new SeriesCollection();
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
@@ -159,6 +167,7 @@ namespace Great.ViewModels
                 LoadHoursData();
                 LoadDayStatistic();
                 LoadCarStatistics();
+                LoadExpensesData();
             }
         }
 
@@ -586,6 +595,61 @@ namespace Great.ViewModels
                         LabelPoint = HoursLabel
                     }
                 };
+            }
+        }
+
+        private void LoadExpensesData()
+        {
+
+            Dictionary<string, int> factoriesData = new Dictionary<string, int>();
+
+            using (DBArchive db = new DBArchive())
+            {
+                long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
+                long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
+
+                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp >= startDate &&
+                ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp <= endDate).ToList().Select(e => new
+                                                                                                     {
+                                                                                                      d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
+                                                                                                      e = new ExpenseAccountEVM(e)
+                                                                                                     });
+
+                var ExpensesMonth = expenses?.GroupBy(x=> x.d.Timesheets)
+                                       .Select(g => new
+                                       {
+                                           Total = g.Sum(x => (x.e.Expenses.Sum(y=> y.TotalAmount))),
+                                           Deducted = g.Sum(x => (x.e.DeductionAmount))
+                                       });
+               
+                ChartValues<double> TotalAmount = new ChartValues<double>();
+                ChartValues<double> DeductedAmount = new ChartValues<double>();
+
+                foreach (var e in ExpensesMonth)
+                {
+                    TotalAmount.Add(e.Total);
+                    DeductedAmount.Add(e.Deducted);
+
+                }
+
+                Expenses = new SeriesCollection()
+                {
+                    new StackedColumnSeries()
+                    {
+                        Title = "Total Expenses",
+                        Values = TotalAmount,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries()
+                    {
+                        Title = "Deductions",
+                        Values = DeductedAmount,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    }
+                };
+
             }
         }
     }

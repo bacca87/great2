@@ -93,7 +93,7 @@ namespace Great.ViewModels
             {
                 _selectedRent?.CheckChangedEntity();
                 Set(ref _selectedRent, value ?? new CarRentalHistoryEVM());
-                LicensePlate = _selectedRent?.Car1.LicensePlate;
+                LicensePlate = _selectedRent?.Car1?.LicensePlate;
 
                 ShowEditMenu = false;
             }

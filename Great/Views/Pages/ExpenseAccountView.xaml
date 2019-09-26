@@ -119,6 +119,14 @@
                             </MultiBinding>
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
+                    <DataGridTextColumn Header="Deductions" CellStyle="{StaticResource CenterAligned}">
+                        <DataGridTextColumn.Binding>
+                            <MultiBinding StringFormat="{}{0}{1}">
+                                <Binding Path="DeductionAmount" Converter="{StaticResource ZeroDoubleToNullConverter}"/>
+                                <Binding Path="CurrencyCode" />
+                            </MultiBinding>
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Currency" Binding="{Binding Currency1.Id}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="CdC" Binding="{Binding CdC}" CellStyle="{StaticResource CenterAligned}"/>
@@ -349,11 +357,11 @@
                 </TextBlock>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="20">
-                    Widheld Amount
+                    Deducted Amount
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBox FontSize="20" PreviewTextInput="TextBox_PreviewTextInput"    
-                        Text="{Binding SelectedEA.WitheldAmount}" 
+                    <TextBox FontSize="20" PreviewTextInput="TextBox_PreviewTextInput" TextAlignment="Right"  MinWidth="80"  
+                        Text="{Binding SelectedEA.DeductionAmount,Converter={StaticResource ZeroDoubleToNullConverter}}" 
                     />
                     <TextBlock  FontSize="20">
                         <TextBlock.Text>

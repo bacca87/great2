@@ -44,11 +44,11 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private float _WitheldAmount;
-        public float WitheldAmount
+        private double _DeductionAmount;
+        public double DeductionAmount
         {
-            get => _WitheldAmount;
-            set => SetAndCheckChanged(ref _WitheldAmount, value);
+            get => _DeductionAmount;
+            set => SetAndCheckChanged(ref _DeductionAmount, value);
         }
 
         private string _Notes;
