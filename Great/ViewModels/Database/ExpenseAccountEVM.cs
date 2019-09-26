@@ -3,6 +3,7 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
+using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -41,6 +42,13 @@ namespace Great.ViewModels.Database
                 SetAndCheckChanged(ref _Currency, value);
                 CurrencyCode = CurrencyCodeMapper.GetSymbol(_Currency);
             }
+        }
+
+        private double _DeductionAmount;
+        public double DeductionAmount
+        {
+            get => _DeductionAmount;
+            set => SetAndCheckChanged(ref _DeductionAmount, value);
         }
 
         private string _Notes;
@@ -188,6 +196,8 @@ namespace Great.ViewModels.Database
 
         #region Display Properties
         public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}";
+
+
         #endregion
 
         public ExpenseAccountEVM(ExpenseAccount ea = null)
@@ -224,6 +234,7 @@ namespace Great.ViewModels.Database
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;
+            IsChanged = false;
             return true;
         }
 

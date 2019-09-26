@@ -84,53 +84,48 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <Grid VerticalAlignment="Center" >
+                <Grid  Margin="2" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                        <RowDefinition  Height ="30"></RowDefinition>
+                        <RowDefinition  Height ="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="GotFocus">
+                            <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
 
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0" Margin="2" VerticalAlignment="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                    <RowDefinition  Height ="30"></RowDefinition>
-                    <RowDefinition  Height ="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="GotFocus">
-                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="LostFocus">
-                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-
-                <TextBlock VerticalAlignment="Center" Grid.Row="0">Car Plate</TextBlock>
-                <!--<toolkit:AutoCompleteBox 
+                    <TextBlock VerticalAlignment="Center" Grid.Row="0">Car Plate</TextBlock>
+                    <!--<toolkit:AutoCompleteBox 
                     Grid.Row="1"
                     IsTextCompletionEnabled="False"
                     IsEnabled="{Binding IsInputEnabled}"
@@ -141,7 +136,7 @@
                     SelectedItem="{Binding SelectedCar, Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                     Text="{Binding SelectedCar.LicensePlate,Mode=TwoWay,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>-->
 
-                <ComboBox
+                    <ComboBox
                     Name="cmbLicenxePlate"
                     Grid.Row="1"
                     IsEditable="True"
@@ -154,65 +149,65 @@
                     Text="{Binding LicensePlate, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
-                <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
-                <ComboBox
+                    <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
+                    <ComboBox
                     Grid.Row="3"
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarBrands }" 
                     Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
-                <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
-                <ComboBox
+                    <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
+                    <ComboBox
                     Grid.Row="5"
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding CarModels }" 
                     Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
-                <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
-                <ComboBox Grid.Row="7"
+                    <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
+                    <ComboBox Grid.Row="7"
                                   SelectedItem="{Binding SelectedCar.CarRentalCompany1,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
                                   SelectedValue="{Binding SelectedCar.CarRentalCompany}" 
                                   IsEnabled="{Binding IsInputEnabled}" 
                                   DisplayMemberPath="Name" 
                                   SelectedValuePath="Id" >
-                    <ComboBox.Resources>
-                        <CollectionViewSource x:Key="Items" Source="{Binding RentalCompanies}" />
-                    </ComboBox.Resources>
-                    <ComboBox.ItemsSource>
-                        <CompositeCollection>
-                            <m:CarRentalCompanyDTO/>
-                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                        </CompositeCollection>
-                    </ComboBox.ItemsSource>
-                </ComboBox>
-                <TextBlock VerticalAlignment="Center" Grid.Row="8">Initial Km</TextBlock>
-                <TextBox Grid.Row="9"  bhv:SelectAllFocusBehavior.Enable="True" Text="{Binding SelectedRent.StartKm,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock VerticalAlignment="Center" Grid.Row="10">Ending Km</TextBlock>
-                <TextBox Grid.Row="11" bhv:SelectAllFocusBehavior.Enable="True" Text="{Binding SelectedRent.EndKm, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock VerticalAlignment="Center" Grid.Row="12">Rent Start Date:</TextBlock>
-                <Grid Grid.Row="13">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="70" />
-                    </Grid.ColumnDefinitions>
-                    <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0"  SelectedDate="{Binding SelectedRent.RentStartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}" />
-                    <xctk:MaskedTextBox Grid.Column="2"  Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentStartTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
-                </Grid>
-                <TextBlock VerticalAlignment="Center" Grid.Row="14">Rent End Date</TextBlock>
-                <Grid Grid.Row="15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="70" />
-                    </Grid.ColumnDefinitions>
-                    <DatePicker Style="{DynamicResource FormattedDatePicker}"  Grid.Column="0" SelectedDate="{Binding SelectedRent.RentEndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}"/>
-                    <xctk:MaskedTextBox  Grid.Column="2" Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentEndTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
-                </Grid>
-                <TextBlock VerticalAlignment="Center" Grid.Row="16">Rent Start Location</TextBlock>
-                <ComboBox Grid.Row="17"
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Items" Source="{Binding RentalCompanies}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <m:CarRentalCompanyDTO/>
+                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="8">Initial Km</TextBlock>
+                    <TextBox Grid.Row="9"  bhv:SelectAllFocusBehavior.Enable="True" Text="{Binding SelectedRent.StartKm,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="10">Ending Km</TextBlock>
+                    <TextBox Grid.Row="11" bhv:SelectAllFocusBehavior.Enable="True" Text="{Binding SelectedRent.EndKm, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="12">Rent Start Date:</TextBlock>
+                    <Grid Grid.Row="13">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Style="{DynamicResource FormattedDatePicker}" Grid.Column="0"  SelectedDate="{Binding SelectedRent.RentStartDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}" />
+                        <xctk:MaskedTextBox Grid.Column="2"  Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentStartTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
+                    </Grid>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="14">Rent End Date</TextBlock>
+                    <Grid Grid.Row="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Style="{DynamicResource FormattedDatePicker}"  Grid.Column="0" SelectedDate="{Binding SelectedRent.RentEndDate,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding IsInputEnabled}"/>
+                        <xctk:MaskedTextBox  Grid.Column="2" Style="{DynamicResource MaskedTextBoxBase}"  Width="50" Height="26" FontSize="13" Text="{Binding SelectedRent.RentEndTime, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"></xctk:MaskedTextBox>
+                    </Grid>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="16">Rent Start Location</TextBlock>
+                    <ComboBox Grid.Row="17"
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
@@ -220,23 +215,24 @@
                     Text="{Binding SelectedRent.StartLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
 
 
-                <TextBlock VerticalAlignment="Center" Grid.Row="18">Rent End Location</TextBlock>
-                <ComboBox Grid.Row="19"
+                    <TextBlock VerticalAlignment="Center" Grid.Row="18">Rent End Location</TextBlock>
+                    <ComboBox Grid.Row="19"
                     IsEditable="True"
                     IsTextSearchEnabled="True"
                     IsEnabled="{Binding IsInputEnabled}"
                     ItemsSource="{Binding Locations }" 
                     Text="{Binding SelectedRent.EndLocation,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
-                <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>
-                <Slider  Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
-                <TextBlock VerticalAlignment="Center" Grid.Row="22">End Fuel Level</TextBlock>
-                <Slider Grid.Row="23" Minimum="0" Maximum="8" Value="{Binding SelectedRent.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="20">Start Fuel Level</TextBlock>
+                    <Slider  Grid.Row="21" Minimum="0" Maximum="8" Value="{Binding SelectedRent.StartFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="22">End Fuel Level</TextBlock>
+                    <Slider Grid.Row="23" Minimum="0" Maximum="8" Value="{Binding SelectedRent.EndFuelLevel, Mode=TwoWay}" IsEnabled="{Binding IsInputEnabled}"/>
 
-                <TextBlock VerticalAlignment="Center" Grid.Row="24">Notes</TextBlock>
-                <TextBox MinHeight="50" Grid.Row="25" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding SelectedRent.Notes}" IsEnabled="{Binding IsInputEnabled}"/>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="24">Notes</TextBlock>
+                    <TextBox MinHeight="50" Grid.Row="25" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding SelectedRent.Notes}" IsEnabled="{Binding IsInputEnabled}"/>
+                </Grid>
             </Grid>
 
 
-        </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>

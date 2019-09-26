@@ -11,5 +11,11 @@ namespace Great.Views.Pages
         {
             InitializeComponent();
         }
+
+        private void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            float f;
+            if (!float.TryParse(e.Text, out f)) e.Handled = true;
+        }
     }
 }

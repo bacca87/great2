@@ -274,6 +274,13 @@ namespace Great.ViewModels
                     cancel = true;
                 }
 
+            if ((day.Date.DayOfWeek == DayOfWeek.Saturday || day.Date.DayOfWeek == DayOfWeek.Sunday || day.IsHoliday)
+            && (type == EDayType.VacationDay || type == EDayType.SickLeave || type == EDayType.SpecialLeave))
+            {
+                MetroMessageBox.Show("Cannot set a weekend/holiday day as vacation or leave day!");
+                return;
+            }
+
             if (!cancel)
             {
                 day.EType = type;

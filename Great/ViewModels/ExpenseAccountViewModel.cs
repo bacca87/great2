@@ -320,6 +320,7 @@ namespace Great.ViewModels
                 }
 
                 db.SaveChanges();
+                ea.IsChanged = false;
             }
 
             // update notifications

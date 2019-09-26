@@ -168,6 +168,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    
                     <DataGrid Grid.Column="0"
                       ItemsSource="{Binding SelectedWorkingDay.Timesheets}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
@@ -176,8 +177,11 @@
                       CanUserResizeColumns="False" 
                       CanUserResizeRows="False" 
                       CanUserSortColumns="False"
-                      HeadersVisibility="Column"
                       BorderThickness="0.5"
+                      VirtualizingPanel.VirtualizationMode="Standard"
+                      VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
+                      VirtualizingPanel.ScrollUnit ="Item" 
+				      HorizontalScrollBarVisibility="Auto"
                      IsReadOnly="True">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
@@ -208,7 +212,7 @@
                             <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" Width="100"/>
                             <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" Width="100"/>
                             <DataGridTextColumn Header="FDL" Binding="{Binding FDL1.FDL_Display}" Width="100"/>
-                            <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="*"/>
+                            <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

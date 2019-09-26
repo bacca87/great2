@@ -281,6 +281,7 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();
+            IsChanged = false;
             return true;
         }
 

@@ -435,6 +435,7 @@ namespace Great.ViewModels.Database
             Global.Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
             db.SaveChanges();
+            IsChanged = false;
             return true;
         }
 
