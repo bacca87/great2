@@ -16,7 +16,7 @@ UPDATE ExpenseAccount SET IsCompiled = 1 WHERE IsReadOnly = 1 AND [Status] = 2 O
 ALTER TABLE [Factory] ADD COLUMN CountryCode NVARCHAR(2) NULL DEFAULT NULL;
 
 -- Fix weekend type connected to events: delete all and reimport it from exchange
-UPDATE  Day Set Type =0, Event = null 
+UPDATE  Day Set Type =0
 where Day.Timestamp in (
 Select Day.Timestamp FROM Day JOIN DayEvent on Day.TimeStamp = Day.TimeStamp
 JOIN Event on DayEvent.EventId = Event.Id
@@ -25,7 +25,7 @@ where Event.Type =1);
 DELETE FROM Event;
 
 -- Add WidheldAmount to ea
-ALTER TABLE [ExpenseAccount] ADD COLUMN Deductions REAL NULL DEFAULT NULL;
+ALTER TABLE [ExpenseAccount] ADD COLUMN DeductionAmount REAL NULL DEFAULT NULL;
 
 --=========================================================================
 -- MANDATORY: Increment internal db version
