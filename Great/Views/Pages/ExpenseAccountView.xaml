@@ -361,8 +361,8 @@
                     Deducted Amount
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBox FontSize="20" PreviewTextInput="TextBox_PreviewTextInput" TextAlignment="Right"  MinWidth="80"  
-                        Text="{Binding SelectedEA.DeductionAmount,Mode=TwoWay,Converter={StaticResource ZeroDoubleToNullConverter}}" 
+                    <TextBox FontSize="20" TextAlignment="Right"  MinWidth="80"  
+                        Text="{Binding SelectedEA.DeductionAmount, Converter={StaticResource ZeroDoubleToNullConverter}}"
                     />
                     <TextBlock  FontSize="20">
                         <TextBlock.Text>

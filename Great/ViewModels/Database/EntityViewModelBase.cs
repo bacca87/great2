@@ -57,13 +57,12 @@ namespace Great.ViewModels.Database
 
         protected bool SetAndCheckChanged<T>(ref T field, T newValue = default, bool broadcast = false, [CallerMemberName] string propertyName = null)
         {
-
-
             IsChanged = !EqualityComparer<T>.Default.Equals(field, newValue);
 
-            return Set(ref field, newValue);
+            //Explicitly pass the propertyname and not the default CallMemberName:
+            //When checking nested properties the parent name is passed and eventchanged is not fired
+            return Set(ref field, newValue,propertyName);
         }
-
 
     }
 }

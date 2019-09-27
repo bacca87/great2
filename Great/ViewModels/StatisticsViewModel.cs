@@ -4,10 +4,12 @@ using Great.Models.Database;
 using Great.Utils.Extensions;
 using Great.ViewModels.Database;
 using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Great.ViewModels
 {
@@ -127,6 +129,14 @@ namespace Great.ViewModels
             set => Set(ref _MonthsLabels, value);
         }
 
+        private List<string> _MonthsCurrenciesLabels;
+        public List<string> MonthsCurrenciesLabels
+        {
+            get => _MonthsCurrenciesLabels;
+            set => Set(ref _MonthsCurrenciesLabels, value);
+        }
+
+
         private bool IsRefreshEnabled = false;
         #endregion
 
@@ -150,7 +160,7 @@ namespace Great.ViewModels
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
 
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
-            
+            MonthsCurrenciesLabels = new List<string>();
 
             SelectedYear = DateTime.Now.Year;
             IsRefreshEnabled = true;
@@ -206,7 +216,7 @@ namespace Great.ViewModels
                     {
                         if (FactoryCountries.Any(x => x.Key == f.CountryCode))
                             FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
-                        else 
+                        else
                             FactoryCountries.Add(f.CountryCode, entry.Value);
                     }
 
@@ -378,6 +388,7 @@ namespace Great.ViewModels
                         LabelPoint = HoursLabel
                     }
                 };
+
 
                 WorkedDays = WorkingDays?.Count() ?? 0;
                 TravelCount = WorkingDays?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
@@ -602,7 +613,11 @@ namespace Great.ViewModels
 
         private void LoadExpensesData()
         {
-            Dictionary<string, int> factoriesData = new Dictionary<string, int>();
+            Expenses.Clear();
+
+            ChartValues<double>[] TotalAmounts = new ChartValues<double>[12];
+            ChartValues<double>[] TotalRefound = new ChartValues<double>[12];
+            ChartValues<double>[] TotalDeducted = new ChartValues<double>[12];
 
             using (DBArchive db = new DBArchive())
             {
@@ -611,48 +626,45 @@ namespace Great.ViewModels
 
                 var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp >= startDate &&
                 ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp <= endDate).ToList().Select(e => new
-                                                                                                     {
-                                                                                                      d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
-                                                                                                      e = new ExpenseAccountEVM(e)
-                                                                                                     });
-
-                var ExpensesMonth = expenses?.GroupBy(x=> x.d.Timesheets.FirstOrDefault().Date.Month)
-                                       .Select(g => new
-                                       {
-                                           Total = g.Sum(x => (x.e.Expenses.Sum(y=> y.TotalAmount)- x.e.DeductionAmount ??0)),
-                                           Deducted = g.Sum(x => (x.e.DeductionAmount ??0))
-                                       });
-               
-                ChartValues<double> TotalAmount = new ChartValues<double>();
-                ChartValues<double> DeductedAmount = new ChartValues<double>();
-
-                CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") +" "+ expenses.FirstOrDefault().e.Currency;
-
-                foreach (var e in ExpensesMonth)
                 {
-                    TotalAmount.Add(e.Total);
-                    DeductedAmount.Add(e.Deducted);
+                    d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
+                    e = new ExpenseAccountEVM(e)
+                });
+
+                var dbQuery = from ex in expenses
+                              group ex by new { ex.d.Date.Month, ex.e.Currency, ex.e.TotalAmount, ex.e.DeductionAmount } into grouped
+                              select new
+                              {
+                                  Amount = grouped.Key.TotalAmount,
+                                  Currency = grouped.Key.Currency,
+                                  Deduction = grouped.Key.DeductionAmount,
+                                  Month = grouped.Key.Month
+                              };
+
+                var query = dbQuery.ToLookup(result => result.Currency,
+                             result => new { result.Month, result.Deduction, result.Amount });
+
+                foreach (var s in query)
+                {
+                    ChartValues<double> TotalAmount = new ChartValues<double>();
+                    ChartValues<double> RefoundAmount = new ChartValues<double>();
+
+
+                   var expInMonth = s.GroupBy(x => x.Month);
+
+                    foreach (var re in expInMonth)
+                    {
+                        TotalAmount[re.Add(re.Sum(x => x.Amount ??0));
+                        RefoundAmount.Add(re.Sum(x => (x.Amount??0)-(x.Deduction ?? 0)));
+                    }
+
                 }
 
-                Expenses = new SeriesCollection()
-                {
-                    new StackedColumnSeries()
-                    {
-                        Title = "Refound Expenses",
-                        Values = TotalAmount,
-                        DataLabels = false,
-                        LabelPoint = CurrencyLabel
-                    },
-                    new StackedColumnSeries()
-                    {
-                        Title = "Deductions",
-                        Values = DeductedAmount,
-                        DataLabels = false,
-                        LabelPoint = CurrencyLabel
-                    }
-                };
-
             }
+
+            CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
+
         }
     }
+
 }

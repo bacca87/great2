@@ -12,11 +12,5 @@ namespace Great.Views.Pages
         {
             InitializeComponent();
         }
-
-        private void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            var regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-            if (!regex.Match(e.Text).Success) e.Handled = true;
-        }
     }
 }
