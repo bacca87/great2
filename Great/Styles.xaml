@@ -134,4 +134,13 @@
         <Setter Property="Background" Value="{DynamicResource DefaultWorkEndColor}" />
     </Style>
 
+    <Style x:Key="NoHeaderTabItem" TargetType="TabItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

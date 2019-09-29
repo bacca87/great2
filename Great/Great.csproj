@@ -695,6 +695,10 @@
     <Resource Include="Images\32\MessageBoxWarning.png" />
     <Resource Include="Images\72\sign-error.png" />
     <Resource Include="Images\32\factory.png" />
+    <Resource Include="Images\32\business.png" />
+    <Resource Include="Images\32\maps.png" />
+    <Resource Include="Images\32\money.png" />
+    <Resource Include="Images\32\road.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

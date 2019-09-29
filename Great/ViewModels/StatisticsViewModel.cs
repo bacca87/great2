@@ -85,21 +85,19 @@ namespace Great.ViewModels
             set => Set(ref _Hours, value);
         }
 
-        private ObservableCollection<SeriesCollection>_Expenses;
+        private ObservableCollection<SeriesCollection> _Expenses;
         public ObservableCollection<SeriesCollection> Expenses
         {
             get => _Expenses;
             set => Set(ref _Expenses, value);
         }
 
-        private SeriesCollection _ExpensesJan;
-        public SeriesCollection ExpensesJan
+        private double _MaxExpenseChartValue;
+        public double MaxExpenseChartValue
         {
-            get => _ExpensesJan;
-            set => Set(ref _ExpensesJan, value);
+            get => _MaxExpenseChartValue;
+            set => Set(ref _MaxExpenseChartValue, value);
         }
-
-
 
 
         private SeriesCollection _HourTypes;
@@ -155,6 +153,9 @@ namespace Great.ViewModels
         #region Commands Definitions
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
+
+        public RelayCommand<int> ChangeTabCommand { get;set; }
+        public Action<int> OnTabIndexSelected { get; set; }
         #endregion
 
         public StatisticsViewModel()
@@ -170,6 +171,7 @@ namespace Great.ViewModels
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
+            ChangeTabCommand = new RelayCommand<int>(ChangeTab);
 
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
             MonthsCurrenciesLabels = new List<string>();
@@ -625,10 +627,13 @@ namespace Great.ViewModels
 
         private void LoadExpensesData()
         {
+            //TODO: we use 12 separate chart due to unsupported livechart behaviour.
+            Expenses.Clear();
+            MaxExpenseChartValue = 0;
+
+            //load 12 lists one for each month
             for (int i = 0; i < 11; i++)
                 Expenses.Add(new SeriesCollection());
-
-            ExpensesJan = new SeriesCollection();
 
             using (DBArchive db = new DBArchive())
             {
@@ -643,63 +648,72 @@ namespace Great.ViewModels
                     e = new ExpenseAccountEVM(e)
                 });
 
-                var groupEa = from ex in expenses
-                              group ex by new { ex.d.Date.Month, ex.e.Currency, ex.e.TotalAmount, ex.e.DeductionAmount } into grouped
-                              select new
-                              {
-                                  Amount = grouped.Key.TotalAmount,
-                                  Currency = grouped.Key.Currency,
-                                  Deduction = grouped.Key.DeductionAmount,
-                                  Month = grouped.Key.Month
-                              };
+                var groupedMyMonth = from ex in expenses
+                                     group ex by new { ex.d.Date.Month, ex.e.Currency, ex.e.TotalAmount, ex.e.DeductionAmount } into grouped
+                                     select new
+                                     {
+                                         Amount = grouped.Key.TotalAmount,
+                                         Currency = grouped.Key.Currency,
+                                         Deduction = grouped.Key.DeductionAmount,
+                                         Month = grouped.Key.Month
+                                     };
 
                 //For every currency in year
-                foreach (var s in groupEa.ToLookup(result => result.Month, result => new { result.Month, result.Deduction, result.Amount, result.Currency }))
+                foreach (var month in groupedMyMonth.ToLookup(result => result.Month, result => new { result.Month, result.Deduction, result.Amount, result.Currency }))
                 {
-
-                    ChartValues<double> TotalDeducted = new ChartValues<double>();
-                    ChartValues<double> TotalRefound = new ChartValues<double>();
-                    int month = s.Select(x => x.Month).First() - 1;
-
-                    var expInMonth = s.GroupBy(x => x.Currency);
+                    int monthNumber = month.Select(x => x.Month).First() - 1;
+                    var groupedByCurrency = month.GroupBy(x => x.Currency);
 
                     //month totals for every currency
-                    foreach (var re in expInMonth)
+                    foreach (var cur in groupedByCurrency)
                     {
-                        string currency = s.Select(x => x.Currency).FirstOrDefault();
+                        if (cur.Key == null) continue;
 
-                        if (currency == null) continue;
+                        var eaSum = cur.Sum(x => x.Amount ?? 0);
 
-                        CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + " " + currency;
+                        MaxExpenseChartValue = eaSum > MaxExpenseChartValue ? eaSum : _MaxExpenseChartValue;
 
-                        TotalDeducted.Add (re.Sum(x => x.Deduction ?? 0));
-                        TotalRefound.Add(re.Sum(x => (x.Amount ?? 0) - (x.Deduction ?? 0)));
+                        CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + " " + cur.Key;
+                        ChartValues<double> TotalDeducted = new ChartValues<double>();
+                        ChartValues<double> TotalRefound = new ChartValues<double>();
 
-                        Expenses[month].Add(new StackedColumnSeries
+                        TotalDeducted.Add(cur.Sum(x => x.Deduction ?? 0));
+                        TotalRefound.Add(cur.Sum(x => (x.Amount ?? 0) - (x.Deduction ?? 0)));
+
+                        Expenses[monthNumber].Add(new StackedColumnSeries
                         {
-                            Title = currency + " " + "Refounded",
+                            Title = "Refounded",
                             Values = TotalRefound,
                             DataLabels = false,
                             LabelPoint = CurrencyLabel,
-                            Grouping = currency,
+                            Grouping = cur.Key,
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Center
                         });
 
-                        Expenses[month].Add(new StackedColumnSeries
+                        Expenses[monthNumber].Add(new StackedColumnSeries
                         {
-                            Title = currency + " " + "Deducted",
+                            Title = "Deducted",
                             Values = TotalDeducted,
                             DataLabels = false,
                             LabelPoint = CurrencyLabel,
-                            Grouping = currency,
+                            Grouping = cur.Key,
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Center
                         });
+
                     }
-                    //               CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + currency;
                 }
+
+                MaxExpenseChartValue += 100;
+
             }
 
         }
+
+        private void ChangeTab(int index)
+        {
+            OnTabIndexSelected?.Invoke(index);
+        }
+
     }
 
 }
