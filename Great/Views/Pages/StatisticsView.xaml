@@ -251,8 +251,22 @@
                     <RowDefinition Height="70*"/>
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Expenses Overview</Label>
-                <lvc:CartesianChart Name="ExpensesGraph" Grid.Row="2" Series="{Binding Expenses}"  LegendLocation="Bottom" Margin="10,10,50,10"   >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" Grid.ColumnSpan="12">Expenses Overview</Label>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="0" Series="{Binding Expenses[0]}"  LegendLocation="Bottom" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -277,6 +291,283 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="1" Series="{Binding Expenses[1]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="2" Series="{Binding Expenses[2]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="3" Series="{Binding Expenses[3]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="4" Series="{Binding Expenses[4]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="5" Series="{Binding Expenses[5]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="6" Series="{Binding Expenses[6]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="7" Series="{Binding Expenses[7]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="8" Series="{Binding Expenses[8]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="9" Series="{Binding Expenses[9]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="10" Series="{Binding Expenses[10]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                <lvc:CartesianChart  Grid.Row="2" Grid.Column="11" Series="{Binding Expenses[11]}"  LegendLocation="Bottom" >
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                
+
             </Grid>
         </TabItem>
     </TabControl>

@@ -8,6 +8,7 @@ using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Media;
@@ -84,12 +85,22 @@ namespace Great.ViewModels
             set => Set(ref _Hours, value);
         }
 
-        private SeriesCollection _Expenses;
-        public SeriesCollection Expenses
+        private ObservableCollection<SeriesCollection>_Expenses;
+        public ObservableCollection<SeriesCollection> Expenses
         {
             get => _Expenses;
             set => Set(ref _Expenses, value);
         }
+
+        private SeriesCollection _ExpensesJan;
+        public SeriesCollection ExpensesJan
+        {
+            get => _ExpensesJan;
+            set => Set(ref _ExpensesJan, value);
+        }
+
+
+
 
         private SeriesCollection _HourTypes;
         public SeriesCollection HourTypes
@@ -155,7 +166,7 @@ namespace Great.ViewModels
             Days = new SeriesCollection();
             Km = new SeriesCollection();
             FactoryCountries = new Dictionary<string, double>();
-            Expenses = new SeriesCollection();
+            Expenses = new ObservableCollection<SeriesCollection>();
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
@@ -614,8 +625,10 @@ namespace Great.ViewModels
 
         private void LoadExpensesData()
         {
-            Expenses = new SeriesCollection();
-            MonthsCurrenciesLabels = new List<string>();
+            for (int i = 0; i < 11; i++)
+                Expenses.Add(new SeriesCollection());
+
+            ExpensesJan = new SeriesCollection();
 
             using (DBArchive db = new DBArchive())
             {
@@ -640,32 +653,29 @@ namespace Great.ViewModels
                                   Month = grouped.Key.Month
                               };
 
-
                 //For every currency in year
-                foreach (var s in groupEa.ToLookup(result => result.Currency, result => new { result.Month, result.Deduction, result.Amount, result.Currency }))
+                foreach (var s in groupEa.ToLookup(result => result.Month, result => new { result.Month, result.Deduction, result.Amount, result.Currency }))
                 {
-                    // We must send to the chart a complete series for every month! double.nan is used by livecharts to hide empty points (based on used graph) 
-                    // Set default to 12 items (years). We will fill it later with currencies in month
-                    ChartValues<double> TotalDeducted = new ChartValues<double>() { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
-                    ChartValues<double> TotalRefound = new ChartValues<double>() { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
 
-                    string currency = s.Select(x => x.Currency).FirstOrDefault();
+                    ChartValues<double> TotalDeducted = new ChartValues<double>();
+                    ChartValues<double> TotalRefound = new ChartValues<double>();
+                    int month = s.Select(x => x.Month).First() - 1;
 
-                    if (currency == null) continue;
-
-                    CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + " " + currency;
-
-                    var expInMonth = s.GroupBy(x => x.Month);
+                    var expInMonth = s.GroupBy(x => x.Currency);
 
                     //month totals for every currency
                     foreach (var re in expInMonth)
                     {
-                        TotalDeducted[re.Select(x => x.Month).First() - 1] = (re.Sum(x => x.Deduction ?? 0));
-                        TotalRefound[re.Select(x => x.Month).First() - 1] = (re.Sum(x => (x.Amount ?? 0) - (x.Deduction ?? 0)));
-                    }
+                        string currency = s.Select(x => x.Currency).FirstOrDefault();
 
+                        if (currency == null) continue;
 
-                        Expenses.Add(new StackedColumnSeries
+                        CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + " " + currency;
+
+                        TotalDeducted.Add (re.Sum(x => x.Deduction ?? 0));
+                        TotalRefound.Add(re.Sum(x => (x.Amount ?? 0) - (x.Deduction ?? 0)));
+
+                        Expenses[month].Add(new StackedColumnSeries
                         {
                             Title = currency + " " + "Refounded",
                             Values = TotalRefound,
@@ -675,18 +685,17 @@ namespace Great.ViewModels
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Center
                         });
 
-                        Expenses.Add(new StackedColumnSeries
+                        Expenses[month].Add(new StackedColumnSeries
                         {
                             Title = currency + " " + "Deducted",
                             Values = TotalDeducted,
                             DataLabels = false,
                             LabelPoint = CurrencyLabel,
                             Grouping = currency,
-                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center                         
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center
                         });
-
-                    CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + currency;
-
+                    }
+                    //               CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + currency;
                 }
             }
 
