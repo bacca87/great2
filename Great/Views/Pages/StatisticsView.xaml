@@ -252,17 +252,13 @@
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Expenses Overview</Label>
-                <lvc:CartesianChart Grid.Row="2" Series="{Binding Expenses}" LegendLocation="Bottom"   Margin="10,10,50,10">
+                <lvc:CartesianChart Name="ExpensesGraph" Grid.Row="2" Series="{Binding Expenses}"  LegendLocation="Bottom" Margin="10,10,50,10"   >
                     <lvc:CartesianChart.DataTooltip>
-                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}" SelectionMode="OnlySender"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Title="Month" 
-                          Labels="{Binding MonthsLabels}" 
-                          Foreground="{DynamicResource TextBrush}">
-                            <lvc:Axis.Separator>
-                                <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
-                            </lvc:Axis.Separator>
+                        <lvc:Axis Title="Month"
+                           Labels="{Binding MonthsLabels}">
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
