@@ -556,7 +556,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Scripts\jquery-2.1.1.min.map" />
     <None Include="Web References\SharepointReference\lists.wsdl" />
     <None Include="Web References\SharepointReference\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -699,10 +698,6 @@
     <Resource Include="Images\32\maps.png" />
     <Resource Include="Images\32\money.png" />
     <Resource Include="Images\32\road.png" />
-    <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
-    <Content Include="Scripts\jquery-2.1.1.js" />
-    <Content Include="Scripts\jquery-2.1.1.min.js" />
-    <Content Include="Scripts\nugetexample.js" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
