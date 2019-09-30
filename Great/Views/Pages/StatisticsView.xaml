@@ -272,7 +272,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Jan" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="None" Foreground="Transparent" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Amount"
