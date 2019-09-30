@@ -46,10 +46,10 @@
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Days Worked" Count="{Binding WorkedDays}" ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Holidays worked" Count="{Binding WorkedHolidays}"   ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Saturdays worked" Count="{Binding WorkedSaturdays}"   ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" Title="Sundays worked" Count="{Binding WorkedSundays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Days Worked" Count="{Binding WorkedDays}" ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Holidays worked" Count="{Binding WorkedHolidays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Saturdays worked" Count="{Binding WorkedSaturdays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Sundays worked" Count="{Binding WorkedSundays}"   ></mah:Tile>
                 </StackPanel>
                 <Grid Grid.Row="2" Grid.Column="0"  >
                     <Grid.RowDefinitions>
