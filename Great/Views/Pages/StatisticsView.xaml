@@ -242,21 +242,47 @@
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" Grid.ColumnSpan="12">Expenses Overview</Label>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="0" Series="{Binding Expenses[0]}"  LegendLocation="None">
+                 <!--This is a empty chart used as background-->
+                <lvc:CartesianChart Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="12" LegendLocation="None">
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Labels="Jan" Foreground="{DynamicResource TextBrush}" />
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Amount"
+                          Foreground="{DynamicResource TextBrush}" MaxValue="{Binding MaxExpenseChartValue}">
+                            <lvc:Axis.Separator >
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                    <lvc:Separator.Stroke>
+                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                    </lvc:Separator.Stroke>
+                                </lvc:Separator>
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                    </lvc:CartesianChart.ChartLegend>
+                </lvc:CartesianChart>
+                
+                <!--these are the real charts without separator visibility-->
+                <lvc:CartesianChart Grid.Row="2" Grid.Column="0"  Series="{Binding Expenses[0]}"  LegendLocation="None">
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -291,7 +317,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -313,7 +339,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -335,7 +361,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -357,7 +383,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -379,7 +405,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -401,7 +427,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -423,7 +449,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -445,7 +471,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -467,7 +493,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -489,7 +515,7 @@
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
@@ -509,9 +535,9 @@
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
                             <lvc:Axis.Separator >
-                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
+                                <lvc:Separator StrokeThickness="2" StrokeDashArray="2" >
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="Transparent" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>

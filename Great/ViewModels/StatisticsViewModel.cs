@@ -703,7 +703,7 @@ namespace Great.ViewModels
                     }
                 }
 
-                MaxExpenseChartValue += 100;
+                MaxExpenseChartValue += 500;
 
             }
 
