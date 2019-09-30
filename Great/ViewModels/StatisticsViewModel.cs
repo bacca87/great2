@@ -4,10 +4,14 @@ using Great.Models.Database;
 using Great.Utils.Extensions;
 using Great.ViewModels.Database;
 using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Great.ViewModels
 {
@@ -15,6 +19,7 @@ namespace Great.ViewModels
     {
         #region Properties
         private Func<ChartPoint, string> HoursLabel { get; set; }
+        private Func<ChartPoint, string> CurrencyLabel { get; set; }
 
         private int _WorkedDays;
         public int WorkedDays
@@ -80,12 +85,20 @@ namespace Great.ViewModels
             set => Set(ref _Hours, value);
         }
 
-        private SeriesCollection _Expenses;
-        public SeriesCollection Expenses
+        private ObservableCollection<SeriesCollection> _Expenses;
+        public ObservableCollection<SeriesCollection> Expenses
         {
             get => _Expenses;
             set => Set(ref _Expenses, value);
         }
+
+        private double _MaxExpenseChartValue;
+        public double MaxExpenseChartValue
+        {
+            get => _MaxExpenseChartValue;
+            set => Set(ref _MaxExpenseChartValue, value);
+        }
+
 
         private SeriesCollection _HourTypes;
         public SeriesCollection HourTypes
@@ -126,12 +139,23 @@ namespace Great.ViewModels
             set => Set(ref _MonthsLabels, value);
         }
 
+        private List<string> _MonthsCurrenciesLabels;
+        public List<string> MonthsCurrenciesLabels
+        {
+            get => _MonthsCurrenciesLabels;
+            set => Set(ref _MonthsCurrenciesLabels, value);
+        }
+
+
         private bool IsRefreshEnabled = false;
         #endregion
 
         #region Commands Definitions
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
+
+        public RelayCommand<int> ChangeTabCommand { get;set; }
+        public Action<int> OnTabIndexSelected { get; set; }
         #endregion
 
         public StatisticsViewModel()
@@ -143,12 +167,14 @@ namespace Great.ViewModels
             Days = new SeriesCollection();
             Km = new SeriesCollection();
             FactoryCountries = new Dictionary<string, double>();
-            Expenses = new SeriesCollection();
+            Expenses = new ObservableCollection<SeriesCollection>();
 
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
+            ChangeTabCommand = new RelayCommand<int>(ChangeTab);
 
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
+            MonthsCurrenciesLabels = new List<string>();
 
             SelectedYear = DateTime.Now.Year;
             IsRefreshEnabled = true;
@@ -204,7 +230,7 @@ namespace Great.ViewModels
                     {
                         if (FactoryCountries.Any(x => x.Key == f.CountryCode))
                             FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
-                        else 
+                        else
                             FactoryCountries.Add(f.CountryCode, entry.Value);
                     }
 
@@ -376,6 +402,7 @@ namespace Great.ViewModels
                         LabelPoint = HoursLabel
                     }
                 };
+
 
                 WorkedDays = WorkingDays?.Count() ?? 0;
                 TravelCount = WorkingDays?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
@@ -600,57 +627,93 @@ namespace Great.ViewModels
 
         private void LoadExpensesData()
         {
+            //TODO: we use 12 separate chart due to unsupported livechart behaviour.
+            Expenses.Clear();
+            MaxExpenseChartValue = 0;
 
-            Dictionary<string, int> factoriesData = new Dictionary<string, int>();
+            //load 12 lists one for each month
+            for (int i = 0; i < 11; i++)
+                Expenses.Add(new SeriesCollection());
 
             using (DBArchive db = new DBArchive())
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
 
+                //Get all expense accounts connected to selected year
                 var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp >= startDate &&
                 ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp <= endDate).ToList().Select(e => new
-                                                                                                     {
-                                                                                                      d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
-                                                                                                      e = new ExpenseAccountEVM(e)
-                                                                                                     });
-
-                var ExpensesMonth = expenses?.GroupBy(x=> x.d.Timesheets)
-                                       .Select(g => new
-                                       {
-                                           Total = g.Sum(x => (x.e.Expenses.Sum(y=> y.TotalAmount))),
-                                           Deducted = g.Sum(x => (x.e.DeductionAmount))
-                                       });
-               
-                ChartValues<double> TotalAmount = new ChartValues<double>();
-                ChartValues<double> DeductedAmount = new ChartValues<double>();
-
-                foreach (var e in ExpensesMonth)
                 {
-                    TotalAmount.Add(e.Total);
-                    DeductedAmount.Add(e.Deducted);
+                    d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
+                    e = new ExpenseAccountEVM(e)
+                });
 
+                var groupedMyMonth = from ex in expenses
+                                     group ex by new { ex.d.Date.Month, ex.e.Currency, ex.e.TotalAmount, ex.e.DeductionAmount } into grouped
+                                     select new
+                                     {
+                                         Amount = grouped.Key.TotalAmount,
+                                         Currency = grouped.Key.Currency,
+                                         Deduction = grouped.Key.DeductionAmount,
+                                         Month = grouped.Key.Month
+                                     };
+
+                //For every currency in year
+                foreach (var month in groupedMyMonth.ToLookup(result => result.Month, result => new { result.Month, result.Deduction, result.Amount, result.Currency }))
+                {
+                    int monthNumber = month.Select(x => x.Month).First() - 1;
+                    var groupedByCurrency = month.GroupBy(x => x.Currency);
+
+                    //month totals for every currency
+                    foreach (var cur in groupedByCurrency)
+                    {
+                        if (cur.Key == null) continue;
+
+                        var eaSum = cur.Sum(x => x.Amount ?? 0);
+
+                        MaxExpenseChartValue = eaSum > MaxExpenseChartValue ? eaSum : _MaxExpenseChartValue;
+
+                        CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + " " + cur.Key;
+                        ChartValues<double> TotalDeducted = new ChartValues<double>();
+                        ChartValues<double> TotalRefound = new ChartValues<double>();
+
+                        TotalDeducted.Add(cur.Sum(x => x.Deduction ?? 0));
+                        TotalRefound.Add(cur.Sum(x => (x.Amount ?? 0) - (x.Deduction ?? 0)));
+
+                        Expenses[monthNumber].Add(new StackedColumnSeries
+                        {
+                            Title = "Refounded",
+                            Values = TotalRefound,
+                            DataLabels = false,
+                            LabelPoint = CurrencyLabel,
+                            Grouping = cur.Key,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+                        });
+
+                        Expenses[monthNumber].Add(new StackedColumnSeries
+                        {
+                            Title = "Deducted",
+                            Values = TotalDeducted,
+                            DataLabels = false,
+                            LabelPoint = CurrencyLabel,
+                            Grouping = cur.Key,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+                        });
+
+                    }
                 }
 
-                Expenses = new SeriesCollection()
-                {
-                    new StackedColumnSeries()
-                    {
-                        Title = "Total Expenses",
-                        Values = TotalAmount,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    },
-                    new StackedColumnSeries()
-                    {
-                        Title = "Deductions",
-                        Values = DeductedAmount,
-                        DataLabels = false,
-                        LabelPoint = HoursLabel
-                    }
-                };
+                MaxExpenseChartValue += 500;
 
             }
+
         }
+
+        private void ChangeTab(int index)
+        {
+            OnTabIndexSelected?.Invoke(index);
+        }
+
     }
+
 }

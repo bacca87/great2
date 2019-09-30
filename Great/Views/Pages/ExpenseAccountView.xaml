@@ -162,7 +162,7 @@
                 <Image Source="pack://application:,,,/Great2;component/Images/72/sign-error.png" ToolTip="ERROR" Width="72" Height="72" VerticalAlignment="Top"/>
                 <TextBlock x:Name="LastErrorTextBlock" Text="{Binding SelectedEA.LastError}" FontSize="15" FontWeight="Bold" FontStyle="Italic" TextWrapping="Wrap" VerticalAlignment="Center"/>
             </StackPanel>
-        </Grid>        
+        </Grid>
         <Grid Grid.Column="1" Margin="10,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -201,7 +201,8 @@
                     </ComboBox.ItemsSource>
                 </ComboBox>
             </StackPanel>
-            <FrameworkElement Name="dummyElement" Visibility="Collapsed"/> <!--HACK FOR SET DATAGRID COLUMNS READONLY-->
+            <FrameworkElement Name="dummyElement" Visibility="Collapsed"/>
+            <!--HACK FOR SET DATAGRID COLUMNS READONLY-->
             <DataGrid 
                 Grid.Row="1"
                 HorizontalAlignment="Stretch" 
@@ -221,7 +222,7 @@
                 VirtualizingPanel.VirtualizationMode="Standard"
                 GridLinesVisibility="Horizontal"
                 ColumnWidth="*">
-                <DataGrid.Resources>                    
+                <DataGrid.Resources>
                     <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                         <Style.Setters>
                             <Setter Property="TextBlock.FontSize" Value="20" />
@@ -239,11 +240,11 @@
                             <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         </Style.Setters>
                     </Style>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">                        
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
-                    <conv:EmptyStringToTrueConverter x:Key="EmptyStringToTrueConverter"/>                  
+                    <conv:EmptyStringToTrueConverter x:Key="EmptyStringToTrueConverter"/>
                 </DataGrid.Resources>
                 <!--<DataGrid.ContextMenu>
                 <ContextMenu>
@@ -360,8 +361,8 @@
                     Deducted Amount
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBox FontSize="20" PreviewTextInput="TextBox_PreviewTextInput" TextAlignment="Right"  MinWidth="80"  
-                        Text="{Binding SelectedEA.DeductionAmount,Converter={StaticResource ZeroDoubleToNullConverter}}" 
+                    <TextBox FontSize="20" TextAlignment="Right"  MinWidth="80"  
+                        Text="{Binding SelectedEA.DeductionAmount, Converter={StaticResource ZeroDoubleToNullConverter}}"
                     />
                     <TextBlock  FontSize="20">
                         <TextBlock.Text>

@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Text.RegularExpressions;
+using System.Windows.Controls;
 
 namespace Great.Views.Pages
 {
@@ -10,12 +11,6 @@ namespace Great.Views.Pages
         public ExpenseAccountView()
         {
             InitializeComponent();
-        }
-
-        private void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            float f;
-            if (!float.TryParse(e.Text, out f)) e.Handled = true;
         }
     }
 }

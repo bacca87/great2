@@ -44,8 +44,8 @@ namespace Great.ViewModels.Database
             }
         }
 
-        private double _DeductionAmount;
-        public double DeductionAmount
+        private double? _DeductionAmount;
+        public double? DeductionAmount
         {
             get => _DeductionAmount;
             set => SetAndCheckChanged(ref _DeductionAmount, value);
