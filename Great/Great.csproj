@@ -138,10 +138,10 @@
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\Great.LiveCharts.2.0.2\lib\LiveCharts.dll</HintPath>
+      <HintPath>..\packages\Great.LiveCharts.2.0.3\lib\LiveCharts.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\Great.LiveCharts.2.0.2\lib\LiveCharts.Wpf.dll</HintPath>
+      <HintPath>..\packages\Great.LiveCharts.2.0.3\lib\LiveCharts.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
@@ -556,6 +556,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Scripts\jquery-3.4.1.min.map" />
+    <None Include="Scripts\jquery-3.4.1.slim.min.map" />
     <None Include="Web References\SharepointReference\lists.wsdl" />
     <None Include="Web References\SharepointReference\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -698,6 +700,11 @@
     <Resource Include="Images\32\money.png" />
     <Resource Include="Images\32\road.png" />
     <Resource Include="Images\32\wall-calendar.png" />
+    <Content Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.4.1.js" />
+    <Content Include="Scripts\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
