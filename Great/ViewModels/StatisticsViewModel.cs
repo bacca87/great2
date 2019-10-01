@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace Great.ViewModels
@@ -189,11 +190,15 @@ namespace Great.ViewModels
 
             using (new WaitCursor())
             {
-                LoadFactoriesData();
-                LoadHoursData();
-                LoadDayStatistic();
-                LoadCarStatistics();
-                LoadExpensesData();
+                Parallel.Invoke(() =>
+                {
+                    LoadFactoriesData();
+                    LoadHoursData();
+                    LoadDayStatistic();
+                    LoadCarStatistics();
+                    LoadExpensesData();
+                }
+                );
             }
         }
 
@@ -632,7 +637,7 @@ namespace Great.ViewModels
             MaxExpenseChartValue = 0;
 
             //load 12 lists one for each month
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < 12; i++)
                 Expenses.Add(new SeriesCollection());
 
             using (DBArchive db = new DBArchive())

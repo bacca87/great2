@@ -48,13 +48,13 @@ namespace Great.ViewModels
                 }
             }
 
-        private bool _showOnlyVacations = false;
+        private bool _showOnlyVacations=false;
         public bool ShowOnlyVacations
         {
             get => _showOnlyVacations;
             set
             {
-                Set(ref _ShowHourTimeFields, value);
+                Set(ref _showOnlyVacations, value);
                 _FilteredEvents.Refresh();
             }
         }

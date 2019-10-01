@@ -494,7 +494,7 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Charts">
-                    <Fluent:Button Header="Hours" Command="{Binding ChangeTabCommand}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/business.png">
+                    <Fluent:Button Header="Hours" Command="{Binding ChangeTabCommand}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/wall-calendar.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
