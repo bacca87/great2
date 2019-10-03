@@ -298,7 +298,8 @@ namespace Great.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
-                ea.IsCompiled = false;
+                var oldEa = new ExpenseAccountEVM(db.ExpenseAccounts.SingleOrDefault(x => x.Id == ea.Id));
+                ea.IsCompiled = ea.IsCompiled ? ea.Equals(oldEa) : false;
                 ea.NotifyAsNew = false;
                 ea.Save(db);
 

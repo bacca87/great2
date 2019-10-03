@@ -149,5 +149,31 @@ namespace Great.ViewModels.Database
             throw new System.NotImplementedException();
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is ExpenseEVM)
+            {
+                ExpenseEVM exp = obj as ExpenseEVM;
+
+                return MondayAmount == exp.MondayAmount
+                    && TuesdayAmount == exp.TuesdayAmount
+                    && ThursdayAmount == exp.ThursdayAmount
+                    && WednesdayAmount == exp.WednesdayAmount
+                    && FridayAmount == exp.FridayAmount
+                    && SaturdayAmount == exp.SaturdayAmount
+                    && SundayAmount == exp.SundayAmount;
+
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            //Override needed only for dicttionaries 
+            //https://www.codeproject.com/Tips/1255596/Overriding-Equals-GetHashCode-Laconically-in-CShar
+
+            return base.GetHashCode();
+        }
+
     }
 }

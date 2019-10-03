@@ -387,45 +387,16 @@ namespace Great.ViewModels.Database
             return false;
         }
 
-        //public override int GetHashCode()
-        //{
-        //    unchecked
-        //    {
-
-        //        // Choose large primes to avoid hashing collisions
-        //        const int HashingBase = (int)2166136261;
-        //        const int HashingMultiplier = 16777619;
-
-        //        int hash = HashingBase;
-        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Title) ? Title.GetHashCode() : 0);
-        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Location) ? Location.GetHashCode() : 0);
-        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, IsAllDay) ? IsAllDay.GetHashCode() : 0);
-        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, StartDate) ? StartDate.GetHashCode() : 0);
-        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, EndDate) ? EndDate.GetHashCode() : 0);
-        //        hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, Status) ? Status.GetHashCode() : 0);
-
-        //        return hash;
-        //    }
-        //}
-        //public override bool Equals(object obj)
-        //{
-        //    if (obj is EventEVM)
-        //    {
-        //        EventEVM o = (EventEVM)obj;
-
-        //        return Title == o.Title
-        //            && Location == o.Location
-        //            && IsAllDay == o.IsAllDay
-        //            && StartDate == o.StartDate
-        //            && EndDate == o.EndDate
-        //            && Status == o.Status;
-
-        //    }
-        //    return false;
-        //}
-        public bool IsEqual(object obj)
+        public override int GetHashCode()
         {
-            //Hack: too much long computation when overriding Object.GetHashCode() and Object.Equals()
+            //Override needed only for dicttionaries 
+            //https://www.codeproject.com/Tips/1255596/Overriding-Equals-GetHashCode-Laconically-in-CShar
+
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
             if (obj is EventEVM)
             {
                 EventEVM o = (EventEVM)obj;
