@@ -13,9 +13,9 @@ namespace Great.Utils.Converters
             {
                 TimeSpan ts = (TimeSpan)value;
 
-                if (ts.Days > 0) result = result + String.Format("{0}d,",ts.Days);
-                result = result + String.Format("{0}h,", ts.Hours);
-                result = result + String.Format("{0}min", ts.Minutes);
+                if (ts.Days > 0) result = result + String.Format("{0}d ",ts.Days);
+                result = result + String.Format("{0}h ", ts.Hours);
+                result = result + String.Format("{0}m", ts.Minutes);
             }
             catch { }
 

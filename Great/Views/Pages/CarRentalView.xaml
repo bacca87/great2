@@ -151,20 +151,20 @@
 
                     <TextBlock VerticalAlignment="Center" Grid.Row="2">Brand</TextBlock>
                     <ComboBox
-                    Grid.Row="3"
-                    IsEditable="True"
-                    IsTextSearchEnabled="True"
-                    IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding CarBrands }" 
-                    Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
+                        Grid.Row="3"
+                        IsEditable="True"
+                        IsTextSearchEnabled="True"
+                        IsEnabled="{Binding IsInputEnabled}"
+                        ItemsSource="{Binding CarBrands }" 
+                        Text="{Binding SelectedCar.Brand,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                     <TextBlock VerticalAlignment="Center" Grid.Row="4">Model</TextBlock>
                     <ComboBox
-                    Grid.Row="5"
-                    IsEditable="True"
-                    IsTextSearchEnabled="True"
-                    IsEnabled="{Binding IsInputEnabled}"
-                    ItemsSource="{Binding CarModels }" 
-                    Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
+                        Grid.Row="5"
+                        IsEditable="True"
+                        IsTextSearchEnabled="True"
+                        IsEnabled="{Binding IsInputEnabled}"
+                        ItemsSource="{Binding CarModels }" 
+                        Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                     <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
                     <ComboBox Grid.Row="7"
                                   SelectedItem="{Binding SelectedCar.CarRentalCompany1,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 

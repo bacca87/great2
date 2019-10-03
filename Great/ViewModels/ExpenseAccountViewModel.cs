@@ -96,7 +96,6 @@ namespace Great.ViewModels
             set => Set(ref _DaysOfWeek, value);
         }
 
-
         private bool _showEditMenu;
         public bool ShowEditMenu
         {
@@ -173,8 +172,6 @@ namespace Great.ViewModels
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
 
-
-
             using (DBArchive db = new DBArchive())
             {
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
@@ -193,9 +190,7 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
-            }
-
-
+        }
 
         public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {
@@ -438,7 +433,6 @@ namespace Great.ViewModels
                     }
 
             }
-
 
             if (ea == null)
                 return;

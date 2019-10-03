@@ -111,22 +111,8 @@
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
-                    <DataGridTextColumn Header="Amount" CellStyle="{StaticResource CenterAligned}">
-                        <DataGridTextColumn.Binding>
-                            <MultiBinding StringFormat="{}{0}{1}">
-                                <Binding Path="TotalAmount" Converter="{StaticResource ZeroDoubleToNullConverter}"/>
-                                <Binding Path="CurrencyCode" />
-                            </MultiBinding>
-                        </DataGridTextColumn.Binding>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Deductions" CellStyle="{StaticResource CenterAligned}">
-                        <DataGridTextColumn.Binding>
-                            <MultiBinding StringFormat="{}{0}{1}">
-                                <Binding Path="DeductionAmount" Converter="{StaticResource ZeroDoubleToNullConverter}"/>
-                                <Binding Path="CurrencyCode" />
-                            </MultiBinding>
-                        </DataGridTextColumn.Binding>
-                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding TotalAmount_Display}" CellStyle="{StaticResource CenterAligned}" />
+                    <DataGridTextColumn Header="Deductions" Binding="{Binding DeductionAmount_Display}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Currency" Binding="{Binding Currency1.Id}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Order" Binding="{Binding FDL1.Order}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="CdC" Binding="{Binding CdC}" CellStyle="{StaticResource CenterAligned}"/>
