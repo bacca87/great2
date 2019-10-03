@@ -153,6 +153,9 @@ namespace Great.ViewModels
         {
             string newText = string.Empty;
 
+            if (_greatMigra == null)
+                return;
+
             while (!_greatMigra.Output.IsEmpty)
             {
                 string text;
@@ -213,7 +216,9 @@ namespace Great.ViewModels
 
         public void Cancel()
         {
-            _greatMigra.Cancel();
+            if(_greatMigra != null)
+                _greatMigra.Cancel();
+
             refreshTimer.Stop();
 
             Refresh();
