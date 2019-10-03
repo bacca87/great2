@@ -422,6 +422,8 @@ namespace Great.ViewModels
 
                     Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
+
+                SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
             }
         }
 
