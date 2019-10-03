@@ -321,28 +321,32 @@ namespace Great.Utils
                         if (stopImport)
                             break;
 
-                        Factory f = new Factory();
+                        string FactoryName = r.Field<string>("dbf_Stabilimento");
+
+                        FactoryEVM factory = db.Factories.Where(f => f.Name == FactoryName).ToList().Select(f => new FactoryEVM(f)).FirstOrDefault();
+
+                        if (factory == null)
+                            factory = new FactoryEVM();
 
                         try
                         {
-                            f.Name = r.Field<string>("dbf_Stabilimento");
-                            f.CompanyName = r.Field<string>("dbf_RagioneSociale");
-                            f.Address = r.Field<string>("dbf_Indirizzo");
-                            f.IsForfait = r.Field<bool>("dbf_Forfettario");
+                            factory.Name = FactoryName;
+                            factory.CompanyName = r.Field<string>("dbf_RagioneSociale");
+                            factory.Address = r.Field<string>("dbf_Indirizzo");
+                            factory.IsForfait = r.Field<bool>("dbf_Forfettario");
 
                             long transferType = r.Field<byte>("dbf_Tipo_Trasf");
-                            f.TransferType = transferType != 4 ? transferType : 0;
+                            factory.TransferType = transferType != 4 ? transferType : 0;
 
-                            db.Factories.AddOrUpdate(x => x.Name, f);
-                            db.SaveChanges();
+                            factory.Save(db);
 
-                            _factories.Add(r.Field<int>("dbf_Index"), f.Id);
+                            _factories.Add(r.Field<int>("dbf_Index"), factory.Id);
 
-                            Message($"Factory {f.Name} OK");
+                            Message($"Factory {factory.Name} OK");
                         }
                         catch (Exception ex)
                         {
-                            Error($"Failed to import factory {f.Name}. {ex}", ex);
+                            Error($"Failed to import factory {factory.Name}. {ex}", ex);
                         }
                     }
 

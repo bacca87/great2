@@ -29,19 +29,22 @@ namespace Great
             Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
 
-            SplashScreen splash = new SplashScreen();
-            MainWindow = splash;
+            SplashScreen splash = null;
+
             if (!Debugger.IsAttached)
+            {
+                splash = new SplashScreen();
+                MainWindow = splash;
                 splash.Show();
+            }   
 
             // themes
             UserSettings.Themes.AttachCustomThemes();
             UserSettings.Themes.ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
             UserSettings.Themes.ApplyAllColors();
 
-
-            //in order to ensure the UI stays responsive, we need to
-            //do the work on a different thread
+            // in order to ensure the UI stays responsive, we need to
+            // do the work on a different thread
             Task.Factory.StartNew(() =>
             {
                 // Multiple istance check
@@ -77,7 +80,12 @@ namespace Great
                     //initialize the main window, set it as the application main window
                     //and close the splash screen
                     MainView window = new MainView();
-                    window.ContentRendered += (s, args) => splash.Close();
+                    window.ContentRendered += (s, args) =>
+                    {
+                        if (splash != null)
+                            splash.Close();
+                    };
+
                     MainWindow = window;
                     window.Show();
                 });
