@@ -48,7 +48,11 @@ namespace Great.ViewModels.Database
         public double? DeductionAmount
         {
             get => _DeductionAmount;
-            set => SetAndCheckChanged(ref _DeductionAmount, value);
+            set
+            {
+                SetAndCheckChanged(ref _DeductionAmount, value);
+                RaisePropertyChanged(nameof(DeductionAmount_Display));
+            }
         }
 
         private string _Notes;
@@ -252,6 +256,27 @@ namespace Great.ViewModels.Database
                 return true;
             }
             return false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ExpenseAccountEVM)
+            {
+                ExpenseAccountEVM exp = obj as ExpenseAccountEVM;
+                return Notes == exp.Notes
+                        && Currency == exp.Currency
+                        && Expenses.SequenceEqual(exp.Expenses);
+
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            //Override needed only for dicttionaries 
+            //https://www.codeproject.com/Tips/1255596/Overriding-Equals-GetHashCode-Laconically-in-CShar
+
+            return base.GetHashCode();
         }
 
     }
