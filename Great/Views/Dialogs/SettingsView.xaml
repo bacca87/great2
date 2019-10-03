@@ -173,35 +173,35 @@
                             </Grid.RowDefinitions>
                             <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsCustomSaturdayColorUsed}"  />
                             <TextBlock Grid.Row="0" Grid.Column="1">Saturday</TextBlock>
-                            <xctk:ColorPicker Grid.Row="0" Grid.Column="2" SelectedColor="{Binding CustomSaturdayColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomSaturdayColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="0" Grid.Column="2" SelectedColor="{Binding CustomSaturdayColor}" IsEnabled="{Binding IsCustomSaturdayColorUsed}"/>
 
                             <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsCustomSundayColorUsed}"  />
                             <TextBlock Grid.Row="1" Grid.Column="1">Sunday</TextBlock>
-                            <xctk:ColorPicker Grid.Row="1" Grid.Column="2" SelectedColor="{Binding CustomSundayColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomSundayColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="1" Grid.Column="2" SelectedColor="{Binding CustomSundayColor}" IsEnabled="{Binding IsCustomSundayColorUsed}"/>
 
                             <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding IsCustomHolidayColorUsed}"  />
                             <TextBlock Grid.Row="2" Grid.Column="1">Holiday</TextBlock>
-                            <xctk:ColorPicker Grid.Row="2" Grid.Column="2" SelectedColor="{Binding CustomHolidayColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomHolidayColorUsed}" />
+                            <xctk:ColorPicker Grid.Row="2" Grid.Column="2" SelectedColor="{Binding CustomHolidayColor}" IsEnabled="{Binding IsCustomHolidayColorUsed}" />
 
 
                             <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding IsCustomVacationColorUsed}"  />
                             <TextBlock Grid.Row="3" Grid.Column="1">Vacation</TextBlock>
-                            <xctk:ColorPicker Grid.Row="3" Grid.Column="2" SelectedColor="{Binding CustomVacationColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomVacationColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="3" Grid.Column="2" SelectedColor="{Binding CustomVacationColor}" IsEnabled="{Binding IsCustomVacationColorUsed}"/>
 
 
                             <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding IsCustomSickColorUsed}"  />
                             <TextBlock Grid.Row="4" Grid.Column="1">Sick</TextBlock>
-                            <xctk:ColorPicker Grid.Row="4" Grid.Column="2" SelectedColor="{Binding CustomSickColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomSickColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="4" Grid.Column="2" SelectedColor="{Binding CustomSickColor}" IsEnabled="{Binding IsCustomSickColorUsed}"/>
 
 
                             <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding IsCustomHomeworkColorUsed}"  />
                             <TextBlock Grid.Row="5" Grid.Column="1">Homeworking</TextBlock>
-                            <xctk:ColorPicker Grid.Row="5" Grid.Column="2" SelectedColor="{Binding CustomHomeworkColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomHomeworkColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="5" Grid.Column="2" SelectedColor="{Binding CustomHomeworkColor}" IsEnabled="{Binding IsCustomHomeworkColorUsed}"/>
 
 
                             <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding IsCustomSpecialLeaveColorUsed}"  />
                             <TextBlock Grid.Row="6" Grid.Column="1">Special Leave</TextBlock>
-                            <xctk:ColorPicker Grid.Row="6" Grid.Column="2" SelectedColor="{Binding CustomSpecialLeaveColor}" DisplayColorAndName="True" IsEnabled="{Binding IsCustomSpecialLeaveColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="6" Grid.Column="2" SelectedColor="{Binding CustomSpecialLeaveColor}" IsEnabled="{Binding IsCustomSpecialLeaveColorUsed}"/>
 
                         </Grid>
 
