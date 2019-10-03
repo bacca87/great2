@@ -218,6 +218,8 @@ namespace Great.ViewModels
                                  group fdl.Factory1 by fdl.Factory1.Name into factories
                                  select factories).ToDictionary(x => x.Key, x => x.Count());
 
+                Dictionary<string, double> temp = new Dictionary<string, double>();
+
                 foreach (KeyValuePair<string, int> entry in factoriesData)
                 {
                     PieSeries factory = new PieSeries
@@ -231,17 +233,19 @@ namespace Great.ViewModels
                     Factories.Add(factory);
 
                     var f = db.Factories.SingleOrDefault(x => x.Name == entry.Key);
+
                     if (f != null && f?.CountryCode != null)
                     {
-                        if (FactoryCountries.Any(x => x.Key == f.CountryCode))
-                            FactoryCountries[f.CountryCode] = FactoryCountries[f.CountryCode] + entry.Value;
+                        if (temp.Any(x => x.Key == f.CountryCode))
+                            temp[f.CountryCode] = temp[f.CountryCode] + entry.Value;
                         else
-                            FactoryCountries.Add(f.CountryCode, entry.Value);
+                            temp.Add(f.CountryCode, entry.Value);
                     }
 
                 }
 
-
+                //This is required because add and clear does not fire set accessor of property
+                FactoryCountries = temp;
             }
         }
 
@@ -403,7 +407,7 @@ namespace Great.ViewModels
                     {
                         Title = "Sick Leave Hours",
                         Values = SickLeaveValues,
-                        DataLabels = true,
+                        DataLabels = false,
                         LabelPoint = HoursLabel
                     }
                 };
