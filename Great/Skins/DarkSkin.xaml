@@ -38,6 +38,9 @@
             <SolidColorBrush x:Key="DefaultWorkStartColor" Color="#33691E"/>
             <SolidColorBrush x:Key="DefaultWorkEndColor" Color="#33691E"/>
 
+            <SolidColorBrush x:Key="DefaultColorPickerBackGround" Color="#2e2e2e"/>
+            <SolidColorBrush x:Key="DefaultColorPickerTextForeground" Color="White"/>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

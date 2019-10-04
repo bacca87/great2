@@ -35,17 +35,13 @@
     </Style>
 
     <Style TargetType="xctk:ColorPicker">
-        <Setter Property="DropDownBackground">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1"
-                              StartPoint="0.5,0">
-                    <GradientStop Color="#FFFAFBFB"
-                          Offset="0" />
-                    <GradientStop Color="#FFF4F4F4"
-                          Offset="1" />
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        
+        <Setter Property="DropDownBackground" Value="{DynamicResource DefaultColorPickerBackGround}"/>
+        <Setter Property="HeaderBackground" Value="{DynamicResource DefaultColorPickerBackGround}"/>
+        <Setter Property="TabBackground" Value="{DynamicResource DefaultColorPickerBackGround}"/>
+        <Setter Property="Foreground" Value="{DynamicResource DefaultColorPickerTextForeground}"/>
+        <Setter Property="HeaderForeground" Value="{DynamicResource DefaultColorPickerTextForeground}"/>
+        <Setter Property="TabForeground" Value="{DynamicResource DefaultColorPickerTextForeground}"/>
     </Style>
 
     <Style x:Key="DefaultErrorStyle" TargetType="xctk:MaskedTextBox">

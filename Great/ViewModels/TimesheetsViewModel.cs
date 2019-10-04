@@ -341,6 +341,7 @@ namespace Great.ViewModels
 
                         transaction.Commit();
                         SelectedWorkingDay.Refresh(db);
+                        SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
                     }
                     catch
                     {
@@ -360,6 +361,7 @@ namespace Great.ViewModels
             {
                 day.EType = EDayType.WorkDay;
             }
+            day.RaisePropertyChanged(nameof(day.Notes_Display));
         }
         public void DeleteTimesheet(TimesheetEVM timesheet)
         {
@@ -370,6 +372,7 @@ namespace Great.ViewModels
             {
                 SelectedWorkingDay.Timesheets.Remove(timesheet);
                 SelectedTimesheet = null;
+                SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
 
                 Messenger.Default.Send(new DeletedItemMessage<TimesheetEVM>(this, timesheet));
             }
@@ -422,9 +425,9 @@ namespace Great.ViewModels
 
                     Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
                 }
-
-                SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
             }
+
+            SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
         }
 
         private void DayTypeChanged(ItemChangedMessage<DayEVM> day)
