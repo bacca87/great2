@@ -31,6 +31,20 @@ namespace Great
             Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
 
+            // Multiple istance check
+            if (!e.Args.Contains("-m") && !e.Args.Contains("/m"))
+            {
+                Process proc = Process.GetCurrentProcess();
+                int count = Process.GetProcesses().Where(p =>
+                    p.ProcessName == proc.ProcessName).Count();
+
+                if (count > 1)
+                {
+                    Environment.Exit(1);
+                    return;
+                }
+            }
+
             SplashScreen splash = null;
 
             if (!Debugger.IsAttached)
@@ -38,39 +52,25 @@ namespace Great
                 splash = new SplashScreen();
                 MainWindow = splash;
                 splash.Show();
-            }   
+            }
+
+            // Upgrade Settings
+            if (Settings.Default.UpgradeSettings)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeSettings = false;
+                Settings.Default.Save();
+            }
+
+            // themes
+            UserSettings.Themes.AttachCustomThemes();
+            UserSettings.Themes.ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
+            UserSettings.Themes.ApplyAllColors();
 
             // in order to ensure the UI stays responsive, we need to
             // do the work on a different thread
             Task.Factory.StartNew(() =>
             {
-                // Multiple istance check
-                if (!e.Args.Contains("-m") && !e.Args.Contains("/m"))
-                {
-                    Process proc = Process.GetCurrentProcess();
-                    int count = Process.GetProcesses().Where(p =>
-                        p.ProcessName == proc.ProcessName).Count();
-
-                    if (count > 1)
-                    {
-                        Environment.Exit(1);
-                        return;
-                    }
-                }
-
-                // Upgrade Settings
-                if (Settings.Default.UpgradeSettings)
-                {
-                    Settings.Default.Upgrade();
-                    Settings.Default.UpgradeSettings = false;
-                    Settings.Default.Save();
-                }
-
-                // themes
-                UserSettings.Themes.AttachCustomThemes();
-                UserSettings.Themes.ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
-                UserSettings.Themes.ApplyAllColors();
-
                 MigrateDataFolder();
                 InitializeDirectoryTree();
                 InitializeDatabase();
