@@ -147,6 +147,9 @@ namespace Great.ViewModels
         {
             string newText = string.Empty;
 
+            if (_fdlImport == null)
+                return;
+
             while (!_fdlImport.Output.IsEmpty)
             {
                 string text;
@@ -214,7 +217,9 @@ namespace Great.ViewModels
 
         public void Cancel()
         {
-            _fdlImport.Cancel();
+            if (_fdlImport != null)
+                _fdlImport.Cancel();
+
             refreshTimer.Stop();
 
             Refresh();
