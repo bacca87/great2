@@ -251,7 +251,6 @@ namespace Great.ViewModels
 
         private void LoadHoursData()
         {
-
             Dictionary<string, int> factoriesData = new Dictionary<string, int>();
 
             using (DBArchive db = new DBArchive())
@@ -261,12 +260,10 @@ namespace Great.ViewModels
                 var WorkingDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
                 var AllDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
 
-
-
-
                 var MontlyHours = WorkingDays?.GroupBy(d => d.Date.Month)
                                        .Select(g => new
                                        {
+                                           Month = g.Key,
                                            TotalTime = g.Sum(x => (x.TotalTime ?? 0)),
                                            Ordinary = g.Sum(x => (x.TotalTime ?? 0) - (x.Overtime34 ?? 0) - (x.Overtime35 ?? 0) - (x.Overtime50 ?? 0) - (x.Overtime100 ?? 0)),
                                            Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
@@ -278,13 +275,13 @@ namespace Great.ViewModels
                 var AllDayMonthlyHours = AllDays?.GroupBy(d => d.Date.Month)
                        .Select(g => new
                        {
+                           Month = g.Key,
                            HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0),
                            Vacations = g.Sum(x => x.HoursOfVacation ?? 0),
                            Leave = g.Sum(x => x.HoursOfLeave ?? 0),
                            SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0),
                            SickLeave = g.Sum(x => x.HoursOfSicklLeave ?? 0)
                        });
-
 
                 ChartValues<float> TotalTimeValues = new ChartValues<float>();
                 ChartValues<float> OrdinaryValues = new ChartValues<float>();
@@ -299,25 +296,50 @@ namespace Great.ViewModels
                 ChartValues<float> SickLeaveValues = new ChartValues<float>();
                 ChartValues<float> HomeWorkValues = new ChartValues<float>();
 
-
-
-                foreach (var month in MontlyHours)
+                for (int m = 1; m <= 12; m++)
                 {
-                    TotalTimeValues.Add(month.TotalTime);
-                    OrdinaryValues.Add(month.Ordinary);
-                    Overtime34Values.Add(month.Overtime34);
-                    Overtime35Values.Add(month.Overtime35);
-                    Overtime50Values.Add(month.Overtime50);
-                    Overtime100Values.Add(month.Overtime100);
+                    var month = MontlyHours.SingleOrDefault(x => x.Month == m);
+
+                    if (month != null)
+                    {
+                        TotalTimeValues.Add(month.TotalTime);
+                        OrdinaryValues.Add(month.Ordinary);
+                        Overtime34Values.Add(month.Overtime34);
+                        Overtime35Values.Add(month.Overtime35);
+                        Overtime50Values.Add(month.Overtime50);
+                        Overtime100Values.Add(month.Overtime100);
+                    }
+                    else
+                    {
+                        TotalTimeValues.Add(0);
+                        OrdinaryValues.Add(0);
+                        Overtime34Values.Add(0);
+                        Overtime35Values.Add(0);
+                        Overtime50Values.Add(0);
+                        Overtime100Values.Add(0);
+                    }
                 }
 
-                foreach (var month in AllDayMonthlyHours)
+                for (int m = 1; m <= 12; m++)
                 {
-                    HomeWorkValues.Add(month.HomeWoring);
-                    SickLeaveValues.Add(month.SickLeave);
-                    LeaveValues.Add(month.Leave);
-                    VacationsValues.Add(month.Vacations);
-                    SpecialLeaveValues.Add(month.SpecialLeave);
+                    var month = AllDayMonthlyHours.SingleOrDefault(x => x.Month == m);
+
+                    if (month != null)
+                    {
+                        HomeWorkValues.Add(month.HomeWoring);
+                        SickLeaveValues.Add(month.SickLeave);
+                        LeaveValues.Add(month.Leave);
+                        VacationsValues.Add(month.Vacations);
+                        SpecialLeaveValues.Add(month.SpecialLeave);
+                    }
+                    else
+                    {
+                        HomeWorkValues.Add(0);
+                        SickLeaveValues.Add(0);
+                        LeaveValues.Add(0);
+                        VacationsValues.Add(0);
+                        SpecialLeaveValues.Add(0);
+                    }
                 }
 
                 Hours = new SeriesCollection()
@@ -411,7 +433,6 @@ namespace Great.ViewModels
                         LabelPoint = HoursLabel
                     }
                 };
-
 
                 WorkedDays = WorkingDays?.Count() ?? 0;
                 TravelCount = WorkingDays?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
@@ -611,14 +632,20 @@ namespace Great.ViewModels
                 ChartValues<float> TotalKm = new ChartValues<float>();
 
                 var MonthlyKm = Rents?.GroupBy(d => d.RentStartDate.Month)
-                                       .Select(g => new
-                                       {
-                                           Km = g.Sum(x => (x.EndKm - x.StartKm)),
-                                       });
+                                      .Select(g => new
+                                      {
+                                          Month = g.Key,
+                                          Km = g.Sum(x => (x.EndKm - x.StartKm)),
+                                      });
 
-                foreach (var month in MonthlyKm)
+                for (int m = 1; m <= 12; m++)
                 {
-                    TotalKm.Add(month.Km);
+                    var month = MonthlyKm.SingleOrDefault(x => x.Month == m);
+
+                    if (month != null)
+                        TotalKm.Add(month.Km);
+                    else
+                        TotalKm.Add(0);
                 }
 
                 Km = new SeriesCollection()
@@ -713,16 +740,13 @@ namespace Great.ViewModels
                 }
 
                 MaxExpenseChartValue += 500;
-
             }
-
         }
 
         private void ChangeTab(int index)
         {
             OnTabIndexSelected?.Invoke(index);
         }
-
     }
 
 }
