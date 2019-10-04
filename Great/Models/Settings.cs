@@ -1137,6 +1137,24 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
+            public static string MigrationDataFolder
+            {
+                get
+                {
+                    string path = Environment.ExpandEnvironmentVariables(Settings.Default.MigrationDataFolder);
+
+                    if (Settings.Default.MigrationDataFolder != string.Empty)
+                        path += (!path.EndsWith("\\") ? "\\" : "");
+
+                    return path;
+                }
+                set
+                {
+                    Settings.Default.MigrationDataFolder = value;
+                    Settings.Default.Save();
+                }
+            }
         }
         #endregion
 

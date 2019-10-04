@@ -320,5 +320,17 @@ namespace Great.Properties {
                 this["AccentColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MigrationDataFolder {
+            get {
+                return ((string)(this["MigrationDataFolder"]));
+            }
+            set {
+                this["MigrationDataFolder"] = value;
+            }
+        }
     }
 }

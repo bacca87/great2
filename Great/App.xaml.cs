@@ -25,6 +25,8 @@ namespace Great
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
+
             // set the current thread culture to force the AutoUpdater.NET language in english
             Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
@@ -37,11 +39,6 @@ namespace Great
                 MainWindow = splash;
                 splash.Show();
             }   
-
-            // themes
-            UserSettings.Themes.AttachCustomThemes();
-            UserSettings.Themes.ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
-            UserSettings.Themes.ApplyAllColors();
 
             // in order to ensure the UI stays responsive, we need to
             // do the work on a different thread
@@ -69,7 +66,12 @@ namespace Great
                     Settings.Default.Save();
                 }
 
-                GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
+                // themes
+                UserSettings.Themes.AttachCustomThemes();
+                UserSettings.Themes.ApplyThemeAccent(UserSettings.Themes.Theme, UserSettings.Themes.AccentColor);
+                UserSettings.Themes.ApplyAllColors();
+
+                MigrateDataFolder();
                 InitializeDirectoryTree();
                 InitializeDatabase();
 
@@ -173,5 +175,35 @@ namespace Great
                   .ForEach(x => x.Delete());
         }
 
+        private void MigrateDataFolder()
+        {
+            try
+            {
+                if (UserSettings.Advanced.MigrationDataFolder == string.Empty)
+                    return;
+
+                string SourcePath = ApplicationSettings.Directories.Data.TrimEnd('\\');
+                string DestinationPath = UserSettings.Advanced.MigrationDataFolder.TrimEnd('\\');
+
+                // Now Create all of the directories
+                foreach (string dirPath in Directory.GetDirectories(SourcePath, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
+
+                // Copy all the files & Replaces any files with the same name
+                foreach (string newPath in Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories))
+                    File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
+
+                ApplicationSettings.Directories.Data = UserSettings.Advanced.MigrationDataFolder;
+                    
+                // Delete old folder and its contents
+                Directory.Delete(SourcePath, true);
+
+                UserSettings.Advanced.MigrationDataFolder = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

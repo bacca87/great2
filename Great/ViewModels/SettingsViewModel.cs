@@ -244,41 +244,13 @@ namespace Great.ViewModels
 
         private void MigrateData()
         {
-            if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?\nThe application will be restarted in order to apply changes.", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            try
-            {
-                using (new WaitCursor())
-                {
-                    string SourcePath = ApplicationSettings.Directories.Data.TrimEnd('\\');
-                    string DestinationPath = DataDirectory.TrimEnd('\\');
+            UserSettings.Advanced.MigrationDataFolder = DataDirectory;
 
-                    //Now Create all of the directories
-                    foreach (string dirPath in Directory.GetDirectories(SourcePath, "*",
-                        SearchOption.AllDirectories))
-                        Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
-
-                    //Copy all the files & Replaces any files with the same name
-                    foreach (string newPath in Directory.GetFiles(SourcePath, "*.*",
-                        SearchOption.AllDirectories))
-                        File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
-
-                    ApplicationSettings.Directories.Data = DataDirectory;
-                    MigrateDataCommand.RaiseCanExecuteChanged();
-
-                    // delete old folder and its contents
-                    Directory.Delete(SourcePath, true);
-                }
-
-                MetroMessageBox.Show("Migration Completed!\nThe application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
-                Process.Start(Application.ResourceAssembly.Location, "-m");
-                Application.Current.Shutdown();
-            }
-            catch (Exception ex)
-            {
-                MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            Process.Start(Application.ResourceAssembly.Location, "-m");
+            Application.Current.Shutdown();
         }
 
         private void LoadData()
