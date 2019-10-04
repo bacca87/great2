@@ -313,7 +313,7 @@ namespace Great.Models
 
                     if (day != string.Empty)
                     {
-                        DateTime date = DateTime.Parse(day);
+                        DateTime date = DateTime.Now.ParseMultiCulture(day);
                         fdl.WeekNr = date.WeekNr();
                         fdl.StartDay = date.ToUnixTimestamp();
                         break;
@@ -388,12 +388,12 @@ namespace Great.Models
                                         if (strDate != string.Empty)
                                         {
                                             DayEVM day = new DayEVM();
-                                            day.Date = DateTime.Parse(strDate);
+                                            day.Date = DateTime.Now.ParseMultiCulture(strDate);
                                             day.EType = EDayType.WorkDay;
 
                                             TimesheetEVM timesheet = new TimesheetEVM();
                                             timesheet.FDL = fdl.Id;
-                                            timesheet.Date = DateTime.Parse(strDate);
+                                            timesheet.Date = DateTime.Now.ParseMultiCulture(strDate);
 
                                             TimeSpan time;
 
@@ -544,7 +544,7 @@ namespace Great.Models
 
                     if (day != string.Empty)
                     {
-                        DateTime date = DateTime.Parse(day);
+                        DateTime date = DateTime.Now.ParseMultiCulture(day);
                         fdl.WeekNr = date.WeekNr();
                         fdl.StartDay = date.ToUnixTimestamp();
                         break;
@@ -619,12 +619,12 @@ namespace Great.Models
                                         if (strDate != string.Empty)
                                         {
                                             DayEVM day = new DayEVM();
-                                            day.Date = DateTime.Parse(strDate);
+                                            day.Date = DateTime.Now.ParseMultiCulture(strDate);
                                             day.EType = EDayType.WorkDay;
 
                                             TimesheetEVM timesheet = new TimesheetEVM();
                                             timesheet.FDL = fdl.Id;
-                                            timesheet.Date = DateTime.Parse(strDate);
+                                            timesheet.Date = DateTime.Now.ParseMultiCulture(strDate);
 
                                             TimeSpan time;
 

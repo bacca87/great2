@@ -44,5 +44,18 @@ namespace Great.Utils.Extensions
 
             return instance;
         }
+
+        public static DateTime ParseMultiCulture(this DateTime datetime, string dateString)
+        {
+            DateTime output;
+
+            if (DateTime.TryParse(dateString, new CultureInfo("it-IT"), DateTimeStyles.None, out output))
+                return output;
+
+            if (DateTime.TryParse(dateString, new CultureInfo("en-US"), DateTimeStyles.None, out output))
+                return output;
+
+            throw new NotSupportedException("Given datestring is in a format that is not supported.");
+        }
     }
 }
