@@ -276,7 +276,6 @@ namespace Great.ViewModels.Database
                     end = TravelStartTimeAM_t.Value < TravelEndTimeAM_t.Value ? Date + TravelEndTimeAM_t.Value : Date.AddDays(1) + TravelEndTimeAM_t.Value;
                     travelPeriods.Add(new TimeRange(start, end));
                 }
-
                 if (TravelStartTimeAM_t.HasValue && !TravelEndTimeAM_t.HasValue && WorkStartTimeAM_t.HasValue && WorkEndTimeAM_t.HasValue)
                 {
                     start = Date + TravelStartTimeAM_t.Value;

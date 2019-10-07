@@ -610,6 +610,8 @@ namespace Great.Models
                 public const string SignatureDate = "data[0].#subform[0].data[0]";
                 public const string Notes = "data[0].#subform[0].Campoditesto1[0]";
 
+                public const string Notes2 = "data[0].#subform[0].Sottomodulo2[0].Campoditesto15[0]";                
+
                 public const string Mon_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella4[0]";
                 public const string Tue_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella5[0]";
                 public const string Wed_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella6[0]";

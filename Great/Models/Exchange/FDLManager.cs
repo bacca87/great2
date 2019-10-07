@@ -135,7 +135,13 @@ namespace Great.Models
                 if (currency.Length > 4)
                     ea.Currency = currency.Substring(0, 4).Trim();
 
-                string value = fields[ApplicationSettings.ExpenseAccount.FieldNames.Notes].GetValueAsString().Trim();
+                string value = string.Empty;
+
+                if (fields.ContainsKey(ApplicationSettings.ExpenseAccount.FieldNames.Notes))
+                    value = fields[ApplicationSettings.ExpenseAccount.FieldNames.Notes].GetValueAsString().Trim();
+                else if(fields.ContainsKey(ApplicationSettings.ExpenseAccount.FieldNames.Notes2))
+                    value = fields[ApplicationSettings.ExpenseAccount.FieldNames.Notes2].GetValueAsString().Trim();
+
                 ea.Notes = value != string.Empty ? value : null;
 
                 using (DBArchive db = new DBArchive())
@@ -397,21 +403,21 @@ namespace Great.Models
 
                                             TimeSpan time;
 
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimeAM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimeAM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimeAM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimeAM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimeAM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimeAM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimeAM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimeAM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimePM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelStartTimePM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimePM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkStartTimePM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimePM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["WorkEndTimePM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkEndTimePM_t = time;
-                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimePM"]).Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(GetFieldValue(entry.Value["TravelEndTimePM"]).Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelEndTimePM_t = time;
 
                                             // hack for supporting old travel periods
@@ -420,7 +426,7 @@ namespace Great.Models
                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
-                                                timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
+                                                timesheet.TravelEndTimeAM_t = timesheet.TravelStartTimeAM_t.Value + TimeSpan.FromTicks((timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks) / 2);
                                                 timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
                                             }
 
@@ -628,21 +634,21 @@ namespace Great.Models
 
                                             TimeSpan time;
 
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimeAM"]].GetValueAsString().Replace("24", "00").Replace('.',':'), out time))
                                                 timesheet.TravelStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimeAM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkStartTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimeAM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimeAM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelEndTimeAM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelStartTimePM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkStartTimePM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkStartTimePM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["WorkEndTimePM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.WorkEndTimePM_t = time;
-                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString().Replace("24", "00"), out time))
+                                            if (TimeSpan.TryParse(fields[entry.Value["TravelEndTimePM"]].GetValueAsString().Replace("24", "00").Replace('.', ':'), out time))
                                                 timesheet.TravelEndTimePM_t = time;
 
                                             // hack for supporting old travel periods
@@ -651,7 +657,7 @@ namespace Great.Models
                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
-                                                timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
+                                                timesheet.TravelEndTimeAM_t = timesheet.TravelStartTimeAM_t.Value + TimeSpan.FromTicks((timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks) / 2);
                                                 timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
                                             }
 

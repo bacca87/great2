@@ -687,7 +687,7 @@ namespace Great.Utils
 
         private string FormatFDL(string fdl_Id)
         {
-            if (string.IsNullOrEmpty(fdl_Id))
+            if (string.IsNullOrEmpty(fdl_Id) || fdl_Id.Length < 10 || !fdl_Id.Contains("/"))
                 return string.Empty;
 
             string[] parts = fdl_Id.Split('/');
