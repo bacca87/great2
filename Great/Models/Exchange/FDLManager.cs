@@ -426,7 +426,13 @@ namespace Great.Models
                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
-                                                timesheet.TravelEndTimeAM_t = timesheet.TravelStartTimeAM_t.Value + TimeSpan.FromTicks((timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks) / 2);
+                                                if (timesheet.TravelEndTimePM_t < timesheet.TravelStartTimeAM_t)
+                                                    timesheet.TravelEndTimeAM_t = new TimeSpan(0, 0, 0);
+                                                else if (timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks == 0)
+                                                    timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
+                                                else
+                                                    timesheet.TravelEndTimeAM_t = timesheet.TravelStartTimeAM_t.Value + TimeSpan.FromTicks((timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks) / 2);
+
                                                 timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
                                             }
 
@@ -657,7 +663,13 @@ namespace Great.Models
                                                !timesheet.WorkStartTimePM_t.HasValue && !timesheet.WorkEndTimePM_t.HasValue &&
                                                !timesheet.TravelStartTimePM_t.HasValue && timesheet.TravelEndTimePM_t.HasValue)
                                             {
-                                                timesheet.TravelEndTimeAM_t = timesheet.TravelStartTimeAM_t.Value + TimeSpan.FromTicks((timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks) / 2);
+                                                if (timesheet.TravelEndTimePM_t < timesheet.TravelStartTimeAM_t)
+                                                    timesheet.TravelEndTimeAM_t = new TimeSpan(0, 0, 0);
+                                                else if (timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks == 0)
+                                                    timesheet.TravelEndTimeAM_t = new TimeSpan(12, 0, 0);
+                                                else
+                                                    timesheet.TravelEndTimeAM_t = timesheet.TravelStartTimeAM_t.Value + TimeSpan.FromTicks((timesheet.TravelEndTimePM_t.Value.Ticks - timesheet.TravelStartTimeAM_t.Value.Ticks) / 2);
+
                                                 timesheet.TravelStartTimePM_t = timesheet.TravelEndTimeAM_t;
                                             }
 
