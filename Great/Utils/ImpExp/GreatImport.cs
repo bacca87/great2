@@ -575,7 +575,7 @@ namespace Great.Utils
                                 }
                             }
                             else
-                                Error("Missing FDL sent status!");
+                                Warning("Missing FDL sent status!");
                         }
                         else
                             Error($"Failed to import FDL from file: {file.FullName}");
