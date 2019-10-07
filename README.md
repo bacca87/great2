@@ -2,7 +2,7 @@
 
 ![Logo](https://raw.github.com/bacca87/great2/master/Great/Images/Logos/Great2Logo.png)
 
-This software has been designed to facilitate the business traveler's tasks.  
+This software has been designed to ease the business traveler's tasks.  
 Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about your activities.  
 Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just download the source code and start to improve it!
 
