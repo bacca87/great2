@@ -170,6 +170,9 @@ namespace Great.ViewModels
             FactoryCountries = new Dictionary<string, double>();
             Expenses = new ObservableCollection<SeriesCollection>();
 
+            for (int i = 0; i < 12; i++)
+                Expenses.Add(new SeriesCollection());
+
             NextYearCommand = new RelayCommand(() => SelectedYear++);
             PreviousYearCommand = new RelayCommand(() => SelectedYear--);
             ChangeTabCommand = new RelayCommand<int>(ChangeTab);
