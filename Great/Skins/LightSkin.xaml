@@ -41,6 +41,15 @@
             <SolidColorBrush x:Key="DefaultColorPickerBackGround" Color="White"/>
             <SolidColorBrush x:Key="DefaultColorPickerTextForeground" Color="Black"/>
 
+            <!--from fluent xaml-->
+            <SolidColorBrush x:Key="BestForegroundSaturdayColor" Color="{DynamicResource BlackColor}"/>
+            <SolidColorBrush x:Key="BestForegroundSundayColor" Color="{DynamicResource BlackColor}"/>
+            <SolidColorBrush x:Key="BestForegroundHolidayColor" Color="{DynamicResource BlackColor}"/>
+            <SolidColorBrush x:Key="BestForegroundVacationColor" Color="{DynamicResource BlackColor}"/>
+            <SolidColorBrush x:Key="BestForegroundSickColor" Color="{DynamicResource BlackColor}"/>
+            <SolidColorBrush x:Key="BestForegroundHomeworkColor" Color="{DynamicResource BlackColor}"/>
+            <SolidColorBrush x:Key="BestForegroundSpeclaiLeaveColor" Color="{DynamicResource BlackColor}"/>
+
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -610,7 +610,7 @@ namespace Great.Models
                 public const string SignatureDate = "data[0].#subform[0].data[0]";
                 public const string Notes = "data[0].#subform[0].Campoditesto1[0]";
 
-                public const string Notes2 = "data[0].#subform[0].Sottomodulo2[0].Campoditesto15[0]";                
+                public const string Notes2 = "data[0].#subform[0].Sottomodulo2[0].Campoditesto15[0]";
 
                 public const string Mon_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella4[0]";
                 public const string Tue_Date = "data[0].#subform[0].Tabella6[0].RigaIntestazione[0].Cella5[0]";
@@ -1350,6 +1350,20 @@ namespace Great.Models
                 }
             }
 
+            public static SolidColorBrush IdealForegroundColor(Color bg)
+            {
+                var baseLightForeColor = (Color)ColorConverter.ConvertFromString("#ffffff");
+                var baseDarkForeColor = (Color)ColorConverter.ConvertFromString("#000000");
+
+                int nThreshold = 105;
+                int bgDelta = Convert.ToInt32((bg.R * 0.299) + (bg.G * 0.587) +
+                                              (bg.B * 0.114));
+
+                Color foreColor = (255 - bgDelta < nThreshold) ? baseDarkForeColor : baseLightForeColor;
+
+                return new SolidColorBrush(foreColor);
+            }
+
             public static void ApplySingleColor(string resourceName, SolidColorBrush color)
             {
                 if (App.Current.Resources[resourceName] is SolidColorBrush)
@@ -1365,27 +1379,89 @@ namespace Great.Models
 
                 var usedDict = Theme == ETheme.LightSkin ? LightSkinDictionary : DarkSkinDictionary;
 
-                if (IsCustomSaturdayColorUsed) ApplySingleColor("DefaultSaturdayColor", CustomSaturdayColor);
-                else ApplySingleColor("DefaultSaturdayColor", usedDict["DefaultSaturdayColor"] as SolidColorBrush);
+                if (IsCustomSaturdayColorUsed)
+                {
+                    ApplySingleColor("DefaultSaturdayColor", CustomSaturdayColor);
+                    ApplySingleColor("BestForegroundSaturdayColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
 
-                if (IsCustomSundayColorUsed) ApplySingleColor("DefaultSundayColor", CustomSundayColor);
-                else ApplySingleColor("DefaultSundayColor", usedDict["DefaultSundayColor"] as SolidColorBrush);
+                else
+                {
+                    ApplySingleColor("DefaultSaturdayColor", usedDict["DefaultSaturdayColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundSaturdayColor", usedDict["BestForegroundSaturdayColor"] as SolidColorBrush);
+                }
 
-                if (IsCustomHolidayColorUsed) ApplySingleColor("DefaultHolidayColor", CustomHolidayColor);
-                else ApplySingleColor("DefaultHolidayColor", usedDict["DefaultHolidayColor"] as SolidColorBrush);
 
-                if (IsCustomVacationColorUsed) ApplySingleColor("DefaultVacationColor", CustomVacationColor);
-                else ApplySingleColor("DefaultVacationColor", usedDict["DefaultVacationColor"] as SolidColorBrush);
+                if (IsCustomSundayColorUsed)
+                {
+                    ApplySingleColor("DefaultSundayColor", CustomSundayColor);
+                    ApplySingleColor("BestForegroundSundayColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
+                    
+                else
+                {
+                    ApplySingleColor("DefaultSundayColor", usedDict["DefaultSundayColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundSundayColor", usedDict["BestForegroundSundayColor"] as SolidColorBrush);
+                }
 
-                if (IsCustomSickColorUsed) ApplySingleColor("DefaultSickColor", CustomSickColor);
-                else ApplySingleColor("DefaultSickColor", usedDict["DefaultSickColor"] as SolidColorBrush);
 
-                if (IsCustomHomeworkColorUsed) ApplySingleColor("DefaultHomeworkColor", CustomHomeworkColor);
-                else ApplySingleColor("DefaultHomeworkColor", usedDict["DefaultHomeworkColor"] as SolidColorBrush);
+                if (IsCustomHolidayColorUsed)
+                {
+                    ApplySingleColor("DefaultHolidayColor", CustomHolidayColor);
+                    ApplySingleColor("BestForegroundHolidayColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
 
-                if (IsCustomSpecialLeaveColorUsed) ApplySingleColor("DefaultSpecialLeaveColor", CustomSpecialLeaveColor);
-                else ApplySingleColor("DefaultSpecialLeaveColor", usedDict["DefaultSpecialLeaveColor"] as SolidColorBrush);
+                else
+                { 
+                    ApplySingleColor("DefaultHolidayColor", usedDict["DefaultHolidayColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundHolidayColor", usedDict["BestForegroundHolidayColor"] as SolidColorBrush);
+                }
 
+                if (IsCustomVacationColorUsed)
+                {
+                    ApplySingleColor("DefaultVacationColor", CustomVacationColor);
+                    ApplySingleColor("BestForegroundVacationColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
+
+                else
+                { 
+                    ApplySingleColor("DefaultVacationColor", usedDict["DefaultVacationColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundVacationColor", usedDict["BestForegroundVacationColor"] as SolidColorBrush);
+                }
+
+                if (IsCustomSickColorUsed)
+                {
+                    ApplySingleColor("DefaultSickColor", CustomSickColor);
+                    ApplySingleColor("BestForegroundSickColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
+
+                else 
+                { 
+                    ApplySingleColor("DefaultSickColor", usedDict["DefaultSickColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundSickColor", usedDict["BestForegroundSickColor"] as SolidColorBrush);
+                }
+
+                if (IsCustomHomeworkColorUsed)
+                {
+                    ApplySingleColor("DefaultHomeworkColor", CustomHomeworkColor);
+                    ApplySingleColor("BestForegroundHomeworkColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
+                else 
+                { 
+                    ApplySingleColor("DefaultHomeworkColor", usedDict["DefaultHomeworkColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundHomeworkColor", usedDict["BestForegroundHomeworkColor"] as SolidColorBrush);
+                }
+
+                if (IsCustomSpecialLeaveColorUsed)
+                {
+                    ApplySingleColor("DefaultSpecialLeaveColor", CustomSpecialLeaveColor);
+                    ApplySingleColor("BestForegroundSpeclaiLeaveColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                }
+                else
+                { 
+                    ApplySingleColor("DefaultSpecialLeaveColor", usedDict["DefaultSpecialLeaveColor"] as SolidColorBrush);
+                    ApplySingleColor("BestForegroundSpeclaiLeaveColor", usedDict["BestForegroundSpeclaiLeaveColor"] as SolidColorBrush);
+                }
             }
 
             public static void ApplyThemeAccent(ETheme theme, EAccentColor accent)
