@@ -1395,7 +1395,7 @@ namespace Great.Models
                 if (IsCustomSundayColorUsed)
                 {
                     ApplySingleColor("DefaultSundayColor", CustomSundayColor);
-                    ApplySingleColor("BestForegroundSundayColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                    ApplySingleColor("BestForegroundSundayColor", IdealForegroundColor(CustomSundayColor.Color));
                 }
                     
                 else
@@ -1408,7 +1408,7 @@ namespace Great.Models
                 if (IsCustomHolidayColorUsed)
                 {
                     ApplySingleColor("DefaultHolidayColor", CustomHolidayColor);
-                    ApplySingleColor("BestForegroundHolidayColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                    ApplySingleColor("BestForegroundHolidayColor", IdealForegroundColor(CustomHolidayColor.Color));
                 }
 
                 else
@@ -1420,7 +1420,7 @@ namespace Great.Models
                 if (IsCustomVacationColorUsed)
                 {
                     ApplySingleColor("DefaultVacationColor", CustomVacationColor);
-                    ApplySingleColor("BestForegroundVacationColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                    ApplySingleColor("BestForegroundVacationColor", IdealForegroundColor(CustomVacationColor.Color));
                 }
 
                 else
@@ -1432,7 +1432,7 @@ namespace Great.Models
                 if (IsCustomSickColorUsed)
                 {
                     ApplySingleColor("DefaultSickColor", CustomSickColor);
-                    ApplySingleColor("BestForegroundSickColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                    ApplySingleColor("BestForegroundSickColor", IdealForegroundColor(CustomSickColor.Color));
                 }
 
                 else 
@@ -1444,7 +1444,7 @@ namespace Great.Models
                 if (IsCustomHomeworkColorUsed)
                 {
                     ApplySingleColor("DefaultHomeworkColor", CustomHomeworkColor);
-                    ApplySingleColor("BestForegroundHomeworkColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                    ApplySingleColor("BestForegroundHomeworkColor", IdealForegroundColor(CustomHomeworkColor.Color));
                 }
                 else 
                 { 
@@ -1455,7 +1455,7 @@ namespace Great.Models
                 if (IsCustomSpecialLeaveColorUsed)
                 {
                     ApplySingleColor("DefaultSpecialLeaveColor", CustomSpecialLeaveColor);
-                    ApplySingleColor("BestForegroundSpeclaiLeaveColor", IdealForegroundColor(CustomSaturdayColor.Color));
+                    ApplySingleColor("BestForegroundSpeclaiLeaveColor", IdealForegroundColor(CustomSpecialLeaveColor.Color));
                 }
                 else
                 { 
