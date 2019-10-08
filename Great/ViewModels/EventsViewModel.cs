@@ -4,6 +4,7 @@ using Great.Models;
 using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Utils;
+using Great.Utils.Extensions;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using System;
@@ -21,6 +22,30 @@ namespace Great.ViewModels
     {
         #region Properties
         MSSharepointProvider _provider;
+
+
+        private int _currentYear = DateTime.Now.Year;
+        public int CurrentYear
+        {
+            get => _currentYear;
+            set
+            {
+                bool updateDays = _currentYear != value;
+                int year = 0;
+
+                if (value < ApplicationSettings.Timesheets.MinYear)
+                    year = ApplicationSettings.Timesheets.MinYear;
+                else if (value > ApplicationSettings.Timesheets.MaxYear)
+                    year = ApplicationSettings.Timesheets.MaxYear;
+                else
+                    year = value;
+
+                Set(ref _currentYear, year);
+
+                if (updateDays)
+                    UpdateEventList();
+            }
+        }
 
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
@@ -63,11 +88,22 @@ namespace Great.ViewModels
         public ObservableCollectionEx<EventEVM> Events
         {
             get => _Events;
-            set => Set(ref _Events, value);
+            set 
+            {
+                Set(ref _Events, value);
+                FilteredEvents = CollectionViewSource.GetDefaultView(_Events);
+                SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
+                FilteredEvents.SortDescriptions.Add(sd);
+                FilteredEvents.Filter += Filter;
+            } 
         }
 
         private ICollectionView _FilteredEvents;
-        public ICollectionView FilteredEvents => _FilteredEvents;
+        public ICollectionView FilteredEvents
+        {
+            get => _FilteredEvents;
+            set => Set(ref _FilteredEvents, value);
+        }
 
         public bool Filter(object ev)
         {
@@ -124,6 +160,8 @@ namespace Great.ViewModels
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
+        public RelayCommand NextYearCommand { get; set; }
+        public RelayCommand PreviousYearCommand { get; set; }
 
         #endregion
 
@@ -154,19 +192,18 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 EventTypes = new ObservableCollection<EventTypeDTO>(db.EventTypes.ToList().Select(e => new EventTypeDTO(e)));
-                Events = new ObservableCollectionEx<EventEVM>(db.Events.ToList().Select(v => new EventEVM(v)));
             }
+
+            NextYearCommand = new RelayCommand(() => { CurrentYear++; FilteredEvents.Refresh(); });
+            PreviousYearCommand = new RelayCommand(() => { CurrentYear--; FilteredEvents.Refresh(); });
+
+            UpdateEventList();
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
             MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
 
-            _FilteredEvents = CollectionViewSource.GetDefaultView(Events);
-            SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
-            _FilteredEvents.SortDescriptions.Add(sd);
-            _FilteredEvents.Filter += Filter;
-
-            _FilteredEvents.MoveCurrentToFirst();
+            FilteredEvents.MoveCurrentToFirst();
             SelectedEvent = (EventEVM)_FilteredEvents.CurrentItem;
         }
         #endregion
@@ -290,6 +327,27 @@ namespace Great.ViewModels
 
         }
 
+
+        public void UpdateEventList()
+        {
+            ObservableCollectionEx<EventEVM> events = new ObservableCollectionEx<EventEVM>();
+
+            var mindatefilter = new DateTime(CurrentYear, 1, 1);
+            var maxdatefilter = new DateTime(CurrentYear, 12, 31);
+            var minTimeStamp = mindatefilter.ToUnixTimestamp();
+            var maxTimeStamp = maxdatefilter.ToUnixTimestamp();
+
+            using (DBArchive db = new DBArchive())
+            {
+                var lst = (from e in db.Events
+                            where e.StartDateTimeStamp >= minTimeStamp && e.EndDateTimeStamp <= maxTimeStamp
+                            select e).ToList();
+
+                lst.ToList().ForEach(x => events.Add(new EventEVM(x)));
+
+            }
+            Events = events;
+        }
 
         #endregion
     }

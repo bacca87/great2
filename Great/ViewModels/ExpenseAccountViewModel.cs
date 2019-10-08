@@ -30,6 +30,31 @@ namespace Great.ViewModels
     public class ExpenseAccountViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Properties
+
+        private int _currentYear = DateTime.Now.Year;
+        public int CurrentYear
+        {
+            get => _currentYear;
+            set
+            {
+                bool updateDays = _currentYear != value;
+                int year = 0;
+
+                if (value < ApplicationSettings.Timesheets.MinYear)
+                    year = ApplicationSettings.Timesheets.MinYear;
+                else if (value > ApplicationSettings.Timesheets.MaxYear)
+                    year = ApplicationSettings.Timesheets.MaxYear;
+                else
+                    year = value;
+
+                Set(ref _currentYear, year);
+
+                if (updateDays)
+                    UpdateEaList();
+            }
+        }
+
+
         private FDLManager _fdlManager;
 
         public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
@@ -45,7 +70,12 @@ namespace Great.ViewModels
             }
         }
 
-        public ObservableCollectionEx<ExpenseAccountEVM> ExpenseAccounts { get; set; }
+        private ObservableCollectionEx<ExpenseAccountEVM> _ExpenseAccounts;
+        public ObservableCollectionEx<ExpenseAccountEVM> ExpenseAccounts
+        {
+            get => _ExpenseAccounts;
+            set => Set(ref _ExpenseAccounts, value);
+        }
 
         private ExpenseAccountEVM _selectedEA;
         public ExpenseAccountEVM SelectedEA
@@ -118,6 +148,8 @@ namespace Great.ViewModels
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
+        public RelayCommand NextYearCommand { get; set; }
+        public RelayCommand PreviousYearCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -157,6 +189,8 @@ namespace Great.ViewModels
         public ExpenseAccountViewModel(FDLManager manager)
         {
             _fdlManager = manager;
+            NextYearCommand = new RelayCommand(() => CurrentYear++);
+            PreviousYearCommand = new RelayCommand(() => CurrentYear--);
 
             SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
@@ -175,9 +209,10 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
-                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
             }
+
+            UpdateEaList();
 
             MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, NewEA);
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
@@ -495,6 +530,24 @@ namespace Great.ViewModels
             ea.EStatus = EFDLStatus.Cancelled;
             ea.NotifyAsNew = false;
             ea.Save();
+        }
+
+        private void UpdateEaList()
+        {
+            ObservableCollectionEx<ExpenseAccountEVM> ea = new ObservableCollectionEx<ExpenseAccountEVM>();
+            string yr = CurrentYear.ToString();
+            using (DBArchive db = new DBArchive())
+            {
+                var exp = (from ex in db.ExpenseAccounts
+                           let year = ex.FDL.Substring(0, 4)
+                           where year == yr
+                           select ex).ToList();
+
+                exp.ToList().ForEach(x => ea.Add(new ExpenseAccountEVM(x)));
+
+
+            }
+            ExpenseAccounts = ea;
         }
     }
 }

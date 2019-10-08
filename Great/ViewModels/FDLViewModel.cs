@@ -104,6 +104,30 @@ namespace Great.ViewModels
         }
 
         public Action<long> OnFactoryLink { get; set; }
+
+        private int _currentYear = DateTime.Now.Year;
+        public int CurrentYear
+        {
+            get => _currentYear;
+            set
+            {
+                bool updateDays = _currentYear != value;
+                int year = 0;
+
+                if (value < ApplicationSettings.Timesheets.MinYear)
+                    year = ApplicationSettings.Timesheets.MinYear;
+                else if (value > ApplicationSettings.Timesheets.MaxYear)
+                    year = ApplicationSettings.Timesheets.MaxYear;
+                else
+                    year = value;
+
+                Set(ref _currentYear, year);
+
+                if (updateDays)
+                    UpdateFDLList();
+            }
+        }
+
         #endregion
 
         #region Commands Definitions
@@ -123,6 +147,9 @@ namespace Great.ViewModels
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
         public RelayCommand FactoryLinkCommand { get; set; }
+
+        public RelayCommand NextYearCommand { get; set; }
+        public RelayCommand PreviousYearCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -131,6 +158,10 @@ namespace Great.ViewModels
         public FDLViewModel(FDLManager manager)
         {
             _fdlManager = manager;
+
+            NextYearCommand = new RelayCommand(() => CurrentYear++);
+            PreviousYearCommand = new RelayCommand(() => CurrentYear--);
+
 
             ClearCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<FDLEVM>(SaveFDL, (FDLEVM fdl) => { return IsInputEnabled; });
@@ -155,8 +186,9 @@ namespace Great.ViewModels
             {
                 Factories = new ObservableCollection<FactoryDTO>(db.Factories.ToList().Select(f => new FactoryDTO(f)));
                 FDLResults = new ObservableCollection<FDLResultDTO>(db.FDLResults.ToList().Select(r => new FDLResultDTO(r)));
-                FDLs = new ObservableCollectionEx<FDLEVM>(db.FDLs.ToList().Select(fdl => new FDLEVM(fdl)));
             }
+
+            UpdateFDLList();
 
             MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
@@ -515,6 +547,23 @@ namespace Great.ViewModels
 
             // update timesheets and notifications
             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
+        }
+
+        private void UpdateFDLList()
+        {
+            ObservableCollectionEx<FDLEVM> fdls = new ObservableCollectionEx<FDLEVM>();
+            string yr = CurrentYear.ToString();
+            using (DBArchive db = new DBArchive())
+            {
+                var fd = (from f in db.FDLs
+                          let year = f.Id.Substring(0, 4)
+                          where year == yr
+                          select f).ToList();
+
+                fd.ToList().ForEach(x => fdls.Add(new FDLEVM(x)));
+
+            }
+            FDLs = fdls;
         }
     }
 }

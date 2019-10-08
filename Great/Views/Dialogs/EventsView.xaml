@@ -64,6 +64,25 @@
 
                     </Fluent:CheckBox>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Year">
+                    <Fluent:TextBox Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                        <Fluent:TextBox.ToolTip>
+                            <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
+                        </Fluent:TextBox.ToolTip>
+                    </Fluent:TextBox>
+                    <Fluent:Gallery MaxItemsInRow="2">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
+                </Fluent:RibbonGroupBox>
 
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="EDIT" 

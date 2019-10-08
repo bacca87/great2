@@ -1,4 +1,5 @@
-﻿using Great.ViewModels;
+﻿using Great.Utils.Extensions;
+using Great.ViewModels;
 using MahApps.Metro.Controls;
 
 namespace Great.Views.Dialogs
@@ -17,6 +18,11 @@ namespace Great.Views.Dialogs
         {
             EventsViewModel _viewModel = (EventsViewModel)DataContext;
             _viewModel.SelectedEvent?.CheckChangedEntity();
+        }
+
+        private void yearTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            MaskedTextBoxHelper.PreviewTextInput(sender, e);
         }
     }
 }

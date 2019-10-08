@@ -321,6 +321,25 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Year">
+                    <Fluent:TextBox Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                        <Fluent:TextBox.ToolTip>
+                            <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
+                        </Fluent:TextBox.ToolTip>
+                    </Fluent:TextBox>
+                    <Fluent:Gallery MaxItemsInRow="2">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="CAR RENTAL" 
                                   DataContext="{Binding CarRental, Source={StaticResource Locator}}"
@@ -358,7 +377,7 @@
 
                         <CheckBox IsChecked="{Binding EnableStartDateFilter}" Grid.Row="0" Grid.Column="0"></CheckBox>
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="Start Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <DatePicker Grid.Row="0" Grid.Column="2" DisplayDate="{Binding RentStartDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}" SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5"/>
+                        <DatePicker Grid.Row="0" Grid.Column="2" DisplayDate="{Binding RentStartDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}"  SelectedDate="{Binding RentStartDateFilter}" Margin="5,3,5,5"/>
                         <CheckBox IsChecked="{Binding EnableEndDateFilter}" Grid.Row="1" Grid.Column="0"></CheckBox>
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="End Date:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                         <DatePicker Grid.Row="1" Grid.Column="2" DisplayDate="{Binding RentEndDateFilter,StringFormat='dd/MMM/yyyy', TargetNullValue=''}" SelectedDate="{Binding RentEndDateFilter}" Margin="5,3,5,5"/>
@@ -369,6 +388,25 @@
                     </Grid>
                     <Fluent:Button Header="Apply Filter" Command="{Binding ApplyFilters}" SizeDefinition="Middle"/>
                     <Fluent:Button Header="Clear Filter" Command="{Binding RemoveFilters}" SizeDefinition="Middle"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Year">
+                    <Fluent:TextBox Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                        <Fluent:TextBox.ToolTip>
+                            <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
+                        </Fluent:TextBox.ToolTip>
+                    </Fluent:TextBox>
+                    <Fluent:Gallery MaxItemsInRow="2">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
 
             </Fluent:RibbonTabItem>
@@ -451,6 +489,25 @@
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected EA to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Year">
+                    <Fluent:TextBox Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">
+                        <Fluent:TextBox.ToolTip>
+                            <Fluent:ScreenTip Title="Current Year" Text="Set the current year." />
+                        </Fluent:TextBox.ToolTip>
+                    </Fluent:TextBox>
+                    <Fluent:Gallery MaxItemsInRow="2">
+                        <Fluent:Button Command="{Binding PreviousYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-left.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Previous Year" Text="Set the previous year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                        <Fluent:Button Command="{Binding NextYearCommand}" SizeDefinition="Small" Icon="pack://application:,,,/Great2;component/Images/24/sign-right.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Next Year" Text="Set the next year." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="FACTORIES" 
