@@ -28,6 +28,11 @@ namespace Great.Utils.Extensions
             return DateTimeOffset.Now.ToUnixTimeSeconds();
         }
 
+        public static DateTime Midnight(this DateTime datetime)
+        {
+            return new DateTime(datetime.Year, datetime.Month, datetime.Day, 0, 0, 0);
+        }
+
         public static DateTime Round(this DateTime value, TimeSpan unit)
         {
             return Round(value, unit, default(MidpointRounding));

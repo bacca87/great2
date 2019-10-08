@@ -466,8 +466,8 @@ namespace Great.ViewModels.Database
 
                     if (currentDay == null)
                         NewDaysInEvent.Add(new DayEVM { Date = d });
-
-                    else NewDaysInEvent.Add(new DayEVM(currentDay));
+                    else
+                        NewDaysInEvent.Add(new DayEVM(currentDay));
 
                     dayEventToAdd.Add(new DayEventEVM { TimeStamp = timestamp, EventId = Id });
                 }
@@ -489,19 +489,18 @@ namespace Great.ViewModels.Database
             }
 
         }
+
         public static IEnumerable<DateTime> AllDatesInRange(DateTime startDate, DateTime endDate)
         {
             List<DateTime> dates = new List<DateTime>();
-
-            DateTime pointer = startDate;
+            DateTime pointer = startDate.Midnight();
 
             do
             {
-                dates.Add(new DateTime(pointer.Date.Year, pointer.Date.Month, pointer.Date.Day, pointer.Hour, pointer.Minute, pointer.Second));
+                dates.Add(pointer);
                 pointer = pointer.AddDays(1);
             }
             while (pointer <= endDate);
-
 
             return dates;
         }
