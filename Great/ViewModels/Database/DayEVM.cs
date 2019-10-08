@@ -145,19 +145,6 @@ namespace Great.ViewModels.Database
             }
         }
 
-        public float? HoursOfVacation
-        {
-            get
-            {
-                if (EType != EDayType.VacationDay || TotalTime >= 8)
-                {
-                    return null;
-                }
-
-                return 8 - (TotalTime ?? 0);
-            }
-        }
-
         public float? HoursOfHomeWorking
         {
             get

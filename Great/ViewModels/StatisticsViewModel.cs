@@ -257,10 +257,9 @@ namespace Great.ViewModels
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
-                var WorkingDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate && day.Timesheets.Count() > 0).ToList().Select(d => new DayEVM(d));
-                var AllDays = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
+                var Days = db.Days.Where(day => day.Timestamp >= startDate && day.Timestamp <= endDate).ToList().Select(d => new DayEVM(d));
 
-                var MontlyHours = WorkingDays?.GroupBy(d => d.Date.Month)
+                var MontlyHours = Days?.GroupBy(d => d.Date.Month)
                                        .Select(g => new
                                        {
                                            Month = g.Key,
@@ -269,19 +268,14 @@ namespace Great.ViewModels
                                            Overtime34 = g.Sum(x => x.Overtime34 ?? 0),
                                            Overtime35 = g.Sum(x => x.Overtime35 ?? 0),
                                            Overtime50 = g.Sum(x => x.Overtime50 ?? 0),
-                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0)
-                                       });
+                                           Overtime100 = g.Sum(x => x.Overtime100 ?? 0),
 
-                var AllDayMonthlyHours = AllDays?.GroupBy(d => d.Date.Month)
-                       .Select(g => new
-                       {
-                           Month = g.Key,
-                           HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0),
-                           Vacations = g.Sum(x => x.HoursOfVacation ?? 0),
-                           Leave = g.Sum(x => x.HoursOfLeave ?? 0),
-                           SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0),
-                           SickLeave = g.Sum(x => x.HoursOfSicklLeave ?? 0)
-                       });
+                                           HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0),
+                                           Vacations = g.Sum(x => x.EType == EDayType.VacationDay ? 8 : 0),
+                                           Leave = g.Sum(x => x.HoursOfLeave ?? 0),
+                                           SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0),
+                                           SickLeave = g.Sum(x => x.HoursOfSicklLeave ?? 0)
+                                       });
 
                 ChartValues<float> TotalTimeValues = new ChartValues<float>();
                 ChartValues<float> OrdinaryValues = new ChartValues<float>();
@@ -308,6 +302,12 @@ namespace Great.ViewModels
                         Overtime35Values.Add(month.Overtime35);
                         Overtime50Values.Add(month.Overtime50);
                         Overtime100Values.Add(month.Overtime100);
+
+                        HomeWorkValues.Add(month.HomeWoring);
+                        SickLeaveValues.Add(month.SickLeave);
+                        LeaveValues.Add(month.Leave);
+                        VacationsValues.Add(month.Vacations);
+                        SpecialLeaveValues.Add(month.SpecialLeave);
                     }
                     else
                     {
@@ -317,23 +317,7 @@ namespace Great.ViewModels
                         Overtime35Values.Add(0);
                         Overtime50Values.Add(0);
                         Overtime100Values.Add(0);
-                    }
-                }
 
-                for (int m = 1; m <= 12; m++)
-                {
-                    var month = AllDayMonthlyHours.SingleOrDefault(x => x.Month == m);
-
-                    if (month != null)
-                    {
-                        HomeWorkValues.Add(month.HomeWoring);
-                        SickLeaveValues.Add(month.SickLeave);
-                        LeaveValues.Add(month.Leave);
-                        VacationsValues.Add(month.Vacations);
-                        SpecialLeaveValues.Add(month.SpecialLeave);
-                    }
-                    else
-                    {
                         HomeWorkValues.Add(0);
                         SickLeaveValues.Add(0);
                         LeaveValues.Add(0);
@@ -434,12 +418,11 @@ namespace Great.ViewModels
                     }
                 };
 
-                WorkedDays = WorkingDays?.Count() ?? 0;
-                TravelCount = WorkingDays?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
-                WorkedHolidays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.IsHoliday).Count() ?? 0;
-                WorkedSaturdays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
-                WorkedSundays = WorkingDays?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;
-                TravelCount = WorkingDays?.Where(x => x.Timesheets.Count() > 0 && x.Timesheets.Any(y => y.FDL1 != null)).Count() ?? 0;
+                WorkedDays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0).Count() ?? 0;
+                TravelCount = Days?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
+                WorkedHolidays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.IsHoliday).Count() ?? 0;
+                WorkedSaturdays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
+                WorkedSundays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;                
             }
         }
 

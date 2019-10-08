@@ -50,7 +50,6 @@
                   MouseDoubleClick="WorkingDaysDataGrid_MouseDoubleClick"   
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
-
                 <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                     <Style.Setters>
                         <Setter Property="TextBlock.FontSize" Value="15" />

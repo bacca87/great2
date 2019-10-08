@@ -190,8 +190,6 @@ namespace Great.ViewModels
             UpdateWorkingDays();
         }
 
-
-
         private void UpdateWorkingDays()
         {
             ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
