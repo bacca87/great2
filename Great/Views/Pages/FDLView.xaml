@@ -7,6 +7,7 @@
       xmlns:local="clr-namespace:Great.Views.Pages"
       xmlns:conv="clr-namespace:Great.Utils.Converters"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+      xmlns:System="clr-namespace:System;assembly=mscorlib"
       xmlns:m="clr-namespace:Great.Models.DTO" 
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
@@ -21,6 +22,10 @@
                 <scm:SortDescription PropertyName="IsNew" Direction="Descending" />
                 <scm:SortDescription PropertyName="Id" Direction="Descending" />
             </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.LiveSortingProperties>
+                <System:String>IsNew</System:String>
+                <System:String>Id</System:String>
+            </CollectionViewSource.LiveSortingProperties>
         </CollectionViewSource>
     </Page.Resources>
     <Grid>
@@ -34,20 +39,20 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <DataGrid Grid.Row="0"
-                Name="fdlDataGridView"                
-                HorizontalAlignment="Stretch" 
+                Name="fdlDataGridView"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                AutoGenerateColumns="False" 
-                CanUserReorderColumns="False" 
-                CanUserResizeColumns="False" 
-                CanUserResizeRows="False" 
-                CanUserSortColumns="False" 
-                IsReadOnly="True"                  
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                IsReadOnly="True"
                 SelectionMode="Single"
                 HeadersVisibility="Column"
                 ItemsSource="{Binding Source={StaticResource FDLCollectionView}}"
                 SelectedItem="{Binding SelectedFDL}"
-                VirtualizingPanel.ScrollUnit ="Item" 
+                VirtualizingPanel.ScrollUnit ="Item"
                 VirtualizingPanel.VirtualizationMode="Standard"
                 Loaded="fdlDataGridView_Loaded">
                 <DataGrid.Resources>
@@ -317,7 +322,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <TextBlock Text="Assistant final test result:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                        <ComboBox ItemsSource="{Binding FDLResults}" SelectedItem="{Binding SelectedFDL.FDLResult}" SelectedValue="{Binding SelectedFDL.Result}" IsEnabled="{Binding IsInputEnabled}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="100" Margin="2"/>
+                        <ComboBox ItemsSource="{Binding FDLResults}" SelectedItem="{Binding SelectedFDL.FDLResult}" SelectedValue="{Binding SelectedFDL.Result}" IsEnabled="{Binding IsInputEnabled}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Width="130" Margin="2"/>
                     </StackPanel>
                     <TextBox Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SelectedFDL.ResultNotes}" MaxLength="{Binding FinalTestResultMaxLength, Mode=OneTime}" IsEnabled="{Binding IsInputEnabled}" VerticalScrollBarVisibility="Auto"/>
                 </Grid>

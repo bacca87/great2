@@ -45,7 +45,12 @@ namespace Great.ViewModels
             }
         }
 
-        public ObservableCollectionEx<ExpenseAccountEVM> ExpenseAccounts { get; set; }
+        private ObservableCollectionEx<ExpenseAccountEVM> _ExpenseAccounts;
+        public ObservableCollectionEx<ExpenseAccountEVM> ExpenseAccounts
+        {
+            get => _ExpenseAccounts;
+            set => Set(ref _ExpenseAccounts, value);
+        }
 
         private ExpenseAccountEVM _selectedEA;
         public ExpenseAccountEVM SelectedEA
@@ -175,8 +180,8 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
-                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
+                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }
 
             MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, NewEA);
@@ -261,8 +266,12 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        var eaToUpdate = ExpenseAccounts.SingleOrDefault(e => e.FDL1.Id == item.Content.Id);
-                        eaToUpdate.FDL1.Factory1 = item.Content.Factory1;
+                        var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1 != null && e.FDL == item.Content.Id);
+
+                        foreach (var ea in eaToUpdate)
+                        {
+                            ea.FDL1.Factory1 = item.Content.Factory1;
+                        }
                     }
                 })
             );

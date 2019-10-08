@@ -11,6 +11,7 @@
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+      xmlns:System="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
       Title="ExpenseAccount"
@@ -21,6 +22,10 @@
                 <scm:SortDescription PropertyName="IsNew" Direction="Descending" />
                 <scm:SortDescription PropertyName="FDL" Direction="Descending" />
             </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.LiveSortingProperties>
+                <System:String>IsNew</System:String>
+                <System:String>FDL</System:String>
+            </CollectionViewSource.LiveSortingProperties>
         </CollectionViewSource>
 
         <conv:ZeroDoubleToNullConverter x:Key="ZeroDoubleToNullConverter"/>

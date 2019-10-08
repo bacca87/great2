@@ -389,7 +389,7 @@ namespace Great.ViewModels.Database
 
         public override int GetHashCode()
         {
-            //Override needed only for dicttionaries 
+            //Override needed only for dictionaries 
             //https://www.codeproject.com/Tips/1255596/Overriding-Equals-GetHashCode-Laconically-in-CShar
 
             return base.GetHashCode();
