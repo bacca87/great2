@@ -179,7 +179,6 @@ namespace Great.ViewModels
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedFDL?.CheckChangedEntity(); });
 
-
             FactoryLinkCommand = new RelayCommand(FactoryLink);
 
             using (DBArchive db = new DBArchive())
@@ -205,8 +204,7 @@ namespace Great.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize, new Collection<string>(recipients));
             else
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
-            }
-
+        }
 
         public void NewFDL(NewItemMessage<FDLEVM> item)
         {

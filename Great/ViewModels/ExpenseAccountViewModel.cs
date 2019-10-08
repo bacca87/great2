@@ -210,6 +210,7 @@ namespace Great.ViewModels
             {
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
+                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }
 
             UpdateEaList();
@@ -296,8 +297,12 @@ namespace Great.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        var eaToUpdate = ExpenseAccounts.SingleOrDefault(e => e.FDL1.Id == item.Content.Id);
-                        eaToUpdate.FDL1.Factory1 = item.Content.Factory1;
+                        var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1 != null && e.FDL == item.Content.Id);
+
+                        foreach (var ea in eaToUpdate)
+                        {
+                            ea.FDL1.Factory1 = item.Content.Factory1;
+                        }
                     }
                 })
             );

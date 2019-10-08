@@ -142,6 +142,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Status, value);
+                IsNew = _Status == 0;
                 RaisePropertyChanged(nameof(EStatus));
             }
         }
@@ -201,7 +202,6 @@ namespace Great.ViewModels.Database
             {
                 Set(ref _Factory1, value);
                 RaisePropertyChanged(nameof(FDL_Factory_Display));
-
             }
         }
 
@@ -239,8 +239,7 @@ namespace Great.ViewModels.Database
             get => (EFDLStatus)Status;
             set
             {
-                Status = (long)value;
-                IsNew = value == EFDLStatus.New;
+                Status = (long)value;                
                 RaisePropertyChanged();
             }
         }

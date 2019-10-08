@@ -3,7 +3,6 @@ using Great.Models.Database;
 using Great.Models.DTO;
 using Great.Models.Interfaces;
 using Great.Utils;
-using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -71,6 +70,7 @@ namespace Great.ViewModels.Database
             set
             {
                 Set(ref _Status, value);
+                IsNew = _Status == 0;
                 RaisePropertyChanged(nameof(EStatus));
             }
         }
@@ -178,7 +178,6 @@ namespace Great.ViewModels.Database
             set
             {
                 Status = (long)value;
-                IsNew = value == EFDLStatus.New;
                 RaisePropertyChanged();
             }
         }
@@ -215,8 +214,8 @@ namespace Great.ViewModels.Database
 
             if (ea != null)
                 Global.Mapper.Map(ea, this);
-            IsChanged = false;
 
+            IsChanged = false;
         }
 
         private void UpdateTotals()
@@ -275,11 +274,10 @@ namespace Great.ViewModels.Database
 
         public override int GetHashCode()
         {
-            //Override needed only for dicttionaries 
+            //Override needed only for dictionaries 
             //https://www.codeproject.com/Tips/1255596/Overriding-Equals-GetHashCode-Laconically-in-CShar
 
             return base.GetHashCode();
         }
-
     }
 }
