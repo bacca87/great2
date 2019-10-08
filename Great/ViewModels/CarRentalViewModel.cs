@@ -272,9 +272,6 @@ namespace Great.ViewModels
 
         }
 
-
-
-
         private void RemoveFiltersCommand()
         {
             LicencePlateFilter = null;

@@ -4,6 +4,7 @@ using Great.Models.Interfaces;
 using Great.Utils.Messages;
 using Great.ViewModels.Database;
 using Great.Views.Dialogs;
+using Notifications.Wpf;
 using System;
 using System.Linq;
 using System.Windows;
@@ -20,6 +21,9 @@ namespace Great.ViewModels
     public class NotificationsViewModel : ViewModelBase
     {
         #region Properties
+
+        NotificationManager notificationManager = new NotificationManager();
+
         /// <summary>
         /// The <see cref="NewFactoriesCount" /> property's name.
         /// </summary>
@@ -116,16 +120,19 @@ namespace Great.ViewModels
         {
             RefreshTotals();
 
-            MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => { if (x.Content.NotifyAsNew) { NewFDLCount++; } });
+            MessengerInstance.Register<NewItemMessage<EventEVM>>(this, OnEventImported);
+            MessengerInstance.Register<NewItemMessage<FDLEVM>>(this,OnFdlReceived);
             MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Content.NotifyAsNew) { NewFactoriesCount++; } });
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => { if (x.Content.NotifyAsNew) { NewExpenseAccountsCount++; } });
 
-            MessengerInstance.Register(this, (ItemChangedMessage<FDLEVM> x) => { using (DBArchive db = new DBArchive()) { NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew); } });
-            MessengerInstance.Register(this, (ItemChangedMessage<ExpenseAccountEVM> x) => { using (DBArchive db = new DBArchive()) { NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); } });
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, OnFdlChanged);
+            MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, OnEaChanged);
+            MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, OnEventChanged);
             MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) { NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); } });
 
             MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }
+
 
         private void RefreshTotals()
         {
@@ -151,8 +158,92 @@ namespace Great.ViewModels
             }));
         }
 
-        //TODO: aggiungere le notifiche baloon
-        // https://github.com/raflop/ToastNotifications
-        // https://github.com/zachatrocity/netoaster
+        private void OnFdlReceived(NewItemMessage<FDLEVM> fdl)
+        {
+            if (fdl.Content.NotifyAsNew)
+                NewFDLCount++;
+
+            notificationManager.Show(new NotificationContent
+            {
+                Title = "FDL received",
+                Message = $"FDL {fdl.Content.Id} received",
+                Type = NotificationType.Information
+            });
+        }
+
+        private void OnFdlChanged(ItemChangedMessage<FDLEVM> fdl)
+        {
+            using (DBArchive db = new DBArchive()) 
+                NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
+
+            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted )
+            notificationManager.Show(new NotificationContent
+            {
+                Title = "FDL Accepted",
+                Message = $"FDL {fdl.Content.Id} was accepted by SAP",
+                Type = NotificationType.Success
+            });
+
+            if(fdl.Content.EStatus == Models.EFDLStatus.Rejected)
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "FDL Rejected",
+                    Message = $"FDL {fdl.Content.Id} was rejected by SAP",
+                    Type = NotificationType.Warning
+                });
+
+        }
+        private void OnEaChanged(ItemChangedMessage<ExpenseAccountEVM> fdl)
+        {
+            using (DBArchive db = new DBArchive())
+                NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
+
+            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "Expense Account Accepted",
+                    Message = $"Expense Account {fdl.Content.Id} was accepted by SAP",
+                    Type = NotificationType.Success
+                });
+
+            if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "Expense Account Rejected",
+                    Message = $"Expense Account {fdl.Content.Id} was rejected by SAP",
+                    Type = NotificationType.Warning
+                });
+
+        }
+        private void OnEventImported(NewItemMessage<EventEVM> ev)
+        {
+            notificationManager.Show(new NotificationContent
+            {
+                Title = "Event Imported",
+                Message = $"Event {ev.Content.Title} imported from sharepoint",
+                Type = NotificationType.Information
+            });
+        }
+        private void OnEventChanged(ItemChangedMessage<EventEVM> ev)
+        {
+            if (ev.Content.EStatus == Models.EEventStatus.Accepted)
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "Event Approved",
+                    Message = $"Event {ev.Content.Title} were approved",
+                    Type = NotificationType.Success
+                });
+
+            if (ev.Content.EStatus == Models.EEventStatus.Rejected)
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "Event Rejected",
+                    Message = $"Event {ev.Content.Title} were rejected",
+                    Type = NotificationType.Warning
+                });
+
+
+        }
+
     }
 }
