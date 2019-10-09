@@ -229,7 +229,7 @@ namespace Great.ViewModels.Database
         public bool IsNew // used for sorting purpose
         {
             get => _IsNew;
-            set => Set(ref _IsNew, value);
+            internal set => Set(ref _IsNew, value);
         }
 
         public bool IsValid => Timesheets.Count == 0 || Timesheets.All(ts => ts.IsValid);

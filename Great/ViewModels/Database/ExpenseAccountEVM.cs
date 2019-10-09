@@ -160,7 +160,7 @@ namespace Great.ViewModels.Database
         public bool IsNew // used for sorting purpose
         {
             get => _IsNew;
-            set => Set(ref _IsNew, value);
+            internal set => Set(ref _IsNew, value);
         }
 
         private string _CurrencyCode;
