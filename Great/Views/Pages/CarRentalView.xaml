@@ -56,7 +56,7 @@
                 VirtualizingPanel.ScrollUnit ="Item"   
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
-                    <Style TargetType="DataGridCell">
+                    <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
                         <Style.Setters>
 
                             <Setter Property="TextBlock.TextAlignment" Value="Left" />
