@@ -70,10 +70,10 @@ namespace Great.ViewModels
             {
                 if (SelectedEvent != null)
                     Set(ref _ShowHourTimeFields, value);
-                }
             }
+        }
 
-        private bool _showOnlyVacations=false;
+        private bool _showOnlyVacations = false;
         public bool ShowOnlyVacations
         {
             get => _showOnlyVacations;
@@ -88,14 +88,7 @@ namespace Great.ViewModels
         public ObservableCollectionEx<EventEVM> Events
         {
             get => _Events;
-            set 
-            {
-                Set(ref _Events, value);
-                FilteredEvents = CollectionViewSource.GetDefaultView(_Events);
-                SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
-                FilteredEvents.SortDescriptions.Add(sd);
-                FilteredEvents.Filter += Filter;
-            } 
+            set => Set(ref _Events, value);
         }
 
         private ICollectionView _FilteredEvents;
@@ -174,6 +167,9 @@ namespace Great.ViewModels
             Minutes = new List<int>();
             Hours = new List<int>();
 
+            var mindatefilter = new DateTime(CurrentYear, 1, 1).ToUnixTimestamp();
+            var maxdatefilter = new DateTime(CurrentYear, 12, 31).ToUnixTimestamp();
+
             for (int i = 0; i < 24; i++)
                 Hours.Add(i);
 
@@ -192,17 +188,21 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 EventTypes = new ObservableCollection<EventTypeDTO>(db.EventTypes.ToList().Select(e => new EventTypeDTO(e)));
+                Events = new ObservableCollectionEx<EventEVM>(db.Events.Where(e => e.StartDateTimeStamp >= mindatefilter && e.EndDateTimeStamp <= maxdatefilter).ToList().Select(e => new EventEVM(e)));
             }
 
             NextYearCommand = new RelayCommand(() => { CurrentYear++; FilteredEvents.Refresh(); });
             PreviousYearCommand = new RelayCommand(() => { CurrentYear--; FilteredEvents.Refresh(); });
 
-            UpdateEventList();
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
             MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
 
+            FilteredEvents = CollectionViewSource.GetDefaultView(_Events);
+            SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
+            FilteredEvents.SortDescriptions.Add(sd);
+            FilteredEvents.Filter += Filter;
             FilteredEvents.MoveCurrentToFirst();
             SelectedEvent = (EventEVM)_FilteredEvents.CurrentItem;
         }
@@ -330,23 +330,18 @@ namespace Great.ViewModels
 
         public void UpdateEventList()
         {
-            ObservableCollectionEx<EventEVM> events = new ObservableCollectionEx<EventEVM>();
+            Events.Clear();
 
-            var mindatefilter = new DateTime(CurrentYear, 1, 1);
-            var maxdatefilter = new DateTime(CurrentYear, 12, 31);
-            var minTimeStamp = mindatefilter.ToUnixTimestamp();
-            var maxTimeStamp = maxdatefilter.ToUnixTimestamp();
+            var mindatefilter = new DateTime(CurrentYear, 1, 1).ToUnixTimestamp();
+            var maxdatefilter = new DateTime(CurrentYear, 12, 31).ToUnixTimestamp();
 
             using (DBArchive db = new DBArchive())
             {
-                var lst = (from e in db.Events
-                            where e.StartDateTimeStamp >= minTimeStamp && e.EndDateTimeStamp <= maxTimeStamp
-                            select e).ToList();
-
-                lst.ToList().ForEach(x => events.Add(new EventEVM(x)));
-
+                (from e in db.Events
+                 where e.StartDateTimeStamp >= mindatefilter && e.EndDateTimeStamp <= maxdatefilter
+                 select e).ToList().ForEach(e => Events.Add(new EventEVM(e)));
             }
-            Events = events;
+
         }
 
         #endregion

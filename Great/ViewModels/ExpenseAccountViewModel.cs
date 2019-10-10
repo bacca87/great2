@@ -208,9 +208,12 @@ namespace Great.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
+                string year = CurrentYear.ToString();
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
-                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)).OrderByDescending(ea => ea.IsNew).ThenByDescending(ea => ea.FDL));
+                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.Where(ea => ea.FDL.Substring(0, 4) == year).ToList().Select(ea => new ExpenseAccountEVM(ea)).OrderByDescending(ea => ea.IsNew).ThenByDescending(ea => ea.FDL));
+                //ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)).OrderByDescending(ea => ea.IsNew).ThenByDescending(ea => ea.FDL));
+
             }
 
             UpdateEaList();
@@ -539,20 +542,16 @@ namespace Great.ViewModels
 
         private void UpdateEaList()
         {
-            ObservableCollectionEx<ExpenseAccountEVM> ea = new ObservableCollectionEx<ExpenseAccountEVM>();
+            ExpenseAccounts.Clear();
             string yr = CurrentYear.ToString();
             using (DBArchive db = new DBArchive())
             {
-                var exp = (from ex in db.ExpenseAccounts
+                (from ex in db.ExpenseAccounts
                            let year = ex.FDL.Substring(0, 4)
                            where year == yr
-                           select ex).ToList();
-
-                exp.ToList().ForEach(x => ea.Add(new ExpenseAccountEVM(x)));
-
+                           select ex).ToList().ForEach(ea=> ExpenseAccounts.Add( new ExpenseAccountEVM(ea)));
 
             }
-            ExpenseAccounts = ea;
         }
     }
 }

@@ -183,11 +183,11 @@ namespace Great.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
+                string year = CurrentYear.ToString();
                 Factories = new ObservableCollection<FactoryDTO>(db.Factories.ToList().Select(f => new FactoryDTO(f)));
                 FDLResults = new ObservableCollection<FDLResultDTO>(db.FDLResults.ToList().Select(r => new FDLResultDTO(r)));
+                FDLs = new ObservableCollectionEx<FDLEVM>(db.FDLs.Where(f => f.Id.Substring(0, 4) == year).ToList().Select(f => new FDLEVM(f)));
             }
-
-            UpdateFDLList();
 
             MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
@@ -326,7 +326,7 @@ namespace Great.ViewModels
 
                         foreach (var fdl in fdlToUpdate)
                             fdl.Factory1 = factory;
-                        }
+                    }
                 })
             );
         }
@@ -343,7 +343,7 @@ namespace Great.ViewModels
 
                         if (factory != null)
                             Factories.Remove(factory);
-                        }
+                    }
                 })
             );
         }
@@ -439,8 +439,8 @@ namespace Great.ViewModels
 
                 if (dlg.ShowDialog() == true)
                     _fdlManager.SaveAs(fdl, dlg.FileName);
-                }
             }
+        }
 
         public void Compile(FDLEVM fdl)
         {
@@ -510,7 +510,7 @@ namespace Great.ViewModels
         {
             if (SelectedFDL.Factory.HasValue)
                 OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
-            }
+        }
 
         public void ClearFDL()
         {
@@ -549,19 +549,15 @@ namespace Great.ViewModels
 
         private void UpdateFDLList()
         {
-            ObservableCollectionEx<FDLEVM> fdls = new ObservableCollectionEx<FDLEVM>();
+            FDLs.Clear();
             string yr = CurrentYear.ToString();
             using (DBArchive db = new DBArchive())
             {
-                var fd = (from f in db.FDLs
-                          let year = f.Id.Substring(0, 4)
-                          where year == yr
-                          select f).ToList();
-
-                fd.ToList().ForEach(x => fdls.Add(new FDLEVM(x)));
-
+                (from f in db.FDLs
+                 let year = f.Id.Substring(0, 4)
+                 where year == yr
+                 select f).ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
             }
-            FDLs = fdls;
         }
     }
 }

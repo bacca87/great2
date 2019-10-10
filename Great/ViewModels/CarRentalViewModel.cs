@@ -44,7 +44,15 @@ namespace Great.ViewModels
                 Set(ref _currentYear, year);
 
                 if (updateDays)
+                {
+
+                    RentStartDateFilter = new DateTime(_currentYear, 1, 1);
+                    RentEndDateFilter = new DateTime(CurrentYear, 12, 31);
                     UpdateRentList();
+                    FilteredRentals.MoveCurrentToFirst();
+                    SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem;
+                }
+
             }
         }
 
@@ -141,11 +149,7 @@ namespace Great.ViewModels
             set
             {
                 _selectedCar?.CheckChangedEntity();
-
-                if (value != null)
-                {
-                    Set(ref _selectedCar, value);
-                }
+                Set(ref _selectedCar, value);
             }
         }
 
@@ -157,11 +161,7 @@ namespace Great.ViewModels
             {
                 Set(ref _LicensePlate, value);
                 var car = Cars.SingleOrDefault(x => x.LicensePlate == _LicensePlate);
-                if (car != null)
-                {
-                    SelectedCar = car;
-                }
-                //   SelectedCar.LicensePlate = value;
+                SelectedCar = car;
             }
         }
 
@@ -169,14 +169,17 @@ namespace Great.ViewModels
         #endregion
 
         #region Filter properties
-        public bool EnableStartDateFilter { get; set; }
-        public bool EnableEndDateFilter { get; set; }
 
         private DateTime? _rentStartDateFilter;
         public DateTime? RentStartDateFilter
         {
             get => _rentStartDateFilter;
-            set => Set(ref _rentStartDateFilter, value);
+            set
+            {
+                Set(ref _rentStartDateFilter, value);
+                if (Rentals != null)
+                    ApplyFiltersCommand();
+            }
 
         }
 
@@ -185,25 +188,24 @@ namespace Great.ViewModels
         public DateTime? RentEndDateFilter
         {
             get => _rentEndDateFilter;
-            set => Set(ref _rentEndDateFilter, value);
+            set
+            {
+                Set(ref _rentEndDateFilter, value);
+                if (Rentals != null)
+                    ApplyFiltersCommand();
+            }
         }
 
-
-        private string _modelBrandFilter;
-        public string ModelBrandFilter
+        private string _genericFilter;
+        public string GenericFilter
         {
-            get => _modelBrandFilter;
-
-            set => _modelBrandFilter = value;
-        }
-
-
-        private string _licensePlateFilter;
-        public string LicencePlateFilter
-        {
-            get => _licensePlateFilter;
-
-            set => _licensePlateFilter = value;
+            get => _genericFilter;
+            set
+            {
+                Set(ref _genericFilter, value);
+                if (Rentals != null)
+                    ApplyFiltersCommand();
+            }
         }
 
         #endregion
@@ -218,11 +220,8 @@ namespace Great.ViewModels
         public RelayCommand ApplyFilters { get; set; }
         public RelayCommand RemoveFilters { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
-
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
-
-
         #endregion
 
 
@@ -231,7 +230,6 @@ namespace Great.ViewModels
         /// </summary>
         public CarRentalViewModel()
         {
-
             IsInputEnabled = true;
 
             SaveCommand = new RelayCommand<CarRentalHistoryEVM>(SaveRent);
@@ -244,8 +242,11 @@ namespace Great.ViewModels
             ApplyFilters = new RelayCommand(ApplyFiltersCommand);
             RemoveFilters = new RelayCommand(RemoveFiltersCommand);
 
-            RentStartDateFilter = DateTime.Now;
-            RentEndDateFilter = DateTime.Now;
+            RentStartDateFilter = new DateTime(DateTime.Now.Year, 1, 1);
+            RentEndDateFilter = new DateTime(DateTime.Now.Year, 12, 31);
+
+            NextYearCommand = new RelayCommand(() => { CurrentYear++; FilteredRentals.Refresh(); });
+            PreviousYearCommand = new RelayCommand(() => { CurrentYear--; FilteredRentals.Refresh(); });
 
             using (DBArchive db = new DBArchive())
             {
@@ -257,16 +258,19 @@ namespace Great.ViewModels
                 var brands = db.CarRentalHistories.Select(x => x.Car1.Brand).Distinct();
                 var models = db.CarRentalHistories.Select(x => x.Car1.Model).Distinct();
 
+                var startTimeStamp = RentStartDateFilter.Value.ToUnixTimestamp();
+                var endTimeStamp = RentEndDateFilter.Value.ToUnixTimestamp();
+
                 Locations = new ObservableCollection<string>(startLoc.Union(endLoc).Distinct());
                 CarBrands = new ObservableCollection<string>(brands.Distinct());
                 CarModels = new ObservableCollection<string>(models.Distinct());
+                Rentals = new ObservableCollectionEx<CarRentalHistoryEVM>(db.CarRentalHistories.Where(c => c.StartDate >= startTimeStamp && c.EndDate <= endTimeStamp).ToList().Select(c => new CarRentalHistoryEVM(c)));
             }
 
-            NextYearCommand = new RelayCommand(() => { CurrentYear++; FilteredRentals.Refresh(); });
-            PreviousYearCommand = new RelayCommand(() => { CurrentYear--; FilteredRentals.Refresh(); });
-
-            UpdateRentList();
-
+            FilteredRentals = CollectionViewSource.GetDefaultView(_Rentals);
+            SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
+            FilteredRentals.SortDescriptions.Add(sd);
+            FilteredRentals.Filter += Filter;
             FilteredRentals.MoveCurrentToFirst();
             SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem;
 
@@ -274,34 +278,34 @@ namespace Great.ViewModels
 
         private void RemoveFiltersCommand()
         {
-            LicencePlateFilter = null;
-            ModelBrandFilter = null;
-            ModelBrandFilter = null;
+            GenericFilter = null;
 
-            RentStartDateFilter = DateTime.Now;
-            RentEndDateFilter = DateTime.Now;
+            RentStartDateFilter = new DateTime(CurrentYear, 1, 1);
+            RentEndDateFilter = new DateTime(CurrentYear, 12, 31);
             FilteredRentals.Refresh();
         }
 
         private void ApplyFiltersCommand()
         {
+            UpdateRentList();
             FilteredRentals.Refresh();
+            FilteredRentals.MoveCurrentToFirst();
+            SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem ?? new CarRentalHistoryEVM();
         }
 
         public bool Filter(object cr)
         {
             CarRentalHistoryEVM crh = (CarRentalHistoryEVM)cr;
 
-            string model = ModelBrandFilter ?? string.Empty;
-            string plate = LicencePlateFilter ?? string.Empty;
-            DateTime start = RentStartDateFilter ?? DateTime.MinValue;
-            DateTime end = RentEndDateFilter ?? DateTime.MaxValue;
+            string filter = GenericFilter ?? string.Empty;
+            DateTime start = RentStartDateFilter ?? new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime end = RentEndDateFilter ?? new DateTime(DateTime.Now.Year, 12, 31);
 
-            bool result = crh.Car1.Model.ToUpper().Contains(model.ToUpper()) || model == string.Empty;
-            result |= crh.Car1.Brand.ToUpper().Contains(model.ToUpper()) || model == string.Empty;
-            result &= crh.Car1.LicensePlate.ToUpper().Contains(plate.ToUpper()) || plate == string.Empty;
-            result &= crh.RentStartDate >= start || !EnableStartDateFilter;
-            result &= crh.RentStartDate <= end || !EnableEndDateFilter;
+            bool result = crh.Car1.Model.ToUpper().Contains(filter.ToUpper()) || filter == string.Empty;
+            result |= crh.Car1.Brand.ToUpper().Contains(filter.ToUpper()) || filter == string.Empty;
+            result |= crh.Car1.LicensePlate.ToUpper().Contains(filter.ToUpper()) || filter == string.Empty;
+            result &= crh.RentStartDate >= start;
+            result &= crh.RentStartDate <= end;
 
             return result;
         }
@@ -392,7 +396,7 @@ namespace Great.ViewModels
 
         private void UpdateRentList()
         {
-            ObservableCollectionEx<CarRentalHistoryEVM> rents = new ObservableCollectionEx<CarRentalHistoryEVM>();
+            Rentals.Clear();
 
             var mindatefilter = new DateTime(CurrentYear, 1, 1);
             var maxdatefilter = new DateTime(CurrentYear, 12, 31);
@@ -401,19 +405,11 @@ namespace Great.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
-                var rnts = (from r in db.CarRentalHistories
-                            where r.StartDate >= minTimeStamp && r.EndDate <= maxTimeStamp
-                            select r).ToList();
-
-                rnts.ToList().ForEach(x => rents.Add(new CarRentalHistoryEVM(x)));
+                (from r in db.CarRentalHistories
+                 where r.StartDate >= minTimeStamp && r.EndDate <= maxTimeStamp
+                 select r).ToList().ForEach(c => Rentals.Add(new CarRentalHistoryEVM(c)));
 
             }
-            Rentals = rents;
-            FilteredRentals = CollectionViewSource.GetDefaultView(_Rentals);
-            SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
-            FilteredRentals.SortDescriptions.Add(sd);
-            FilteredRentals.Filter += Filter;
-
         }
     }
 }
