@@ -27,9 +27,9 @@ namespace Great.Utils
                 var toastXml = new XmlDocument();
                 toastXml.LoadXml(xml);
                 var toast = new ToastNotification(toastXml);
-                ToastNotificationManager.CreateToastNotifier("Sample toast").Show(toast);
+                ToastNotificationManager.CreateToastNotifier("Great").Show(toast);
             }
-            catch { }
+            catch (Exception ex){ }
         }
     }
 }
