@@ -2,9 +2,9 @@
 using Great.Models.Database;
 using Great.Models.Interfaces;
 using Great.Utils.Messages;
+using Great.Utils;
 using Great.ViewModels.Database;
 using Great.Views.Dialogs;
-using Notifications.Wpf;
 using System;
 using System.Linq;
 using System.Windows;
@@ -21,8 +21,6 @@ namespace Great.ViewModels
     public class NotificationsViewModel : ViewModelBase
     {
         #region Properties
-
-        NotificationManager notificationManager = new NotificationManager();
 
         /// <summary>
         /// The <see cref="NewFactoriesCount" /> property's name.
@@ -163,12 +161,8 @@ namespace Great.ViewModels
             if (fdl.Content.NotifyAsNew)
                 NewFDLCount++;
 
-            notificationManager.Show(new NotificationContent
-            {
-                Title = "FDL received",
-                Message = $"FDL {fdl.Content.Id} received",
-                Type = NotificationType.Information
-            });
+            ToastNotificationHelper.SendToastNotification("FDL received", $"FDL {fdl.Content.Id} received",null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
+
         }
 
         private void OnFdlChanged(ItemChangedMessage<FDLEVM> fdl)
@@ -176,21 +170,12 @@ namespace Great.ViewModels
             using (DBArchive db = new DBArchive()) 
                 NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
 
-            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted )
-            notificationManager.Show(new NotificationContent
-            {
-                Title = "FDL Accepted",
-                Message = $"FDL {fdl.Content.Id} was accepted by SAP",
-                Type = NotificationType.Success
-            });
+            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
+                ToastNotificationHelper.SendToastNotification("FDL Accepted", $"FDL {fdl.Content.Id} accepted", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
-            if(fdl.Content.EStatus == Models.EFDLStatus.Rejected)
-                notificationManager.Show(new NotificationContent
-                {
-                    Title = "FDL Rejected",
-                    Message = $"FDL {fdl.Content.Id} was rejected by SAP",
-                    Type = NotificationType.Warning
-                });
+            else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
+                ToastNotificationHelper.SendToastNotification("FDL Rejected", $"FDL {fdl.Content.Id} rejected", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
 
         }
         private void OnEaChanged(ItemChangedMessage<ExpenseAccountEVM> fdl)
@@ -199,48 +184,23 @@ namespace Great.ViewModels
                 NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
 
             if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
-                notificationManager.Show(new NotificationContent
-                {
-                    Title = "Expense Account Accepted",
-                    Message = $"Expense Account {fdl.Content.Id} was accepted by SAP",
-                    Type = NotificationType.Success
-                });
+                ToastNotificationHelper.SendToastNotification("Expense Account accepted", $"Expense Account {fdl.Content.Id} received", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
-            if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
-                notificationManager.Show(new NotificationContent
-                {
-                    Title = "Expense Account Rejected",
-                    Message = $"Expense Account {fdl.Content.Id} was rejected by SAP",
-                    Type = NotificationType.Warning
-                });
+            else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
+                ToastNotificationHelper.SendToastNotification("Expense Account Rejected", $"Expense Account {fdl.Content.Id} rejected", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
         }
         private void OnEventImported(NewItemMessage<EventEVM> ev)
         {
-            notificationManager.Show(new NotificationContent
-            {
-                Title = "Event Imported",
-                Message = $"Event {ev.Content.Title} imported from sharepoint",
-                Type = NotificationType.Information
-            });
+            ToastNotificationHelper.SendToastNotification("Event Imported", $"Event  {ev.Content.Title} imported", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
         private void OnEventChanged(ItemChangedMessage<EventEVM> ev)
         {
             if (ev.Content.EStatus == Models.EEventStatus.Accepted)
-                notificationManager.Show(new NotificationContent
-                {
-                    Title = "Event Approved",
-                    Message = $"Event {ev.Content.Title} were approved",
-                    Type = NotificationType.Success
-                });
+                ToastNotificationHelper.SendToastNotification("Event Approved", $"Event  {ev.Content.Title} Approved", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
-            if (ev.Content.EStatus == Models.EEventStatus.Rejected)
-                notificationManager.Show(new NotificationContent
-                {
-                    Title = "Event Rejected",
-                    Message = $"Event {ev.Content.Title} were rejected",
-                    Type = NotificationType.Warning
-                });
+            else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
+                ToastNotificationHelper.SendToastNotification("Event Rejected", $"Event  {ev.Content.Title} Rejected", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
 
         }
