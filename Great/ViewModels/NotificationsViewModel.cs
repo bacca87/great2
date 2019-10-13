@@ -161,7 +161,7 @@ namespace Great.ViewModels
             if (fdl.Content.NotifyAsNew)
                 NewFDLCount++;
 
-            ToastNotificationHelper.SendToastNotification("FDL received", $"FDL {fdl.Content.Id} received",null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
+            ToastNotificationHelper.SendToastNotification("FDL received", fdl.Content.Id,null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
 
         }
 
@@ -171,10 +171,10 @@ namespace Great.ViewModels
                 NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
 
             if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
-                ToastNotificationHelper.SendToastNotification("FDL Accepted", $"FDL {fdl.Content.Id} accepted", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification("FDL Accepted", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
             else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
-                ToastNotificationHelper.SendToastNotification("FDL Rejected", $"FDL {fdl.Content.Id} rejected", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification("FDL Rejected", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
 
         }
@@ -184,23 +184,23 @@ namespace Great.ViewModels
                 NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
 
             if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
-                ToastNotificationHelper.SendToastNotification("Expense Account accepted", $"Expense Account {fdl.Content.Id} received", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification("Expense Account Accepted", fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
             else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
-                ToastNotificationHelper.SendToastNotification("Expense Account Rejected", $"Expense Account {fdl.Content.Id} rejected", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification("Expense Account Rejected",fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
         }
         private void OnEventImported(NewItemMessage<EventEVM> ev)
         {
-            ToastNotificationHelper.SendToastNotification("Event Imported", $"Event  {ev.Content.Title} imported", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            ToastNotificationHelper.SendToastNotification("Event Imported", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
         private void OnEventChanged(ItemChangedMessage<EventEVM> ev)
         {
             if (ev.Content.EStatus == Models.EEventStatus.Accepted)
-                ToastNotificationHelper.SendToastNotification("Event Approved", $"Event  {ev.Content.Title} Approved", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification("Event Approved", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
             else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
-                ToastNotificationHelper.SendToastNotification("Event Rejected", $"Event  {ev.Content.Title} Rejected", null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
 
         }
