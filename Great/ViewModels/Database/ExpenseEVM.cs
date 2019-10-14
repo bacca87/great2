@@ -155,14 +155,15 @@ namespace Great.ViewModels.Database
             {
                 ExpenseEVM exp = obj as ExpenseEVM;
 
-                return MondayAmount == exp.MondayAmount
-                    && TuesdayAmount == exp.TuesdayAmount
-                    && ThursdayAmount == exp.ThursdayAmount
-                    && WednesdayAmount == exp.WednesdayAmount
-                    && FridayAmount == exp.FridayAmount
-                    && SaturdayAmount == exp.SaturdayAmount
-                    && SundayAmount == exp.SundayAmount;
-
+                return Id == exp.Id &&
+                       ExpenseAccount == exp.ExpenseAccount &&                       
+                       MondayAmount == exp.MondayAmount &&
+                       TuesdayAmount == exp.TuesdayAmount &&
+                       ThursdayAmount == exp.ThursdayAmount &&
+                       WednesdayAmount == exp.WednesdayAmount &&
+                       FridayAmount == exp.FridayAmount &&
+                       SaturdayAmount == exp.SaturdayAmount &&
+                       SundayAmount == exp.SundayAmount;
             }
             return false;
         }

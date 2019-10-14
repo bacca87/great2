@@ -262,10 +262,13 @@ namespace Great.ViewModels.Database
             if (obj is ExpenseAccountEVM)
             {
                 ExpenseAccountEVM exp = obj as ExpenseAccountEVM;
-                return Notes == exp.Notes
-                        && Currency == exp.Currency
-                        && Expenses.SequenceEqual(exp.Expenses);
-
+                return Id == exp.Id &&
+                       FDL == exp.FDL &&
+                       FileName == exp.FileName &&
+                       Currency == exp.Currency &&
+                       Notes == exp.Notes &&
+                       Currency == exp.Currency &&
+                       Expenses.SequenceEqual(exp.Expenses);
             }
             return false;
         }

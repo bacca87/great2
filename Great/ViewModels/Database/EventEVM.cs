@@ -401,13 +401,15 @@ namespace Great.ViewModels.Database
             {
                 EventEVM o = (EventEVM)obj;
 
-                return Title == o.Title
-                    && Location == o.Location
-                    && IsAllDay == o.IsAllDay
-                    && StartDate == o.StartDate
-                    && EndDate == o.EndDate
-                    && Status == o.Status;
-
+                return Id == o.Id &&
+                       SharePointId == o.SharePointId &&
+                       Type == o.Type &&
+                       Title == o.Title &&
+                       Location == o.Location &&
+                       IsAllDay == o.IsAllDay &&
+                       StartDate == o.StartDate &&
+                       EndDate == o.EndDate &&
+                       Status == o.Status;
             }
             return false;
         }
