@@ -6,7 +6,7 @@ This software has been designed to ease the business traveler's tasks.
 Keep track of you worked hours, expense accounts, travels and check your stats to be always informed about your activities.  
 Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just download the source code and start to improve it!
 
-A special thanks to Andrea _'Cina'_ Ghinelli, the original author of this very useful software!
+A special thanks to Andrea _'Cina'_ Ghinelli, the original ideator of this very useful software!
 
 [![Download](https://img.shields.io/github/downloads/bacca87/great2/total.svg?color=blue)](https://github.com/bacca87/great2/releases/latest)
 
