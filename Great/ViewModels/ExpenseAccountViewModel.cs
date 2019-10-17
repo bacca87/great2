@@ -211,9 +211,7 @@ namespace Great.ViewModels
                 string year = CurrentYear.ToString();
                 ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
-                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.Where(ea => ea.FDL.Substring(0, 4) == year).ToList().Select(ea => new ExpenseAccountEVM(ea)).OrderByDescending(ea => ea.IsNew).ThenByDescending(ea => ea.FDL));
-                //ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)).OrderByDescending(ea => ea.IsNew).ThenByDescending(ea => ea.FDL));
-
+                ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }
 
             UpdateEaList();
