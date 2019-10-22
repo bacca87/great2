@@ -1094,6 +1094,16 @@ namespace Great.Models
 
             public static class Recipients
             {
+                public static bool AskOrderRecipients
+                {
+                    get => Settings.Default.AskOrderRecipients;
+                    set
+                    {
+                        Settings.Default.AskOrderRecipients = value;
+                        Settings.Default.Save();
+                    }
+                }
+
                 public static StringCollection MRU
                 {
                     get => Settings.Default.MRUEmailRecipients;

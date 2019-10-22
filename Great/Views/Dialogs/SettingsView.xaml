@@ -103,7 +103,8 @@
                     </Grid.RowDefinitions>
                     <GroupBox Header="Recipients" Margin="0,5">
                         <StackPanel Grid.Row="0">
-                            <TextBlock Text="Cancellation request email recipients (separated by &quot;;&quot;): "/>
+                            <CheckBox Content="Ask for additional recipients on new orders." IsChecked="{Binding AskOrderRecipients}"/>
+                            <TextBlock Text="Cancellation request email recipients (separated by &quot;;&quot;): " Margin="0,10,0,0"/>
                             <TextBox Text="{Binding FDLCancelRequestRecipients, UpdateSourceTrigger=LostFocus}"/>
                         </StackPanel>
                     </GroupBox>

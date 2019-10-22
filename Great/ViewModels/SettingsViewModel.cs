@@ -50,6 +50,13 @@ namespace Great.ViewModels
             set => Set(ref _AutoAddFactories, value);
         }
 
+        private bool _AskOrderRecipients;
+        public bool AskOrderRecipients
+        {
+            get => _AskOrderRecipients;
+            set => Set(ref _AskOrderRecipients, value);
+        }        
+
         #region Appeareance
         private ETheme _Skin;
         public ETheme Theme
@@ -264,13 +271,15 @@ namespace Great.ViewModels
             AutoAddFactories = UserSettings.Advanced.AutoAddFactories;
             AutoAssignFactories = UserSettings.Advanced.AutoAssignFactories;
 
+            AskOrderRecipients = UserSettings.Email.Recipients.AskOrderRecipients;
+
             if (UserSettings.Email.Recipients.FDLCancelRequest != null)
             {
                 FDLCancelRequestRecipients = string.Empty;
 
                 foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                     FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
-                }
+            }
 
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;
@@ -310,12 +319,12 @@ namespace Great.ViewModels
                 UserSettings.Advanced.AutoAddFactories = AutoAddFactories;
                 UserSettings.Advanced.AutoAssignFactories = AutoAssignFactories;
 
+                UserSettings.Email.Recipients.AskOrderRecipients = AskOrderRecipients;
+
                 StringCollection recipients = new StringCollection();
                 string[] addresses = FDLCancelRequestRecipients?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < addresses?.Length; i++)
-                {
                     recipients.Add(addresses[i].Trim());
-                }
 
                 UserSettings.Email.Recipients.FDLCancelRequest = recipients;
 

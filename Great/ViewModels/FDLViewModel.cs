@@ -334,15 +334,18 @@ namespace Great.ViewModels
                 MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            using (DBArchive db = new DBArchive())
+            if (UserSettings.Email.Recipients.AskOrderRecipients)
             {
-                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+                using (DBArchive db = new DBArchive())
                 {
-                    OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
-                    OrderRecipientsView recipientsView = new OrderRecipientsView();
+                    if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+                    {
+                        OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
+                        OrderRecipientsView recipientsView = new OrderRecipientsView();
 
-                    recipientsVM.Order = fdl.Order;
-                    recipientsView.ShowDialog();
+                        recipientsVM.Order = fdl.Order;
+                        recipientsView.ShowDialog();
+                    }
                 }
             }
 
