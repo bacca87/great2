@@ -297,7 +297,7 @@
                                         <TextBox Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="295" Text="{Binding SelectedTimesheet.Notes}"></TextBox>
                                         <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
                                             <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
-                                            <Button Margin="2" Content="Clear" Command="{Binding ClearTimesheetCommand}" />
+                                            <Button Margin="2" Content="New" Command="{Binding CreateNewTimesheetCommand}" />
                                             <Button Margin="2" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}" />
                                         </StackPanel>
                                     </Grid>

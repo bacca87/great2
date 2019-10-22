@@ -29,7 +29,7 @@ namespace Great.ViewModels
                 Set(ref _isInputEnabled, value);
 
                 SaveTimesheetCommand.RaiseCanExecuteChanged();
-                ClearTimesheetCommand.RaiseCanExecuteChanged();
+                CreateNewTimesheetCommand.RaiseCanExecuteChanged();
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
@@ -81,7 +81,7 @@ namespace Great.ViewModels
 
                 if (_selectedWorkingDay != null)
                 {
-                    SelectedTimesheet = _selectedWorkingDay.Timesheets?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
+                    SelectedTimesheet = _selectedWorkingDay?.Timesheets?.FirstOrDefault();
                     CurrentMonth = _selectedWorkingDay.Date.Month;
                     IsInputEnabled = _selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay;
 
@@ -107,9 +107,6 @@ namespace Great.ViewModels
             get => _selectedTimesheet;
             set
             {
-                if (value == null)
-                    value = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
-
                 Set(ref _selectedTimesheet, value);
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
@@ -145,7 +142,7 @@ namespace Great.ViewModels
         public RelayCommand<DayEVM> CutDayCommand { get; set; }
         public RelayCommand<DayEVM> PasteDayCommand { get; set; }
 
-        public RelayCommand ClearTimesheetCommand { get; set; }
+        public RelayCommand CreateNewTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
         public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
@@ -179,7 +176,7 @@ namespace Great.ViewModels
             PageLoadedCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { });
 
-            ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
+            CreateNewTimesheetCommand = new RelayCommand(CreateNewTimesheet, () => { return IsInputEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
@@ -242,7 +239,12 @@ namespace Great.ViewModels
             OnSelectToday?.Invoke(SelectedWorkingDay);
         }
 
-        public void ClearTimesheet() => SelectedTimesheet = null;
+        public void CreateNewTimesheet()
+        {
+            SelectedTimesheet = null; // hack for clear the datagrid selection
+            SelectedTimesheet = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
+        }
+
         public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
         public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
         public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
