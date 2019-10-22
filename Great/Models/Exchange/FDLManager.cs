@@ -1156,7 +1156,7 @@ namespace Great.Models
 
         private void ProcessMessage(EmailMessage message)
         {
-            EMessageType type = GetMessageType(message.Subject);
+            EMessageType type = GetMessageType(message);
             string fdlNumber = GetFDLNumber(message, type);
 
             switch (type)
@@ -1340,23 +1340,26 @@ namespace Great.Models
             }
         }
 
-        private EMessageType GetMessageType(string subject)
+        private EMessageType GetMessageType(EmailMessage message)
         {
-            if (subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
+            if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Accepted))
                 return EMessageType.FDL_Accepted;
-            else if (subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
+            else if (message.Subject.Contains(ApplicationSettings.FDL.FDL_Rejected))
                 return EMessageType.FDL_Rejected;
-            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
+            else if (message.Subject.Contains(ApplicationSettings.ExpenseAccount.EA_Accepted))
                 return EMessageType.EA_Accepted;
-            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
+            else if (message.Subject.Contains(ApplicationSettings.ExpenseAccount.EA_Rejected))
                 return EMessageType.EA_Rejected;
-            else if (subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
+            else if (message.Subject.Contains(ApplicationSettings.ExpenseAccount.EA_RejectedResubmission))
                 return EMessageType.EA_RejectedResubmission;
-            else if (subject.Contains(ApplicationSettings.FDL.Reminder))
+            else if (message.Subject.Contains(ApplicationSettings.FDL.Reminder))
                 return EMessageType.Reminder;
             else
             {
-                EFileType type = GetFileType(subject);
+                if (!message.HasAttachments)
+                    return EMessageType.Unknown;
+
+                EFileType type = GetFileType(message.Attachments.FirstOrDefault().Name);
 
                 if (type == EFileType.FDL || type == EFileType.ExpenseAccount)
                     return EMessageType.FDL_EA_New;
