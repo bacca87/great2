@@ -6,7 +6,7 @@ namespace Great2.Models.Interfaces
     public interface IProvider
     {
         EProviderStatus Status { get; set; }
-        void SendEmail(EmailMessageDTO message);
+        bool SendEmail(EmailMessageDTO message);
         bool IsServiceAvailable();
         void Connect();
         void Disconnect();

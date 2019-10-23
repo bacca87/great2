@@ -1064,7 +1064,9 @@ namespace Great2.Models
                 message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
             }
 
-            return SendMessage(message, file);
+            message.Attachments.Add(file.FilePath);
+
+            return exchange.SendEmail(message);
         }
 
         public bool SendTo(string address, IFDLFile file)
@@ -1087,24 +1089,9 @@ namespace Great2.Models
             }
 
             message.ToRecipients.Add(address);
-
-            return SendMessage(message, file);
-        }
-
-        private bool SendMessage(EmailMessageDTO message, IFDLFile file)
-        {
-            if (file == null)
-                return false;
-
-            // removed because sap accept only pdf compiled with adobe library
-            //Compile(file, file.FilePath);
-
-            message.Attachments.Clear();
             message.Attachments.Add(file.FilePath);
 
-            exchange.SendEmail(message);
-
-            return true;
+            return exchange.SendEmail(message);
         }
 
         public bool SendCancellationRequest(FDLEVM fdl)
@@ -1128,9 +1115,7 @@ namespace Great2.Models
             foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                 message.ToRecipients.Add(address);
 
-            exchange.SendEmail(message);
-
-            return true;
+            return exchange.SendEmail(message);
         }
 
         public bool SaveAs(IFDLFile file, string filePath)

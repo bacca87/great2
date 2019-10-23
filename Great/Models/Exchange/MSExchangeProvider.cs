@@ -566,9 +566,10 @@ namespace Great2.Models
                 return null;
         }
 
-        public void SendEmail(EmailMessageDTO message)
+        public bool SendEmail(EmailMessageDTO message)
         {
             emailQueue.Enqueue(message);
+            return true;
         }
 
         public static bool CheckEmailAddress(string address, out string error)

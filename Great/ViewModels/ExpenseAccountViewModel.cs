@@ -352,8 +352,9 @@ namespace Great2.ViewModels
                 return;
 
             using (new WaitCursor())
-            {
-                _fdlManager.SendToSAP(ea);
+            {                
+                if (_fdlManager.SendToSAP(ea))
+                    ea.EStatus = EFDLStatus.Waiting; // don't save the fdl status until the message is sent
             }
         }
 
