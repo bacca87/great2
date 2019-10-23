@@ -3,7 +3,7 @@
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
-                    xmlns:local="clr-namespace:Great">
+                    xmlns:local="clr-namespace:Great2">
     <ResourceDictionary.MergedDictionaries>
 
         <!--Fluent Ribbon Styles-->

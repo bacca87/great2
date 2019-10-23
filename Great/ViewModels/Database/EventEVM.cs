@@ -1,14 +1,14 @@
-﻿using Great.Models;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Utils.Extensions;
+﻿using Great2.Models;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
-namespace Great.ViewModels.Database
+namespace Great2.ViewModels.Database
 {
     public partial class EventEVM : EntityViewModelBase, IDataErrorInfo
     {

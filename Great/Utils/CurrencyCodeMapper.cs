@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public static class CurrencyCodeMapper
     {

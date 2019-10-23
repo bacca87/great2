@@ -1,11 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
-using Great.Models.Database;
+using Great2.Models.Database;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-namespace Great.ViewModels.Database
+namespace Great2.ViewModels.Database
 {
     public abstract class EntityViewModelBase : ViewModelBase, IChangeTracking
     {

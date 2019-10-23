@@ -1,8 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Great.Models;
-using Great.Models.Database;
-using Great.Utils.Extensions;
-using Great.ViewModels.Database;
+using Great2.Models;
+using Great2.Models.Database;
+using Great2.Utils.Extensions;
+using Great2.ViewModels.Database;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public class GreatImport : BaseImport
     {

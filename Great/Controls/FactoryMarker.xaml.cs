@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
-namespace Great.Controls
+namespace Great2.Controls
 {
     /// <summary>
     /// Interaction logic for GMapFactoryMarker.xaml

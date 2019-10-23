@@ -1,7 +1,7 @@
 ﻿using Microsoft.Exchange.WebServices.Data;
 using System.Collections.Generic;
 
-namespace Great.Models.DTO
+namespace Great2.Models.DTO
 {
     public class EmailMessageDTO
     {

@@ -13,10 +13,10 @@
 */
 
 using GalaSoft.MvvmLight.Ioc;
-using Great.Models;
-using Great.Models.Interfaces;
+using Great2.Models;
+using Great2.Models.Interfaces;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains static references to all the view models in the

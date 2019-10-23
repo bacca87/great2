@@ -1,5 +1,5 @@
-﻿using Great.Properties;
-using Great.Utils.Extensions;
+﻿using Great2.Properties;
+using Great2.Utils.Extensions;
 using Nager.Date;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Great.Models
+namespace Great2.Models
 {
     #region Application Settings
     public static class ApplicationSettings

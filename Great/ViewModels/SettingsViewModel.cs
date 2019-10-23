@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Models;
-using Great.Models.Interfaces;
+using Great2.Models;
+using Great2.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
@@ -11,7 +11,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.
@@ -242,6 +242,9 @@ namespace Great.ViewModels
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
             LoadDataCommand = new RelayCommand(LoadData);
             ApplyChangesCommand = new RelayCommand(ApplyChanges);
+
+            NewOrderDefaultRecipients = string.Empty;
+            FDLCancelRequestRecipients = string.Empty;
         }
 
         public void SelectFolder()
@@ -296,16 +299,12 @@ namespace Great.ViewModels
                         
             if (UserSettings.Email.Recipients.NewOrderDefaults != null)
             {
-                NewOrderDefaultRecipients = string.Empty;
-
                 foreach (string address in UserSettings.Email.Recipients.NewOrderDefaults)
                     NewOrderDefaultRecipients += NewOrderDefaultRecipients == string.Empty ? address : "; " + address;
             }
-
+                        
             if (UserSettings.Email.Recipients.FDLCancelRequest != null)
             {
-                FDLCancelRequestRecipients = string.Empty;
-
                 foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                     FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
             }

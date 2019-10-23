@@ -1,8 +1,8 @@
-﻿using Great.Wizards.Views;
+﻿using Great2.Wizards.Views;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Great.Views.Pages
+namespace Great2.Views.Pages
 {
     /// <summary>
     /// Interaction logic for ImportExportView.xaml

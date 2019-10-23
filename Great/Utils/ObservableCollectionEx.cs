@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public class ObservableCollectionEx<T> : ObservableCollection<T>
         where T : INotifyPropertyChanged

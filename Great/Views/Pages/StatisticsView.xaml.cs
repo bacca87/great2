@@ -1,8 +1,8 @@
-﻿using Great.ViewModels;
+﻿using Great2.ViewModels;
 using System;
 using System.Windows.Controls;
 
-namespace Great.Views.Pages
+namespace Great2.Views.Pages
 {
     /// <summary>
     /// Interaction logic for Statistics.xaml

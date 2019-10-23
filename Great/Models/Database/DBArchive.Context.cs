@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace Great.Models.Database
+namespace Great2.Models.Database
 {
     public partial class DBArchive : DbContext
     {

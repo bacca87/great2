@@ -1,7 +1,7 @@
 ﻿using Itenso.TimePeriod;
 using System;
 
-namespace Great.Utils.Extensions
+namespace Great2.Utils.Extensions
 {
     public static class TimePeriodCollectionExtensions
     {

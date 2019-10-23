@@ -1,12 +1,12 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Models;
-using Great.Models.Database;
+using Great2.Models;
+using Great2.Models.Database;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.

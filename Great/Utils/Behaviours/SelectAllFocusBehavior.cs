@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace Great.Utils.Behaviours
+namespace Great2.Utils.Behaviours
 {
     public class SelectAllFocusBehavior
     {

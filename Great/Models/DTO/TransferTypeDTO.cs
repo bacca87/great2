@@ -1,6 +1,6 @@
-﻿using Great.Models.Database;
+﻿using Great2.Models.Database;
 
-namespace Great.Models.DTO
+namespace Great2.Models.DTO
 {
     public class TransferTypeDTO
     {

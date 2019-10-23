@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Great.Utils.AttachedProperties
+namespace Great2.Utils.AttachedProperties
 {
     public class TextBoxHelper
     {

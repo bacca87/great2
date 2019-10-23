@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace Great.Views
+namespace Great2.Views
 {
     /// <summary>
     /// Interaction logic for InformationsPage.xaml

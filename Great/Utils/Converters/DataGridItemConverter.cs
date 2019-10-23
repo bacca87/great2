@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Great.Utils.Converters
+namespace Great2.Utils.Converters
 {
     public class DataGridItemConverter : MarkupExtension, IValueConverter
     {

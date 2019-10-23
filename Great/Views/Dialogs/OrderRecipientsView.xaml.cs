@@ -1,7 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using System.Windows;
 
-namespace Great.Views.Dialogs
+namespace Great2.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for OrderRecipientsView.xaml

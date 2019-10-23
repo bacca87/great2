@@ -1,8 +1,8 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Models.Database;
-using Great.Utils.Extensions;
-using Great.ViewModels.Database;
+using Great2.Models.Database;
+using Great2.Utils.Extensions;
+using Great2.ViewModels.Database;
 using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     public class StatisticsViewModel : ViewModelBase
     {

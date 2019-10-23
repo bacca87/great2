@@ -1,10 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Models.Interfaces;
-using Great.Utils.Extensions;
-using Great.Utils.Messages;
-using Great.ViewModels.Database;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Models.Interfaces;
+using Great2.Utils.Extensions;
+using Great2.Utils.Messages;
+using Great2.ViewModels.Database;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Forms.Xfa;
@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Great.Models
+namespace Great2.Models
 {
     public class FDLManager
     {

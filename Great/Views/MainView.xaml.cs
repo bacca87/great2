@@ -1,9 +1,9 @@
 ﻿using AutoUpdaterDotNET;
 using Fluent;
 using GalaSoft.MvvmLight.Ioc;
-using Great.Models;
-using Great.ViewModels;
-using Great.Views.Dialogs;
+using Great2.Models;
+using Great2.ViewModels;
+using Great2.Views.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,7 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Great.Views
+namespace Great2.Views
 {
     /// <summary>
     /// Interaction logic for MainView.xaml
