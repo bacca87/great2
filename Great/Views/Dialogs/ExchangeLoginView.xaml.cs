@@ -32,6 +32,7 @@ namespace Great.Views.Dialogs
             {
                 IProvider Exchange = SimpleIoc.Default.GetInstance<IProvider>();
 
+                UserSettings.Email.UseDefaultCredentials = false;
                 UserSettings.Email.EmailAddress = txtEmailAddress.Text;
                 UserSettings.Email.EmailPassword = PasswordHelper.GetBoundPassword(txtPassword);
 

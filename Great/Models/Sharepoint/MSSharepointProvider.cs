@@ -86,7 +86,11 @@ namespace Great.Models
                                     request = GenerateBatchDeletetXML(ev);
                                     using (SharepointReference.Lists l = new SharepointReference.Lists())
                                     {
-                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                        if (UserSettings.Email.UseDefaultCredentials)
+                                            l.UseDefaultCredentials = true;
+                                        else
+                                            l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+
                                         xdoc = new XmlDocument();
 
                                         var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
@@ -108,7 +112,11 @@ namespace Great.Models
 
                                 using (SharepointReference.Lists l = new SharepointReference.Lists())
                                 {
-                                    l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+                                    if (UserSettings.Email.UseDefaultCredentials)
+                                        l.UseDefaultCredentials = true;
+                                    else
+                                        l.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+
                                     xdoc = new XmlDocument();
 
                                     var response = l.UpdateListItems("Vacations ITA", request.FirstChild);
@@ -154,7 +162,12 @@ namespace Great.Models
                         if (sharepointUserId == 0)
                         {
                             request = (HttpWebRequest)WebRequest.Create($"{ApplicationSettings.General.IntranetAddress}/_api/web/currentuser");
-                            request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+
+                            if (UserSettings.Email.UseDefaultCredentials)
+                                request.UseDefaultCredentials = true;
+                            else
+                                request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+
                             request.Method = "GET";
 
                             var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
@@ -169,7 +182,12 @@ namespace Great.Models
                             string req = $"{ApplicationSettings.General.IntranetAddress}/_api/web/Lists/GetByTitle('Vacations ITA')/Items?$filter=Author/Id eq {sharepointUserId}";
 
                             request = (HttpWebRequest)WebRequest.Create(req);
-                            request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+
+                            if (UserSettings.Email.UseDefaultCredentials)
+                                request.UseDefaultCredentials = true;
+                            else
+                                request.Credentials = new NetworkCredential(UserSettings.Email.Username, UserSettings.Email.EmailPassword);
+
                             request.Method = "GET";
 
                             var webResponse = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();

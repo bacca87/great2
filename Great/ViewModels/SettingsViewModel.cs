@@ -29,6 +29,18 @@ namespace Great.ViewModels
             set => Set(ref _Country, value);
         }
 
+        private bool _UseWindowsAuthentication;
+        public bool UseWindowsAuthentication
+        {
+            get => _UseWindowsAuthentication;
+            set
+            {
+                Set(ref _UseWindowsAuthentication, value);
+                EmailAddress = string.Empty;
+                EmailPassword = string.Empty;
+            }
+        }
+
         private string _EmailAddress;
         public string EmailAddress
         {
@@ -272,6 +284,8 @@ namespace Great.ViewModels
             Country = UserSettings.Localization.Country;
             DataDirectory = ApplicationSettings.Directories.Data;
 
+            UseWindowsAuthentication = UserSettings.Email.UseDefaultCredentials;
+
             EmailAddress = UserSettings.Email.EmailAddress;
             EmailPassword = UserSettings.Email.EmailPassword;
 
@@ -321,6 +335,8 @@ namespace Great.ViewModels
             using (new WaitCursor())
             {
                 UserSettings.Localization.Country = Country;
+
+                UseWindowsAuthentication = UserSettings.Email.UseDefaultCredentials;
 
                 if (UserSettings.Email.EmailAddress != EmailAddress || UserSettings.Email.EmailPassword != EmailPassword)
                 {

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.AccountManagement;
 using System.Net;
 using System.Net.Mail;
 using System.Threading;
@@ -74,14 +75,15 @@ namespace Great.Models
             exService.TraceListener = trace;
             exService.TraceFlags = TraceFlags.AutodiscoverConfiguration;
             exService.TraceEnabled = true;
-
+                        
             do
             {
                 try
                 {
-                    exService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-                    //exService.UseDefaultCredentials = true;
-                    exService.AutodiscoverUrl(UserSettings.Email.EmailAddress, (string redirectionUrl) =>
+                    if (!UserSettings.Email.UseDefaultCredentials)
+                        exService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
+                    
+                    exService.AutodiscoverUrl(UserSettings.Email.UseDefaultCredentials ? UserPrincipal.Current.EmailAddress : UserSettings.Email.EmailAddress, (string redirectionUrl) =>
                     {
                         // The default for the validation callback is to reject the URL.
                         bool result = false;
@@ -147,10 +149,12 @@ namespace Great.Models
             {
                 TraceListener = trace,
                 TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,
-                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
+                TraceEnabled = true,                
                 Url = exServiceUri
             };
+
+            if (!UserSettings.Email.UseDefaultCredentials)
+                service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
 
             while (!exitToken.IsCancellationRequested)
             {
@@ -209,9 +213,11 @@ namespace Great.Models
                 TraceListener = trace,
                 TraceFlags = TraceFlags.AutodiscoverConfiguration,
                 TraceEnabled = true,
-                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
                 Url = exServiceUri
             };
+
+            if (!UserSettings.Email.UseDefaultCredentials)
+                service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
 
             subconn = new StreamingSubscriptionConnection(service, 30);
 
@@ -248,9 +254,11 @@ namespace Great.Models
                 TraceListener = trace,
                 TraceFlags = TraceFlags.AutodiscoverConfiguration,
                 TraceEnabled = true,
-                Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword),
                 Url = exServiceUri
             };
+
+            if (!UserSettings.Email.UseDefaultCredentials)
+                service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
 
             bool IsSynced = false;
             Status = EProviderStatus.Syncronizing;

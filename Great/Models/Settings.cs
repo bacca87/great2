@@ -1067,6 +1067,16 @@ namespace Great.Models
         #region Email
         public static class Email
         {
+            public static bool UseDefaultCredentials
+            {
+                get => Settings.Default.UseDefaultCredentials;
+                set
+                {
+                    Settings.Default.UseDefaultCredentials = value;
+                    Settings.Default.Save();
+                }
+            }
+
             public static string EmailAddress
             {
                 get => Settings.Default.EmailAddress;
@@ -1076,6 +1086,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static string Username => Settings.Default.EmailAddress.Split('@')[0];
 
             public static string EmailPassword

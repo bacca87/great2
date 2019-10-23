@@ -355,5 +355,17 @@ namespace Great.Properties {
                 this["NewOrderDefaultRecipients"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseDefaultCredentials {
+            get {
+                return ((bool)(this["UseDefaultCredentials"]));
+            }
+            set {
+                this["UseDefaultCredentials"] = value;
+            }
+        }
     }
 }
