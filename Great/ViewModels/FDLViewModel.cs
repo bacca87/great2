@@ -318,6 +318,8 @@ namespace Great.ViewModels
 
         public void SendToSAP(FDLEVM fdl)
         {
+            bool ShowDialog = false;
+
             if (!fdl.IsCompiled)
             {
                 MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -333,20 +335,20 @@ namespace Great.ViewModels
             if (fdl.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
-
-            if (UserSettings.Email.Recipients.AskOrderRecipients)
+            
+            using (DBArchive db = new DBArchive())
             {
-                using (DBArchive db = new DBArchive())
-                {
-                    if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
-                    {
-                        OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
-                        OrderRecipientsView recipientsView = new OrderRecipientsView();
+                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+                    ShowDialog = true;
+            }
 
-                        recipientsVM.Order = fdl.Order;
-                        recipientsView.ShowDialog();
-                    }
-                }
+            if (ShowDialog && UserSettings.Email.Recipients.AskOrderRecipients)
+            {
+                OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
+                OrderRecipientsView recipientsView = new OrderRecipientsView();
+
+                recipientsVM.Order = fdl.Order;
+                recipientsView.ShowDialog();
             }
 
             using (new WaitCursor())

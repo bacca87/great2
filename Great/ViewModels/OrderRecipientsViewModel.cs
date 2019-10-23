@@ -40,7 +40,18 @@ namespace Great.ViewModels
                 Set(ref _order, value);
 
                 using (DBArchive db = new DBArchive())
+                {
+                    if (db.OrderEmailRecipients.Where(r => r.Order == _order).Count() == 0 && UserSettings.Email.Recipients.NewOrderDefaults != null)
+                    {
+                        // add default recipients for the order
+                        foreach (var recipient in UserSettings.Email.Recipients.NewOrderDefaults)
+                            db.OrderEmailRecipients.Add(new OrderEmailRecipient() { Order = _order, Address = recipient });
+
+                        db.SaveChanges();
+                    }
+
                     Recipients = new ObservableCollection<OrderEmailRecipient>(db.OrderEmailRecipients.Where(r => r.Order == _order).ToList());
+                }   
             }
         }
 
@@ -72,6 +83,13 @@ namespace Great.ViewModels
             if (!MSExchangeProvider.CheckEmailAddress(address, out error))
             {
                 MetroMessageBox.Show(error, "Invalid Email Address", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if(address == ApplicationSettings.EmailRecipients.FDLSystem || address == ApplicationSettings.EmailRecipients.HR)
+            {
+                MetroMessageBox.Show("FDL system and HR recipients are already included by default. Please add only the additional recipients!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                InputAddress = string.Empty;
                 return;
             }
 

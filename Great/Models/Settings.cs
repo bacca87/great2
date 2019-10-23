@@ -1114,6 +1114,16 @@ namespace Great.Models
                     }
                 }
 
+                public static StringCollection NewOrderDefaults
+                {
+                    get => Settings.Default.NewOrderDefaultRecipients;
+                    set
+                    {
+                        Settings.Default.NewOrderDefaultRecipients = value;
+                        Settings.Default.Save();
+                    }
+                }
+
                 public static StringCollection FDLCancelRequest
                 {
                     get => Settings.Default.FDLCancelRequestRecipients;

@@ -13,5 +13,10 @@ namespace Great.Views.Dialogs
             InitializeComponent();
             Owner = Application.Current.MainWindow;
         }
+
+        private void DoneButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

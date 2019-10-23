@@ -90,9 +90,11 @@ namespace Great.ViewModels
                         string year = CurrentYear.ToString(); // hack for query
                         FDLs = new ObservableCollection<FDLEVM>(db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList().Select(fdl => new FDLEVM(fdl)));
                     }
+
                     RaisePropertyChanged(nameof(FDLs));
 
-                    SelectedFDL = FDLs.SingleOrDefault(f => f.Id == SelectedTimesheet.FDL);
+                    if (SelectedTimesheet != null)
+                        SelectedFDL = FDLs.SingleOrDefault(f => f.Id == SelectedTimesheet.FDL);
                 }
                 else
                 {

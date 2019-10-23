@@ -180,6 +180,13 @@ namespace Great.ViewModels
             set => Set(ref _AutoAssignFactories, value);
         }
 
+        public string _NewOrderDefaultRecipients;
+        public string NewOrderDefaultRecipients
+        {
+            get => _NewOrderDefaultRecipients;
+            set => Set(ref _NewOrderDefaultRecipients, value);
+        }
+
         public string _FDLCancelRequestRecipients;
         public string FDLCancelRequestRecipients
         {
@@ -272,6 +279,14 @@ namespace Great.ViewModels
             AutoAssignFactories = UserSettings.Advanced.AutoAssignFactories;
 
             AskOrderRecipients = UserSettings.Email.Recipients.AskOrderRecipients;
+                        
+            if (UserSettings.Email.Recipients.NewOrderDefaults != null)
+            {
+                NewOrderDefaultRecipients = string.Empty;
+
+                foreach (string address in UserSettings.Email.Recipients.NewOrderDefaults)
+                    NewOrderDefaultRecipients += NewOrderDefaultRecipients == string.Empty ? address : "; " + address;
+            }
 
             if (UserSettings.Email.Recipients.FDLCancelRequest != null)
             {
@@ -321,12 +336,13 @@ namespace Great.ViewModels
 
                 UserSettings.Email.Recipients.AskOrderRecipients = AskOrderRecipients;
 
-                StringCollection recipients = new StringCollection();
-                string[] addresses = FDLCancelRequestRecipients?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < addresses?.Length; i++)
-                    recipients.Add(addresses[i].Trim());
+                StringCollection OrderRecipients = new StringCollection();
+                OrderRecipients.AddRange(NewOrderDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                UserSettings.Email.Recipients.NewOrderDefaults = OrderRecipients;
 
-                UserSettings.Email.Recipients.FDLCancelRequest = recipients;
+                StringCollection CancellationRecipients = new StringCollection();
+                CancellationRecipients.AddRange(FDLCancelRequestRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
 
                 UserSettings.Themes.Theme = Theme;
                 UserSettings.Themes.AccentColor = AccentColor;
