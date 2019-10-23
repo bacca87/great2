@@ -2,6 +2,7 @@
 using Great2.Models;
 using Great2.Models.Database;
 using Great2.ViewModels.Database;
+using Great2.Utils.Extensions;
 using NLog;
 using System;
 using System.Data.Entity.Migrations;
@@ -117,10 +118,13 @@ namespace Great2.Utils
 
                                 if (currentFdl != null)
                                 {
-                                    currentFdl.Status = (long)EFDLStatus.Accepted;
+                                    if(currentFdl.WeekNr < DateTime.Now.WeekNr())
+                                    {
+                                        currentFdl.Status = (long)EFDLStatus.Accepted;
 
-                                    db.FDLs.AddOrUpdate(currentFdl);
-                                    db.SaveChanges();
+                                        db.FDLs.AddOrUpdate(currentFdl);
+                                        db.SaveChanges();
+                                    }   
                                 }
                                 else
                                     Error("Missing FDL on database. Should never happen.");
@@ -183,11 +187,14 @@ namespace Great2.Utils
 
                                 if (currentEA != null)
                                 {
-                                    currentEA.Status = (long)EFDLStatus.Accepted;
-                                    currentEA.IsRefunded = true;
+                                    if (currentEA?.FDL1.WeekNr < DateTime.Now.WeekNr())
+                                    {
+                                        currentEA.Status = (long)EFDLStatus.Accepted;
+                                        currentEA.IsRefunded = true;
 
-                                    db.ExpenseAccounts.AddOrUpdate(currentEA);
-                                    db.SaveChanges();
+                                        db.ExpenseAccounts.AddOrUpdate(currentEA);
+                                        db.SaveChanges();
+                                    }
                                 }
                                 else
                                     Error("Missing EA on database. Should never happen.");
