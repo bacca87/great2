@@ -69,9 +69,16 @@ namespace Great2.ViewModels
         {
             get => _AskOrderRecipients;
             set => Set(ref _AskOrderRecipients, value);
-        }        
+        }
 
         #region Appeareance
+        private ObservableCollection<ColorItem> _AvailableColors;
+        public ObservableCollection<ColorItem> AvailableColors
+        {
+            get => _AvailableColors;
+            set => Set(ref _AvailableColors, value);
+        }
+
         private ETheme _Skin;
         public ETheme Theme
         {
@@ -244,6 +251,8 @@ namespace Great2.ViewModels
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
             LoadDataCommand = new RelayCommand(LoadData);
             ApplyChangesCommand = new RelayCommand(ApplyChanges);
+
+            AvailableColors = new ObservableCollection<ColorItem>(MaterialColors.Colors.Select(c => new ColorItem(ColorConverter.ConvertFromString(c.Value) as Color?, c.Key)));
 
             NewOrderDefaultRecipients = string.Empty;
             FDLCancelRequestRecipients = string.Empty;
