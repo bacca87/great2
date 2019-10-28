@@ -4,6 +4,7 @@ using Great2.Models;
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Utils;
+using Great2.Utils.Extensions;
 using Great2.Utils.Messages;
 using Great2.ViewModels.Database;
 using System;
@@ -21,6 +22,30 @@ namespace Great2.ViewModels
     {
         #region Properties
         MSSharepointProvider _provider;
+
+
+        private int _currentYear = DateTime.Now.Year;
+        public int CurrentYear
+        {
+            get => _currentYear;
+            set
+            {
+                bool updateDays = _currentYear != value;
+                int year = 0;
+
+                if (value < ApplicationSettings.Timesheets.MinYear)
+                    year = ApplicationSettings.Timesheets.MinYear;
+                else if (value > ApplicationSettings.Timesheets.MaxYear)
+                    year = ApplicationSettings.Timesheets.MaxYear;
+                else
+                    year = value;
+
+                Set(ref _currentYear, year);
+
+                if (updateDays)
+                    UpdateEventList();
+            }
+        }
 
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
@@ -45,10 +70,10 @@ namespace Great2.ViewModels
             {
                 if (SelectedEvent != null)
                     Set(ref _ShowHourTimeFields, value);
-                }
             }
+        }
 
-        private bool _showOnlyVacations=false;
+        private bool _showOnlyVacations = false;
         public bool ShowOnlyVacations
         {
             get => _showOnlyVacations;
@@ -67,7 +92,11 @@ namespace Great2.ViewModels
         }
 
         private ICollectionView _FilteredEvents;
-        public ICollectionView FilteredEvents => _FilteredEvents;
+        public ICollectionView FilteredEvents
+        {
+            get => _FilteredEvents;
+            set => Set(ref _FilteredEvents, value);
+        }
 
         public bool Filter(object ev)
         {
@@ -124,6 +153,8 @@ namespace Great2.ViewModels
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
+        public RelayCommand NextYearCommand { get; set; }
+        public RelayCommand PreviousYearCommand { get; set; }
 
         #endregion
 
@@ -135,6 +166,9 @@ namespace Great2.ViewModels
 
             Minutes = new List<int>();
             Hours = new List<int>();
+
+            var mindatefilter = new DateTime(CurrentYear, 1, 1).ToUnixTimestamp();
+            var maxdatefilter = new DateTime(CurrentYear, 12, 31).ToUnixTimestamp();
 
             for (int i = 0; i < 24; i++)
                 Hours.Add(i);
@@ -154,19 +188,22 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 EventTypes = new ObservableCollection<EventTypeDTO>(db.EventTypes.ToList().Select(e => new EventTypeDTO(e)));
-                Events = new ObservableCollectionEx<EventEVM>(db.Events.ToList().Select(v => new EventEVM(v)));
+                Events = new ObservableCollectionEx<EventEVM>(db.Events.Where(e => e.StartDateTimeStamp >= mindatefilter && e.EndDateTimeStamp <= maxdatefilter).ToList().Select(e => new EventEVM(e)));
             }
+
+            NextYearCommand = new RelayCommand(() => { CurrentYear++; FilteredEvents.Refresh(); });
+            PreviousYearCommand = new RelayCommand(() => { CurrentYear--; FilteredEvents.Refresh(); });
+
 
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, EventChanged);
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, EventImportedFromCalendar);
             MessengerInstance.Register<DeletedItemMessage<EventEVM>>(this, EventDeleted);
 
-            _FilteredEvents = CollectionViewSource.GetDefaultView(Events);
+            FilteredEvents = CollectionViewSource.GetDefaultView(_Events);
             SortDescription sd = new SortDescription("StartDate", ListSortDirection.Descending);
-            _FilteredEvents.SortDescriptions.Add(sd);
-            _FilteredEvents.Filter += Filter;
-
-            _FilteredEvents.MoveCurrentToFirst();
+            FilteredEvents.SortDescriptions.Add(sd);
+            FilteredEvents.Filter += Filter;
+            FilteredEvents.MoveCurrentToFirst();
             SelectedEvent = (EventEVM)_FilteredEvents.CurrentItem;
         }
         #endregion
@@ -236,6 +273,7 @@ namespace Great2.ViewModels
                  if (item.Content != null)
                  {
                      EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
+                     if (v == null) return;
 
                      //if user change the event do not update the gui!
                      if (!v.IsChanged)
@@ -290,6 +328,22 @@ namespace Great2.ViewModels
 
         }
 
+
+        public void UpdateEventList()
+        {
+            Events.Clear();
+
+            var mindatefilter = new DateTime(CurrentYear, 1, 1).ToUnixTimestamp();
+            var maxdatefilter = new DateTime(CurrentYear, 12, 31).ToUnixTimestamp();
+
+            using (DBArchive db = new DBArchive())
+            {
+                (from e in db.Events
+                 where e.StartDateTimeStamp >= mindatefilter && e.EndDateTimeStamp <= maxdatefilter
+                 select e).ToList().ForEach(e => Events.Add(new EventEVM(e)));
+            }
+
+        }
 
         #endregion
     }

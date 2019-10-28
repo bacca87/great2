@@ -245,13 +245,17 @@ namespace Great2.Models
                                 else
                                 {
                                     var existing = new EventEVM(db.Events.SingleOrDefault(x => x.SharepointId == shpid));
-                                    if (!tmp.Equals(existing) && !existing.IsCancelRequested)
+                                    if (existing != null)
                                     {
                                         tmp.Id = existing.Id;
-                                        tmp.Notes = existing.Notes;
-                                        //Global.Mapper.Map(tmp, existing);
-                                        tmp.Save(db);
-                                        NotifyEventChanged(tmp);
+                                        if (!tmp.Equals(existing) && !existing.IsCancelRequested)
+                                        {
+                                            tmp.Id = existing.Id;
+                                            tmp.Notes = existing.Notes;
+                                            //Global.Mapper.Map(tmp, existing);
+                                            tmp.Save(db);
+                                            NotifyEventChanged(tmp);
+                                        }
                                     }
                                 }
                             }

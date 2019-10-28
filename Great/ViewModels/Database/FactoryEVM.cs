@@ -194,5 +194,50 @@ namespace Great2.ViewModels.Database
             IsChanged = false;
             return true;
         }
+
+        public long GetTransferType()
+        {
+            if (string.IsNullOrEmpty(CountryCode)) return 0;
+
+            bool isItaly = CountryCode == "IT";
+
+            bool isEurope = CountryCode == "AT";
+            isEurope |= CountryCode == "BE";
+            isEurope |= CountryCode == "BG";
+            isEurope |= CountryCode == "CY";
+            isEurope |= CountryCode == "CZ";
+            isEurope |= CountryCode == "DE";
+            isEurope |= CountryCode == "DK";
+            isEurope |= CountryCode == "EE";
+            isEurope |= CountryCode == "ES";
+            isEurope |= CountryCode == "FI";
+            isEurope |= CountryCode == "FR";
+            isEurope |= CountryCode == "GB";
+            isEurope |= CountryCode == "GR";
+            isEurope |= CountryCode == "HR";
+            isEurope |= CountryCode == "HU";
+            isEurope |= CountryCode == "IE";
+            isEurope |= CountryCode == "SK";
+            isEurope |= CountryCode == "LT";
+            isEurope |= CountryCode == "LU";
+            isEurope |= CountryCode == "LV";
+            isEurope |= CountryCode == "MT";
+            isEurope |= CountryCode == "NL";
+            isEurope |= CountryCode == "PO";
+            isEurope |= CountryCode == "PT";
+            isEurope |= CountryCode == "RO";
+            isEurope |= CountryCode == "SE";
+            isEurope |= CountryCode == "SI";
+
+            bool isExtraEurope = !isItaly && !isEurope;
+
+            if (isItaly) return 1;
+            if (isEurope) return 2;
+            if (isExtraEurope) return 3;
+
+            else return 0;
+
+
+        }
     }
 }

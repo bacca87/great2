@@ -216,6 +216,7 @@ namespace Great2.Views
                     factory.Latitude = point.Value.Item1.Lat;
                     factory.Longitude = point.Value.Item1.Lng;
                     factory.CountryCode = point.Value.Item2.ToString();
+                    factory.TransferType = factory.GetTransferType();
                     factory.Save();
                 }
 

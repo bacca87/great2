@@ -2,12 +2,14 @@
 using Great2.Models.Database;
 using Great2.Models.Interfaces;
 using Great2.Utils.Messages;
+using Great2.Utils;
 using Great2.ViewModels.Database;
 using Great2.Views.Dialogs;
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Great2.Models.DTO;
 
 namespace Great2.ViewModels
 {
@@ -20,6 +22,7 @@ namespace Great2.ViewModels
     public class NotificationsViewModel : ViewModelBase
     {
         #region Properties
+
         /// <summary>
         /// The <see cref="NewFactoriesCount" /> property's name.
         /// </summary>
@@ -116,16 +119,20 @@ namespace Great2.ViewModels
         {
             RefreshTotals();
 
-            MessengerInstance.Register(this, (NewItemMessage<FDLEVM> x) => { if (x.Content.NotifyAsNew) { NewFDLCount++; } });
+            MessengerInstance.Register<NewItemMessage<EventEVM>>(this, OnEventImported);
+            MessengerInstance.Register<NewItemMessage<FDLEVM>>(this,OnFdlReceived);
             MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Content.NotifyAsNew) { NewFactoriesCount++; } });
             MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => { if (x.Content.NotifyAsNew) { NewExpenseAccountsCount++; } });
 
-            MessengerInstance.Register(this, (ItemChangedMessage<FDLEVM> x) => { using (DBArchive db = new DBArchive()) { NewFDLCount = db.FDLs.Count(fdl => fdl.NotifyAsNew); } });
-            MessengerInstance.Register(this, (ItemChangedMessage<ExpenseAccountEVM> x) => { using (DBArchive db = new DBArchive()) { NewExpenseAccountsCount = db.ExpenseAccounts.Count(ea => ea.NotifyAsNew); } });
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, OnFdlChanged);
+            MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, OnEaChanged);
+            MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, OnEventChanged);
             MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) { NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); } });
+            MessengerInstance.Register<ProviderEmailSentMessage<EmailMessageDTO>>(this, OnEmailSent);
 
             MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }
+
 
         private void RefreshTotals()
         {
@@ -151,8 +158,62 @@ namespace Great2.ViewModels
             }));
         }
 
-        //TODO: aggiungere le notifiche baloon
-        // https://github.com/raflop/ToastNotifications
-        // https://github.com/zachatrocity/netoaster
+        private void OnFdlReceived(NewItemMessage<FDLEVM> fdl)
+        {
+            if (fdl.Content.NotifyAsNew)
+                NewFDLCount++;
+
+            ToastNotificationHelper.SendToastNotification("FDL received", fdl.Content.Id,null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
+
+        }
+
+        private void OnFdlChanged(ItemChangedMessage<FDLEVM> fdl)
+        {
+            using (DBArchive db = new DBArchive()) 
+                NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
+
+            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
+                ToastNotificationHelper.SendToastNotification("FDL Accepted", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
+            else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
+                ToastNotificationHelper.SendToastNotification("FDL Rejected", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
+
+        }
+        private void OnEaChanged(ItemChangedMessage<ExpenseAccountEVM> fdl)
+        {
+            using (DBArchive db = new DBArchive())
+                NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
+
+            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
+                ToastNotificationHelper.SendToastNotification("Expense Account Accepted", fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
+            else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
+                ToastNotificationHelper.SendToastNotification("Expense Account Rejected",fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
+        }
+        private void OnEventImported(NewItemMessage<EventEVM> ev)
+        {
+            ToastNotificationHelper.SendToastNotification("Event Imported", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+        }
+        private void OnEventChanged(ItemChangedMessage<EventEVM> ev)
+        {
+            using (var db = new DBArchive())
+            {
+
+                if (ev.Content.EStatus == Models.EEventStatus.Accepted)
+                    ToastNotificationHelper.SendToastNotification("Event Approved", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
+                else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
+                    ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            }
+
+
+        }
+        private void OnEmailSent(ProviderEmailSentMessage<EmailMessageDTO> mex)
+        {
+            ToastNotificationHelper.SendToastNotification("Email Sent", mex.Content.Subject, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+        }
+
     }
 }

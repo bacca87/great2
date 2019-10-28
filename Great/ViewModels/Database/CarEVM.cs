@@ -37,30 +37,15 @@ namespace Great2.ViewModels.Database
             set => SetAndCheckChanged(ref _model, value);
         }
 
-        private long _carRentalCompany;
-        public long CarRentalCompany
+        private string _carRentalCompany;
+        public string CarRentalCompany
 
         {
             get => _carRentalCompany;
-            set
-            {
-                SetAndCheckChanged(ref _carRentalCompany, value);
-                RaisePropertyChanged(nameof(CarRentalCompany1));
-
-            }
+            set => SetAndCheckChanged(ref _carRentalCompany, value);
 
         }
 
-        private CarRentalCompanyDTO _carRentalCompany1;
-        public CarRentalCompanyDTO CarRentalCompany1
-        {
-            get => _carRentalCompany1;
-            set
-            {
-                Set(ref _carRentalCompany1, value);
-                RaisePropertyChanged(nameof(CarRentalCompany));
-            }
-        }
 
         private ObservableCollectionEx<CarRentalHistoryEVM> _carRentalHistories;
         public ObservableCollectionEx<CarRentalHistoryEVM> CarRentalHistories
@@ -80,7 +65,7 @@ namespace Great2.ViewModels.Database
             this["LicensePlate"] == null
             && this["Brand"] == null
             && this["Model"] == null
-            && this["CarRentalCompany1"] == null;
+            && this["CarRentalCompany"] == null;
 
         public string this[string columnName]
         {
@@ -103,7 +88,7 @@ namespace Great2.ViewModels.Database
                             return "Model not valid";
                         break;
                     case "CarRentalCompany1":
-                        if (CarRentalCompany1 == null || CarRentalCompany1?.Id == 0)
+                        if (string.IsNullOrEmpty(CarRentalCompany) || string.IsNullOrWhiteSpace(CarRentalCompany))
                             return "Rental company not valid";
                         break;
 

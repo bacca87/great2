@@ -31,7 +31,6 @@ namespace Great2
 
                 cfg.CreateMap<Car, CarEVM>();
                 cfg.CreateMap<CarEVM, Car>()
-                    .ForMember(x => x.CarRentalCompany1, opt => opt.Ignore())
                     .ForMember(x => x.CarRentalHistories, opt => opt.Ignore());
 
                 cfg.CreateMap<FDL, FDLEVM>();
@@ -83,7 +82,6 @@ namespace Great2
                 cfg.CreateMap<FDLResult, FDLResultDTO>();
                 cfg.CreateMap<Timesheet, TimesheetDTO>();
                 cfg.CreateMap<Car, CarDTO>();
-                cfg.CreateMap<CarRentalCompany, CarRentalCompanyDTO>();
                 cfg.CreateMap<Day, DayDTO>();
                 cfg.CreateMap<DayType, DayTypeDTO>();
                 cfg.CreateMap<FactoryEVM, FactoryDTO>();

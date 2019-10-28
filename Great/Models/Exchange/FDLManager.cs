@@ -99,7 +99,11 @@ namespace Great2.Models
                     break;
                 default:
                     break;
+
+
             }
+
+            Messenger.Default.Send(new ProviderEmailSentMessage<EmailMessageDTO>(this, e.Message));
         }
 
         public ExpenseAccountEVM ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)

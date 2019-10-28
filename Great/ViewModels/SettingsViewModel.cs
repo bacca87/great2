@@ -24,6 +24,7 @@ namespace Great2.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         #region Properties
+
         private CountryCode _Country;
         public CountryCode Country
         {
@@ -346,7 +347,7 @@ namespace Great2.ViewModels
             {
                 UserSettings.Localization.Country = Country;
 
-                UseWindowsAuthentication = UserSettings.Email.UseDefaultCredentials;
+                UserSettings.Email.UseDefaultCredentials = UseWindowsAuthentication;
 
                 if (UserSettings.Email.EmailAddress != EmailAddress || UserSettings.Email.EmailPassword != EmailPassword)
                 {

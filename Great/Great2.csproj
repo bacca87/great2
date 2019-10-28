@@ -11,6 +11,7 @@
     <RootNamespace>Great2</RootNamespace>
     <AssemblyName>Great2</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -243,6 +244,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Windows.Data" />
+    <Reference Include="Windows.UI" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -275,12 +278,13 @@
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
     <Compile Include="Utils\MaterialColors.cs" />
+    <Compile Include="Utils\Messages\ProviderEmailSentMessage.cs" />
     <Compile Include="Utils\MetroMessageBox.cs" />
+    <Compile Include="Utils\ToastNotificationHelper.cs" />
     <Compile Include="Views\Dialogs\MetroMessageBoxView.xaml.cs">
       <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Database\Car.cs" />
-    <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
     <Compile Include="Models\Database\DayEvent.cs" />
     <Compile Include="Models\Database\Currency.cs" />
@@ -301,7 +305,6 @@
     <Compile Include="Models\Database\Timesheet.cs" />
     <Compile Include="Models\Database\TransferType.cs" />
     <Compile Include="Models\DTO\CarDTO.cs" />
-    <Compile Include="Models\DTO\CarRentalCompanyDTO.cs" />
     <Compile Include="Models\DTO\CurrencyDTO.cs" />
     <Compile Include="Models\DTO\DayTypeDTO.cs" />
     <Compile Include="Models\DTO\DayDTO.cs" />
@@ -701,6 +704,7 @@
     <Resource Include="Images\32\money.png" />
     <Resource Include="Images\32\road.png" />
     <Resource Include="Images\32\wall-calendar.png" />
+    <Resource Include="Images\32\clear-filters.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

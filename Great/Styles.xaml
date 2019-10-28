@@ -106,24 +106,31 @@
         <Style.Triggers>
             <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
                 <Setter Property="Background" Value="{DynamicResource DefaultSaturdayColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundSaturdayColor}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
                 <Setter Property="Background" Value="{DynamicResource DefaultSundayColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundSundayColor}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding IsHoliday}" Value="True">
                 <Setter Property="Background" Value="{DynamicResource DefaultHolidayColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundHolidayColor}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Type}" Value="1">
                 <Setter Property="Background" Value="{DynamicResource DefaultVacationColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundVacationColor}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Type}" Value="2">
                 <Setter Property="Background" Value="{DynamicResource DefaultSickColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundSickColor}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Type}" Value="3">
                 <Setter Property="Background" Value="{DynamicResource DefaultHomeworkColor}"/>
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundHomeworkColor}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Type}" Value="4">
                 <Setter Property="Background" Value="{DynamicResource DefaultSpecialLeaveColor}"/>
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundSpeclaiLeaveColor}"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>

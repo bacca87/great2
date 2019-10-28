@@ -25,6 +25,8 @@ namespace Great2.ViewModels.Database
             set => Set(ref _FDL, value);
         }
 
+        public string Year { get => FDL?.Substring(0, 4);}
+
         private long? _CdC;
         public long? CdC
         {

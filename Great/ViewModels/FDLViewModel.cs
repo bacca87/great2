@@ -104,6 +104,30 @@ namespace Great2.ViewModels
         }
 
         public Action<long> OnFactoryLink { get; set; }
+
+        private int _currentYear = DateTime.Now.Year;
+        public int CurrentYear
+        {
+            get => _currentYear;
+            set
+            {
+                bool updateDays = _currentYear != value;
+                int year = 0;
+
+                if (value < ApplicationSettings.Timesheets.MinYear)
+                    year = ApplicationSettings.Timesheets.MinYear;
+                else if (value > ApplicationSettings.Timesheets.MaxYear)
+                    year = ApplicationSettings.Timesheets.MaxYear;
+                else
+                    year = value;
+
+                Set(ref _currentYear, year);
+
+                if (updateDays)
+                    UpdateFDLList();
+            }
+        }
+
         #endregion
 
         #region Commands Definitions
@@ -123,6 +147,9 @@ namespace Great2.ViewModels
         public RelayCommand LostFocusCommand { get; set; }
         public RelayCommand PageUnloadedCommand { get; set; }
         public RelayCommand FactoryLinkCommand { get; set; }
+
+        public RelayCommand NextYearCommand { get; set; }
+        public RelayCommand PreviousYearCommand { get; set; }
         #endregion
 
         /// <summary>
@@ -131,6 +158,10 @@ namespace Great2.ViewModels
         public FDLViewModel(FDLManager manager)
         {
             _fdlManager = manager;
+
+            NextYearCommand = new RelayCommand(() => CurrentYear++);
+            PreviousYearCommand = new RelayCommand(() => CurrentYear--);
+
 
             ClearCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<FDLEVM>(SaveFDL, (FDLEVM fdl) => { return IsInputEnabled; });
@@ -152,9 +183,10 @@ namespace Great2.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
+                string year = CurrentYear.ToString();
                 Factories = new ObservableCollection<FactoryDTO>(db.Factories.ToList().Select(f => new FactoryDTO(f)));
                 FDLResults = new ObservableCollection<FDLResultDTO>(db.FDLResults.ToList().Select(r => new FDLResultDTO(r)));
-                FDLs = new ObservableCollectionEx<FDLEVM>(db.FDLs.ToList().Select(fdl => new FDLEVM(fdl)));
+                FDLs = new ObservableCollectionEx<FDLEVM>(db.FDLs.Where(f => f.Id.Substring(0, 4) == year).ToList().Select(f => new FDLEVM(f)));
             }
 
             MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, NewFDL);
@@ -294,7 +326,7 @@ namespace Great2.ViewModels
 
                         foreach (var fdl in fdlToUpdate)
                             fdl.Factory1 = factory;
-                        }
+                    }
                 })
             );
         }
@@ -311,7 +343,7 @@ namespace Great2.ViewModels
 
                         if (factory != null)
                             Factories.Remove(factory);
-                        }
+                    }
                 })
             );
         }
@@ -413,8 +445,8 @@ namespace Great2.ViewModels
 
                 if (dlg.ShowDialog() == true)
                     _fdlManager.SaveAs(fdl, dlg.FileName);
-                }
             }
+        }
 
         public void Compile(FDLEVM fdl)
         {
@@ -484,7 +516,7 @@ namespace Great2.ViewModels
         {
             if (SelectedFDL.Factory.HasValue)
                 OnFactoryLink?.Invoke(SelectedFDL.Factory.Value);
-            }
+        }
 
         public void ClearFDL()
         {
@@ -519,6 +551,19 @@ namespace Great2.ViewModels
 
             // update timesheets and notifications
             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
+        }
+
+        private void UpdateFDLList()
+        {
+            FDLs.Clear();
+            string yr = CurrentYear.ToString();
+            using (DBArchive db = new DBArchive())
+            {
+                (from f in db.FDLs
+                 let year = f.Id.Substring(0, 4)
+                 where year == yr
+                 select f).ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
+            }
         }
     }
 }
