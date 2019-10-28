@@ -273,6 +273,7 @@
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
+    <Compile Include="Utils\MaterialColors.cs" />
     <Compile Include="Utils\MetroMessageBox.cs" />
     <Compile Include="Views\Dialogs\MetroMessageBoxView.xaml.cs">
       <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>

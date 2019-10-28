@@ -5,11 +5,13 @@ using Great.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Xceed.Wpf.Toolkit;
 
 namespace Great.ViewModels
 {
@@ -67,9 +69,16 @@ namespace Great.ViewModels
         {
             get => _AskOrderRecipients;
             set => Set(ref _AskOrderRecipients, value);
-        }        
+        }
 
         #region Appeareance
+        private ObservableCollection<ColorItem> _AvailableColors;
+        public ObservableCollection<ColorItem> AvailableColors
+        {
+            get => _AvailableColors;
+            set => Set(ref _AvailableColors, value);
+        }
+
         private ETheme _Skin;
         public ETheme Theme
         {
@@ -242,6 +251,8 @@ namespace Great.ViewModels
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
             LoadDataCommand = new RelayCommand(LoadData);
             ApplyChangesCommand = new RelayCommand(ApplyChanges);
+
+            AvailableColors = new ObservableCollection<ColorItem>(MaterialColors.Colors.Select(c => new ColorItem(ColorConverter.ConvertFromString(c.Value) as Color?, c.Key)));
         }
 
         public void SelectFolder()
