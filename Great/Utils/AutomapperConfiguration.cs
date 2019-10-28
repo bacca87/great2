@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.ViewModels.Database;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.ViewModels.Database;
 
-namespace Great
+namespace Great2
 {
     public static class Global
     {

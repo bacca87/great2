@@ -1,13 +1,13 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Models;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Utils;
-using Great.Utils.Extensions;
-using Great.Utils.Messages;
-using Great.ViewModels.Database;
+using Great2.Models;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Utils;
+using Great2.Utils.Extensions;
+using Great2.Utils.Messages;
+using Great2.ViewModels.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,11 +15,22 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     public class TimesheetsViewModel : ViewModelBase
     {
         #region Properties
+        private bool _isAddNewEnabled = false;
+        public bool IsAddNewEnabled
+        {
+            get => _isAddNewEnabled;
+            set
+            {
+                Set(ref _isAddNewEnabled, value);
+                CreateNewTimesheetCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         private bool _isInputEnabled = false;
         public bool IsInputEnabled
         {
@@ -27,9 +38,7 @@ namespace Great.ViewModels
             set
             {
                 Set(ref _isInputEnabled, value);
-
                 SaveTimesheetCommand.RaiseCanExecuteChanged();
-                ClearTimesheetCommand.RaiseCanExecuteChanged();
                 DeleteTimesheetCommand.RaiseCanExecuteChanged();
             }
         }
@@ -79,24 +88,23 @@ namespace Great.ViewModels
             {
                 Set(ref _selectedWorkingDay, value);
 
+                UpdateInputsEnablement();
+
                 if (_selectedWorkingDay != null)
                 {
-                    SelectedTimesheet = _selectedWorkingDay.Timesheets?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
+                    SelectedTimesheet = _selectedWorkingDay?.Timesheets?.FirstOrDefault();
                     CurrentMonth = _selectedWorkingDay.Date.Month;
-                    IsInputEnabled = _selectedWorkingDay.EType != EDayType.SickLeave && _selectedWorkingDay.EType != EDayType.VacationDay;
 
                     using (DBArchive db = new DBArchive())
                     {
                         string year = CurrentYear.ToString(); // hack for query
                         FDLs = new ObservableCollection<FDLEVM>(db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList().Select(fdl => new FDLEVM(fdl)));
                     }
+
                     RaisePropertyChanged(nameof(FDLs));
 
-                    SelectedFDL = FDLs.SingleOrDefault(f => f.Id == SelectedTimesheet.FDL);
-                }
-                else
-                {
-                    IsInputEnabled = false;
+                    if (SelectedTimesheet != null)
+                        SelectedFDL = FDLs.SingleOrDefault(f => f.Id == SelectedTimesheet.FDL);
                 }
             }
         }
@@ -107,11 +115,8 @@ namespace Great.ViewModels
             get => _selectedTimesheet;
             set
             {
-                if (value == null)
-                    value = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
-
                 Set(ref _selectedTimesheet, value);
-                DeleteTimesheetCommand.RaiseCanExecuteChanged();
+                UpdateInputsEnablement();
             }
         }
 
@@ -145,7 +150,7 @@ namespace Great.ViewModels
         public RelayCommand<DayEVM> CutDayCommand { get; set; }
         public RelayCommand<DayEVM> PasteDayCommand { get; set; }
 
-        public RelayCommand ClearTimesheetCommand { get; set; }
+        public RelayCommand CreateNewTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> SaveTimesheetCommand { get; set; }
         public RelayCommand<TimesheetEVM> DeleteTimesheetCommand { get; set; }
         public RelayCommand<EventEVM> ShowEventPageCommand { get; set; }
@@ -179,7 +184,7 @@ namespace Great.ViewModels
             PageLoadedCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { });
 
-            ClearTimesheetCommand = new RelayCommand(ClearTimesheet, () => { return IsInputEnabled; });
+            CreateNewTimesheetCommand = new RelayCommand(CreateNewTimesheet, () => { return IsAddNewEnabled; });
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
@@ -215,7 +220,12 @@ namespace Great.ViewModels
             WorkingDays = days;
         }
 
-
+        private void UpdateInputsEnablement()
+        {
+            IsAddNewEnabled = SelectedWorkingDay != null && (SelectedWorkingDay.EType == EDayType.WorkDay || SelectedWorkingDay.EType == EDayType.HomeWorkDay);
+            IsInputEnabled = IsAddNewEnabled && SelectedTimesheet != null;
+        }
+        
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
         {
             int days = DateTime.DaysInMonth(year, month);
@@ -242,7 +252,12 @@ namespace Great.ViewModels
             OnSelectToday?.Invoke(SelectedWorkingDay);
         }
 
-        public void ClearTimesheet() => SelectedTimesheet = null;
+        public void CreateNewTimesheet()
+        {
+            SelectedTimesheet = null; // hack for clear the datagrid selection
+            SelectedTimesheet = SelectedWorkingDay != null ? new TimesheetEVM() { Timestamp = SelectedWorkingDay.Timestamp } : null;
+        }
+
         public void SetVacationDay(DayEVM day) => SetDayType(day, EDayType.VacationDay);
         public void SetSickLeave(DayEVM day) => SetDayType(day, EDayType.SickLeave);
         public void SetWorkDay(DayEVM day) => SetDayType(day, EDayType.WorkDay);
@@ -286,8 +301,9 @@ namespace Great.ViewModels
                 Messenger.Default.Send(new ItemChangedMessage<DayEVM>(this, day));
             }
 
-            IsInputEnabled = day.EType != EDayType.SickLeave && day.EType != EDayType.VacationDay && day.EType != EDayType.SpecialLeave;
+            UpdateInputsEnablement();
         }
+
         public void CopyDay(DayEVM day)
         {
             if (day == null)
@@ -380,21 +396,29 @@ namespace Great.ViewModels
             if (timesheet == null)
                 return;
 
-            if (!timesheet.IsValid)
+            if (!timesheet.IsValid && timesheet.TotalTime.HasValue)
             {
-                MetroMessageBox.Show("Cannot save/edit the Timesheet. It must have a FDL connected or valid time periods", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show("Cannot save the Timesheet, invalid time period!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
+            else if(!timesheet.IsValid)
+            {
+                MetroMessageBox.Show("Cannot save the Timesheet, empty timesheets are allowed only if an FDL or a Note is assigned!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
             {
                 MetroMessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
             else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))
             {
                 MetroMessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            else if (SelectedFDL != null && SelectedWorkingDay.Timesheets.Any(t => t.FDL != string.Empty && t.FDL == SelectedFDL.Id))
+            {
+                MetroMessageBox.Show("The selected FDL is already assigned to another timesheet!", "Invalid FDL", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Great
+namespace Great2
 {
     public class WaitCursor : IDisposable
     {

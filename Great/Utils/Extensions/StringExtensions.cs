@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Great.Utils.Extensions
+namespace Great2.Utils.Extensions
 {
     public static class StringExtensions
     {

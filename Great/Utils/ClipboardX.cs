@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public static class ClipboardX
     {

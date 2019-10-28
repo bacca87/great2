@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public class MRUCollection<T> : ObservableCollection<T>
     {

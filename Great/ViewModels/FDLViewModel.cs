@@ -2,13 +2,13 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using Great.Models;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Utils;
-using Great.Utils.Messages;
-using Great.ViewModels.Database;
-using Great.Views.Dialogs;
+using Great2.Models;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Utils;
+using Great2.Utils.Messages;
+using Great2.ViewModels.Database;
+using Great2.Views.Dialogs;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     public class FDLViewModel : ViewModelBase
     {
@@ -350,6 +350,8 @@ namespace Great.ViewModels
 
         public void SendToSAP(FDLEVM fdl)
         {
+            bool ShowDialog = false;
+
             if (!fdl.IsCompiled)
             {
                 MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it to SAP. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -365,22 +367,26 @@ namespace Great.ViewModels
             if (fdl.EStatus == EFDLStatus.Waiting &&
                 MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
-
+            
             using (DBArchive db = new DBArchive())
             {
                 if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
-                {
-                    OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
-                    OrderRecipientsView recipientsView = new OrderRecipientsView();
+                    ShowDialog = true;
+            }
 
-                    recipientsVM.Order = fdl.Order;
-                    recipientsView.ShowDialog();
-                }
+            if (ShowDialog && UserSettings.Email.Recipients.AskOrderRecipients)
+            {
+                OrderRecipientsViewModel recipientsVM = SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
+                OrderRecipientsView recipientsView = new OrderRecipientsView();
+
+                recipientsVM.Order = fdl.Order;
+                recipientsView.ShowDialog();
             }
 
             using (new WaitCursor())
             {
-                _fdlManager.SendToSAP(fdl);
+                if (_fdlManager.SendToSAP(fdl))
+                    fdl.EStatus = EFDLStatus.Waiting; // don't save the fdl status until the message is sent
             }
         }
 

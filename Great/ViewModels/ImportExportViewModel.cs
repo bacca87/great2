@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.

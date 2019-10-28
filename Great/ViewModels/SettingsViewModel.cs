@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Models;
-using Great.Models.Interfaces;
+using Great2.Models;
+using Great2.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
@@ -11,7 +11,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.
@@ -27,6 +27,18 @@ namespace Great.ViewModels
         {
             get => _Country;
             set => Set(ref _Country, value);
+        }
+
+        private bool _UseWindowsAuthentication;
+        public bool UseWindowsAuthentication
+        {
+            get => _UseWindowsAuthentication;
+            set
+            {
+                Set(ref _UseWindowsAuthentication, value);
+                EmailAddress = string.Empty;
+                EmailPassword = string.Empty;
+            }
         }
 
         private string _EmailAddress;
@@ -49,6 +61,13 @@ namespace Great.ViewModels
             get => _AutoAddFactories;
             set => Set(ref _AutoAddFactories, value);
         }
+
+        private bool _AskOrderRecipients;
+        public bool AskOrderRecipients
+        {
+            get => _AskOrderRecipients;
+            set => Set(ref _AskOrderRecipients, value);
+        }        
 
         #region Appeareance
         private ETheme _Skin;
@@ -173,6 +192,13 @@ namespace Great.ViewModels
             set => Set(ref _AutoAssignFactories, value);
         }
 
+        public string _NewOrderDefaultRecipients;
+        public string NewOrderDefaultRecipients
+        {
+            get => _NewOrderDefaultRecipients;
+            set => Set(ref _NewOrderDefaultRecipients, value);
+        }
+
         public string _FDLCancelRequestRecipients;
         public string FDLCancelRequestRecipients
         {
@@ -216,6 +242,9 @@ namespace Great.ViewModels
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
             LoadDataCommand = new RelayCommand(LoadData);
             ApplyChangesCommand = new RelayCommand(ApplyChanges);
+
+            NewOrderDefaultRecipients = string.Empty;
+            FDLCancelRequestRecipients = string.Empty;
         }
 
         public void SelectFolder()
@@ -258,19 +287,27 @@ namespace Great.ViewModels
             Country = UserSettings.Localization.Country;
             DataDirectory = ApplicationSettings.Directories.Data;
 
+            UseWindowsAuthentication = UserSettings.Email.UseDefaultCredentials;
+
             EmailAddress = UserSettings.Email.EmailAddress;
             EmailPassword = UserSettings.Email.EmailPassword;
 
             AutoAddFactories = UserSettings.Advanced.AutoAddFactories;
             AutoAssignFactories = UserSettings.Advanced.AutoAssignFactories;
 
+            AskOrderRecipients = UserSettings.Email.Recipients.AskOrderRecipients;
+                        
+            if (UserSettings.Email.Recipients.NewOrderDefaults != null)
+            {
+                foreach (string address in UserSettings.Email.Recipients.NewOrderDefaults)
+                    NewOrderDefaultRecipients += NewOrderDefaultRecipients == string.Empty ? address : "; " + address;
+            }
+                        
             if (UserSettings.Email.Recipients.FDLCancelRequest != null)
             {
-                FDLCancelRequestRecipients = string.Empty;
-
                 foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                     FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
-                }
+            }
 
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;
@@ -298,6 +335,8 @@ namespace Great.ViewModels
             {
                 UserSettings.Localization.Country = Country;
 
+                UseWindowsAuthentication = UserSettings.Email.UseDefaultCredentials;
+
                 if (UserSettings.Email.EmailAddress != EmailAddress || UserSettings.Email.EmailPassword != EmailPassword)
                 {
                     UserSettings.Email.EmailAddress = EmailAddress;
@@ -310,14 +349,15 @@ namespace Great.ViewModels
                 UserSettings.Advanced.AutoAddFactories = AutoAddFactories;
                 UserSettings.Advanced.AutoAssignFactories = AutoAssignFactories;
 
-                StringCollection recipients = new StringCollection();
-                string[] addresses = FDLCancelRequestRecipients?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < addresses?.Length; i++)
-                {
-                    recipients.Add(addresses[i].Trim());
-                }
+                UserSettings.Email.Recipients.AskOrderRecipients = AskOrderRecipients;
 
-                UserSettings.Email.Recipients.FDLCancelRequest = recipients;
+                StringCollection OrderRecipients = new StringCollection();
+                OrderRecipients.AddRange(NewOrderDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                UserSettings.Email.Recipients.NewOrderDefaults = OrderRecipients;
+
+                StringCollection CancellationRecipients = new StringCollection();
+                CancellationRecipients.AddRange(FDLCancelRequestRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
 
                 UserSettings.Themes.Theme = Theme;
                 UserSettings.Themes.AccentColor = AccentColor;

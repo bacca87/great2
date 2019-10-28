@@ -1,10 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Models.Interfaces;
-using Great.Utils.Extensions;
-using Great.Utils.Messages;
-using Great.ViewModels.Database;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Models.Interfaces;
+using Great2.Utils.Extensions;
+using Great2.Utils.Messages;
+using Great2.ViewModels.Database;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Forms.Xfa;
@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Great.Models
+namespace Great2.Models
 {
     public class FDLManager
     {
@@ -1064,7 +1064,9 @@ namespace Great.Models
                 message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
             }
 
-            return SendMessage(message, file);
+            message.Attachments.Add(file.FilePath);
+
+            return exchange.SendEmail(message);
         }
 
         public bool SendTo(string address, IFDLFile file)
@@ -1087,24 +1089,9 @@ namespace Great.Models
             }
 
             message.ToRecipients.Add(address);
-
-            return SendMessage(message, file);
-        }
-
-        private bool SendMessage(EmailMessageDTO message, IFDLFile file)
-        {
-            if (file == null)
-                return false;
-
-            // removed because sap accept only pdf compiled with adobe library
-            //Compile(file, file.FilePath);
-
-            message.Attachments.Clear();
             message.Attachments.Add(file.FilePath);
 
-            exchange.SendEmail(message);
-
-            return true;
+            return exchange.SendEmail(message);
         }
 
         public bool SendCancellationRequest(FDLEVM fdl)
@@ -1128,9 +1115,7 @@ namespace Great.Models
             foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                 message.ToRecipients.Add(address);
 
-            exchange.SendEmail(message);
-
-            return true;
+            return exchange.SendEmail(message);
         }
 
         public bool SaveAs(IFDLFile file, string filePath)

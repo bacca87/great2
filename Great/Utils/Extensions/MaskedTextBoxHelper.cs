@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 
-namespace Great.Utils.Extensions
+namespace Great2.Utils.Extensions
 {
     public static class MaskedTextBoxHelper
     {

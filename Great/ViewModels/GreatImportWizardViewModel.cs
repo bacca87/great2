@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Utils;
+using Great2.Utils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using System;
@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.

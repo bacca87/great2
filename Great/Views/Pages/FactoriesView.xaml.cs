@@ -1,10 +1,10 @@
 ﻿using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
-using Great.Controls;
-using Great.Models;
-using Great.ViewModels;
-using Great.ViewModels.Database;
+using Great2.Controls;
+using Great2.Models;
+using Great2.ViewModels;
+using Great2.ViewModels.Database;
 using Nager.Date;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,7 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Great.Views
+namespace Great2.Views
 {
     /// <summary>
     /// Interaction logic for FactoriesManagerPage.xaml

@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace Great
+namespace Great2
 {
     public sealed class MetroMessageBox
     {

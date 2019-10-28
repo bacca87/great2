@@ -1,4 +1,4 @@
-﻿namespace Great.Models
+﻿namespace Great2.Models
 {
     public enum EEventStatus
     {

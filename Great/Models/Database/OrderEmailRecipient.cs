@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Great.Models.Database
+namespace Great2.Models.Database
 {
     [Table("OrderEmailRecipient")]
     public partial class OrderEmailRecipient

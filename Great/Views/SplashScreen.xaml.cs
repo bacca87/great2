@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Great.Views
+namespace Great2.Views
 {
     /// <summary>
     /// Interaction logic for SplashScreen.xaml

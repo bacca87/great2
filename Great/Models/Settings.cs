@@ -1,5 +1,5 @@
-﻿using Great.Properties;
-using Great.Utils.Extensions;
+﻿using Great2.Properties;
+using Great2.Utils.Extensions;
 using Nager.Date;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Great.Models
+namespace Great2.Models
 {
     #region Application Settings
     public static class ApplicationSettings
@@ -1067,6 +1067,16 @@ namespace Great.Models
         #region Email
         public static class Email
         {
+            public static bool UseDefaultCredentials
+            {
+                get => Settings.Default.UseDefaultCredentials;
+                set
+                {
+                    Settings.Default.UseDefaultCredentials = value;
+                    Settings.Default.Save();
+                }
+            }
+
             public static string EmailAddress
             {
                 get => Settings.Default.EmailAddress;
@@ -1076,6 +1086,7 @@ namespace Great.Models
                     Settings.Default.Save();
                 }
             }
+
             public static string Username => Settings.Default.EmailAddress.Split('@')[0];
 
             public static string EmailPassword
@@ -1094,12 +1105,32 @@ namespace Great.Models
 
             public static class Recipients
             {
+                public static bool AskOrderRecipients
+                {
+                    get => Settings.Default.AskOrderRecipients;
+                    set
+                    {
+                        Settings.Default.AskOrderRecipients = value;
+                        Settings.Default.Save();
+                    }
+                }
+
                 public static StringCollection MRU
                 {
                     get => Settings.Default.MRUEmailRecipients;
                     set
                     {
                         Settings.Default.MRUEmailRecipients = value;
+                        Settings.Default.Save();
+                    }
+                }
+
+                public static StringCollection NewOrderDefaults
+                {
+                    get => Settings.Default.NewOrderDefaultRecipients;
+                    set
+                    {
+                        Settings.Default.NewOrderDefaultRecipients = value;
                         Settings.Default.Save();
                     }
                 }

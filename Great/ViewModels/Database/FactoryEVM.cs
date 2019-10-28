@@ -1,12 +1,11 @@
-﻿using Great.Models.Database;
-using Great.Models.DTO;
-using Nager.Date;
+﻿using Great2.Models.Database;
+using Great2.Models.DTO;
 using System;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
-namespace Great.ViewModels.Database
+namespace Great2.ViewModels.Database
 {
     public class FactoryEVM : EntityViewModelBase, IDataErrorInfo
     {

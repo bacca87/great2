@@ -1,9 +1,9 @@
 ﻿
-using Great.Models.Database;
-using Great.Models.DTO;
+using Great2.Models.Database;
+using Great2.Models.DTO;
 using System.Data.Entity.Migrations;
 
-namespace Great.ViewModels.Database
+namespace Great2.ViewModels.Database
 {
     public class ExpenseEVM : EntityViewModelBase
     {

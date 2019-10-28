@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Great.Utils.AttachedProperties
+namespace Great2.Utils.AttachedProperties
 {
     public static class NotificationHelper
     {

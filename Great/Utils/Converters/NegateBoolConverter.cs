@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 
-namespace Great.Utils.Converters
+namespace Great2.Utils.Converters
 {
     [ValueConversion(typeof(bool), typeof(bool))]
     public class NegateBoolConverter : IValueConverter

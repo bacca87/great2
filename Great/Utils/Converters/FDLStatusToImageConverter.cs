@@ -3,7 +3,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Great.Utils.Converters
+namespace Great2.Utils.Converters
 {
     public class FDLStatusToImageConverter : IValueConverter
     {
