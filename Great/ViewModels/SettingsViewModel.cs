@@ -5,11 +5,13 @@ using Great2.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Xceed.Wpf.Toolkit;
 
 namespace Great2.ViewModels
 {

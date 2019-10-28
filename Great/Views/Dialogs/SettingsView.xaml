@@ -154,15 +154,13 @@
                                 SelectedValue="{Binding Theme, Mode=TwoWay}" 
                                 FontSize="15"
                                 Width="100"/>
-
                             <TextBlock Text="Accent: " VerticalAlignment="Center" Margin="0,0,5,0"/>
                             <ComboBox 
                                 ItemsSource="{Binding Source={StaticResource enumAcents}}" 
                                 SelectedValue="{Binding AccentColor, Mode=TwoWay}" 
                                 FontSize="15"
                                 Width="100"/>
-                        </StackPanel>
-                        
+                        </StackPanel>                        
                     </GroupBox>
                     <GroupBox Grid.Row="1" Grid.Column="0" Header="Colors" HorizontalAlignment="Left" Margin="0,5">
                         <Grid>
@@ -180,40 +178,35 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
+                            
                             <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsCustomSaturdayColorUsed}"  />
                             <TextBlock Grid.Row="0" Grid.Column="1">Saturday</TextBlock>
-                            <xctk:ColorPicker Grid.Row="0" Grid.Column="2" SelectedColor="{Binding CustomSaturdayColor}" IsEnabled="{Binding IsCustomSaturdayColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="0" Grid.Column="2" SelectedColor="{Binding CustomSaturdayColor}" IsEnabled="{Binding IsCustomSaturdayColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False"/>
 
                             <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsCustomSundayColorUsed}"  />
                             <TextBlock Grid.Row="1" Grid.Column="1">Sunday</TextBlock>
-                            <xctk:ColorPicker Grid.Row="1" Grid.Column="2" SelectedColor="{Binding CustomSundayColor}" IsEnabled="{Binding IsCustomSundayColorUsed}"/>
+                            <xctk:ColorPicker Grid.Row="1" Grid.Column="2" SelectedColor="{Binding CustomSundayColor}" IsEnabled="{Binding IsCustomSundayColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False"/>
 
                             <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding IsCustomHolidayColorUsed}"  />
                             <TextBlock Grid.Row="2" Grid.Column="1">Holiday</TextBlock>
-                            <xctk:ColorPicker Grid.Row="2" Grid.Column="2" SelectedColor="{Binding CustomHolidayColor}" IsEnabled="{Binding IsCustomHolidayColorUsed}" />
-
+                            <xctk:ColorPicker Grid.Row="2" Grid.Column="2" SelectedColor="{Binding CustomHolidayColor}" IsEnabled="{Binding IsCustomHolidayColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False" />
 
                             <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding IsCustomVacationColorUsed}"  />
                             <TextBlock Grid.Row="3" Grid.Column="1">Vacation</TextBlock>
-                            <xctk:ColorPicker Grid.Row="3" Grid.Column="2" SelectedColor="{Binding CustomVacationColor}" IsEnabled="{Binding IsCustomVacationColorUsed}"/>
-
+                            <xctk:ColorPicker Grid.Row="3" Grid.Column="2" SelectedColor="{Binding CustomVacationColor}" IsEnabled="{Binding IsCustomVacationColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False"/>
 
                             <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding IsCustomSickColorUsed}"  />
                             <TextBlock Grid.Row="4" Grid.Column="1">Sick</TextBlock>
-                            <xctk:ColorPicker Grid.Row="4" Grid.Column="2" SelectedColor="{Binding CustomSickColor}" IsEnabled="{Binding IsCustomSickColorUsed}"/>
-
+                            <xctk:ColorPicker Grid.Row="4" Grid.Column="2" SelectedColor="{Binding CustomSickColor}" IsEnabled="{Binding IsCustomSickColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False"/>
 
                             <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding IsCustomHomeworkColorUsed}"  />
                             <TextBlock Grid.Row="5" Grid.Column="1">Homeworking</TextBlock>
-                            <xctk:ColorPicker Grid.Row="5" Grid.Column="2" SelectedColor="{Binding CustomHomeworkColor}" IsEnabled="{Binding IsCustomHomeworkColorUsed}"/>
-
+                            <xctk:ColorPicker Grid.Row="5" Grid.Column="2" SelectedColor="{Binding CustomHomeworkColor}" IsEnabled="{Binding IsCustomHomeworkColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False"/>
 
                             <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding IsCustomSpecialLeaveColorUsed}"  />
                             <TextBlock Grid.Row="6" Grid.Column="1">Special Leave</TextBlock>
-                            <xctk:ColorPicker Grid.Row="6" Grid.Column="2" SelectedColor="{Binding CustomSpecialLeaveColor}" IsEnabled="{Binding IsCustomSpecialLeaveColorUsed}"/>
-
+                            <xctk:ColorPicker Grid.Row="6" Grid.Column="2" SelectedColor="{Binding CustomSpecialLeaveColor}" IsEnabled="{Binding IsCustomSpecialLeaveColorUsed}" AvailableColors="{Binding AvailableColors}" MaxDropDownWidth="320" ShowStandardColors="False"/>
                         </Grid>
-
                     </GroupBox>
                 </Grid>
             </TabItem>
