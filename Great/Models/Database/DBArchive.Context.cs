@@ -10,7 +10,6 @@ namespace Great2.Models.Database
         }
 
         public virtual DbSet<Car> Cars { get; set; }
-        public virtual DbSet<CarRentalCompany> CarRentalCompanies { get; set; }
         public virtual DbSet<CarRentalHistory> CarRentalHistories { get; set; }
         public virtual DbSet<Currency> Currencies { get; set; }
         public virtual DbSet<Day> Days { get; set; }

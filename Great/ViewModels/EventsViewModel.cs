@@ -273,6 +273,7 @@ namespace Great2.ViewModels
                  if (item.Content != null)
                  {
                      EventEVM v = Events.SingleOrDefault(x => x.Id == item.Content.Id);
+                     if (v == null) return;
 
                      //if user change the event do not update the gui!
                      if (!v.IsChanged)

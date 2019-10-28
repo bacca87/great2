@@ -284,7 +284,6 @@
       <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Database\Car.cs" />
-    <Compile Include="Models\Database\CarRentalCompany.cs" />
     <Compile Include="Models\Database\CarRentalHistory.cs" />
     <Compile Include="Models\Database\DayEvent.cs" />
     <Compile Include="Models\Database\Currency.cs" />
@@ -305,7 +304,6 @@
     <Compile Include="Models\Database\Timesheet.cs" />
     <Compile Include="Models\Database\TransferType.cs" />
     <Compile Include="Models\DTO\CarDTO.cs" />
-    <Compile Include="Models\DTO\CarRentalCompanyDTO.cs" />
     <Compile Include="Models\DTO\CurrencyDTO.cs" />
     <Compile Include="Models\DTO\DayTypeDTO.cs" />
     <Compile Include="Models\DTO\DayDTO.cs" />

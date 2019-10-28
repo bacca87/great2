@@ -41,6 +41,7 @@ namespace Great2.Utils
         private DataTable dtHours = new DataTable();
         private DataTable dtPlants = new DataTable();
         private DataTable dtCars = new DataTable();
+        private DataTable dtCarCompanies = new DataTable();
         private DataTable dtExpenseReview = new DataTable();
         private DataTable dtConfiguration = new DataTable();
         private DataTable dtSentFiles = new DataTable();
@@ -180,6 +181,11 @@ namespace Great2.Utils
                 adapter.Fill(dtCars);
                 Message("Car rental loaded");
 
+                command = new OleDbCommand("SELECT * FROM dbt_Nolo", connection);
+                adapter = new OleDbDataAdapter(command);
+                adapter.Fill(dtCarCompanies);
+                Message("Car rental Companies loaded");
+
                 command = new OleDbCommand("SELECT * FROM dbt_Stabilimenti", connection);
                 adapter = new OleDbDataAdapter(command);
                 adapter.Fill(dtPlants);
@@ -222,6 +228,7 @@ namespace Great2.Utils
 
                     //Get enumerable rows fron datatable
                     IEnumerable<DataRow> collection = dtCars.Rows.Cast<DataRow>();
+                    IEnumerable<DataRow> carCompanies = dtCarCompanies.Rows.Cast<DataRow>();
 
                     var cars = collection.GroupBy(c => c.Field<string>("dbf_Targa")).Select(c => c.First());
 
@@ -238,7 +245,7 @@ namespace Great2.Utils
                             car.LicensePlate = r.Field<string>("dbf_Targa").Trim();
                             car.Brand = r.Field<string>("dbf_Marca").Trim();
                             car.Model = r.Field<string>("dbf_Modello").Trim();
-                            car.CarRentalCompany = r.Field<short>("dbf_Nolo");
+                            car.CarRentalCompany = carCompanies.SingleOrDefault(cc => cc.Field<int>("Dbf_Index") == r.Field<int>("Dbf_Nolo")).Field<string>("Dbf_Descrizione");
 
                             db.Cars.AddOrUpdate(x => x.LicensePlate, car);
                             db.SaveChanges();

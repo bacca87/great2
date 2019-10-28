@@ -198,11 +198,15 @@ namespace Great2.ViewModels
         }
         private void OnEventChanged(ItemChangedMessage<EventEVM> ev)
         {
-            if (ev.Content.EStatus == Models.EEventStatus.Accepted)
-                ToastNotificationHelper.SendToastNotification("Event Approved", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            using (var db = new DBArchive())
+            {
 
-            else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
-                ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                if (ev.Content.EStatus == Models.EEventStatus.Accepted)
+                    ToastNotificationHelper.SendToastNotification("Event Approved", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+
+                else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
+                    ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            }
 
 
         }

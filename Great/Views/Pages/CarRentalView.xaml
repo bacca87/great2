@@ -167,20 +167,11 @@
                         Text="{Binding SelectedCar.Model,ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=LostFocus}"/>
                     <TextBlock  VerticalAlignment="Center" Grid.Row="6">Rent Company</TextBlock>
                     <ComboBox Grid.Row="7"
-                                  SelectedItem="{Binding SelectedCar.CarRentalCompany1,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
-                                  SelectedValue="{Binding SelectedCar.CarRentalCompany}" 
-                                  IsEnabled="{Binding IsInputEnabled}" 
-                                  DisplayMemberPath="Name" 
-                                  SelectedValuePath="Id" >
-                        <ComboBox.Resources>
-                            <CollectionViewSource x:Key="Items" Source="{Binding RentalCompanies}" />
-                        </ComboBox.Resources>
-                        <ComboBox.ItemsSource>
-                            <CompositeCollection>
-                                <m:CarRentalCompanyDTO/>
-                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                            </CompositeCollection>
-                        </ComboBox.ItemsSource>
+                              IsEditable="True"
+                              IsTextSearchEnabled="True"
+                              ItemsSource="{Binding RentalCompanies}"
+                              Text="{Binding SelectedCar.CarRentalCompany,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                              IsEnabled="{Binding IsInputEnabled}">
                     </ComboBox>
                     <TextBlock VerticalAlignment="Center" Grid.Row="8">Initial Km</TextBlock>
                     <TextBox Grid.Row="9"  bhv:SelectAllFocusBehavior.Enable="True" Text="{Binding SelectedRent.StartKm,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  IsEnabled="{Binding IsInputEnabled}"/>

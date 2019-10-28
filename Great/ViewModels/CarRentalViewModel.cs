@@ -124,7 +124,7 @@ namespace Great2.ViewModels
             get => _Cars;
             set => Set(ref _Cars, value);
         }
-        public ObservableCollection<CarRentalCompanyDTO> RentalCompanies { get; set; }
+        public ObservableCollection<string> RentalCompanies { get; set; }
 
         private CarRentalHistoryEVM _selectedRent;
         public CarRentalHistoryEVM SelectedRent
@@ -161,7 +161,17 @@ namespace Great2.ViewModels
             {
                 Set(ref _LicensePlate, value);
                 var car = Cars.SingleOrDefault(x => x.LicensePlate == _LicensePlate);
-                SelectedCar = car;
+                if (car != null)
+                {
+                    car.LicensePlate = value;
+                    SelectedCar = car;
+                }
+                else
+                {
+                    if (value != null)
+                    SelectedCar.LicensePlate = value;
+                }
+                
             }
         }
 
@@ -251,7 +261,7 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 Cars = new ObservableCollectionEx<CarEVM>(db.Cars.ToList().Select(c => new CarEVM(c)));
-                RentalCompanies = new ObservableCollection<CarRentalCompanyDTO>(db.CarRentalCompanies.ToList().Select(c => new CarRentalCompanyDTO(c)));
+                RentalCompanies = new ObservableCollection<string>(db.Cars.ToList().Select(c => c.CarRentalCompany).Distinct());
 
                 var startLoc = db.CarRentalHistories.Select(x => x.StartLocation).Distinct();
                 var endLoc = db.CarRentalHistories.Select(x => x.EndLocation).Distinct();
@@ -382,6 +392,9 @@ namespace Great2.ViewModels
 
             if (Locations.SingleOrDefault(x => x == rc.StartLocation) == null)
                 Locations.Add(rc.StartLocation);
+
+            if (RentalCompanies.SingleOrDefault(x => x == rc.Car1.CarRentalCompany.Trim()) == null)
+                RentalCompanies.Add(rc.Car1.CarRentalCompany.Trim());
 
             if (!String.IsNullOrEmpty(rc.EndLocation))
             {
