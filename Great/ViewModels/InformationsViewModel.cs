@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     public class InformationsViewModel : ViewModelBase
     {

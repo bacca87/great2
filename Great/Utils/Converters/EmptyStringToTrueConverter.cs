@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Great.Utils.Converters
+namespace Great2.Utils.Converters
 {
     public class EmptyStringToTrueConverter : IValueConverter
     {

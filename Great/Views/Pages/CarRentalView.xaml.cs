@@ -1,7 +1,7 @@
-﻿using Great.Utils.Extensions;
+﻿using Great2.Utils.Extensions;
 using System.Windows.Controls;
 
-namespace Great.Views.Pages
+namespace Great2.Views.Pages
 {
     /// <summary>
     /// Interaction logic for CarRental.xaml

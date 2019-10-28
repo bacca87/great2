@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Great.Utils.AttachedProperties
+namespace Great2.Utils.AttachedProperties
 {
     // Original article:
     // http://blog.functionalfun.net/2008/06/wpf-passwordbox-and-data-binding.html

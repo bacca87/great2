@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Great.Utils.Extensions
+namespace Great2.Utils.Extensions
 {
     public static class TimeSpanExtensions
     {

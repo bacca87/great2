@@ -1,12 +1,12 @@
-﻿using Great.Utils;
-using Great.Utils.Extensions;
-using Great.ViewModels;
-using Great.ViewModels.Database;
+﻿using Great2.Utils;
+using Great2.Utils.Extensions;
+using Great2.ViewModels;
+using Great2.ViewModels.Database;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 
-namespace Great.Views.Pages
+namespace Great2.Views.Pages
 {
     /// <summary>
     /// Interaction logic for Timesheet.xaml

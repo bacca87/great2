@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 
-namespace Great.Utils.Messages
+namespace Great2.Utils.Messages
 {
     public class NewItemMessage<T> : GenericMessage<T>
     {

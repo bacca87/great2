@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 
-namespace Great.Wizards.Views
+namespace Great2.Wizards.Views
 {
     /// <summary>
     /// Interaction logic for Window1.xaml

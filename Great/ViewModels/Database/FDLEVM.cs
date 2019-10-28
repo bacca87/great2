@@ -1,13 +1,13 @@
-﻿using Great.Models;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Models.Interfaces;
+﻿using Great2.Models;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Models.Interfaces;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
-namespace Great.ViewModels.Database
+namespace Great2.ViewModels.Database
 {
     public class FDLEVM : EntityViewModelBase, IFDLFile
     {

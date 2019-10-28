@@ -1,11 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Great.ViewModels;
+using Great2.ViewModels;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace Great.Views.Pages
+namespace Great2.Views.Pages
 {
     /// <summary>
     /// Interaction logic for FDLView.xaml

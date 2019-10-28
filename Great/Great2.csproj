@@ -8,7 +8,7 @@
     <ProjectGuid>{E8F50AF3-4251-4410-8CA8-6E1CAD6BA526}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Great</RootNamespace>
+    <RootNamespace>Great2</RootNamespace>
     <AssemblyName>Great2</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -53,6 +53,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Great2.ico</ApplicationIcon>

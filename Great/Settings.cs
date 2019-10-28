@@ -1,4 +1,4 @@
-﻿namespace Great.Properties
+﻿namespace Great2.Properties
 {
 
 

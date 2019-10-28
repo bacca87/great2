@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Great
+namespace Great2
 {
     /// <summary>
     /// Interaction logic for MetroMessageBox.xaml

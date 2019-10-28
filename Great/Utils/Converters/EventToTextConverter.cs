@@ -1,10 +1,10 @@
-﻿using Great.Models;
-using Great.ViewModels.Database;
+﻿using Great2.Models;
+using Great2.ViewModels.Database;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Great.Utils.Converters
+namespace Great2.Utils.Converters
 {
     class EventToTextConverter : IValueConverter
     {

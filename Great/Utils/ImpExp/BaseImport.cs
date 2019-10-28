@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public class BaseImport
     {

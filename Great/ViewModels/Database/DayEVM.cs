@@ -1,7 +1,7 @@
-﻿using Great.Models;
-using Great.Models.Database;
-using Great.Utils;
-using Great.Utils.Extensions;
+﻿using Great2.Models;
+using Great2.Models.Database;
+using Great2.Utils;
+using Great2.Utils.Extensions;
 using Itenso.TimePeriod;
 using Nager.Date;
 using Nager.Date.Model;
@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using Day = Great.Models.Database.Day;
+using Day = Great2.Models.Database.Day;
 
-namespace Great.ViewModels.Database
+namespace Great2.ViewModels.Database
 {
     public class DayEVM : EntityViewModelBase
     {

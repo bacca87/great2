@@ -1,7 +1,7 @@
-﻿using Great.ViewModels;
+﻿using Great2.ViewModels;
 using MahApps.Metro.Controls;
 
-namespace Great.Views.Dialogs
+namespace Great2.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml

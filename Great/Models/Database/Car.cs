@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Great.Models.Database
+namespace Great2.Models.Database
 {
     [Table("Car")]
     public partial class Car

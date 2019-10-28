@@ -1,11 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Great.Models;
-using Great.Models.Interfaces;
-using Great.Utils.AttachedProperties;
+using Great2.Models;
+using Great2.Models.Interfaces;
+using Great2.Utils.AttachedProperties;
 using MahApps.Metro.Controls;
 using System.Windows;
 
-namespace Great.Views.Dialogs
+namespace Great2.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for ExchangeLoginView.xaml

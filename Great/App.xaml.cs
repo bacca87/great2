@@ -1,7 +1,7 @@
-﻿using Great.Models;
-using Great.Models.Database;
-using Great.Properties;
-using Great.Views;
+﻿using Great2.Models;
+using Great2.Models.Database;
+using Great2.Properties;
+using Great2.Views;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using SplashScreen = Great.Views.SplashScreen;
+using SplashScreen = Great2.Views.SplashScreen;
 
-namespace Great
+namespace Great2
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -117,7 +117,7 @@ namespace Great
             Directory.CreateDirectory(dbDirectory);
 
             if (!File.Exists(dbFileName))
-                File.WriteAllBytes(dbFileName, Great.Properties.Resources.EmptyDatabaseFile);
+                File.WriteAllBytes(dbFileName, Great2.Properties.Resources.EmptyDatabaseFile);
             else
                 DoBackup(dbFileName, dbDirectory); //Backup before migrations
 

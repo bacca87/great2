@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public static class WPFTools
     {

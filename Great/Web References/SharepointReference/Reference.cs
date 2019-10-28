@@ -13,7 +13,7 @@
 // 
 #pragma warning disable 1591
 
-namespace Great.SharepointReference {
+namespace Great2.SharepointReference {
     using System;
     using System.Web.Services;
     using System.Diagnostics;
@@ -97,7 +97,7 @@ namespace Great.SharepointReference {
         
         /// <remarks/>
         public Lists() {
-            this.Url = "https://intranet.elettric80.it/_vti_bin/lists.asmx";
+            this.Url = global::Great2.Properties.Settings.Default.Great_SharepointReference_Lists;
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;

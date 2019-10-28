@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using Great.Models.DTO;
-using Great.Models.Interfaces;
-using Great.Utils.Messages;
+using Great2.Models.DTO;
+using Great2.Models.Interfaces;
+using Great2.Utils.Messages;
 using Microsoft.Exchange.WebServices.Data;
 using System;
 using System.Collections.Concurrent;
@@ -11,9 +11,9 @@ using System.DirectoryServices.AccountManagement;
 using System.Net;
 using System.Net.Mail;
 using System.Threading;
-using static Great.Models.ExchangeTraceListener;
+using static Great2.Models.ExchangeTraceListener;
 
-namespace Great.Models
+namespace Great2.Models
 {
     //La libreria Microsoft EWS (https://github.com/OfficeDev/ews-managed-api) è deprecata
     //il pacchetto Nuget non viene aggiornato e la versione su github è piu aggiornata e con parecchi bugs corretti, di conseguenza la libreria è stata ricompilata a mano e aggiunta alle reference del progetto.
@@ -566,9 +566,10 @@ namespace Great.Models
                 return null;
         }
 
-        public void SendEmail(EmailMessageDTO message)
+        public bool SendEmail(EmailMessageDTO message)
         {
             emailQueue.Enqueue(message);
+            return true;
         }
 
         public static bool CheckEmailAddress(string address, out string error)

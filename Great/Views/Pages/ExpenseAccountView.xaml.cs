@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
-namespace Great.Views.Pages
+namespace Great2.Views.Pages
 {
     /// <summary>
     /// Interaction logic for ExpenseAccount.xaml

@@ -1,5 +1,5 @@
 ﻿
-namespace Great.Models.Interfaces
+namespace Great2.Models.Interfaces
 {
     public interface IFDLFile
     {
