@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Great
+namespace Great2
 {
     public static class MaterialColors
     {
