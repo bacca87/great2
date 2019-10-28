@@ -1,16 +1,17 @@
 ﻿using GalaSoft.MvvmLight;
-using Great.Models.Database;
-using Great.Models.Interfaces;
-using Great.Utils.Messages;
-using Great.Utils;
-using Great.ViewModels.Database;
-using Great.Views.Dialogs;
+using Great2.Models.Database;
+using Great2.Models.Interfaces;
+using Great2.Utils.Messages;
+using Great2.Utils;
+using Great2.ViewModels.Database;
+using Great2.Views.Dialogs;
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Great2.Models.DTO;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.
@@ -127,6 +128,7 @@ namespace Great.ViewModels
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, OnEaChanged);
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, OnEventChanged);
             MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) { NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); } });
+            MessengerInstance.Register<ProviderEmailSentMessage<EmailMessageDTO>>(this, OnEmailSent);
 
             MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }
@@ -203,6 +205,10 @@ namespace Great.ViewModels
                 ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
 
 
+        }
+        private void OnEmailSent(ProviderEmailSentMessage<EmailMessageDTO> mex)
+        {
+            ToastNotificationHelper.SendToastNotification("Email Sent", mex.Content.Subject, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
 
     }

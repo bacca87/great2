@@ -1,12 +1,12 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Great.Models;
-using Great.Models.Database;
-using Great.Models.DTO;
-using Great.Utils;
-using Great.Utils.Extensions;
-using Great.Utils.Messages;
-using Great.ViewModels.Database;
+using Great2.Models;
+using Great2.Models.Database;
+using Great2.Models.DTO;
+using Great2.Utils;
+using Great2.Utils.Extensions;
+using Great2.Utils.Messages;
+using Great2.ViewModels.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +16,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 
-namespace Great.ViewModels
+namespace Great2.ViewModels
 {
     public class EventsViewModel : ViewModelBase
     {

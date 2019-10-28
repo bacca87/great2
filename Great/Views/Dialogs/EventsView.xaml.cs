@@ -1,8 +1,8 @@
-﻿using Great.Utils.Extensions;
-using Great.ViewModels;
+﻿using Great2.Utils.Extensions;
+using Great2.ViewModels;
 using MahApps.Metro.Controls;
 
-namespace Great.Views.Dialogs
+namespace Great2.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for EventsView.xaml

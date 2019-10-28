@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace Great.Utils
+namespace Great2.Utils
 {
     public static class ToastNotificationHelper
     {
