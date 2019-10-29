@@ -6,6 +6,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -33,7 +34,7 @@ namespace Great2
             // Register AUMID, COM server, and activator
             DesktopNotificationManagerCompat.RegisterAumidAndComServer<Great2NotificationActivator>(ApplicationSettings.General.AUMID);
             DesktopNotificationManagerCompat.RegisterActivator<Great2NotificationActivator>();
-            
+
             // set the current thread culture to force the AutoUpdater.NET language in english
             Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
@@ -126,49 +127,61 @@ namespace Great2
             if (!File.Exists(dbFileName))
                 File.WriteAllBytes(dbFileName, Great2.Properties.Resources.EmptyDatabaseFile);
             else
-                DoBackup(dbFileName, dbDirectory); //Backup before migrations
+                BackupDatabase(dbFileName, dbDirectory); //Backup before migrations
 
             ApplyMigrations(); //Apply only if exist. Otherwise must be updated from installation
         }
 
         private void ApplyMigrations()
         {
-            using (DBArchive db = new DBArchive())
+            using (SQLiteConnection connection = new SQLiteConnection(ApplicationSettings.Database.ConnectionString))
             {
-                using (var transaction = db.Database.BeginTransaction())
+                connection.Open();
+
+                using (SQLiteTransaction tr = connection.BeginTransaction())
                 {
                     try
                     {
-                        var db_version = db.Database.SqlQuery<int>("PRAGMA user_version").First();
-
-                        foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                        using (SQLiteCommand cmd = connection.CreateCommand())
                         {
-                            if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
-                                continue;
+                            int user_version = 0;
 
-                            if (db_version >= scriptVersion)
-                                continue;
+                            cmd.CommandText = "PRAGMA user_version";
 
-                            db.Database.ExecuteSqlCommand(File.ReadAllText(f));
-                            db.SaveChanges();
+                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                    user_version = Convert.ToInt32(reader.GetValue(0));
+                            }
+
+                            foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                            {
+                                if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
+                                    continue;
+
+                                if (user_version >= scriptVersion)
+                                    continue;
+
+                                cmd.CommandText = File.ReadAllText(f);
+                                cmd.ExecuteNonQuery();
+                            }
                         }
-                        transaction.Commit();
+
+                        tr.Commit();
                     }
                     catch (Exception ex)
                     {
-                        transaction.Rollback();
+                        tr.Rollback();
 
                         MetroMessageBox.Show($"Error upgrading the database.\nException: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
                         Environment.Exit(2);
                     }
                 }
             }
         }
 
-        private void DoBackup(string dbFileName, string dbDirectory)
+        private void BackupDatabase(string dbFileName, string dbDirectory)
         {
-
             File.Copy(dbFileName, dbDirectory + "\\" + "archive_" + DateTime.Now.ToString("yyyyMMdd") + ".db3", true);
 
             // get files ordered by creationdatetime
