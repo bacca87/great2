@@ -26,7 +26,11 @@ namespace Great2
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
-
+            
+            // Register AUMID, COM server, and activator
+            DesktopNotificationManagerCompat.RegisterAumidAndComServer<Great2NotificationActivator>(ApplicationSettings.General.AUMID);
+            DesktopNotificationManagerCompat.RegisterActivator<Great2NotificationActivator>();
+            
             // set the current thread culture to force the AutoUpdater.NET language in english
             Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
