@@ -164,7 +164,6 @@ namespace Great2.ViewModels
                 NewFDLCount++;
 
             ToastNotificationHelper.SendToastNotification("FDL received", fdl.Content.Id,null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
-
         }
 
         private void OnFdlChanged(ItemChangedMessage<FDLEVM> fdl)

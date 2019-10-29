@@ -986,6 +986,8 @@ namespace Great2.Models
         #region General
         public static class General
         {
+            public const string AUMID = "MB2016.Great.2";
+
             public const int WaitForNextConnectionRetry = 10000;
             public const int WaitForNextEmailCheck = 1000;
             public const int WaitForNextEventCheck = 600000; //10 minutes

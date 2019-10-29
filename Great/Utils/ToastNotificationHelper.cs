@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
@@ -27,7 +23,13 @@ namespace Great2.Utils
                 var toastXml = new XmlDocument();
                 toastXml.LoadXml(xml);
                 var toast = new ToastNotification(toastXml);
-                ToastNotificationManager.CreateToastNotifier("Great").Show(toast);
+
+                toast.Failed += (o, args) => {
+                    //TODO: add logs
+                    var message = args.ErrorCode;
+                };
+
+                DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
             }
             catch (Exception ex){ }
         }
