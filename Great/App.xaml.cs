@@ -23,10 +23,13 @@ namespace Great2
     /// </summary>
     public partial class App : Application
     {
+        private Logger log = LogManager.GetCurrentClassLogger();
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
-            
+            AppDomain.CurrentDomain.UnhandledException += Great2_UnhandledException;
+
             // Register AUMID, COM server, and activator
             DesktopNotificationManagerCompat.RegisterAumidAndComServer<Great2NotificationActivator>(ApplicationSettings.General.AUMID);
             DesktopNotificationManagerCompat.RegisterActivator<Great2NotificationActivator>();
@@ -208,6 +211,13 @@ namespace Great2
             {
                 MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Great2_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception)e.ExceptionObject;      
+            log.Error(ex, "Great2_UnhandledException event");
+            log.Info("Is Terminating: {0}", e.IsTerminating);
         }
     }
 }
