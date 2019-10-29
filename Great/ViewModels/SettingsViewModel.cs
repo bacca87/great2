@@ -333,7 +333,7 @@ namespace Great2.ViewModels
             CustomSpecialLeaveColor = UserSettings.Themes.CustomSpecialLeaveColor.Color;
 
             IsCustomSaturdayColorUsed = UserSettings.Themes.IsCustomSaturdayColorUsed;
-            IsCustomSundayColorUsed = UserSettings.Themes.IsCustomSaturdayColorUsed;
+            IsCustomSundayColorUsed = UserSettings.Themes.IsCustomSundayColorUsed;
             IsCustomHolidayColorUsed = UserSettings.Themes.IsCustomHolidayColorUsed;
             IsCustomVacationColorUsed = UserSettings.Themes.IsCustomVacationColorUsed;
             IsCustomSickColorUsed = UserSettings.Themes.IsCustomSickColorUsed;
