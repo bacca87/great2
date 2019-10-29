@@ -8,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -278,13 +279,17 @@ namespace Great2.ViewModels
             dialog.ShowPlacesList = true;
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
                 DataDirectory = dialog.FileName;
-            }
         }
 
         private void MigrateData()
         {
+            if (Directory.GetDirectories(DataDirectory).Length != 0 || Directory.GetFiles(DataDirectory).Length != 0)
+            {
+                MetroMessageBox.Show("The selected folder is not empty! Operation cancelled.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }   
+
             if (MetroMessageBox.Show("Are you sure to migrate all the data in the new destination folder?\nThe application will be restarted in order to apply changes.", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
