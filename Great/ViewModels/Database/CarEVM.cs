@@ -43,9 +43,7 @@ namespace Great2.ViewModels.Database
         {
             get => _carRentalCompany;
             set => SetAndCheckChanged(ref _carRentalCompany, value);
-
         }
-
 
         private ObservableCollectionEx<CarRentalHistoryEVM> _carRentalHistories;
         public ObservableCollectionEx<CarRentalHistoryEVM> CarRentalHistories
@@ -55,7 +53,6 @@ namespace Great2.ViewModels.Database
         }
 
         #endregion
-
 
         #region Errors Validation
 
