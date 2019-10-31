@@ -268,23 +268,19 @@ namespace Great2.Models
                 try
                 {
                     ItemView itemView = new ItemView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly) };
+                    itemView.PropertySet.Add(ItemSchema.DateTimeReceived);
+                    itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Descending);                    
+
                     FolderView folderView = new FolderView(int.MaxValue) { PropertySet = new PropertySet(BasePropertySet.IdOnly), Traversal = FolderTraversal.Deep };
                     folderView.PropertySet.Add(FolderSchema.WellKnownFolderName);
 
-                    itemView.OrderBy.Add(ItemSchema.DateTimeReceived, SortDirection.Ascending);
+                    SearchFilter.IsEqualTo f1 = new SearchFilter.IsEqualTo(EmailMessageSchema.From, new EmailAddress(ApplicationSettings.EmailRecipients.FDLSystem));
+                    // In order to import FDL and EA files, the only way is to work around the "from" address check.
+                    // To do this we check if in the recipient fdl_chk is present and, at a later time, we will check if the sender is the FDL System
+                    SearchFilter.ContainsSubstring f2 = new SearchFilter.ContainsSubstring(ItemSchema.DisplayTo, "fdl_chk", ContainmentMode.Substring, ComparisonMode.IgnoreCase);
+                    SearchFilter.SearchFilterCollection compoundFilter = new SearchFilter.SearchFilterCollection(LogicalOperator.Or, f1, f2);
 
-                    string aqsQuery = $"from:(" +
-                        $"\"{ApplicationSettings.EmailRecipients.FDLSystem}\"" +
-                        $" OR \"{ApplicationSettings.EmailRecipients.FDL_CHK}\"" +
-                        $" OR \"{ApplicationSettings.EmailRecipients.SAP}\"" +
-                        $" OR \"fdl\"" +
-                        $" OR \"SAP MAIL\"" +
-                        $" OR \"Sistema FDL\"" +
-                        $" OR \"fdl_chk\"" +
-                        ")";
-
-                    // try to get last week messages (high priority)
-                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery + " received:>=lastweek", folderView, itemView))
+                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), compoundFilter, folderView, itemView))
                     {
                         if (exitToken.IsCancellationRequested) break;
 
@@ -292,19 +288,10 @@ namespace Great2.Models
                             continue;
 
                         EmailMessage message = EmailMessage.Bind(service, item.Id);
-                        NotifyNewMessage(message);
-                    }
 
-                    // then all the other messages
-                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), aqsQuery, folderView, itemView))
-                    {
-                        if (exitToken.IsCancellationRequested) break;
-
-                        if (!(item is EmailMessage))
-                            continue;
-
-                        EmailMessage message = EmailMessage.Bind(service, item.Id);
-                        NotifyNewMessage(message);
+                        // Double check in order to avoiding wrong fdl import (bugfix check the commment above) 
+                        if (message.From.Address.ToLower() == ApplicationSettings.EmailRecipients.FDLSystem.ToLower())
+                            NotifyNewMessage(message);
                     }
 
                     IsSynced = true;
@@ -387,7 +374,7 @@ namespace Great2.Models
             catch { }
         }
 
-        private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string query, FolderView folderView, ItemView itemView)
+        private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, SearchFilter filters, FolderView folderView, ItemView itemView)
         {
             FindFoldersResults foldersResults;
             FindItemsResults<Item> itemsResults;
@@ -419,7 +406,7 @@ namespace Great2.Models
                     {
                         if (exitToken.IsCancellationRequested) break;
 
-                        itemsResults = service.FindItems(folder.Id, query, itemView);
+                        itemsResults = service.FindItems(folder.Id, filters, itemView);
 
                         foreach (Item item in itemsResults)
                             yield return item;
@@ -442,7 +429,73 @@ namespace Great2.Models
             {
                 if (exitToken.IsCancellationRequested) break;
 
-                itemsResults = service.FindItems(root, query, itemView);
+                itemsResults = service.FindItems(root, filters, itemView);
+
+                foreach (Item item in itemsResults)
+                    yield return item;
+
+                if (itemsResults.MoreAvailable)
+                    itemView.Offset += itemView.PageSize;
+
+            } while (itemsResults.MoreAvailable);
+        }
+
+        private IEnumerable<Item> FindItemsInSubfolders(ExchangeService service, FolderId root, string AQSQuery, FolderView folderView, ItemView itemView)
+        {
+            FindFoldersResults foldersResults;
+            FindItemsResults<Item> itemsResults;
+
+            do
+            {
+                if (exitToken.IsCancellationRequested) break;
+
+                foldersResults = service.FindFolders(root, folderView);
+
+                foreach (Folder folder in foldersResults)
+                {
+                    if (exitToken.IsCancellationRequested) break;
+
+                    if (folder.WellKnownFolderName == WellKnownFolderName.DeletedItems ||
+                        folder.WellKnownFolderName == WellKnownFolderName.SentItems ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Drafts ||
+                        folder.WellKnownFolderName == WellKnownFolderName.JunkEmail ||
+                        folder.WellKnownFolderName == WellKnownFolderName.ConversationHistory ||
+                        folder.WellKnownFolderName == WellKnownFolderName.SearchFolders ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Calendar ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Contacts ||
+                        folder.WellKnownFolderName == WellKnownFolderName.QuickContacts ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Tasks ||
+                        folder.WellKnownFolderName == WellKnownFolderName.Contacts)
+                        continue;
+
+                    do
+                    {
+                        if (exitToken.IsCancellationRequested) break;
+
+                        itemsResults = service.FindItems(folder.Id, AQSQuery, itemView);
+
+                        foreach (Item item in itemsResults)
+                            yield return item;
+
+                        if (itemsResults.MoreAvailable)
+                            itemView.Offset += itemView.PageSize;
+
+                    } while (itemsResults.MoreAvailable);
+                }
+
+                if (foldersResults.MoreAvailable)
+                    folderView.Offset += folderView.PageSize;
+
+            } while (foldersResults.MoreAvailable);
+
+            // reset the offset for a new search in current folder
+            itemView.Offset = 0;
+
+            do
+            {
+                if (exitToken.IsCancellationRequested) break;
+
+                itemsResults = service.FindItems(root, AQSQuery, itemView);
 
                 foreach (Item item in itemsResults)
                     yield return item;
