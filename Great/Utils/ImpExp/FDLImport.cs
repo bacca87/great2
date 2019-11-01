@@ -56,6 +56,7 @@ namespace Great2.Utils
 
         public override void Cancel()
         {
+            ApplicationSettings.General.ImportInProgress = false;
             stopImport = true;
         }
 
