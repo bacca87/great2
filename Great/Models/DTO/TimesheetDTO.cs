@@ -23,7 +23,7 @@ namespace Great2.Models.DTO
 
         public TimesheetDTO(Timesheet timesheet)
         {
-            Global.Mapper.Map(timesheet, this);
+            Auto.Mapper.Map(timesheet, this);
         }
     }
 }

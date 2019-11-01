@@ -11,7 +11,7 @@ namespace Great2.Models.DTO
 
         public FDLStatusDTO(FDLStatus status)
         {
-            Global.Mapper.Map(status, this);
+            Auto.Mapper.Map(status, this);
         }
     }
 }

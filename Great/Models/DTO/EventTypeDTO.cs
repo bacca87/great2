@@ -11,7 +11,7 @@ namespace Great2.Models.DTO
 
         public EventTypeDTO(EventType ev)
         {
-            Global.Mapper.Map(ev, this);
+            Auto.Mapper.Map(ev, this);
         }
     }
 }

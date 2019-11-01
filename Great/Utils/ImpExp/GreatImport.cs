@@ -12,6 +12,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 
 namespace Great2.Utils
 {
@@ -61,6 +62,7 @@ namespace Great2.Utils
 
         public override void Start()
         {
+            ApplicationSettings.General.ImportInProgress = true;
             stopImport = false;
 
             StatusChanged("Import Started...");

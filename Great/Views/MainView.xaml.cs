@@ -40,12 +40,21 @@ namespace Great2.Views
 
         private void CheckForUpdatesTimer_Tick(object sender, EventArgs e)
         {
-            // check for updates            
-            AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress);
+            // check for updates
+            if (!ApplicationSettings.General.ImportInProgress)
+                AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress); 
+            else
+                CheckForUpdatesTimer.IsEnabled = false;
         }
 
         private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
+            if (ApplicationSettings.General.ImportInProgress)
+            {
+                CheckForUpdatesTimer.IsEnabled = false;
+                return;
+            }
+
             var json = (JArray)JsonConvert.DeserializeObject(args.RemoteData);
 
             Func<string, string> GetVersionFromTag = (tag) => { return tag.Remove(0, tag.IndexOf('v') + 1); };
@@ -117,8 +126,6 @@ namespace Great2.Views
             CheckEntities();
         }
 
-
-
         private void NavigationTabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var test = e.Source;
@@ -128,7 +135,6 @@ namespace Great2.Views
                 this.Dispatcher.Invoke(new Action(() => { CheckEntities(); }), null);
                 t.Focus();
             }
-
         }
 
         private void CheckEntities()

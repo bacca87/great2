@@ -11,7 +11,7 @@ namespace Great2.Models.DTO
 
         public FDLResultDTO(FDLResult result)
         {
-            Global.Mapper.Map(result, this);
+            Auto.Mapper.Map(result, this);
         }
     }
 }

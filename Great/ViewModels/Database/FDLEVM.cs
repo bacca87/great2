@@ -269,7 +269,7 @@ namespace Great2.ViewModels.Database
             Timesheets = new ObservableCollection<TimesheetEVM>();
 
             if (fdl != null)
-                Global.Mapper.Map(fdl, this);
+                Auto.Mapper.Map(fdl, this);
             IsChanged = false;
         }
 
@@ -277,7 +277,7 @@ namespace Great2.ViewModels.Database
         {
             FDL fdl = new FDL();
 
-            Global.Mapper.Map(this, fdl);
+            Auto.Mapper.Map(this, fdl);
             db.FDLs.AddOrUpdate(fdl);
             db.SaveChanges();
             IsChanged = false;
@@ -295,7 +295,7 @@ namespace Great2.ViewModels.Database
 
             if (fdl != null)
             {
-                Global.Mapper.Map(fdl, this);
+                Auto.Mapper.Map(fdl, this);
 
                 //foreach (TimesheetEVM timesheet in Timesheets)
                 //    timesheet.Refresh(db);

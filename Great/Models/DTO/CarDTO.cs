@@ -14,7 +14,7 @@ namespace Great2.Models.DTO
 
         public CarDTO(Car car)
         {
-            Global.Mapper.Map(car, this);
+            Auto.Mapper.Map(car, this);
         }
     }
 }

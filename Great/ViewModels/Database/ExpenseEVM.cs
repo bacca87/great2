@@ -123,7 +123,7 @@ namespace Great2.ViewModels.Database
         public ExpenseEVM(Expense expense = null)
         {
             if (expense != null)
-                Global.Mapper.Map(expense, this);
+                Auto.Mapper.Map(expense, this);
             IsChanged = false;
         }
 
@@ -131,7 +131,7 @@ namespace Great2.ViewModels.Database
         {
             Expense e = new Expense();
 
-            Global.Mapper.Map(this, e);
+            Auto.Mapper.Map(this, e);
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;
