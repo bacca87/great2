@@ -91,5 +91,9 @@ namespace Great2.Views.Pages
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
         }
 
+        private void Page_KeyDown(object sender, KeyEventArgs e)
+        {
+            timesheetPanel.IsExpanded = false;
+        }
     }
 }
