@@ -81,9 +81,7 @@ namespace Great2.Views.Pages
         private void TimesheetPanel_Expanded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (!timesheetPanel.IsExpanded)
-            {
                 return;
-            }
 
             // hack for scrolling to the selected day 
             scrollViewer.ScrollToHome();
@@ -91,5 +89,9 @@ namespace Great2.Views.Pages
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
         }
 
+        private void Page_KeyDown(object sender, KeyEventArgs e)
+        {
+            timesheetPanel.IsExpanded = false;
+        }
     }
 }

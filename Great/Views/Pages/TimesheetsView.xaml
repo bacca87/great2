@@ -14,8 +14,8 @@
       DataContext="{Binding Timesheets, Source={StaticResource Locator}}"
       Title="Timesheet"
       Loaded="Page_Loaded"
-      Style="{DynamicResource MetroPage}">
-
+      Style="{DynamicResource MetroPage}"
+      KeyDown="Page_KeyDown">
     <Page.Resources>
         <conv:IntToMonthConverter x:Key="IntToMonthConverter"/>
         <CollectionViewSource x:Key="WorkingDaysCollectionView" Source="{Binding WorkingDays}">
