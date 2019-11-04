@@ -101,7 +101,7 @@ namespace Great2.ViewModels.Database
         public CarEVM(Car car = null)
         {
             if (car != null)
-                Global.Mapper.Map(car, this);
+                Auto.Mapper.Map(car, this);
             IsChanged = false;
         }
 
@@ -109,7 +109,7 @@ namespace Great2.ViewModels.Database
         {
             Car car = new Car();
 
-            Global.Mapper.Map(this, car);
+            Auto.Mapper.Map(this, car);
             db.Cars.AddOrUpdate(car);
             db.SaveChanges();
             Id = car.Id;
@@ -135,7 +135,7 @@ namespace Great2.ViewModels.Database
             var car = db.Cars.SingleOrDefault(x => x.Id == Id);
             if (car != null)
             {
-                Global.Mapper.Map(car, this);
+                Auto.Mapper.Map(car, this);
                 return true;
             }
             return false;

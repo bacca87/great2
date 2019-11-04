@@ -14,7 +14,7 @@ namespace Great2.Models.DTO
 
         public DayDTO(Day day)
         {
-            Global.Mapper.Map(day, this);
+            Auto.Mapper.Map(day, this);
         }
     }
 }

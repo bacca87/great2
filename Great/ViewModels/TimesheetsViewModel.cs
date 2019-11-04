@@ -310,7 +310,7 @@ namespace Great2.ViewModels
                 return;
 
             DayEVM dayClone = new DayEVM();
-            Global.Mapper.Map(day, dayClone);
+            Auto.Mapper.Map(day, dayClone);
 
             ClipboardX.Clear();
             ClipboardX.AddItem("Day", dayClone);
@@ -511,7 +511,7 @@ namespace Great2.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        FactoryDTO factory = Global.Mapper.Map<FactoryDTO>(item.Content);
+                        FactoryDTO factory = Auto.Mapper.Map<FactoryDTO>(item.Content);
 
                         if (factory != null)
                         {

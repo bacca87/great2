@@ -11,7 +11,7 @@ namespace Great2.Models.DTO
 
         public ExpenseTypeDTO(ExpenseType type)
         {
-            Global.Mapper.Map(type, this);
+            Auto.Mapper.Map(type, this);
         }
     }
 }

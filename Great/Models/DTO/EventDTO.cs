@@ -22,7 +22,7 @@ namespace Great2.Models.DTO
 
         public EventDTO(Event ev)
         {
-            Global.Mapper.Map(ev, this);
+            Auto.Mapper.Map(ev, this);
         }
     }
 }

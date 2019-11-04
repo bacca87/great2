@@ -273,7 +273,7 @@ namespace Great2.ViewModels
                 {
                     if (item.Content != null)
                     {
-                        FactoryDTO factory = Global.Mapper.Map<FactoryDTO>(item.Content);
+                        FactoryDTO factory = Auto.Mapper.Map<FactoryDTO>(item.Content);
 
                         if (factory != null)
                         {

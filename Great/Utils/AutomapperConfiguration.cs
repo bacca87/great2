@@ -5,11 +5,11 @@ using Great2.ViewModels.Database;
 
 namespace Great2
 {
-    public static class Global
+    public static class Auto
     {
         public static IMapper Mapper { get; internal set; }
 
-        static Global()
+        static Auto()
         {
             var config = new MapperConfiguration(cfg =>
             {

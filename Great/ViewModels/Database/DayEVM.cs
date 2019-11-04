@@ -386,7 +386,7 @@ namespace Great2.ViewModels.Database
             Timesheets = new ObservableCollectionEx<TimesheetEVM>();
 
             if (day != null)
-                Global.Mapper.Map(day, this);
+                Auto.Mapper.Map(day, this);
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();
@@ -419,7 +419,7 @@ namespace Great2.ViewModels.Database
         {
             Day day = new Day();
 
-            Global.Mapper.Map(this, day);
+            Auto.Mapper.Map(this, day);
             db.Days.AddOrUpdate(day);
             db.SaveChanges();
             IsChanged = false;
@@ -446,7 +446,7 @@ namespace Great2.ViewModels.Database
 
             if (day != null)
             {
-                Global.Mapper.Map(day, this);
+                Auto.Mapper.Map(day, this);
 
                 foreach (TimesheetEVM timesheet in Timesheets)
                     timesheet.Refresh(db);
