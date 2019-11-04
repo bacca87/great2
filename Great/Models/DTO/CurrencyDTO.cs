@@ -11,7 +11,7 @@ namespace Great2.Models.DTO
 
         public CurrencyDTO(Currency currency)
         {
-            Global.Mapper.Map(currency, this);
+            Auto.Mapper.Map(currency, this);
         }
     }
 }

@@ -996,6 +996,8 @@ namespace Great2.Models
             public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
             public const string IntranetAddress = "https://intranet.elettric80.it";
 
+            public static bool ImportInProgress = false;
+
             public static string UserAgent
             {
                 get

@@ -41,7 +41,7 @@ namespace Great2.ViewModels.Database
         public DayEventEVM(DayEvent de = null)
         {
             if (de != null)
-                Global.Mapper.Map(de, this);
+                Auto.Mapper.Map(de, this);
         }
 
         public override bool Refresh(DBArchive db)
@@ -53,7 +53,7 @@ namespace Great2.ViewModels.Database
         {
             DayEvent di = new DayEvent();
 
-            Global.Mapper.Map(this, di);
+            Auto.Mapper.Map(this, di);
             db.DayEvents.AddOrUpdate(di);
             db.SaveChanges();
             return true;

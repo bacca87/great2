@@ -213,7 +213,7 @@ namespace Great2.ViewModels.Database
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             if (ea != null)
-                Global.Mapper.Map(ea, this);
+                Auto.Mapper.Map(ea, this);
 
             IsChanged = false;
         }
@@ -235,7 +235,7 @@ namespace Great2.ViewModels.Database
         {
             ExpenseAccount ea = new ExpenseAccount();
 
-            Global.Mapper.Map(this, ea);
+            Auto.Mapper.Map(this, ea);
             db.ExpenseAccounts.AddOrUpdate(ea);
             db.SaveChanges();
             Id = ea.Id;
@@ -253,7 +253,7 @@ namespace Great2.ViewModels.Database
             var exp = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
             if (exp != null)
             {
-                Global.Mapper.Map(exp, this);
+                Auto.Mapper.Map(exp, this);
                 return true;
             }
             return false;

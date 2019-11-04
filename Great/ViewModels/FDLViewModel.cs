@@ -302,7 +302,7 @@ namespace Great2.ViewModels
                     if (item.Content != null && !Factories.Any(f => f.Id == item.Content.Id))
                     {
                         FactoryDTO factory = new FactoryDTO();
-                        Global.Mapper.Map(item.Content, factory);
+                        Auto.Mapper.Map(item.Content, factory);
                         Factories.Add(factory);
                     }
                 })
@@ -320,7 +320,7 @@ namespace Great2.ViewModels
                         FactoryDTO factory = Factories.SingleOrDefault(f => f.Id == item.Content.Id);
 
                         if (factory != null)
-                            Global.Mapper.Map(item.Content, factory);
+                            Auto.Mapper.Map(item.Content, factory);
 
                         var fdlToUpdate = FDLs.Where(f => f.Factory.HasValue && f.Factory.Value == item.Content.Id);
 

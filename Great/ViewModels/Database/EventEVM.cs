@@ -345,14 +345,14 @@ namespace Great2.ViewModels.Database
             StartDate = DateTime.Now;
             EndDate = DateTime.Now;
             if (ev != null)
-                Global.Mapper.Map(ev, this);
+                Auto.Mapper.Map(ev, this);
             IsChanged = false;
         }
         public override bool Save(DBArchive db)
         {
             Event ev = new Event();
 
-            Global.Mapper.Map(this, ev);
+            Auto.Mapper.Map(this, ev);
             db.Events.AddOrUpdate(ev);
             db.SaveChanges();
             IsChanged = false;
@@ -380,7 +380,7 @@ namespace Great2.ViewModels.Database
 
             if (ev != null)
             {
-                Global.Mapper.Map(ev, this);
+                Auto.Mapper.Map(ev, this);
                 return true;
             }
 

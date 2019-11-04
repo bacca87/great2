@@ -406,7 +406,7 @@ namespace Great2.ViewModels.Database
         public TimesheetEVM(Timesheet timesheet = null)
         {
             if (timesheet != null)
-                Global.Mapper.Map(timesheet, this);
+                Auto.Mapper.Map(timesheet, this);
             IsChanged = false;
         }
 
@@ -414,7 +414,7 @@ namespace Great2.ViewModels.Database
         {
             Timesheet timesheet = new Timesheet();
 
-            Global.Mapper.Map(this, timesheet);
+            Auto.Mapper.Map(this, timesheet);
             db.Timesheets.AddOrUpdate(timesheet);
             db.SaveChanges();
             Id = timesheet.Id;
@@ -439,7 +439,7 @@ namespace Great2.ViewModels.Database
             db.Entry(timesheet).Reference(p => p.FDL1).Load();
 
             if (timesheet != null)
-                return Global.Mapper.Map(timesheet, this) != null;
+                return Auto.Mapper.Map(timesheet, this) != null;
 
             return false;
         }

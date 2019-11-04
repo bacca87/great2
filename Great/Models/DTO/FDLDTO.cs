@@ -16,7 +16,7 @@ namespace Great2.Models.DTO
 
         public FDLDTO(FDL fdl)
         {
-            Global.Mapper.Map(fdl, this);
+            Auto.Mapper.Map(fdl, this);
         }
     }
 }

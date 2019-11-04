@@ -13,7 +13,7 @@ namespace Great2.Models.DTO
 
         public FactoryDTO(Factory factory)
         {
-            Global.Mapper.Map(factory, this);
+            Auto.Mapper.Map(factory, this);
         }
     }
 }

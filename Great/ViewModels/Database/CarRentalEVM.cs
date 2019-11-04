@@ -276,7 +276,7 @@ namespace Great2.ViewModels.Database
             RentStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
             if (rent != null)
-                Global.Mapper.Map(rent, this);
+                Auto.Mapper.Map(rent, this);
             IsChanged = false;
         }
 
@@ -284,7 +284,7 @@ namespace Great2.ViewModels.Database
         {
             CarRentalHistory rent = new CarRentalHistory();
 
-            Global.Mapper.Map(this, rent);
+            Auto.Mapper.Map(this, rent);
             db.CarRentalHistories.AddOrUpdate(rent);
             db.SaveChanges();
             Id = rent.Id;
@@ -312,7 +312,7 @@ namespace Great2.ViewModels.Database
 
             if (cr != null)
             {
-                Global.Mapper.Map(cr, this);
+                Auto.Mapper.Map(cr, this);
                 return true;
             }
 

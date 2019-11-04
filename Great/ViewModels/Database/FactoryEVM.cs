@@ -153,7 +153,7 @@ namespace Great2.ViewModels.Database
         public FactoryEVM(Factory factory = null)
         {
             if (factory != null)
-                Global.Mapper.Map(factory, this);
+                Auto.Mapper.Map(factory, this);
             IsChanged = false;
         }
 
@@ -176,7 +176,7 @@ namespace Great2.ViewModels.Database
 
             if (f != null)
             {
-                Global.Mapper.Map(f, this);
+                Auto.Mapper.Map(f, this);
                 return true;
             }
 
@@ -187,7 +187,7 @@ namespace Great2.ViewModels.Database
         {
             Factory factory = new Factory();
 
-            Global.Mapper.Map(this, factory);
+            Auto.Mapper.Map(this, factory);
             db.Factories.AddOrUpdate(factory);
             db.SaveChanges();
             Id = factory.Id;

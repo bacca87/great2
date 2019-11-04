@@ -9,6 +9,7 @@ using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 
 namespace Great2.Utils
 {
@@ -36,6 +37,7 @@ namespace Great2.Utils
 
         public override void Start()
         {
+            ApplicationSettings.General.ImportInProgress = true;
             stopImport = false;
 
             StatusChanged("Import Started...");
@@ -54,6 +56,7 @@ namespace Great2.Utils
 
         public override void Cancel()
         {
+            ApplicationSettings.General.ImportInProgress = false;
             stopImport = true;
         }
 
