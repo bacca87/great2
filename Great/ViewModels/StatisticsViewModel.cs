@@ -314,18 +314,18 @@ namespace Great2.ViewModels
                     }
                     else
                     {
-                        TotalTimeValues.Add(0);
-                        OrdinaryValues.Add(0);
-                        Overtime34Values.Add(0);
-                        Overtime35Values.Add(0);
-                        Overtime50Values.Add(0);
-                        Overtime100Values.Add(0);
+                        TotalTimeValues.Add(float.NaN);
+                        OrdinaryValues.Add(float.NaN);
+                        Overtime34Values.Add(float.NaN);
+                        Overtime35Values.Add(float.NaN);
+                        Overtime50Values.Add(float.NaN);
+                        Overtime100Values.Add(float.NaN);
 
-                        HomeWorkValues.Add(0);
-                        SickLeaveValues.Add(0);
-                        LeaveValues.Add(0);
-                        VacationsValues.Add(0);
-                        SpecialLeaveValues.Add(0);
+                        HomeWorkValues.Add(float.NaN);
+                        SickLeaveValues.Add(float.NaN);
+                        LeaveValues.Add(float.NaN);
+                        VacationsValues.Add(float.NaN);
+                        SpecialLeaveValues.Add(float.NaN);
                     }
                 }
 
