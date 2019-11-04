@@ -33,7 +33,7 @@
         </Style>
     </Page.Resources>
     <TabControl x:Name="ChartTab" TabStripPlacement="Left"  >
-        <TabItem Header="Hours" Style="{DynamicResource NoHeaderTabItem}">
+        <TabItem x:Name="HoursTab" Header="Hours" Style="{DynamicResource NoHeaderTabItem}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40*"/>
@@ -57,7 +57,7 @@
                         <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Day by Type</Label>
-                    <lvc:PieChart Grid.Row="1"  LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Days}" DataClick="DaysByType_DataClick">
+                    <lvc:PieChart x:Name="DaysPieChart" Grid.Row="1"  LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Days}" DataClick="DaysByType_DataClick">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -75,7 +75,7 @@
                             <RowDefinition Height="40*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Work time Overview</Label>
-                        <lvc:CartesianChart Grid.Row="1" Series="{Binding Hours}" LegendLocation="Bottom"   Margin="10,10,50,10">
+                        <lvc:CartesianChart x:Name="CartesianHourChart" Grid.Row="1" Series="{Binding Hours}" LegendLocation="Bottom"   Margin="10,10,50,10">
                             <lvc:CartesianChart.DataTooltip>
                                 <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                             </lvc:CartesianChart.DataTooltip>
@@ -105,7 +105,7 @@
                             </lvc:CartesianChart.ChartLegend>
                         </lvc:CartesianChart>
                         <Label Grid.Row="2" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Hours by Type</Label>
-                        <lvc:CartesianChart Grid.Row="3"  Series="{Binding HourTypes}" LegendLocation="Bottom"  Margin="10,10,50,10">
+                        <lvc:CartesianChart x:Name="CartesianHourTypesChart" Grid.Row="3"  Series="{Binding HourTypes}" LegendLocation="Bottom"  Margin="10,10,50,10">
                             <lvc:CartesianChart.DataTooltip>
                                 <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                             </lvc:CartesianChart.DataTooltip>
@@ -135,12 +135,11 @@
                             </lvc:CartesianChart.ChartLegend>
                         </lvc:CartesianChart>
                     </Grid>
-
                 </Grid>
             </Grid>
         </TabItem>
 
-        <TabItem Header="Factories" Style="{DynamicResource NoHeaderTabItem}">
+        <TabItem x:Name="FactoriesTab" Header="Factories" Style="{DynamicResource NoHeaderTabItem}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="45*"/>
@@ -165,7 +164,7 @@
                         <ColumnDefinition Width="45*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Factories by Type</Label>
-                    <lvc:PieChart Grid.Row="1" Grid.Column="0"  Series="{Binding FactoryTypes}" DataClick="FactoriesByType_DataClick" LegendLocation="Left">
+                    <lvc:PieChart x:Name="FactoryTypesPieChart" Grid.Row="1" Grid.Column="0"  Series="{Binding FactoryTypes}" DataClick="FactoriesByType_DataClick" LegendLocation="Left">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -175,12 +174,12 @@
                     </lvc:PieChart>
 
                     <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Travel Count</Label>
-                    <lvc:Gauge Grid.Row="1" Grid.Column="2" Margin="5"
+                    <lvc:Gauge x:Name="TravelCountGauge" Grid.Row="1" Grid.Column="2" Margin="5"
                    Uses360Mode="False" FromColor="Green" ToColor="Red"
                    From="0" To="365" Value="{Binding TravelCount}" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}" >
                     </lvc:Gauge>
                     <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Factories visited</Label>
-                    <lvc:PieChart Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}" DataClick="Factories_DataClick">
+                    <lvc:PieChart x:Name="FactoriesPieChart" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}" DataClick="Factories_DataClick">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -197,21 +196,21 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Most visited countries</Label>
 
-                        <lvc:GeoMap Grid.Row="1"  HeatMap="{Binding FactoryCountries}" Background="Transparent"  UseLayoutRounding="True" Source="World.xml" Margin="10,10,50,10" />
+                        <lvc:GeoMap Grid.Row="1" x:Name="GeoFactoryCountries" HeatMap="{Binding FactoryCountries}" Background="Transparent"  UseLayoutRounding="True" Source="World.xml" Margin="10,10,50,10" />
 
                     </Grid>
                 </Grid>
             </Grid>
         </TabItem>
 
-        <TabItem Header="Kilometers" Style="{DynamicResource NoHeaderTabItem}">
+        <TabItem x:Name="KilometersTab" Header="Kilometers" Style="{DynamicResource NoHeaderTabItem}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0"  FontWeight="Bold"  HorizontalAlignment="Center" FontSize="20" >Total Driven Kilometers</Label>
-                <lvc:CartesianChart Grid.Row="1" Grid.Column="0" LegendLocation="Bottom"  Hoverable="True" Series="{Binding Km}">
+                <lvc:CartesianChart x:Name="CartesianKm" Grid.Row="1" Grid.Column="0" LegendLocation="Bottom"  Hoverable="True" Series="{Binding Km}">
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource  DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -243,7 +242,7 @@
             </Grid>
         </TabItem>
         
-        <TabItem Header="Expenses" Style="{DynamicResource NoHeaderTabItem}">
+        <TabItem x:Name="TabExpenses" Header="Expenses" Style="{DynamicResource NoHeaderTabItem}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20*"/>
@@ -267,7 +266,7 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" Grid.ColumnSpan="12">Expenses Overview</Label>
                  <!--This is a empty chart used as background-->
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="12" LegendLocation="None">
+                <lvc:CartesianChart x:Name="ExpenseCartesianBackground" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="12" LegendLocation="None">
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -292,7 +291,7 @@
                 </lvc:CartesianChart>
                 
                 <!--these are the real charts without separator visibility-->
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="0"  Series="{Binding Expenses[0]}"  LegendLocation="None">
+                <lvc:CartesianChart x:Name="ExpenseCartesianJan" Grid.Row="2" Grid.Column="0"  Series="{Binding Expenses[0]}"  LegendLocation="None">
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -315,7 +314,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="1" Series="{Binding Expenses[1]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianFeb" Grid.Row="2" Grid.Column="1" Series="{Binding Expenses[1]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -337,7 +336,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="2" Series="{Binding Expenses[2]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianMar"  Grid.Row="2" Grid.Column="2" Series="{Binding Expenses[2]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -359,7 +358,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="3" Series="{Binding Expenses[3]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianApr" Grid.Row="2" Grid.Column="3" Series="{Binding Expenses[3]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -381,7 +380,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="4" Series="{Binding Expenses[4]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianMay" Grid.Row="2" Grid.Column="4" Series="{Binding Expenses[4]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -403,7 +402,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="5" Series="{Binding Expenses[5]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianJun" Grid.Row="2" Grid.Column="5" Series="{Binding Expenses[5]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -425,7 +424,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="6" Series="{Binding Expenses[6]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianJul" Grid.Row="2" Grid.Column="6" Series="{Binding Expenses[6]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -447,7 +446,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="7" Series="{Binding Expenses[7]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianAug" Grid.Row="2" Grid.Column="7" Series="{Binding Expenses[7]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -469,7 +468,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="8" Series="{Binding Expenses[8]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianSep" Grid.Row="2" Grid.Column="8" Series="{Binding Expenses[8]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -491,7 +490,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="9" Series="{Binding Expenses[9]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianOct" Grid.Row="2" Grid.Column="9" Series="{Binding Expenses[9]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -513,7 +512,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="10" Series="{Binding Expenses[10]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianNov" Grid.Row="2" Grid.Column="10" Series="{Binding Expenses[10]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
@@ -535,7 +534,7 @@
                         <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
-                <lvc:CartesianChart Grid.Row="2" Grid.Column="11" Series="{Binding Expenses[11]}"  LegendLocation="None" >
+                <lvc:CartesianChart x:Name="ExpenseCartesianDec" Grid.Row="2" Grid.Column="11" Series="{Binding Expenses[11]}"  LegendLocation="None" >
                     <lvc:CartesianChart.DataTooltip>
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>

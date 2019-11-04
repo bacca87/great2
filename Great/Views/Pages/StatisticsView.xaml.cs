@@ -3,6 +3,7 @@ using Great2.Utils;
 using Great2.ViewModels;
 using Great2.Views.Dialogs;
 using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Great2.Views.Pages
@@ -47,6 +48,7 @@ namespace Great2.Views.Pages
             _dataViewModel.Year = _viewModel.SelectedYear;
 
             ChartDataPopupView view = new ChartDataPopupView();
+            view.Owner = Window.GetWindow(this);
             view.ShowDialog();
 
         }
@@ -63,6 +65,7 @@ namespace Great2.Views.Pages
             _dataViewModel.Year = _viewModel.SelectedYear;
 
             ChartDataPopupView view = new ChartDataPopupView();
+            view.Owner = Window.GetWindow(this);
             view.ShowDialog();
 
         }
@@ -74,11 +77,12 @@ namespace Great2.Views.Pages
             if (_dataViewModel == null)
                 return;
 
-            _dataViewModel.ChartType = EChartType.DayByType;
+            _dataViewModel.ChartType = EChartType.Factories;
             _dataViewModel.Key = chartPoint.SeriesView.Title;
             _dataViewModel.Year = _viewModel.SelectedYear;
 
             ChartDataPopupView view = new ChartDataPopupView();
+            view.Owner = Window.GetWindow(this);
             view.ShowDialog();
 
         }
