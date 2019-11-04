@@ -134,7 +134,9 @@ namespace Great2
 
         private void ApplyMigrations()
         {
-            using (SQLiteConnection connection = new SQLiteConnection(ApplicationSettings.Database.ConnectionString))
+            string connectionString = ApplicationSettings.Database.ConnectionString.Replace("foreign keys=true;", string.Empty);
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
