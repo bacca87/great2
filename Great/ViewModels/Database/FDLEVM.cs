@@ -2,6 +2,7 @@
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
+using Great2.Utils.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
@@ -32,6 +33,8 @@ namespace Great2.ViewModels.Database
             get => _StartDay;
             set => Set(ref _StartDay, value);
         }
+
+        public DateTime StartDayDate => DateTime.Now.FromUnixTimestamp(_StartDay);
 
         private bool _IsExtra;
         public bool IsExtra
