@@ -138,7 +138,22 @@ namespace Great2.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set => SetAndCheckChanged(ref _Notes, value);
+            set
+            {
+                SetAndCheckChanged(ref _Notes, value);
+                RaisePropertyChanged(nameof(NotesCharRemaining));
+                RaisePropertyChanged(nameof(Tags));
+            }
+        }
+
+        public int NotesCharRemaining
+        {
+            get => 50 - (Notes?.Length ?? 0);
+        }
+
+        public IEnumerable<string> Tags
+        {
+            get => Notes.Split(',').Where(s=> s?[0] =='#');
         }
 
         private DayDTO _Day;

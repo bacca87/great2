@@ -91,7 +91,15 @@ namespace Great2.Views.Pages
 
         private void Page_KeyDown(object sender, KeyEventArgs e)
         {
-            timesheetPanel.IsExpanded = false;
+            if (e.Key == Key.Escape)
+                timesheetPanel.IsExpanded = false;
+        }
+
+        private void Notes_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            TextBox t = sender as TextBox;
+
+            if (t.Text?.Length >= 50) e.Handled = true;
         }
     }
 }

@@ -24,8 +24,13 @@
         </CollectionViewSource>
     </mah:MetroWindow.Resources>
     <Grid>
-        <DataGrid 
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="{Binding Title}"/>
+        <DataGrid
+                  Grid.Row="1"
                   AutoGenerateColumns="False" 
                   CanUserReorderColumns="False" 
                   CanUserResizeColumns="False" 
