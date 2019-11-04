@@ -57,7 +57,7 @@
                         <RowDefinition Height="90*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Day by Type</Label>
-                    <lvc:PieChart Grid.Row="1"  LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Days}">
+                    <lvc:PieChart Grid.Row="1"  LegendLocation="Bottom" InnerRadius="100" Hoverable="True" Series="{Binding Days}" DataClick="DaysByType_DataClick">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -165,7 +165,7 @@
                         <ColumnDefinition Width="45*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Factories by Type</Label>
-                    <lvc:PieChart Grid.Row="1" Grid.Column="0"  Series="{Binding FactoryTypes}" LegendLocation="Left">
+                    <lvc:PieChart Grid.Row="1" Grid.Column="0"  Series="{Binding FactoryTypes}" DataClick="FactoriesByType_DataClick" LegendLocation="Left">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -180,7 +180,7 @@
                    From="0" To="365" Value="{Binding TravelCount}" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}" >
                     </lvc:Gauge>
                     <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Factories visited</Label>
-                    <lvc:PieChart Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}">
+                    <lvc:PieChart Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}" DataClick="Factories_DataClick">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>

@@ -135,6 +135,20 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="PopupDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+        <Setter Property="BorderThickness" Value="0.5"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
+                <Setter Property="Background" Value="{DynamicResource DefaultSaturdayColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundSaturdayColor}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Date.DayOfWeek}" Value="Sunday">
+                <Setter Property="Background" Value="{DynamicResource DefaultSundayColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource BestForegroundSundayColor}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="travelstartTextBox" TargetType="xctk:MaskedTextBox" BasedOn="{StaticResource MaskedTextBoxBaseTimeSheet}" >
         <Setter Property="Background" Value="{DynamicResource DefaultTravelStartColor}" />
     </Style>

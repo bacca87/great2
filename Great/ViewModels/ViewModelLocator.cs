@@ -42,6 +42,7 @@ namespace Great2.ViewModels
             SimpleIoc.Default.Register<StatisticsViewModel>(true);
             SimpleIoc.Default.Register<CarRentalViewModel>(true);
             SimpleIoc.Default.Register<FDLImportWizardViewModel>(true);
+            SimpleIoc.Default.Register<ChartDataPopupViewModel>(true);
 
             // Exchange
             SimpleIoc.Default.Register<IProvider, MSExchangeProvider>(true);
@@ -82,6 +83,7 @@ namespace Great2.ViewModels
         public FDLImportWizardViewModel FDLImportWizard => SimpleIoc.Default.GetInstance<FDLImportWizardViewModel>();
 
         public EventsViewModel Events => SimpleIoc.Default.GetInstance<EventsViewModel>();
+        public ChartDataPopupViewModel DataPopup => SimpleIoc.Default.GetInstance<ChartDataPopupViewModel>();
 
         public static void Cleanup()
         {

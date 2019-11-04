@@ -105,6 +105,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
+    <Compile Include="Utils\ChartTypeEnum.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\Notifications\DesktopNotificationManagerCompat.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
@@ -113,6 +114,10 @@
     <Compile Include="Utils\MetroMessageBox.cs" />
     <Compile Include="Utils\Notifications\Great2NotificationActivator.cs" />
     <Compile Include="Utils\ToastNotificationHelper.cs" />
+    <Compile Include="ViewModels\ChartDataPopupViewModel.cs" />
+    <Compile Include="Views\Dialogs\ChartDataPopupView.xaml.cs">
+      <DependentUpon>ChartDataPopupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\MetroMessageBoxView.xaml.cs">
       <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>
     </Compile>
@@ -277,6 +282,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Page Include="Views\Dialogs\ChartDataPopupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Dialogs\MetroMessageBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

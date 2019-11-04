@@ -1,0 +1,61 @@
+﻿<mah:MetroWindow
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Great2.Views.Dialogs.ChartDataPopupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Great2.Views.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContext="{Binding DataPopup, Source={StaticResource Locator}}">
+    <Grid>
+        <DataGrid 
+                  AutoGenerateColumns="False" 
+                  CanUserReorderColumns="False" 
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False" 
+                  CanUserSortColumns="False" 
+                  IsReadOnly="True"                  
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"           
+                  HorizontalContentAlignment="Center"
+                  HorizontalScrollBarVisibility="Hidden"
+                  ItemsSource="{Binding Days}"
+                  VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
+                  VirtualizingPanel.ScrollUnit ="Item"                    
+                  RowStyle="{DynamicResource PopupDatagridStyle}"
+                  VirtualizingPanel.VirtualizationMode="Standard">
+            <DataGrid.Resources>
+                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.FontSize" Value="15" />
+                        <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    </Style.Setters>
+                </Style>
+                <Style x:Key="CenterAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    </Style.Setters>
+                </Style>
+                <Style x:Key="RightAligned" TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                    </Style.Setters>
+                </Style>
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Day" Binding="{Binding Date.DayOfYear}" FontWeight="Regular" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
+                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</mah:MetroWindow>
