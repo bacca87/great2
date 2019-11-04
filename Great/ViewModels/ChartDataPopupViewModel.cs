@@ -29,6 +29,14 @@ namespace Great2.ViewModels
             set => Set(ref _key, value);
         }
 
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            private set => Set(ref _title, value);
+        }
+
+
         private int _year;
         public int Year
         {
@@ -51,11 +59,11 @@ namespace Great2.ViewModels
                     switch (ChartType)
                     {
                         case EChartType.DayByType:
-                            {
+                            {                            
                                 switch (Key)
                                 {
                                     case "Business Trip":
-
+                                        Title = $"Day by Type Details: Business Trips";
                                         var values = (from d in db.Days
                                                       from ts in d.Timesheets
                                                       where ts.FDL1 != null
@@ -66,6 +74,7 @@ namespace Great2.ViewModels
                                         return days;
                                     case "Vacations":
 
+                                        Title = $"Day by Type Details: Vacations";
                                         values = (from d in db.Days
                                                   where d.DayType.Id == (long)EDayType.VacationDay && d.Timestamp >= startDate && d.Timestamp <= endDate
                                                   select d).Distinct();
@@ -74,7 +83,7 @@ namespace Great2.ViewModels
                                         return days;
 
                                     case "Office":
-
+                                        Title = $"Day by Type Details: Office";
                                         values = (from d in db.Days
                                                   from ts in d.Timesheets
                                                   where d.DayType.Id == (long)EDayType.WorkDay && ts.FDL1 == null && d.Timestamp >= startDate && d.Timestamp <= endDate
@@ -85,6 +94,7 @@ namespace Great2.ViewModels
 
                                     case "Home Work":
 
+                                        Title = $"Day by Type Details: Home Working";
                                         values = (from d in db.Days
                                                   where d.DayType.Id == (long)EDayType.HomeWorkDay && d.Timestamp >= startDate && d.Timestamp <= endDate
                                                   select d).Distinct();
@@ -94,6 +104,7 @@ namespace Great2.ViewModels
 
                                     case "Sick Leave":
 
+                                        Title = $"Day by Type Details: Sick Leave";
                                         values = (from d in db.Days
                                                   where d.DayType.Id == (long)EDayType.SickLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
                                                   select d).Distinct();
@@ -103,6 +114,7 @@ namespace Great2.ViewModels
 
                                     case "Special Leave":
 
+                                        Title = $"Day by Type Details: Special Leave";
                                         values = (from d in db.Days
                                                   where d.DayType.Id == (long)EDayType.SpecialLeave && d.Timestamp >= startDate && d.Timestamp <= endDate
                                                   select d).Distinct();
@@ -118,6 +130,7 @@ namespace Great2.ViewModels
 
                         case EChartType.Factories:
                             {
+                                Title = $"Factory {Key}: Details";
                                 var values = (from fdl in db.FDLs
                                               from timesheets in fdl.Timesheets
                                               where fdl.Id.Substring(0, 4) == YearStr && fdl.Factory1 != null
@@ -134,7 +147,7 @@ namespace Great2.ViewModels
                                 switch (Key)
                                 {
                                     case "Italy":
-
+                                        Title = $"Factories in Italy: Details";
                                         var values = (from d in db.Days
                                                       from ts in d.Timesheets
                                                       where ts.FDL1 != null
@@ -146,7 +159,7 @@ namespace Great2.ViewModels
                                         return days;
 
                                     case "No Transfer":
-
+                                        Title = $"No Transfer Factories: Details";
                                         values = (from d in db.Days
                                                   from ts in d.Timesheets
                                                   where ts.FDL1 != null
@@ -159,6 +172,7 @@ namespace Great2.ViewModels
 
                                     case "Europe":
 
+                                        Title = $"Factories in Europe: Details";
                                         values = (from d in db.Days
                                                   from ts in d.Timesheets
                                                   where ts.FDL1 != null
@@ -171,6 +185,7 @@ namespace Great2.ViewModels
 
                                     case "Extra Europe":
 
+                                        Title = $"Factories in Extra Europe: Details";
                                         values = (from d in db.Days
                                                   from ts in d.Timesheets
                                                   where ts.FDL1 != null

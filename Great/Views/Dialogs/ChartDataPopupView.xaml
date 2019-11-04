@@ -5,11 +5,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Great2.Views.Dialogs"
+             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             DataContext="{Binding DataPopup, Source={StaticResource Locator}}">
+             DataContext="{Binding DataPopup, Source={StaticResource Locator}}"
+             WindowStartupLocation="CenterOwner"
+            Title="DetailsView"
+            Width="800"
+            Height="600"
+            ResizeMode="CanResizeWithGrip"
+            ShowMinButton="False"
+            ShowMaxRestoreButton="False">
+    <mah:MetroWindow.Resources>
+        <CollectionViewSource x:Key="DaysCollectionView" Source="{Binding Days}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Date.DayOfYear" Direction="Ascending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </mah:MetroWindow.Resources>
     <Grid>
         <DataGrid 
+
                   AutoGenerateColumns="False" 
                   CanUserReorderColumns="False" 
                   CanUserResizeColumns="False" 
@@ -20,7 +36,7 @@
                   HeadersVisibility="Column"           
                   HorizontalContentAlignment="Center"
                   HorizontalScrollBarVisibility="Hidden"
-                  ItemsSource="{Binding Days}"
+                  ItemsSource="{Binding Source={StaticResource DaysCollectionView}}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                   VirtualizingPanel.ScrollUnit ="Item"                    
                   RowStyle="{DynamicResource PopupDatagridStyle}"
@@ -53,8 +69,8 @@
                 <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                 <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
-                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
+                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
