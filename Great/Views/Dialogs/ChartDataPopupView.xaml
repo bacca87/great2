@@ -67,7 +67,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Day" Binding="{Binding Date.DayOfYear}" FontWeight="Regular" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_DisplayChart}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_DisplayChartPopup}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                 <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>

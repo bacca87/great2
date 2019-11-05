@@ -25,7 +25,7 @@ namespace Great2.ViewModels
                 {
                     var items = (from d in db.Days
                                  from ts in d.Timesheets
-                                 where ts.FDL1 != null && ts.FDL1.Id.Substring(0, 4) == YearStr
+                                 where ts.FDL1 != null && ts.FDL1.Id.Substring(0, 4) == YearStr && ts.FDL1.Status ==2
                                  select d).Distinct().ToList();
 
                     items.ForEach(x => result.Add(new DayEVM(x)));
@@ -123,7 +123,7 @@ namespace Great2.ViewModels
                 {
                     var items = (from d in db.Days
                                  from ts in d.Timesheets
-                                 where ts.FDL1 != null
+                                 where ts.FDL1 != null && ts.FDL1.Status == 2
                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
                                  && ts.FDL1.Factory1.TransferType1.Id == 1
                                  select d).Distinct().ToList();
@@ -142,7 +142,7 @@ namespace Great2.ViewModels
                 {
                     var items = (from d in db.Days
                                  from ts in d.Timesheets
-                                 where ts.FDL1 != null
+                                 where ts.FDL1 != null && ts.FDL1.Status == 2
                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
                                  && ts.FDL1.Factory1.TransferType1.Id == 0
                                  select d).Distinct().ToList();
@@ -161,7 +161,7 @@ namespace Great2.ViewModels
                 {
                     var items = (from d in db.Days
                                  from ts in d.Timesheets
-                                 where ts.FDL1 != null
+                                 where ts.FDL1 != null && ts.FDL1.Status == 2
                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
                                  && ts.FDL1.Factory1.TransferType1.Id == 3
                                  select d).Distinct().ToList();
@@ -180,7 +180,7 @@ namespace Great2.ViewModels
                 {
                     var items = (from d in db.Days
                                  from ts in d.Timesheets
-                                 where ts.FDL1 != null
+                                 where ts.FDL1 != null && ts.FDL1.Status == 2
                                  && ts.FDL1.Id.Substring(0, 4) == YearStr
                                  && ts.FDL1.Factory1.TransferType1.Id == 2
                                  select d).Distinct().ToList();
