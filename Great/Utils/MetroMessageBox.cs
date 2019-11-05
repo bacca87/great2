@@ -21,7 +21,6 @@ namespace Great2
                     msg.BtnNo.IsEnabled = false;
 
                     msg.Title = string.Empty;
-                    msg.TxtTitle.Text = string.Empty;
                     msg.TxtMessage.Text = message;
                     msg.BtnOk.Focus();
                     msg.ShowDialog();
@@ -44,7 +43,6 @@ namespace Great2
                     msg.BtnNo.IsEnabled = false;
 
                     msg.Title = string.Empty;
-                    msg.TxtTitle.Text = title;
                     msg.TxtMessage.Text = message;
                     msg.BtnOk.Focus();
                     msg.ShowDialog();
@@ -89,7 +87,6 @@ namespace Great2
                             break;
                     }
                     msg.Title = string.Empty;
-                    msg.TxtTitle.Text = string.Empty;
                     msg.TxtMessage.Text = message;
                     msg.BtnOk.Focus();
                     msg.ShowDialog();
@@ -138,7 +135,6 @@ namespace Great2
                             break;
                     }
                     msg.Title = title;
-                    msg.TxtTitle.Text = title;
                     msg.TxtMessage.Text = message;
                     msg.BtnOk.Focus();
                     msg.ShowDialog();
@@ -193,7 +189,6 @@ namespace Great2
                 else if (image == MessageBoxImage.Warning) msg.IconImage.Source = new BitmapImage(new Uri("pack://application:,,,/Great2;component/Images/32/MessageBoxWarning.png"));
 
                     msg.Title = title;
-                    msg.TxtTitle.Text = title;
                     msg.TxtMessage.Text = message;
                     msg.BtnOk.Focus();
                     msg.ShowDialog();

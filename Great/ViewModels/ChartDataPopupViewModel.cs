@@ -352,7 +352,6 @@ namespace Great2.ViewModels
 
                         case EChartType.WorldMap:
                             {
-                                RegionInfo reg = new RegionInfo(Key.ToUpper());
 
                                 ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
                                 Title = $"Factory {Key}: Details";
