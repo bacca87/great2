@@ -91,7 +91,7 @@ namespace Great2.Views.Pages
 
         private void Page_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
                 timesheetPanel.IsExpanded = false;
         }
     }

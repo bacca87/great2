@@ -84,7 +84,7 @@ namespace Great2.ViewModels.Database
                         if (string.IsNullOrEmpty(Model) || string.IsNullOrWhiteSpace(Model))
                             return "Model not valid";
                         break;
-                    case "CarRentalCompany1":
+                    case "CarRentalCompany":
                         if (string.IsNullOrEmpty(CarRentalCompany) || string.IsNullOrWhiteSpace(CarRentalCompany))
                             return "Rental company not valid";
                         break;

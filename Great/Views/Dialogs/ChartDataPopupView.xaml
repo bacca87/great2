@@ -24,8 +24,7 @@
         </CollectionViewSource>
     </mah:MetroWindow.Resources>
     <Grid>
-        <DataGrid 
-
+        <DataGrid
                   AutoGenerateColumns="False" 
                   CanUserReorderColumns="False" 
                   CanUserResizeColumns="False" 
