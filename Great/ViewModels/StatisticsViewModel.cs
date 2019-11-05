@@ -421,11 +421,11 @@ namespace Great2.ViewModels
                     }
                 };
 
-                WorkedDays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0).Count() ?? 0;
+                WorkedDays = Days?.Where(x => x.Timesheets.Count > 0 ).Count() ?? 0;
                 TravelCount = Days?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
-                WorkedHolidays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.IsHoliday).Count() ?? 0;
-                WorkedSaturdays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
-                WorkedSundays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;                
+                WorkedHolidays = Days?.Where(x => x.Timesheets.Count > 0  && x.IsHoliday).Count() ?? 0;
+                WorkedSaturdays = Days?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
+                WorkedSundays = Days?.Where(x => x.Timesheets.Count > 0  && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;                
             }
         }
 

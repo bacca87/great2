@@ -2,6 +2,7 @@
 using Great2.Utils;
 using Great2.ViewModels;
 using Great2.Views.Dialogs;
+using MahApps.Metro.Controls;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -79,6 +80,39 @@ namespace Great2.Views.Pages
 
             _dataViewModel.ChartType = EChartType.Factories;
             _dataViewModel.Key = chartPoint.SeriesView.Title;
+            _dataViewModel.Year = _viewModel.SelectedYear;
+
+            ChartDataPopupView view = new ChartDataPopupView();
+            view.Owner = Window.GetWindow(this);
+            view.ShowDialog();
+
+        }
+
+        private void Tile_Click(object sender, RoutedEventArgs e)
+        {
+            _dataViewModel = SimpleIoc.Default.GetInstance<ChartDataPopupViewModel>();
+
+            if (_dataViewModel == null)
+                return;
+
+            _dataViewModel.ChartType = EChartType.Tile;
+            _dataViewModel.Key = (sender as Tile).Title;
+            _dataViewModel.Year = _viewModel.SelectedYear;
+
+            ChartDataPopupView view = new ChartDataPopupView();
+            view.Owner = Window.GetWindow(this);
+            view.ShowDialog();
+        }
+
+        private void GeoFactoryCountries_LandClick(object arg1, LiveCharts.Maps.MapData arg2)
+        {
+            _dataViewModel = SimpleIoc.Default.GetInstance<ChartDataPopupViewModel>();
+
+            if (_dataViewModel == null)
+                return;
+
+            _dataViewModel.ChartType = EChartType.WorldMap;
+            _dataViewModel.Key = arg2.Id;
             _dataViewModel.Year = _viewModel.SelectedYear;
 
             ChartDataPopupView view = new ChartDataPopupView();
