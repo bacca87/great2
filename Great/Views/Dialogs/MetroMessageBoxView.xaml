@@ -2,6 +2,7 @@
     x:Class="Great2.MetroMessageBoxWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:util="clr-namespace:Great2.Utils"
     xmlns:conv="clr-namespace:Great2.Utils.Converters"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     Title="MetroMessageBox"
@@ -17,7 +18,8 @@
     BorderThickness="4"
     WindowStartupLocation="CenterScreen"
     Width="600"
-    Height="250">
+    Height="250"
+    util:WindowUtilities.CloseOnEscape="True">
 
     <Grid Name="MainContentControl" x:FieldModifier="public">
         <Grid.RowDefinitions>
