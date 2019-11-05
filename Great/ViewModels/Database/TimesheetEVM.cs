@@ -138,17 +138,7 @@ namespace Great2.ViewModels.Database
         public string Notes
         {
             get => _Notes;
-            set
-            {
-                SetAndCheckChanged(ref _Notes, value);
-                RaisePropertyChanged(nameof(NotesCharRemaining));
-                RaisePropertyChanged(nameof(Tags));
-            }
-        }
-
-        public int NotesCharRemaining
-        {
-            get => 50 - (Notes?.Length ?? 0);
+            set => SetAndCheckChanged(ref _Notes, value);
         }
 
         public IEnumerable<string> Tags

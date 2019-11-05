@@ -260,7 +260,6 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -270,7 +269,6 @@
                                         <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
                                         <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">FDL</TextBlock>
                                         <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">Notes</TextBlock>
-                                        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding SelectedTimesheet.NotesCharRemaining, StringFormat ='{}Characters left: {0}'}" ></TextBlock>
 
                                         <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
                                         <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
@@ -300,7 +298,7 @@
                                                 </CompositeCollection>
                                             </ComboBox.ItemsSource>
                                         </ComboBox>
-                                        <TextBox Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="295" Text="{Binding SelectedTimesheet.Notes, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="Notes_PreviewTextInput" IsEnabled="{Binding IsInputEnabled}"/>
+                                        <TextBox Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="295" Text="{Binding SelectedTimesheet.Notes}" IsEnabled="{Binding IsInputEnabled}"/>
                                         <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
                                             <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}"/>
                                             <Button Margin="2" Content="New" Command="{Binding CreateNewTimesheetCommand}" />

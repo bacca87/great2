@@ -94,12 +94,5 @@ namespace Great2.Views.Pages
             if (e.Key == Key.Escape)
                 timesheetPanel.IsExpanded = false;
         }
-
-        private void Notes_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            TextBox t = sender as TextBox;
-
-            if (t.Text?.Length >= 50) e.Handled = true;
-        }
     }
 }
