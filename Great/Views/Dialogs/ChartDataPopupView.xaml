@@ -25,7 +25,6 @@
     </mah:MetroWindow.Resources>
     <Grid>
         <DataGrid
-                  Grid.Row="1"
                   AutoGenerateColumns="False" 
                   CanUserReorderColumns="False" 
                   CanUserResizeColumns="False" 

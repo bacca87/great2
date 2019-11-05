@@ -141,11 +141,6 @@ namespace Great2.ViewModels.Database
             set => SetAndCheckChanged(ref _Notes, value);
         }
 
-        public IEnumerable<string> Tags
-        {
-            get => Notes.Split(',').Where(s=> s?[0] =='#');
-        }
-
         private DayDTO _Day;
         public DayDTO Day
         {
