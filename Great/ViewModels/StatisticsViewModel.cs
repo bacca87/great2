@@ -636,7 +636,7 @@ namespace Great2.ViewModels
 
                 Km = new SeriesCollection()
                 {
-                    new LineSeries()
+                    new ColumnSeries()
                     {
                         Title = "Driven Km",
                         Values = TotalKm,
