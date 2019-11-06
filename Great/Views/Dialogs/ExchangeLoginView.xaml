@@ -1,7 +1,7 @@
 ﻿<mah:MetroWindow
         x:Class="Great2.Views.Dialogs.ExchangeLoginView"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,6 +13,8 @@
         Title="Microsoft Exchange Account" 
         Height="150" Width="400"
         WindowStartupLocation="CenterOwner"
+        ShowMinButton="False"
+        ShowMaxRestoreButton="False"
         ResizeMode="NoResize">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>

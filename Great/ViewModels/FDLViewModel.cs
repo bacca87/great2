@@ -71,6 +71,15 @@ namespace Great2.ViewModels
                 {
                     SelectedTimesheet = null;
                     IsInputEnabled = true;
+
+                    SendToSAPCommand.RaiseCanExecuteChanged();
+                    CompileCommand.RaiseCanExecuteChanged();
+                    SendByEmailCommand.RaiseCanExecuteChanged();
+                    OpenCommand.RaiseCanExecuteChanged();
+                    SaveAsCommand.RaiseCanExecuteChanged();
+                    MarkAsAcceptedCommand.RaiseCanExecuteChanged();
+                    MarkAsCancelledCommand.RaiseCanExecuteChanged();
+                    SendCancellationRequestCommand.RaiseCanExecuteChanged();
                 }
                 else
                     IsInputEnabled = false;
@@ -162,18 +171,17 @@ namespace Great2.ViewModels
             NextYearCommand = new RelayCommand(() => CurrentYear++);
             PreviousYearCommand = new RelayCommand(() => CurrentYear--);
 
-
             ClearCommand = new RelayCommand(ClearFDL, () => { return IsInputEnabled; });
             SaveCommand = new RelayCommand<FDLEVM>(SaveFDL, (FDLEVM fdl) => { return IsInputEnabled; });
 
-            SendToSAPCommand = new RelayCommand<FDLEVM>(SendToSAP);
-            CompileCommand = new RelayCommand<FDLEVM>(Compile);
-            SendByEmailCommand = new RelayCommand<string>(SendByEmail);
-            SaveAsCommand = new RelayCommand<FDLEVM>(SaveAs);
-            OpenCommand = new RelayCommand<FDLEVM>(Open);
-            MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted);
-            MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled);
-            SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest);
+            SendToSAPCommand = new RelayCommand<FDLEVM>(SendToSAP, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            CompileCommand = new RelayCommand<FDLEVM>(Compile, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            SendByEmailCommand = new RelayCommand<string>(SendByEmail, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            SaveAsCommand = new RelayCommand<FDLEVM>(SaveAs, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            OpenCommand = new RelayCommand<FDLEVM>(Open, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
 
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
