@@ -9,6 +9,7 @@ namespace Great2.Models.DTO
         public long StartDay { get; set; }
         public long Order { get; set; }
         public long? Factory { get; set; }
+        public bool IsVirtual { get; set; }
 
         public FactoryDTO Factory1 { get; set; }
 

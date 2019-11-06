@@ -6,8 +6,13 @@ namespace Great2.Utils
 {
     public static class ToastNotificationHelper
     {
+        public static bool Enabled = true;
+
         public static void SendToastNotification(string Title, string line1, string line2 , ToastTemplateType type)
         {
+            if (!Enabled)
+                return;
+
             try
             {
                 //windows 10 allows max 3 lines

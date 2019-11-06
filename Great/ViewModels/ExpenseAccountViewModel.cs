@@ -54,7 +54,6 @@ namespace Great2.ViewModels
             }
         }
 
-
         private FDLManager _fdlManager;
 
         public int NotesMaxLength => ApplicationSettings.ExpenseAccount.NotesMaxLength;
@@ -92,6 +91,15 @@ namespace Great2.ViewModels
                     SelectedExpense = null;
                     IsInputEnabled = true;
                     UpdateDaysOfWeek();
+
+                    SendToSAPCommand.RaiseCanExecuteChanged();
+                    CompileCommand.RaiseCanExecuteChanged();
+                    SendByEmailCommand.RaiseCanExecuteChanged();
+                    SaveAsCommand.RaiseCanExecuteChanged();
+                    OpenCommand.RaiseCanExecuteChanged();
+                    MarkAsRefundedCommand.RaiseCanExecuteChanged();
+                    MarkAsAcceptedCommand.RaiseCanExecuteChanged();
+                    MarkAsCancelledCommand.RaiseCanExecuteChanged();
                 }
                 else
                     IsInputEnabled = false;
@@ -189,19 +197,20 @@ namespace Great2.ViewModels
         public ExpenseAccountViewModel(FDLManager manager)
         {
             _fdlManager = manager;
+
             NextYearCommand = new RelayCommand(() => CurrentYear++);
             PreviousYearCommand = new RelayCommand(() => CurrentYear--);
 
             SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
-            SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP);
-            CompileCommand = new RelayCommand<ExpenseAccountEVM>(Compile);
-            SendByEmailCommand = new RelayCommand<string>(SendByEmail);
-            SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs);
-            OpenCommand = new RelayCommand<ExpenseAccountEVM>(Open);
-            MarkAsRefundedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsRefunded);
-            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted);
-            MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled);
+            SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            CompileCommand = new RelayCommand<ExpenseAccountEVM>(Compile, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            SendByEmailCommand = new RelayCommand<string>(SendByEmail, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            OpenCommand = new RelayCommand<ExpenseAccountEVM>(Open, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            MarkAsRefundedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsRefunded, (x) => { return SelectedEA != null; });
+            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });

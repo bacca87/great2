@@ -189,12 +189,18 @@ namespace Great2.ViewModels.Database
             set => Set(ref _IsReadOnly, value);
         }
 
-
         private long? _LastSAPSendTimestamp;
         public long? LastSAPSendTimestamp
         {
             get => _LastSAPSendTimestamp;
             set => Set(ref _LastSAPSendTimestamp, value);
+        }
+
+        private bool _IsVirtual;
+        public bool IsVirtual
+        {
+            get => _IsVirtual;
+            set => Set(ref _IsVirtual, value);
         }
 
         private FactoryDTO _Factory1;

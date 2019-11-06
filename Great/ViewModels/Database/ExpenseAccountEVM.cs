@@ -128,6 +128,13 @@ namespace Great2.ViewModels.Database
             set => Set(ref _LastSAPSendTimestamp, value);
         }
 
+        private bool _IsVirtual;
+        public bool IsVirtual
+        {
+            get => _IsVirtual;
+            set => Set(ref _IsVirtual, value);
+        }
+
         private CurrencyDTO _Currency1;
         public CurrencyDTO Currency1
         {

@@ -25,6 +25,7 @@ namespace Great2.Models.Database
         public bool IsReadOnly { get; set; }
         public long? LastSAPSendTimestamp { get; set; }
         public double? DeductionAmount { get; set; }
+        public bool IsVirtual { get; set; }
 
         [ForeignKey("Currency")]
         public virtual Currency Currency1 { get; set; }

@@ -120,19 +120,18 @@ namespace Great2.ViewModels
             RefreshTotals();
 
             MessengerInstance.Register<NewItemMessage<EventEVM>>(this, OnEventImported);
-            MessengerInstance.Register<NewItemMessage<FDLEVM>>(this,OnFdlReceived);
-            MessengerInstance.Register(this, (NewItemMessage<FactoryEVM> x) => { if (x.Content.NotifyAsNew) { NewFactoriesCount++; } });
-            MessengerInstance.Register(this, (NewItemMessage<ExpenseAccountEVM> x) => { if (x.Content.NotifyAsNew) { NewExpenseAccountsCount++; } });
+            MessengerInstance.Register<NewItemMessage<FDLEVM>>(this, OnFDLReceived);
+            MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, OnNewFactory);
+            MessengerInstance.Register<NewItemMessage<ExpenseAccountEVM>>(this, OnEAReceived);// => { if (x.Content.NotifyAsNew) { NewExpenseAccountsCount++; } });
 
-            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, OnFdlChanged);
-            MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, OnEaChanged);
+            MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, OnFDLChanged);
+            MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, OnEAChanged);
             MessengerInstance.Register<ItemChangedMessage<EventEVM>>(this, OnEventChanged);
             MessengerInstance.Register(this, (ItemChangedMessage<FactoryEVM> x) => { using (DBArchive db = new DBArchive()) { NewFactoriesCount = db.Factories.Count(factory => factory.NotifyAsNew); } });
             MessengerInstance.Register<ProviderEmailSentMessage<EmailMessageDTO>>(this, OnEmailSent);
 
             MessengerInstance.Register<StatusChangeMessage<EProviderStatus>>(this, OnExchangeStatusChange);
         }
-
 
         private void RefreshTotals()
         {
@@ -158,15 +157,15 @@ namespace Great2.ViewModels
             }));
         }
 
-        private void OnFdlReceived(NewItemMessage<FDLEVM> fdl)
+        private void OnFDLReceived(NewItemMessage<FDLEVM> fdl)
         {
             if (fdl.Content.NotifyAsNew)
                 NewFDLCount++;
 
-            ToastNotificationHelper.SendToastNotification("FDL received", fdl.Content.Id,null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
+            ToastNotificationHelper.SendToastNotification("New FDL Received", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
         }
 
-        private void OnFdlChanged(ItemChangedMessage<FDLEVM> fdl)
+        private void OnFDLChanged(ItemChangedMessage<FDLEVM> fdl)
         {
             using (DBArchive db = new DBArchive()) 
                 NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
@@ -176,10 +175,17 @@ namespace Great2.ViewModels
 
             else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
                 ToastNotificationHelper.SendToastNotification("FDL Rejected", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
-
-
         }
-        private void OnEaChanged(ItemChangedMessage<ExpenseAccountEVM> fdl)
+
+        private void OnEAReceived(NewItemMessage<ExpenseAccountEVM> ea)
+        {
+            if (ea.Content.NotifyAsNew)
+                NewExpenseAccountsCount++;
+
+            ToastNotificationHelper.SendToastNotification("New Expense Account Received", ea.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+        }
+
+        private void OnEAChanged(ItemChangedMessage<ExpenseAccountEVM> fdl)
         {
             using (DBArchive db = new DBArchive())
                 NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
@@ -189,12 +195,21 @@ namespace Great2.ViewModels
 
             else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
                 ToastNotificationHelper.SendToastNotification("Expense Account Rejected",fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
-
         }
+
+        private void OnNewFactory(NewItemMessage<FactoryEVM> factory)
+        {
+            if (factory.Content.NotifyAsNew)
+                NewFactoriesCount++;
+
+            ToastNotificationHelper.SendToastNotification("New Factory Added", factory.Content.Name, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+        }
+
         private void OnEventImported(NewItemMessage<EventEVM> ev)
         {
             ToastNotificationHelper.SendToastNotification("Event Imported", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
+
         private void OnEventChanged(ItemChangedMessage<EventEVM> ev)
         {
             using (var db = new DBArchive())
@@ -206,13 +221,11 @@ namespace Great2.ViewModels
                 else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
                     ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
             }
-
-
         }
+
         private void OnEmailSent(ProviderEmailSentMessage<EmailMessageDTO> mex)
         {
             ToastNotificationHelper.SendToastNotification("Email Sent", mex.Content.Subject, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
-
     }
 }

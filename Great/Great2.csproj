@@ -116,8 +116,12 @@
     <Compile Include="Utils\ToastNotificationHelper.cs" />
     <Compile Include="Utils\WindowUtilities.cs" />
     <Compile Include="ViewModels\ChartDataPopupViewModel.cs" />
+    <Compile Include="ViewModels\AddVirtualFDLViewModel.cs" />
     <Compile Include="Views\Dialogs\ChartDataPopupView.xaml.cs">
       <DependentUpon>ChartDataPopupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AddVirtualFDLView.xaml.cs">
+      <DependentUpon>AddVirtualFDLView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\MetroMessageBoxView.xaml.cs">
       <DependentUpon>MetroMessageBoxView.xaml</DependentUpon>
@@ -286,6 +290,10 @@
     <Page Include="Views\Dialogs\ChartDataPopupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AddVirtualFDLView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\MetroMessageBoxView.xaml">
       <SubType>Designer</SubType>
@@ -556,6 +564,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0016_05-11-2019_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0015_05-11-2019_update.sql">

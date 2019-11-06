@@ -146,7 +146,16 @@ namespace Great2.Views
             SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
 
+        private void AddVirtualFdlButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddVirtualFDLViewModel virtualFDLVM = SimpleIoc.Default.GetInstance<AddVirtualFDLViewModel>();
 
+            if (virtualFDLVM == null)
+                return;
+
+            AddVirtualFDLView view = new AddVirtualFDLView();
+            view.Owner = this;
+            view.ShowDialog();
+        }
     }
-
 }
