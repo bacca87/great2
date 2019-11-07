@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Great2.Models;
 using Great2.Models.Database;
 using Great2.Utils.Extensions;
 using Great2.ViewModels.Database;
@@ -443,7 +444,7 @@ namespace Great2.ViewModels
                 //count all trip days
                 var businessTripDays = (from d in db.Days
                                         from ts in d.Timesheets
-                                        where ts.FDL1 != null && ts.FDL1.Status == 2
+                                        where ts.FDL1 != null && ts.FDL1.Status == (int)EFDLStatus.Accepted
                                         && ts.FDL1.Id.Substring(0, 4) == YearStr
                                         select d).Distinct().Count();
 
@@ -476,7 +477,7 @@ namespace Great2.ViewModels
                 //days in italy
                 var transferITA = (from d in db.Days
                                    from ts in d.Timesheets
-                                   where ts.FDL1 != null && ts.FDL1.Status == 2
+                                   where ts.FDL1 != null && ts.FDL1.Status == (int)EFDLStatus.Accepted
                                    && ts.FDL1.Id.Substring(0, 4) == YearStr
                                    && ts.FDL1.Factory1.TransferType1.Id == 1
                                    select d).Distinct().Count();
@@ -484,7 +485,7 @@ namespace Great2.ViewModels
                 //days in italy
                 var transferEU = (from d in db.Days
                                   from ts in d.Timesheets
-                                  where ts.FDL1 != null && ts.FDL1.Status == 2
+                                  where ts.FDL1 != null && ts.FDL1.Status == (int)EFDLStatus.Accepted
                                   && ts.FDL1.Id.Substring(0, 4) == YearStr
                                   && ts.FDL1.Factory1.TransferType1.Id == 2
                                   select d).Distinct().Count();
@@ -492,7 +493,7 @@ namespace Great2.ViewModels
                 //days in italy
                 var transferExEU = (from d in db.Days
                                     from ts in d.Timesheets
-                                    where ts.FDL1 != null && ts.FDL1.Status == 2
+                                    where ts.FDL1 != null && ts.FDL1.Status == (int)EFDLStatus.Accepted
                                     && ts.FDL1.Id.Substring(0, 4) == YearStr
                                     && ts.FDL1.Factory1.TransferType1.Id == 3
                                     select d).Distinct().Count();
@@ -500,7 +501,7 @@ namespace Great2.ViewModels
                 //days no transf
                 var noTransfer = (from d in db.Days
                                   from ts in d.Timesheets
-                                  where ts.FDL1 != null && ts.FDL1.Status == 2
+                                  where ts.FDL1 != null && ts.FDL1.Status == (int)EFDLStatus.Accepted
                                   && ts.FDL1.Id.Substring(0, 4) == YearStr
                                   && ts.FDL1.Factory1.TransferType1.Id == 0
                                   select d).Distinct().Count();
