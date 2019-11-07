@@ -17,8 +17,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     WindowStartupLocation="CenterScreen"
     Width="600"
-    Height="250"
-    util:WindowUtilities.CloseOnEscape="True">
+    Height="250">
 
     <Grid Name="MainContentControl" x:FieldModifier="public">
         <Grid.RowDefinitions>

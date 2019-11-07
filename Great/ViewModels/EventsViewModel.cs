@@ -188,7 +188,7 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 EventTypes = new ObservableCollection<EventTypeDTO>(db.EventTypes.ToList().Select(e => new EventTypeDTO(e)));
-                Events = new ObservableCollectionEx<EventEVM>(db.Events.Where(e => e.StartDateTimeStamp >= mindatefilter && e.EndDateTimeStamp <= maxdatefilter).ToList().Select(e => new EventEVM(e)));
+                Events = new ObservableCollectionEx<EventEVM>(db.Events.Where(e => e.StartDateTimeStamp >= mindatefilter && e.StartDateTimeStamp <= maxdatefilter).ToList().Select(e => new EventEVM(e)));
             }
 
             NextYearCommand = new RelayCommand(() => { CurrentYear++; FilteredEvents.Refresh(); });
@@ -334,12 +334,11 @@ namespace Great2.ViewModels
             Events.Clear();
 
             var mindatefilter = new DateTime(CurrentYear, 1, 1).ToUnixTimestamp();
-            var maxdatefilter = new DateTime(CurrentYear, 12, 31).ToUnixTimestamp();
 
             using (DBArchive db = new DBArchive())
             {
                 (from e in db.Events
-                 where e.StartDateTimeStamp >= mindatefilter && e.EndDateTimeStamp <= maxdatefilter
+                 where e.StartDateTimeStamp >= mindatefilter
                  select e).ToList().ForEach(e => Events.Add(new EventEVM(e)));
             }
 
