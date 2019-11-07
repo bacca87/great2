@@ -14,7 +14,10 @@
         Title="Microsoft Exchange Account" 
         Height="150" Width="400"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+        ShowMinButton="False"
+        ShowMaxRestoreButton="False"
+        ResizeMode="NoResize"
+        util:WindowUtilities.CloseOnEscape="True">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
