@@ -105,6 +105,64 @@ namespace Great2.Models
 
             Messenger.Default.Send(new ProviderEmailSentMessage<EmailMessageDTO>(this, e.Message));
         }
+        
+        public bool CreateVirtualFdl(string Id, long StartDay, int WeekNr, int Order, bool IsExtra)
+        {
+            try
+            {
+                using (DBArchive db = new DBArchive())
+                {
+                    if (Id == null || Id.Length != 10 || Convert.ToInt32(Id.Substring(0, 4)) < ApplicationSettings.Timesheets.MinYear || WeekNr < 1 || WeekNr > 52 || db.FDLs.Any(fdl => fdl.Id == Id))
+                        return false;
+
+                    using (var transaction = db.Database.BeginTransaction())
+                    {
+                        FDLEVM virtualFDL = new FDLEVM()
+                        {
+                            Id = Id,
+                            StartDay = StartDay,
+                            WeekNr = WeekNr,
+                            Order = Order,
+                            IsExtra = IsExtra,
+                            IsVirtual = true,
+                            EStatus = EFDLStatus.Accepted,
+                            NotifyAsNew = true,
+                            FileName = ""
+                        };
+
+                        if (virtualFDL.Save(db))
+                        {
+                            ExpenseAccountEVM virtualEA = new ExpenseAccountEVM()
+                            {
+                                FDL = virtualFDL.Id,
+                                EStatus = EFDLStatus.Accepted,
+                                IsVirtual = true,
+                                NotifyAsNew = true,
+                                FileName = ""
+                            };
+
+                            if (virtualEA.Save(db))
+                            {
+                                virtualFDL.Refresh(db);
+                                virtualEA.Refresh(db);
+
+                                Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, virtualFDL));
+                                Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, virtualEA));
+
+                                transaction.Commit();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: Log here
+            }
+
+            return false;
+        }
 
         public ExpenseAccountEVM ImportEAFromFile(string filePath, bool NotifyAsNew = true, bool ExcludeExpense = false, bool OverrideIfExist = false)
         {

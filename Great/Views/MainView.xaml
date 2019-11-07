@@ -29,6 +29,7 @@
             <Fluent:Ribbon.Resources>
                 <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
                 <conv:CompareIntConverter x:Key="CompareIntConverter"/>
+                <conv:NegateBoolConverter x:Key="NegateBoolConverter"/>
             </Fluent:Ribbon.Resources>
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
@@ -240,7 +241,7 @@
                                   Visibility="{Binding ElementName=fdlTab, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
                                   IsSelected="{Binding ElementName=fdlTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
                 <Fluent:RibbonGroupBox Header="E-Mail">
-                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png" IsEnabled="{Binding SelectedFDL.IsVirtual, Converter={StaticResource NegateBoolConverter}}">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send FDL by Email" Text="Send the selected FDL by email." />
                         </Fluent:DropDownButton.ToolTip>
@@ -318,6 +319,13 @@
                     <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Virtual">
+                    <Fluent:Button Name="AddVirtualFdlButton" Header="Add Virtual FDL" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/build-fdl.png" Click="AddVirtualFdlButton_Click">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Add Virtual FDL" Text="Create a new virtual FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -409,7 +417,7 @@
                                   IsSelected="{Binding ElementName=expenseAccountTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="E-Mail">
-                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png">
+                    <Fluent:DropDownButton Header="Send" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/mail.png" IsEnabled="{Binding SelectedEA.IsVirtual, Converter={StaticResource NegateBoolConverter}}">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
                         </Fluent:DropDownButton.ToolTip>

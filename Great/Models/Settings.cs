@@ -1020,7 +1020,7 @@ namespace Great2.Models
         #region Timesheets
         public static class Timesheets
         {
-            public const int MinYear = 1900;
+            public const int MinYear = 1980;
             public const int MaxYear = 2100;
         }
         #endregion

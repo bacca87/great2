@@ -50,6 +50,7 @@ namespace Great2.ViewModels
             SimpleIoc.Default.Register<FDLViewModel>(true);
             SimpleIoc.Default.Register<ExpenseAccountViewModel>(true);
             SimpleIoc.Default.Register<SettingsViewModel>(true);
+            SimpleIoc.Default.Register<AddVirtualFDLViewModel>(true);
 
             // Sharepoint
             SimpleIoc.Default.Register<MSSharepointProvider>(true);
@@ -57,33 +58,21 @@ namespace Great2.ViewModels
         }
 
         public TimesheetsViewModel Timesheets => SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
-
         public FactoriesViewModel Factories => SimpleIoc.Default.GetInstance<FactoriesViewModel>();
-
         public InformationsViewModel Informations => SimpleIoc.Default.GetInstance<InformationsViewModel>();
-
         public FDLViewModel FDL => SimpleIoc.Default.GetInstance<FDLViewModel>();
-
         public ExpenseAccountViewModel ExpenseAccount => SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>();
-
         public SettingsViewModel Settings => SimpleIoc.Default.GetInstance<SettingsViewModel>();
-
         public NotificationsViewModel Notifications => SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-
         public ImportExportViewModel ImportExport => SimpleIoc.Default.GetInstance<ImportExportViewModel>();
-
         public GreatImportWizardViewModel GreatImportWizard => SimpleIoc.Default.GetInstance<GreatImportWizardViewModel>();
-
         public OrderRecipientsViewModel OrderRecipients => SimpleIoc.Default.GetInstance<OrderRecipientsViewModel>();
-
         public StatisticsViewModel Statistics => SimpleIoc.Default.GetInstance<StatisticsViewModel>();
-
         public CarRentalViewModel CarRental => SimpleIoc.Default.GetInstance<CarRentalViewModel>();
-
         public FDLImportWizardViewModel FDLImportWizard => SimpleIoc.Default.GetInstance<FDLImportWizardViewModel>();
-
         public EventsViewModel Events => SimpleIoc.Default.GetInstance<EventsViewModel>();
         public ChartDataPopupViewModel DataPopup => SimpleIoc.Default.GetInstance<ChartDataPopupViewModel>();
+        public AddVirtualFDLViewModel VirtualFDL => SimpleIoc.Default.GetInstance<AddVirtualFDLViewModel>();        
 
         public static void Cleanup()
         {
