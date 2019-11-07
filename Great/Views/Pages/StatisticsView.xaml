@@ -46,10 +46,10 @@
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Days Worked" Count="{Binding WorkedDays}" ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Holidays worked" Count="{Binding WorkedHolidays}"   ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Saturdays worked" Count="{Binding WorkedSaturdays}"   ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Sundays worked" Count="{Binding WorkedSundays}"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Days Worked" Count="{Binding WorkedDays}" Click="Tile_Click" ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Holidays worked" Count="{Binding WorkedHolidays}" Click="Tile_Click"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Saturdays worked" Count="{Binding WorkedSaturdays}" Click="Tile_Click"   ></mah:Tile>
+                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Sundays worked" Count="{Binding WorkedSundays}" Click="Tile_Click"  ></mah:Tile>
                 </StackPanel>
                 <Grid Grid.Row="2" Grid.Column="0"  >
                     <Grid.RowDefinitions>
@@ -196,7 +196,7 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Most visited countries</Label>
 
-                        <lvc:GeoMap Grid.Row="1" x:Name="GeoFactoryCountries" HeatMap="{Binding FactoryCountries}" Background="Transparent"  UseLayoutRounding="True" Source="World.xml" Margin="10,10,50,10" />
+                        <lvc:GeoMap Grid.Row="1" x:Name="GeoFactoryCountries" HeatMap="{Binding FactoryCountries}" Background="Transparent" LandClick="GeoFactoryCountries_LandClick" UseLayoutRounding="True" Source="World.xml" Margin="10,10,50,10" />
 
                     </Grid>
                 </Grid>

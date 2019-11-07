@@ -47,7 +47,7 @@ namespace Great2.ViewModels
                 {
 
                     RentStartDateFilter = new DateTime(_currentYear, 1, 1);
-                    RentEndDateFilter = new DateTime(CurrentYear, 12, 31);
+                    RentStartDateFilter = new DateTime(_currentYear, 12, 31);
                     UpdateRentList();
                     FilteredRentals.MoveCurrentToFirst();
                     SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem;
@@ -410,16 +410,13 @@ namespace Great2.ViewModels
         private void UpdateRentList()
         {
             Rentals.Clear();
-
-            var mindatefilter = new DateTime(CurrentYear, 1, 1);
-            var maxdatefilter = new DateTime(CurrentYear, 12, 31);
-            var minTimeStamp = mindatefilter.ToUnixTimestamp();
-            var maxTimeStamp = maxdatefilter.ToUnixTimestamp();
+            var minTimeStamp = RentStartDateFilter.Value.ToUnixTimestamp();
+            var maxTimeStamp = RentEndDateFilter.Value.ToUnixTimestamp();
 
             using (DBArchive db = new DBArchive())
             {
                 (from r in db.CarRentalHistories
-                 where r.StartDate >= minTimeStamp && r.EndDate <= maxTimeStamp
+                 where r.StartDate >= minTimeStamp && r.StartDate <= maxTimeStamp
                  select r).ToList().ForEach(c => Rentals.Add(new CarRentalHistoryEVM(c)));
 
             }

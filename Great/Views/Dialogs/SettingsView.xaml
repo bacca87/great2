@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:local="clr-namespace:Great2.Views.Pages"
+    xmlns:util="clr-namespace:Great2.Utils"
     xmlns:date="clr-namespace:Nager.Date;assembly=Nager.Date"
     xmlns:enm="clr-namespace:Great2.Models"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"      
@@ -24,7 +25,8 @@
     WindowStartupLocation="CenterOwner"
     ResizeMode="CanResizeWithGrip"
     ShowMinButton="False"
-    ShowMaxRestoreButton="False">
+    ShowMaxRestoreButton="False"
+    util:WindowUtilities.CloseOnEscape="True">
     <mah:MetroWindow.Resources>
         <conv:NegateBoolConverter x:Key="NegateBoolConverter"/>
     </mah:MetroWindow.Resources>
