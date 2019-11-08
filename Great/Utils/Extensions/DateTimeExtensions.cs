@@ -7,7 +7,10 @@ namespace Great2.Utils.Extensions
     {
         public static int WeekNr(this DateTime datetime)
         {
-            return DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(datetime, DateTimeFormatInfo.CurrentInfo.CalendarWeekRule, DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek);
+            // this change the week number depending on culture
+            //return DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(datetime, DateTimeFormatInfo.CurrentInfo.CalendarWeekRule, DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek);  
+
+            return DateTimeFormatInfo.CurrentInfo.Calendar.GetWeekOfYear(datetime, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
         }
 
         public static long ToUnixTimestamp(this DateTime datetime)
