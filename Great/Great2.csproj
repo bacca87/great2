@@ -114,6 +114,7 @@
     <Compile Include="Utils\MetroMessageBox.cs" />
     <Compile Include="Utils\Notifications\Great2NotificationActivator.cs" />
     <Compile Include="Utils\ToastNotificationHelper.cs" />
+    <Compile Include="Utils\WindowUtilities.cs" />
     <Compile Include="ViewModels\ChartDataPopupViewModel.cs" />
     <Compile Include="ViewModels\AddVirtualFDLViewModel.cs" />
     <Compile Include="Views\Dialogs\ChartDataPopupView.xaml.cs">

@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Great2.Views.Dialogs"
+             xmlns:util="clr-namespace:Great2.Utils"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -15,7 +16,8 @@
             Height="600"
             ResizeMode="CanResizeWithGrip"
             ShowMinButton="False"
-            ShowMaxRestoreButton="False">
+            ShowMaxRestoreButton="False"
+            util:WindowUtilities.CloseOnEscape="True">
     <mah:MetroWindow.Resources>
         <CollectionViewSource x:Key="DaysCollectionView" Source="{Binding Days}">
             <CollectionViewSource.SortDescriptions>
@@ -65,7 +67,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Day" Binding="{Binding Date.DayOfYear}" FontWeight="Regular" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_DisplayChartPopup}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                 <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>

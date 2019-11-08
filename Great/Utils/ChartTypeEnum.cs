@@ -10,6 +10,8 @@ namespace Great2.Utils
     {
         DayByType,
         FactoriesByType,
-        Factories
+        Factories,
+        Tile,
+        WorldMap
     }
 }

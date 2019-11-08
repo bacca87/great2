@@ -332,6 +332,7 @@ namespace Great2.ViewModels.Database
         #endregion
 
         #region Display Properties
+        public string WeekNr_DisplayChartPopup => WeekNr.ToString();
         public string WeekNr_Display => Date.DayOfWeek == DayOfWeek.Monday ? WeekNr.ToString() : "";
         public string Factories_Display
         {
