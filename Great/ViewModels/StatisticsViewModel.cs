@@ -208,7 +208,7 @@ namespace Great2.ViewModels
 
         private void LoadFactoriesData()
         {
-            Dictionary<string, int> factoriesData = new Dictionary<string, int>();
+            Dictionary<long, int> factoriesData = new Dictionary<long, int>();
             Factories.Clear();
             FactoryCountries.Clear();
 
@@ -219,24 +219,23 @@ namespace Great2.ViewModels
                 factoriesData = (from fdl in db.FDLs
                                  from timesheets in fdl.Timesheets
                                  where fdl.Id.Substring(0, 4) == YearStr && fdl.Factory1 != null
-                                 group fdl.Factory1 by fdl.Factory1.Name into factories
+                                 group fdl.Factory1 by fdl.Factory1.Id into factories
                                  select factories).ToDictionary(x => x.Key, x => x.Count());
 
                 Dictionary<string, double> temp = new Dictionary<string, double>();
 
-                foreach (KeyValuePair<string, int> entry in factoriesData)
+                foreach (KeyValuePair<long, int> entry in factoriesData)
                 {
                     PieSeries factory = new PieSeries
                     {
-                        Title = entry.Key,
+                        Title = db.Factories.SingleOrDefault(x => x.Id == entry.Key)?.Name,
                         Values = new ChartValues<int> { entry.Value },
                         DataLabels = true,
-
                     };
 
                     Factories.Add(factory);
 
-                    var f = db.Factories.SingleOrDefault(x => x.Name == entry.Key);
+                    var f = db.Factories.SingleOrDefault(x => x.Id == entry.Key);
 
                     if (f != null && f?.CountryCode != null)
                     {
@@ -245,7 +244,6 @@ namespace Great2.ViewModels
                         else
                             temp.Add(f.CountryCode, entry.Value);
                     }
-
                 }
 
                 //This is required because add and clear does not fire set accessor of property
