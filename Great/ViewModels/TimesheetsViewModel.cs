@@ -416,7 +416,7 @@ namespace Great2.ViewModels
                 MetroMessageBox.Show("This timesheet is overlapping with the existing ones!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            else if (SelectedFDL != null && SelectedWorkingDay.Timesheets.Any(t => t.FDL != string.Empty && t.FDL == SelectedFDL.Id))
+            else if (SelectedFDL != null && SelectedWorkingDay.Timesheets.Any(t => t.Id != timesheet.Id && t.FDL != string.Empty && t.FDL == SelectedFDL.Id))
             {
                 MetroMessageBox.Show("The selected FDL is already assigned to another timesheet!", "Invalid FDL", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
