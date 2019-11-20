@@ -210,7 +210,7 @@
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Other">
-                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click" LargeIcon="pack://application:,,,/Great2;component/Images/32/events.png">
+                    <Fluent:ToggleButton Header="Events" Click="mEventPage_Click" LargeIcon="pack://application:,,,/Great2;component/Images/32/events.png" IsEnabled="False">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="Events" Text="Manage calendar events." />
                         </Fluent:ToggleButton.ToolTip>

@@ -53,8 +53,8 @@ namespace Great2.ViewModels
             SimpleIoc.Default.Register<AddVirtualFDLViewModel>(true);
 
             // Sharepoint
-            SimpleIoc.Default.Register<MSSharepointProvider>(true);
-            SimpleIoc.Default.Register<EventsViewModel>(true);
+            //SimpleIoc.Default.Register<MSSharepointProvider>(true);
+            //SimpleIoc.Default.Register<EventsViewModel>(true);
         }
 
         public TimesheetsViewModel Timesheets => SimpleIoc.Default.GetInstance<TimesheetsViewModel>();

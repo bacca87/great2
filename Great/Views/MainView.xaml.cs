@@ -143,7 +143,7 @@ namespace Great2.Views
             SimpleIoc.Default.GetInstance<ExpenseAccountViewModel>().SelectedEA?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<FactoriesViewModel>().SelectedFactory?.CheckChangedEntity();
             SimpleIoc.Default.GetInstance<CarRentalViewModel>().SelectedRent?.CheckChangedEntity();
-            SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
+            //SimpleIoc.Default.GetInstance<EventsViewModel>().SelectedEvent?.CheckChangedEntity();
         }
 
         private void AddVirtualFdlButton_Click(object sender, RoutedEventArgs e)
