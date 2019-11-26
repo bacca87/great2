@@ -169,29 +169,42 @@
                     <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
-                <TextBlock Text="CURRENCY:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="15"/>
-                <ComboBox
-                    SelectedItem="{Binding SelectedEA.Currency1}"
-                    SelectedValue="{Binding SelectedEA.Currency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
-                    IsEnabled="{Binding IsInputEnabled}"
-                    Text="{Binding CurrencyText, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
-                    DisplayMemberPath="Description"
-                    SelectedValuePath="Id"
-                    Width="250"
-                    FontSize="15"
-                    IsEditable="True">
-                    <ComboBox.Resources>
-                        <CollectionViewSource x:Key="Items" Source="{Binding Currencies}" />
-                    </ComboBox.Resources>
-                    <ComboBox.ItemsSource>
-                        <CompositeCollection>
-                            <m:CurrencyDTO />
-                            <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                        </CompositeCollection>
-                    </ComboBox.ItemsSource>
-                </ComboBox>
-            </StackPanel>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="0,0,0,5" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Expense Account {0}">
+                            <Binding Path="SelectedEA.FDL_Display" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
+                    <TextBlock Text="CURRENCY:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="15"/>
+                    <ComboBox
+                        SelectedItem="{Binding SelectedEA.Currency1}"
+                        SelectedValue="{Binding SelectedEA.Currency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                        IsEnabled="{Binding IsInputEnabled}"
+                        Text="{Binding CurrencyText, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                        DisplayMemberPath="Description"
+                        SelectedValuePath="Id"
+                        Width="250"
+                        FontSize="15"
+                        IsEditable="True">
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Items" Source="{Binding Currencies}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <m:CurrencyDTO />
+                                <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>            
             <FrameworkElement Name="dummyElement" Visibility="Collapsed"/>
             <!--HACK FOR SET DATAGRID COLUMNS READONLY-->
             <DataGrid 

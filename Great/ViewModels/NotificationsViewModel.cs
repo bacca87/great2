@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Great2.Models.DTO;
+using Great2.Models;
 
 namespace Great2.ViewModels
 {
@@ -162,7 +163,8 @@ namespace Great2.ViewModels
             if (fdl.Content.NotifyAsNew)
                 NewFDLCount++;
 
-            ToastNotificationHelper.SendToastNotification("New FDL Received", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
+            if(!fdl.Content.IsVirtual)
+                ToastNotificationHelper.SendToastNotification("New FDL Received", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04 );
         }
 
         private void OnFDLChanged(ItemChangedMessage<FDLEVM> fdl)
@@ -170,11 +172,8 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive()) 
                 NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
 
-            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
-                ToastNotificationHelper.SendToastNotification("FDL Accepted", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
-
-            else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
-                ToastNotificationHelper.SendToastNotification("FDL Rejected", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            if (!fdl.Content.IsVirtual)
+                ToastNotificationHelper.SendToastNotification($"FDL {Enum.GetName(typeof(EFDLStatus), fdl.Content.EStatus)}", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
 
         private void OnEAReceived(NewItemMessage<ExpenseAccountEVM> ea)
@@ -182,19 +181,17 @@ namespace Great2.ViewModels
             if (ea.Content.NotifyAsNew)
                 NewExpenseAccountsCount++;
 
-            ToastNotificationHelper.SendToastNotification("New Expense Account Received", ea.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            if (!ea.Content.IsVirtual)
+                ToastNotificationHelper.SendToastNotification("New Expense Account Received", ea.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
 
-        private void OnEAChanged(ItemChangedMessage<ExpenseAccountEVM> fdl)
+        private void OnEAChanged(ItemChangedMessage<ExpenseAccountEVM> ea)
         {
             using (DBArchive db = new DBArchive())
                 NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
 
-            if (fdl.Content.EStatus == Models.EFDLStatus.Accepted)
-                ToastNotificationHelper.SendToastNotification("Expense Account Accepted", fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
-
-            else if (fdl.Content.EStatus == Models.EFDLStatus.Rejected)
-                ToastNotificationHelper.SendToastNotification("Expense Account Rejected",fdl.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+            if (!ea.Content.IsVirtual)
+                ToastNotificationHelper.SendToastNotification($"Expense Account {Enum.GetName(typeof(EFDLStatus), ea.Content.EStatus)}", ea.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
 
         private void OnNewFactory(NewItemMessage<FactoryEVM> factory)
@@ -214,12 +211,7 @@ namespace Great2.ViewModels
         {
             using (var db = new DBArchive())
             {
-
-                if (ev.Content.EStatus == Models.EEventStatus.Accepted)
-                    ToastNotificationHelper.SendToastNotification("Event Approved", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
-
-                else if (ev.Content.EStatus == Models.EEventStatus.Rejected)
-                    ToastNotificationHelper.SendToastNotification("Event Rejected", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
+                ToastNotificationHelper.SendToastNotification($"Event {Enum.GetName(typeof(EEventStatus), ev.Content.EStatus)}", ev.Content.Title, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
             }
         }
 

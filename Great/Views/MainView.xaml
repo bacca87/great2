@@ -323,11 +323,11 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Virtual">
-                    <Fluent:Button Name="AddVirtualFdlButton" Header="Add Virtual FDL" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/build-fdl.png" Click="AddVirtualFdlButton_Click">
+                    <Fluent:Button Name="AddVirtualFdlButton" Header="Add Virtual FDL" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/cpu.png" Click="AddVirtualFdlButton_Click">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add Virtual FDL" Text="Create a new virtual FDL." />
                         </Fluent:Button.ToolTip>
-                    </Fluent:Button>
+                    </Fluent:Button>                    
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Year">
                     <Fluent:TextBox Text="{Binding CurrentYear, Mode=TwoWay}" TextAlignment="Center" PreviewTextInput="yearTextBox_PreviewTextInput" SizeDefinition="Small" MaxLength="4">

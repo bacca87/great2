@@ -207,7 +207,8 @@ namespace Great2.ViewModels.Database
         #endregion;
 
         #region Display Properties
-        public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}";
+        public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}{(IsVirtual ? "(V)" : string.Empty)}";
+        public string FDL_Display => $"{FDL}{(IsVirtual ? " (Virtual)" : string.Empty)}";
         public string TotalAmount_Display => TotalAmount > 0 ? $"{TotalAmount}{CurrencyCode}" : string.Empty;
         public string DeductionAmount_Display => DeductionAmount > 0 ? $"{DeductionAmount}{CurrencyCode}" : string.Empty;
         #endregion

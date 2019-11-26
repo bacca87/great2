@@ -145,11 +145,10 @@ namespace Great2.Models
                             {
                                 virtualFDL.Refresh(db);
                                 virtualEA.Refresh(db);
+                                transaction.Commit();
 
                                 Messenger.Default.Send(new NewItemMessage<FDLEVM>(this, virtualFDL));
                                 Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, virtualEA));
-
-                                transaction.Commit();
                                 return true;
                             }
                         }
@@ -214,7 +213,7 @@ namespace Great2.Models
                         {
                             ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(e => e.FileName == ea.FileName);
 
-                            if (tmpEA != null && OverrideIfExist)
+                            if (tmpEA != null && (tmpEA.IsVirtual || OverrideIfExist))
                             {
                                 db.ExpenseAccounts.Remove(tmpEA);
                                 db.SaveChanges();
@@ -402,7 +401,7 @@ namespace Great2.Models
                             Factory factory = null;
                             bool IsNewFactory = false;
 
-                            if (tmpFdl != null && OverrideIfExist)
+                            if (tmpFdl != null && (tmpFdl.IsVirtual || OverrideIfExist))
                             {
                                 db.FDLs.Remove(tmpFdl);
                                 db.SaveChanges();
@@ -639,7 +638,7 @@ namespace Great2.Models
                             Factory factory = null;
                             bool IsNewFactory = false;
 
-                            if (tmpFdl != null && OverrideIfExist)
+                            if (tmpFdl != null && (tmpFdl.IsVirtual || OverrideIfExist))
                             {
                                 db.FDLs.Remove(tmpFdl);
                                 db.SaveChanges();

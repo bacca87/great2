@@ -265,8 +265,8 @@ namespace Great2.ViewModels.Database
         #endregion
 
         #region Display Properties
-        public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{Id}";
-        public string FDL_Display => $"{Id}{(IsExtra ? " (EXTRA)" : "")}";
+        public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{Id}{(IsVirtual ? "(V)" : string.Empty)}";
+        public string FDL_Display => $"{Id}{(IsExtra ? " (EXTRA)" : "")}{(IsVirtual ? " (Virtual)" : string.Empty)}";
         public string FDL_Factory_Display => $"{Id}{(Factory1 != null ? $" [{Factory1.Name}]" : "")}{(IsExtra ? " (EXTRA)" : "")}";
         #endregion
 

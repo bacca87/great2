@@ -554,6 +554,7 @@
     <Resource Include="Images\32\road.png" />
     <Resource Include="Images\32\wall-calendar.png" />
     <Resource Include="Images\32\clear-filters.png" />
+    <Resource Include="Images\32\cpu.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
