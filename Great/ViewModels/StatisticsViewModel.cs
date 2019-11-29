@@ -21,6 +21,7 @@ namespace Great2.ViewModels
     {
         #region Properties
         private Func<ChartPoint, string> HoursLabel { get; set; }
+        private Func<ChartPoint, string> KmLabel { get; set; }
         private Func<ChartPoint, string> CurrencyLabel { get; set; }
 
         private int _WorkedDays;
@@ -179,6 +180,7 @@ namespace Great2.ViewModels
             ChangeTabCommand = new RelayCommand<int>(ChangeTab);
 
             HoursLabel = chartPoint => chartPoint.Y.ToString("N2") + "h";
+            KmLabel = chartPoint => chartPoint.Y.ToString() + "Km";
             MonthsCurrenciesLabels = new List<string>();
 
             SelectedYear = DateTime.Now.Year;
@@ -640,7 +642,14 @@ namespace Great2.ViewModels
                         Title = "Driven Km",
                         Values = TotalKm,
                         DataLabels = false,
-                        LabelPoint = HoursLabel
+                        LabelPoint = KmLabel
+                    },
+                    new LineSeries
+                    {
+                        Title = "Total",
+                        Values = TotalKm,
+                        DataLabels = true,
+                        LabelPoint = KmLabel
                     }
                 };
             }
