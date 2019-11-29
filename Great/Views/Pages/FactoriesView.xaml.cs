@@ -162,14 +162,22 @@ namespace Great2.Views
             if (point.HasValue)
             {
                 if (tempMarker != null)
-                {
                     factoriesMapControl.Markers.Remove(tempMarker);
+
+                GeoCoderStatusCode status;
+                Placemark? placemark = (factoriesMapControl.MapProvider as GeocodingProvider).GetPlacemark(point.Value, out status);
+
+                if (status == GeoCoderStatusCode.OK && placemark.HasValue)
+                {
+                    FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng, CountryCode = placemark.Value.CountryNameCode.ToUpper() };
+                    GMapMarker marker = CreateMarker(point.Value, factory, FactoryMarkerColor.Green);
+                    tempMarker = marker;
+                    factoriesMapControl.Markers.Add(marker);
+
+                    ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
+
+                    _viewModel.SelectedFactory = factory;
                 }
-
-                tempMarker = CreateMarker(point.Value, new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = searchEntryTextBox.Text.Trim(), Latitude = point.Value.Lat, Longitude = point.Value.Lng }, FactoryMarkerColor.Green);
-                factoriesMapControl.Markers.Add(tempMarker);
-
-                ZoomOnPoint(point.Value, ApplicationSettings.Map.ZoomMarker);
             }
         }
 
@@ -403,7 +411,7 @@ namespace Great2.Views
                             factoriesMapControl.Markers.Remove(tempMarker);
                         }
 
-                        FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng };
+                        FactoryEVM factory = new FactoryEVM() { Name = ApplicationSettings.Map.NewFactoryName, Address = placemark.Value.Address.Trim(), Latitude = mapPosition.Lat, Longitude = mapPosition.Lng, CountryCode = placemark.Value.CountryNameCode.ToUpper() };
                         GMapMarker marker = CreateMarker(mapPosition, factory, FactoryMarkerColor.Green);
                         tempMarker = marker;
                         factoriesMapControl.Markers.Add(marker);
