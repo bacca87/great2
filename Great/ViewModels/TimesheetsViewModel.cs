@@ -398,12 +398,12 @@ namespace Great2.ViewModels
 
             if (!timesheet.IsValid && timesheet.TotalTime.HasValue)
             {
-                MetroMessageBox.Show("Cannot save the Timesheet, invalid time period!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show("Invalid time period! Operation cancelled.", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            else if(!timesheet.IsValid)
+            else if(!timesheet.TotalTime.HasValue && SelectedFDL == null && (timesheet.Notes == null || timesheet.Notes.Trim() == string.Empty))
             {
-                MetroMessageBox.Show("Cannot save the Timesheet, empty timesheets are allowed only if an FDL or a Note is assigned!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
+                MetroMessageBox.Show("Empty timesheets are allowed only if at least a FDL or a Note are assigned!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             else if (timesheet.HasOverlaps(SelectedWorkingDay.Timesheets.Where(t => t.Id != timesheet.Id)))

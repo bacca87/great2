@@ -375,7 +375,7 @@ namespace Great2.ViewModels.Database
                     (TravelEndTimePM_t.HasValue && !WorkEndTimePM_t.HasValue && !TravelStartTimePM_t.HasValue))
                     return false;
 
-                if (TimePeriods == null && FDL == null && Notes == null)
+                if (TimePeriods == null)
                     return false;
 
                 if (TimePeriods != null && TimePeriods.HasOverlaps())

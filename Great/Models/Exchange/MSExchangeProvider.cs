@@ -98,7 +98,7 @@ namespace Great2.Models
                         return result;
                     });
                 }
-                catch
+                catch(Exception ex)
                 {
                     if (trace.Result == ETraceResult.LoginError)
                     {
