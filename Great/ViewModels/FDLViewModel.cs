@@ -262,17 +262,13 @@ namespace Great2.ViewModels
 
                         if (fdl != null)
                         {
-                            var ts = fdl.Timesheets.Where(x => x.Timestamp == item.Content.Timestamp).FirstOrDefault();
-
-                            if (ts != null)
-                                ts = item.Content;
-                            else
-                                fdl.Timesheets.Add(item.Content);
-
-                            fdl.IsCompiled = false;
-                            fdl.Save();
+                            using(DBArchive db = new DBArchive())
+                            {
+                                fdl.Refresh(db);
+                                fdl.IsCompiled = false;
+                                fdl.Save(db);
+                            }
                         }
-
                     }
                 })
             );
