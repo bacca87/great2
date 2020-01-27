@@ -614,7 +614,7 @@ namespace Great2.ViewModels
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
-                var Rents = db.CarRentalHistories.Where(cr => cr.StartDate >= startDate && cr.EndDate <= endDate && cr.Car1 != null).ToList().Select(cr => new CarRentalHistoryEVM(cr));
+                var Rents = db.CarRentalHistories.Where(cr => cr.StartDate >= startDate && cr.EndDate != null && cr.EndDate != 0 && cr.EndDate <= endDate && cr.Car1 != null && cr.EndKm != null && cr.EndKm > 0).ToList().Select(cr => new CarRentalHistoryEVM(cr));
 
                 ChartValues<float> TotalKm = new ChartValues<float>();
 
