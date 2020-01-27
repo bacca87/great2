@@ -136,7 +136,7 @@ namespace Great2.ViewModels.Database
         {
             get
             {
-                if (TotalTime == null || TotalTime >= 8)
+                if (TotalTime == null || TotalTime >= 8 || IsHoliday || Date.DayOfWeek == DayOfWeek.Saturday || Date.DayOfWeek == DayOfWeek.Sunday)
                 {
                     return null;
                 }
