@@ -193,19 +193,19 @@ namespace Great2.ViewModels
         }
         public ObservableCollectionEx<DayEVM> TotalDaysWorked
         {
-            get => new ObservableCollectionEx<DayEVM>(BusinessTripDays.Union(OfficeDays));
+            get => new ObservableCollectionEx<DayEVM>(BusinessTripDays.Union(OfficeDays).Where(x => x.TotalTime > 0));
         }
         public ObservableCollectionEx<DayEVM> TotalHolidaysWorked
         {
-            get => new ObservableCollectionEx<DayEVM>(TotalDaysWorked.Where(x => x.IsHoliday));
+            get => new ObservableCollectionEx<DayEVM>(TotalDaysWorked.Where(x => x.IsHoliday && x.TotalTime > 0));
         }
         public ObservableCollectionEx<DayEVM> TotalSaturdaysWorked
         {
-            get => new ObservableCollectionEx<DayEVM>(TotalDaysWorked.Where(x => x.Date.DayOfWeek == DayOfWeek.Saturday));
+            get => new ObservableCollectionEx<DayEVM>(TotalDaysWorked.Where(x => x.Date.DayOfWeek == DayOfWeek.Saturday && x.TotalTime > 0));
         }
         public ObservableCollectionEx<DayEVM> TotalSundaysWorked
         {
-            get => new ObservableCollectionEx<DayEVM>(TotalDaysWorked.Where(x => x.Date.DayOfWeek == DayOfWeek.Sunday));
+            get => new ObservableCollectionEx<DayEVM>(TotalDaysWorked.Where(x => x.Date.DayOfWeek == DayOfWeek.Sunday && x.TotalTime > 0));
         }
 
         private EChartType _chartType;
@@ -327,23 +327,23 @@ namespace Great2.ViewModels
 
                         case EChartType.Tile:
                             {
-                                switch (Key)
+                                switch (Key.ToLower())
                                 {
-                                    case "Days Worked":
+                                    case "days worked":
                                         Title = $"Days Worked: Details";
                                         return TotalDaysWorked;
 
-                                    case "Holidays worked":
+                                    case "holidays worked":
                                         Title = $"Holidays Worked: Details";
                                         return TotalHolidaysWorked;
 
-                                    case "Saturdays worked":
+                                    case "saturdays worked":
                                         Title = $"Saturdays Worked: Details";
                                         return TotalSaturdaysWorked;
 
-                                    case "Sundays Worked":
+                                    case "sundays worked":
                                         Title = $"Sundays Worked: Details";
-                                        return ExtraEuropeDays;
+                                        return TotalSundaysWorked;
 
                                     case null:
                                         return null;
