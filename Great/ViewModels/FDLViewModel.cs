@@ -385,6 +385,9 @@ namespace Great2.ViewModels
 
                 recipientsVM.Order = fdl.Order;
                 recipientsView.ShowDialog();
+
+                if (!recipientsVM.Result)
+                    return;
             }
 
             using (new WaitCursor())

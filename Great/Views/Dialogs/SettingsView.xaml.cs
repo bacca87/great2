@@ -15,9 +15,7 @@ namespace Great2.Views.Dialogs
             InitializeComponent();
 
             if (_viewModel != null)
-            {
                 _viewModel.Close = new System.Action(() => Close());
-            }
         }
 
         private void CancelButton_Click(object sender, System.Windows.RoutedEventArgs e)

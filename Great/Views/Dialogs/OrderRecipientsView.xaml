@@ -60,6 +60,9 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Grid.Row="3" Content="Done" Click="DoneButton_Click"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right">
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="0,0,5,0"/>
+            <Button Content="Send" Command="{Binding SendCommand}" Margin="0,0,5,0"/>
+        </StackPanel>
     </Grid>
 </mah:MetroWindow>

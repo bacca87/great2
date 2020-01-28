@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using Great2.Models;
 using Great2.Models.Database;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -61,17 +62,32 @@ namespace Great2.ViewModels
             get => _inputAddress;
             set => Set(ref _inputAddress, value);
         }
+
+        private bool _result;
+        public bool Result
+        {
+            get => _result;
+            set => Set(ref _result, value);
+        }
         #endregion
 
         #region Command Definitions
         public RelayCommand<string> AddCommand { get; set; }
         public RelayCommand<OrderEmailRecipient> RemoveCommand { get; set; }
+        public RelayCommand CancelCommand { get; set; }
+        public RelayCommand SendCommand { get; set; }
+        #endregion
+
+        #region Actions
+        public Action Close { get; set; }
         #endregion
 
         public OrderRecipientsViewModel()
         {
             AddCommand = new RelayCommand<string>(AddRecipient);
             RemoveCommand = new RelayCommand<OrderEmailRecipient>(RemoveRecipient);
+            CancelCommand = new RelayCommand(Cancel);
+            SendCommand = new RelayCommand(Send);
 
             Recipients = new ObservableCollection<OrderEmailRecipient>();
         }
@@ -117,6 +133,24 @@ namespace Great2.ViewModels
             }
 
             Recipients.Remove(recipient);
+        }
+
+        public void Cancel()
+        {
+            using (DBArchive db = new DBArchive())
+            {
+                db.OrderEmailRecipients.RemoveRange(db.OrderEmailRecipients.Where(r => r.Order == Order));
+                db.SaveChanges();
+            }
+
+            Result = false;
+            Close();
+        }
+
+        public void Send()
+        {
+            Result = true;
+            Close();
         }
     }
 }
