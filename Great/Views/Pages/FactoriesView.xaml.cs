@@ -102,7 +102,7 @@ namespace Great2.Views
                             return;
                         }
 
-                        var point = GetFactoryCoordsAsync(factory);
+                        var point = Task.Run(async () => await GetFactoryCoordsAsync(factory));
 
                         if (point.Result.HasValue)
                         {
@@ -249,7 +249,7 @@ namespace Great2.Views
             try
             {
                 // we call directly the OSM web api in order to prevent GUI freeze. The GetPoint method of Gmap.NET run on GUI thread freezing everything until the end of the computation
-                HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://nominatim.openstreetmap.org"), Timeout = new TimeSpan(0,0,2) };
+                HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://nominatim.openstreetmap.org")}; //, Timeout = new TimeSpan(0,0,2) 
                 httpClient.DefaultRequestHeaders.Add("User-Agent", ApplicationSettings.General.UserAgent);
 
                 HttpResponseMessage httpResult = await httpClient.GetAsync($"search.php?q={address}&format=json&polygon=1&addressdetails=1");
