@@ -120,6 +120,20 @@ namespace Great2.ViewModels
             }
         }
 
+        private ObservableCollection<string> _tags;
+        public ObservableCollection<string> Tags
+        {
+            get => _tags;
+            set => Set(ref _tags, value);
+        }
+
+        private ObservableCollection<string> _tagIdentifiers;
+        public ObservableCollection<string> TagIdentifiers
+        {
+            get => _tagIdentifiers;
+            set => Set(ref _tagIdentifiers, value);
+        }
+
         private FDLEVM _selectedFDL;
         public FDLEVM SelectedFDL
         {
@@ -165,6 +179,8 @@ namespace Great2.ViewModels
         /// </summary>
         public TimesheetsViewModel()
         {
+            Tags = new ObservableCollection<string>();
+            TagIdentifiers = new ObservableCollection<string>();
             NextYearCommand = new RelayCommand(() => CurrentYear++);
             PreviousYearCommand = new RelayCommand(() => CurrentYear--);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
@@ -188,11 +204,15 @@ namespace Great2.ViewModels
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
+
             MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, DayTypeChanged);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
 
             UpdateWorkingDays();
+
+            if (Tags.Count() == 0) Tags.Add("Test");
+            if (TagIdentifiers.Count() == 0) TagIdentifiers.Add("#");
         }
 
         private void UpdateWorkingDays()
@@ -210,7 +230,24 @@ namespace Great2.ViewModels
                         Day currentDay = db.Days.SingleOrDefault(d => d.Timestamp == timestamp);
 
                         if (currentDay != null)
-                            days.Add(new DayEVM(currentDay));
+                        {
+                            var de = new DayEVM(currentDay);
+                            days.Add(de);
+                            var notes = de.Timesheets.Select(x => x.Notes).Where(x => x != null).Where(x=> x.Contains("#"));
+
+                            foreach (string s in notes)
+                            {
+                                var parts = s.Split(' ');
+
+                                foreach (string str in parts.Where(x=> x.StartsWith("#")))
+                                {
+                                    if (!Tags.Contains(str)) Tags.Add(str);
+                                }
+
+                            }
+
+
+                        }
                         else
                             days.Add(new DayEVM { Date = day });
                         }

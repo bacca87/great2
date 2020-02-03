@@ -107,6 +107,8 @@
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
     <Compile Include="Utils\ChartTypeEnum.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
+    <Compile Include="Utils\Extensions\CustomTextFormatter.cs" />
+    <Compile Include="Utils\Extensions\RichTextBoxEx.cs" />
     <Compile Include="Utils\Notifications\DesktopNotificationManagerCompat.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
     <Compile Include="Utils\MaterialColors.cs" />
