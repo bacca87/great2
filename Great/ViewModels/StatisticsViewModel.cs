@@ -422,11 +422,11 @@ namespace Great2.ViewModels
                     }
                 };
 
-                WorkedDays = Days?.Where(x => x.Timesheets.Count > 0 ).Count() ?? 0;
+                WorkedDays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 ).Count() ?? 0;
                 TravelCount = Days?.Where(x => x.Timesheets.Any(d => d.FDL1 != null)).Count() ?? 0;
-                WorkedHolidays = Days?.Where(x => x.Timesheets.Count > 0  && x.IsHoliday).Count() ?? 0;
-                WorkedSaturdays = Days?.Where(x => x.Timesheets.Count > 0 && x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
-                WorkedSundays = Days?.Where(x => x.Timesheets.Count > 0  && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;                
+                WorkedHolidays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.IsHoliday).Count() ?? 0;
+                WorkedSaturdays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 &&  x.Date.DayOfWeek == DayOfWeek.Saturday).Count() ?? 0;
+                WorkedSundays = Days?.Where(x => x.Timesheets.Count > 0 && x.TotalTime > 0 && x.Date.DayOfWeek == DayOfWeek.Sunday).Count() ?? 0;                
             }
         }
 
@@ -614,7 +614,7 @@ namespace Great2.ViewModels
             {
                 long startDate = new DateTime(SelectedYear, 1, 1).ToUnixTimestamp();
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
-                var Rents = db.CarRentalHistories.Where(cr => cr.StartDate >= startDate && cr.EndDate <= endDate && cr.Car1 != null).ToList().Select(cr => new CarRentalHistoryEVM(cr));
+                var Rents = db.CarRentalHistories.Where(cr => cr.StartDate >= startDate && cr.EndDate != null && cr.EndDate != 0 && cr.EndDate <= endDate && cr.Car1 != null && cr.EndKm != null && cr.EndKm > 0).ToList().Select(cr => new CarRentalHistoryEVM(cr));
 
                 ChartValues<float> TotalKm = new ChartValues<float>();
 

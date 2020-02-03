@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using Great2.ViewModels;
+using MahApps.Metro.Controls;
 using System.Windows;
 
 namespace Great2.Views.Dialogs
@@ -8,15 +9,15 @@ namespace Great2.Views.Dialogs
     /// </summary>
     public partial class OrderRecipientsView : MetroWindow
     {
+        private OrderRecipientsViewModel _viewModel => DataContext as OrderRecipientsViewModel;
+
         public OrderRecipientsView()
         {
             InitializeComponent();
             Owner = Application.Current.MainWindow;
-        }
 
-        private void DoneButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+            if (_viewModel != null)
+                _viewModel.Close = new System.Action(() => Close());
         }
     }
 }

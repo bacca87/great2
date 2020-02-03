@@ -385,6 +385,9 @@ namespace Great2.ViewModels
 
                 recipientsVM.Order = fdl.Order;
                 recipientsView.ShowDialog();
+
+                if (!recipientsVM.Result)
+                    return;
             }
 
             using (new WaitCursor())
@@ -560,12 +563,13 @@ namespace Great2.ViewModels
         private void UpdateFDLList()
         {
             FDLs.Clear();
+
             string yr = CurrentYear.ToString();
             using (DBArchive db = new DBArchive())
             {
                 (from f in db.FDLs
                  let year = f.Id.Substring(0, 4)
-                 where year == yr
+                 where year == yr || f.Status == 0
                  select f).ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
             }
         }

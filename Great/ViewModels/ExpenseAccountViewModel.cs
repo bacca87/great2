@@ -553,9 +553,9 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 (from ex in db.ExpenseAccounts
-                           let year = ex.FDL.Substring(0, 4)
-                           where year == yr
-                           select ex).ToList().ForEach(ea=> ExpenseAccounts.Add( new ExpenseAccountEVM(ea)));
+                 let year = ex.FDL.Substring(0, 4)
+                 where year == yr || ex.Status == 0
+                 select ex).ToList().ForEach(ea=> ExpenseAccounts.Add( new ExpenseAccountEVM(ea)));
 
             }
         }

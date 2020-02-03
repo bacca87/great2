@@ -552,7 +552,7 @@
                     </Fluent:Gallery>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Charts">
-                    <Fluent:Button Header="Hours" Command="{Binding ChangeTabCommand}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/wall-calendar.png">
+                    <Fluent:Button Header="Hours Overview" Command="{Binding ChangeTabCommand}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/wall-calendar.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
@@ -560,7 +560,7 @@
                             <sys:Int32>0</sys:Int32>
                         </Fluent:Button.CommandParameter>
                     </Fluent:Button>
-                    <Fluent:Button Header="Travels" Command="{Binding ChangeTabCommand}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/maps.png">
+                    <Fluent:Button Header="Travels Overview" Command="{Binding ChangeTabCommand}"  SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/maps.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
@@ -568,7 +568,7 @@
                             <sys:Int32>1</sys:Int32>
                         </Fluent:Button.CommandParameter>
                     </Fluent:Button>
-                    <Fluent:Button Header="Kilometers" Command="{Binding ChangeTabCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/road.png">
+                    <Fluent:Button Header="Driving Overview" Command="{Binding ChangeTabCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/road.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
@@ -576,7 +576,7 @@
                             <sys:Int32>2</sys:Int32>
                         </Fluent:Button.CommandParameter>
                     </Fluent:Button>
-                    <Fluent:Button Header="Expenses" Command="{Binding ChangeTabCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/money.png">
+                    <Fluent:Button Header="Expenses Overview" Command="{Binding ChangeTabCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/money.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save Rent" Text="Save the current car rent." />
                         </Fluent:Button.ToolTip>
