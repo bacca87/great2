@@ -213,6 +213,7 @@ namespace Great2.ViewModels
             refreshTimer.Start();
 
             CanSelectPreviousPage = false;
+            ToastNotificationHelper.Enabled = false;
         }
 
         public void Cancel()
@@ -224,6 +225,8 @@ namespace Great2.ViewModels
 
             Refresh();
             Reset();
+
+            ToastNotificationHelper.Enabled = true;
         }
 
         public void Finish()
