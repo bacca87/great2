@@ -1065,6 +1065,16 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
+            public static string DefaultCurrency
+            {
+                get => Settings.Default.Currency;
+                set
+                {
+                    Settings.Default.Currency = value;
+                    Settings.Default.Save();
+                }
+            }
         }
         #endregion
 

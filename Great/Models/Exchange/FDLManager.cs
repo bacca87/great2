@@ -222,6 +222,12 @@ namespace Great2.Models
 
                             if (tmpEA == null)
                             {
+                                if (NotifyAsNew && (ea.Currency == null || ea.Currency == string.Empty))
+                                {
+                                    ea.Currency = UserSettings.Localization.DefaultCurrency;
+                                    ea.Currency1 = db.Currencies.SingleOrDefault(c => c.Id == ea.Currency);
+                                }
+
                                 db.ExpenseAccounts.Add(ea);
                                 db.SaveChanges();
 

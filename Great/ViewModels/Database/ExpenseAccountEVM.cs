@@ -237,6 +237,9 @@ namespace Great2.ViewModels.Database
             RaisePropertyChanged(nameof(SaturdayAmount));
             RaisePropertyChanged(nameof(SundayAmount));
             RaisePropertyChanged(nameof(TotalAmount));
+
+            RaisePropertyChanged(nameof(TotalAmount_Display));
+            RaisePropertyChanged(nameof(DeductionAmount_Display));
         }
 
         public override bool Save(DBArchive db)

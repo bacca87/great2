@@ -452,8 +452,8 @@ namespace Great2.ViewModels
 
                 if (dlg.ShowDialog() == true)
                     _fdlManager.SaveAs(ea, dlg.FileName);
-                }
             }
+        }
 
         public void Compile(ExpenseAccountEVM ea)
         {
@@ -480,8 +480,7 @@ namespace Great2.ViewModels
                 {
                     if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                         return;
-                    }
-
+                }
             }
 
             if (ea == null)
@@ -556,7 +555,6 @@ namespace Great2.ViewModels
                  let year = ex.FDL.Substring(0, 4)
                  where year == yr || ex.Status == 0
                  select ex).ToList().ForEach(ea=> ExpenseAccounts.Add( new ExpenseAccountEVM(ea)));
-
             }
         }
     }

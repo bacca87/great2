@@ -92,5 +92,8 @@
     <Setting Name="Great_SharepointReference_Lists" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">https://intranet.elettric80.it/_vti_bin/lists.asmx</Value>
     </Setting>
+    <Setting Name="Currency" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EUR</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
