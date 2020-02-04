@@ -172,7 +172,7 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive()) 
                 NewFDLCount = db.FDLs.Count(f => f.NotifyAsNew);
 
-            if (!fdl.Content.IsVirtual)
+            if (!fdl.Content.IsVirtual && fdl.Sender is FDLManager)
                 ToastNotificationHelper.SendToastNotification($"FDL {Enum.GetName(typeof(EFDLStatus), fdl.Content.EStatus)}", fdl.Content.Id, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
 
@@ -190,7 +190,7 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive())
                 NewExpenseAccountsCount = db.ExpenseAccounts.Count(e => e.NotifyAsNew);
 
-            if (!ea.Content.IsVirtual)
+            if (!ea.Content.IsVirtual && ea.Sender is FDLManager)
                 ToastNotificationHelper.SendToastNotification($"Expense Account {Enum.GetName(typeof(EFDLStatus), ea.Content.EStatus)}", ea.Content.FDL, null, Windows.UI.Notifications.ToastTemplateType.ToastImageAndText04);
         }
 
