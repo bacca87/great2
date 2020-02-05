@@ -18,7 +18,7 @@ namespace Great2.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Refresh(db);
-            }
+        }
 
         public abstract bool Refresh(DBArchive db);
 
@@ -26,7 +26,7 @@ namespace Great2.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Save(db);
-            }
+        }
 
         public abstract bool Save(DBArchive db);
 
@@ -34,7 +34,7 @@ namespace Great2.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Delete(db);
-            }
+        }
 
         public abstract bool Delete(DBArchive db);
 
@@ -63,6 +63,5 @@ namespace Great2.ViewModels.Database
             //When checking nested properties the parent name is passed and eventchanged is not fired
             return Set(ref field, newValue,propertyName);
         }
-
     }
 }

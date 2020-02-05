@@ -3,6 +3,7 @@ using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
 using Great2.Utils;
+using System;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -240,6 +241,120 @@ namespace Great2.ViewModels.Database
 
             RaisePropertyChanged(nameof(TotalAmount_Display));
             RaisePropertyChanged(nameof(DeductionAmount_Display));
+        }
+
+        public void UpdateDiaria(TimesheetEVM timesheet, bool remove, DBArchive db = null)
+        {
+            string CountryCode = timesheet.FDL1?.Factory1?.CountryCode;
+
+            if (CountryCode == null || CountryCode == string.Empty || CountryCode == "IT" || CountryCode == "GB" || CountryCode == "CH" || CountryCode == "SE")
+                return;
+
+            ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.DiariaType).FirstOrDefault();
+
+            if (expense == null)
+            {
+                expense = new ExpenseEVM();
+                expense.Id = 0;
+                expense.Type = ApplicationSettings.ExpenseAccount.DiariaType;
+                expense.ExpenseAccount = Id;
+
+                Expenses.Add(expense);
+            }
+
+            double? Diaria = remove ? (double?)null : ApplicationSettings.ExpenseAccount.DiariaValue;
+
+            if (!remove && 
+                ((timesheet.TravelPeriods != null && timesheet.WorkPeriods != null && timesheet.TravelPeriods.End > timesheet.WorkPeriods.End) ||
+                 (timesheet.TravelPeriods != null && timesheet.WorkPeriods == null)) &&
+                timesheet.TravelPeriods.End.TimeOfDay <= ApplicationSettings.ExpenseAccount.DiariaThreshold)
+                Diaria /= 2;
+
+            switch (timesheet.Date.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    expense.MondayAmount = Diaria;
+                    break;
+                case DayOfWeek.Tuesday:
+                    expense.TuesdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Wednesday:
+                    expense.WednesdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Thursday:
+                    expense.ThursdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Friday:
+                    expense.FridayAmount = Diaria;
+                    break;
+                case DayOfWeek.Saturday:
+                    expense.SaturdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Sunday:
+                    expense.SundayAmount = Diaria;
+                    break;
+            }
+
+            if (db != null)
+                expense.Save(db);
+            else
+                expense.Save();
+
+            IsChanged = false;
+        }
+
+        public void UpdatePocketMoney(TimesheetEVM timesheet, bool remove, DBArchive db = null)
+        {
+            string CountryCode = timesheet.FDL1?.Factory1?.CountryCode;
+
+            if (CountryCode == null || CountryCode == string.Empty || (CountryCode != "IT" && CountryCode != "GB" && CountryCode != "CH" && CountryCode != "SE"))
+                return;
+
+            ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.PocketMoneyType).FirstOrDefault();
+
+            if (expense == null)
+            {
+                expense = new ExpenseEVM();
+                expense.Id = 0;
+                expense.Type = ApplicationSettings.ExpenseAccount.PocketMoneyType;
+                expense.ExpenseAccount = Id;
+
+                Expenses.Add(expense);
+            }
+
+            double? PocketMoney = remove ? (double?)null : ApplicationSettings.ExpenseAccount.PocketMoneyValue;
+
+            switch (timesheet.Date.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    expense.MondayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Tuesday:
+                    expense.TuesdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Wednesday:
+                    expense.WednesdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Thursday:
+                    expense.ThursdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Friday:
+                    expense.FridayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Saturday:
+                    expense.SaturdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Sunday:
+                    expense.SundayAmount = PocketMoney;
+                    break;
+            }
+
+            if (db != null)
+                expense.Save(db);
+            else
+                expense.Save();
+
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)

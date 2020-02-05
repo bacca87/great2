@@ -214,7 +214,7 @@ namespace Great2.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        public void NewFDL(NewItemMessage<FDLEVM> item)
+        private void NewFDL(NewItemMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -226,7 +226,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
+        private void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
             if (item.Sender == this)
                 return;
@@ -250,7 +250,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
+        private void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -274,7 +274,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
+        private void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -297,7 +297,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void NewFactory(NewItemMessage<FactoryEVM> item)
+        private void NewFactory(NewItemMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -313,7 +313,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        private void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -330,12 +330,16 @@ namespace Great2.ViewModels
 
                         foreach (var fdl in fdlToUpdate)
                             fdl.Factory1 = factory;
+
+                        // hack update combo
+                        Factories.Remove(factory);
+                        Factories.Add(factory);
                     }
                 })
             );
         }
 
-        public void FactoryDeleted(DeletedItemMessage<FactoryEVM> item)
+        private void FactoryDeleted(DeletedItemMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,

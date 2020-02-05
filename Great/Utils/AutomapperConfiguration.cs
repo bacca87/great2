@@ -68,6 +68,7 @@ namespace Great2
                 cfg.CreateMap<TimesheetEVM, Timesheet>()
                     .ForMember(x => x.Day, opt => opt.Ignore())
                     .ForMember(x => x.FDL1, opt => opt.Ignore());
+                cfg.CreateMap<TimesheetEVM, TimesheetEVM>(); // used for copy paste timesheets
 
                 cfg.CreateMap<Factory, FactoryEVM>();
                 cfg.CreateMap<FactoryEVM, Factory>()

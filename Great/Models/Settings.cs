@@ -588,6 +588,14 @@ namespace Great2.Models
             public const int MaxExpenseCount = 15;
             public const int NotesMaxLength = 352;
 
+            public const double DiariaValue = 51.64;
+            public const double PocketMoneyValue = 5;
+
+            public const int DiariaType = 20;
+            public const int PocketMoneyType = 46;
+
+            public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
+
             public const string EA_Accepted = "NOTA SPESE ACCETTATA";
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
             public const string EA_RejectedResubmission = "Reinvio nota spese";

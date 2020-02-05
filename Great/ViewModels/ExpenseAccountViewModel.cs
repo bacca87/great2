@@ -229,6 +229,8 @@ namespace Great2.ViewModels
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
+            MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, TimeSheetChanged);
+            MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, TimeSheetDeleted);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -238,7 +240,7 @@ namespace Great2.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
+        private void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -250,7 +252,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
+        private void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
         {
             if (item.Sender == this)
                 return;
@@ -274,7 +276,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        private void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -299,7 +301,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
+        private void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -311,6 +313,46 @@ namespace Great2.ViewModels
 
                         foreach (var ea in eaToUpdate)
                             ea.FDL1.Factory1 = item.Content.Factory1;
+                    }
+                })
+            );
+        }
+
+        private void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.FDL == item.Content.FDL1?.Id && x.Currency == "EUR");
+
+                        if (ea != null)
+                        {                            
+                            ea.UpdateDiaria(item.Content, false);
+                            ea.UpdatePocketMoney(item.Content, false);
+                        }
+                    }
+                })
+            );
+        }
+
+        private void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.FDL == item.Content.FDL1?.Id && x.Currency == "EUR");
+
+                        if (ea != null)
+                        {
+                            ea.UpdateDiaria(item.Content, true);
+                            ea.UpdatePocketMoney(item.Content, true);
+                        }
                     }
                 })
             );
