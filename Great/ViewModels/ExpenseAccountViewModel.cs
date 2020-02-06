@@ -115,7 +115,7 @@ namespace Great2.ViewModels
             set => Set(ref _selectedExpense, value);
         }
 
-        public ObservableCollection<ExpenseTypeDTO> ExpenseTypes { get; internal set; }
+        public ObservableCollection<ExpenseTypeEVM> ExpenseTypes { get; internal set; }
         public ObservableCollection<CurrencyDTO> Currencies { get; internal set; }
 
         public MRUCollection<string> MRUEmailRecipients { get; set; }
@@ -218,7 +218,7 @@ namespace Great2.ViewModels
             using (DBArchive db = new DBArchive())
             {
                 string year = CurrentYear.ToString();
-                ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
+                ExpenseTypes = new ObservableCollection<ExpenseTypeEVM>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeEVM(t)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
                 ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }

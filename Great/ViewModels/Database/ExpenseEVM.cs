@@ -110,8 +110,8 @@ namespace Great2.ViewModels.Database
 
         public double TotalAmount => (MondayAmount ?? 0) + (TuesdayAmount ?? 0) + (WednesdayAmount ?? 0) + (ThursdayAmount ?? 0) + (FridayAmount ?? 0) + (SaturdayAmount ?? 0) + (SundayAmount ?? 0);
 
-        public ExpenseTypeDTO _ExpenseType;
-        public ExpenseTypeDTO ExpenseType
+        public ExpenseTypeEVM _ExpenseType;
+        public ExpenseTypeEVM ExpenseType
         {
             get => _ExpenseType;
             set => Set(ref _ExpenseType, value);

@@ -117,6 +117,7 @@
     <Compile Include="Utils\WindowUtilities.cs" />
     <Compile Include="ViewModels\ChartDataPopupViewModel.cs" />
     <Compile Include="ViewModels\AddVirtualFDLViewModel.cs" />
+    <Compile Include="ViewModels\Database\ExpenseTypeEVM.cs" />
     <Compile Include="Views\Dialogs\ChartDataPopupView.xaml.cs">
       <DependentUpon>ChartDataPopupView.xaml</DependentUpon>
     </Compile>

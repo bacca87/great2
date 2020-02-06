@@ -245,10 +245,15 @@ namespace Great2.ViewModels.Database
             RaisePropertyChanged(nameof(DeductionAmount_Display));
         }
 
-        private ExpenseEVM CreateExpense(int ExpenseType)
+        private ExpenseEVM CreateExpense(int ExpenseTypeId)
         {
-            ExpenseEVM expense = new ExpenseEVM() { ExpenseAccount = Id, Type = ExpenseType };
+            ExpenseEVM expense = new ExpenseEVM() { ExpenseAccount = Id, Type = ExpenseTypeId };
             expense.Save();
+            Expenses.Add(expense);
+
+            using (DBArchive db = new DBArchive())
+                expense.ExpenseType = new ExpenseTypeEVM(db.ExpenseTypes.SingleOrDefault(t => t.Id == ExpenseTypeId));
+
             return expense;
         }
 
@@ -260,14 +265,7 @@ namespace Great2.ViewModels.Database
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.DiariaType).FirstOrDefault();
 
             if (expense == null)
-            {
-                expense = new ExpenseEVM();
-                expense.Id = 0;
-                expense.Type = ApplicationSettings.ExpenseAccount.DiariaType;
-                expense.ExpenseAccount = Id;
-
-                Expenses.Add(expense);
-            }
+                expense = CreateExpense(ApplicationSettings.ExpenseAccount.DiariaType);
 
             double? Diaria = remove ? (double?)null : ApplicationSettings.ExpenseAccount.DiariaValue;
 
@@ -318,14 +316,7 @@ namespace Great2.ViewModels.Database
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.PocketMoneyType).FirstOrDefault();
 
             if (expense == null)
-            {
-                expense = new ExpenseEVM();
-                expense.Id = 0;
-                expense.Type = ApplicationSettings.ExpenseAccount.PocketMoneyType;
-                expense.ExpenseAccount = Id;
-
-                Expenses.Add(expense);
-            }
+                expense = CreateExpense(ApplicationSettings.ExpenseAccount.PocketMoneyType);
 
             double? PocketMoney = remove ? (double?)null : ApplicationSettings.ExpenseAccount.PocketMoneyValue;
 
@@ -377,22 +368,22 @@ namespace Great2.ViewModels.Database
         public void InitExpenses()
         {
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
-                Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType));
+                CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
-                Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType));
+                CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
-                Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType));
+                CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
-                Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType));
+                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
-                Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType));
+                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
-                Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType));
+                CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType);
 
             IsChanged = false;
         }
@@ -407,12 +398,12 @@ namespace Great2.ViewModels.Database
             if (CountryCode == "IT")
             {
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
-                    Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType));
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType);
             }
             else
             {
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
-                    Expenses.Add(CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType));
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType);
             }
 
             IsChanged = false;
@@ -441,6 +432,7 @@ namespace Great2.ViewModels.Database
             if (exp != null)
             {
                 Auto.Mapper.Map(exp, this);
+                IsChanged = false;
                 return true;
             }
             return false;

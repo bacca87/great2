@@ -78,6 +78,7 @@ namespace Great2
                 cfg.CreateMap<FDLStatus, FDLStatusDTO>();
                 cfg.CreateMap<Currency, CurrencyDTO>();
                 cfg.CreateMap<ExpenseType, ExpenseTypeDTO>();
+                cfg.CreateMap<ExpenseType, ExpenseTypeEVM>();
                 cfg.CreateMap<Factory, FactoryDTO>();
                 cfg.CreateMap<TransferType, TransferTypeDTO>();
                 cfg.CreateMap<FDLResult, FDLResultDTO>();

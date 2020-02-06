@@ -269,7 +269,7 @@
                             <DataTemplate>
                                 <ComboBox
                                     ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypes}"
-                                    SelectedItem="{Binding ExpenseType}"
+                                    SelectedItem="{Binding ExpenseType, UpdateSourceTrigger=LostFocus}"
                                     SelectedValue="{Binding Type}"
                                     Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypeText, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                                     DisplayMemberPath="Description"
