@@ -343,7 +343,7 @@ namespace Great2.Utils
                             factory.Name = FactoryName;
                             factory.CompanyName = r.Field<string>("dbf_RagioneSociale");
                             factory.Address = r.Field<string>("dbf_Indirizzo");
-                            factory.IsForfait = r.Field<bool>("dbf_Forfettario");
+                            //factory.IsForfait = r.Field<bool>("dbf_Forfettario"); DEPRECATED
 
                             long transferType = r.Field<byte>("dbf_Tipo_Trasf");
                             factory.TransferType = transferType != 4 ? transferType : 0;

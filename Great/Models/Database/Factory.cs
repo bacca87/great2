@@ -12,7 +12,6 @@ namespace Great2.Models.Database
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public long TransferType { get; set; }
-        public bool IsForfait { get; set; }
         public bool NotifyAsNew { get; set; }
         public bool OverrideAddressOnFDL { get; set; }
         public string CountryCode { get; set; }

@@ -312,7 +312,19 @@ namespace Great2.ViewModels
                         var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1 != null && e.FDL == item.Content.Id);
 
                         foreach (var ea in eaToUpdate)
-                            ea.FDL1.Factory1 = item.Content.Factory1;
+                        {
+                            if(ea.FDL1.Factory1 != item.Content.Factory1)
+                            {
+                                ea.FDL1.Factory1 = item.Content.Factory1;
+                                ea.RaisePropertyChanged(nameof(ea.Factory_Display));
+
+                                if(ea.FDL1.Factory1 != null)
+                                {
+                                    ea.InitExpensesByCountry();
+                                    ea.UpdateDiariaAndPocketMoney(item.Content.Timesheets);
+                                }
+                            }
+                        }   
                     }
                 })
             );

@@ -1371,6 +1371,8 @@ namespace Great2.Models
                                                 File.Delete(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
                                                 deleteMessage = true;
                                             }
+                                            else
+                                                ea.InitExpenses();
                                         }
                                     }
                                     break;

@@ -591,8 +591,16 @@ namespace Great2.Models
             public const double DiariaValue = 51.64;
             public const double PocketMoneyValue = 5;
 
-            public const int DiariaType = 20;
             public const int PocketMoneyType = 46;
+            public const int DiariaType = 20;
+            public const int PedaggiType = 44;
+            public const int ParcheggioType = 40;
+            public const int HotelEsteroType = 27;
+            public const int HotelItaliaType = 29;
+            public const int ExtraBagaglioType = 21;
+            public const int CarburanteEsteroType = 11;
+            public const int CarburanteItaliaType = 13;
+            public const int CommissioniValutaType = 19;
 
             public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
 

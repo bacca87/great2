@@ -115,7 +115,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                    <DataGridTextColumn Header="Factory" Binding="{Binding Factory_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                     <DataGridTextColumn Header="Amount" Binding="{Binding TotalAmount_Display}" CellStyle="{StaticResource CenterAligned}" />
                     <DataGridTextColumn Header="Deductions" Binding="{Binding DeductionAmount_Display}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Currency" Binding="{Binding Currency1.Id}" CellStyle="{StaticResource CenterAligned}"/>
