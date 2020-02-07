@@ -178,12 +178,12 @@
                             <Fluent:ScreenTip Title="June" Text="Set June as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
+                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="July" Text="Set July as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
+                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="August" Text="Set August as the current month." />
                         </Fluent:ToggleButton.ToolTip>
