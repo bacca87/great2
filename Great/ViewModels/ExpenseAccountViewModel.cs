@@ -141,6 +141,8 @@ namespace Great2.ViewModels
             set => Set(ref _showEditMenu, value);
         }
 
+        public Action<long> OnFactoryLink { get; set; }
+
         #endregion
 
         #region Commands Definitions
@@ -158,6 +160,7 @@ namespace Great2.ViewModels
         public RelayCommand PageUnloadedCommand { get; set; }
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
+        public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -214,6 +217,7 @@ namespace Great2.ViewModels
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
+            FactoryLinkCommand = new RelayCommand(FactoryLink);
 
             using (DBArchive db = new DBArchive())
             {
@@ -597,6 +601,12 @@ namespace Great2.ViewModels
             ea.EStatus = EFDLStatus.Cancelled;
             ea.NotifyAsNew = false;
             ea.Save();
+        }
+
+        private void FactoryLink()
+        {
+            if (SelectedEA.FDL1.Factory.HasValue)
+                OnFactoryLink?.Invoke(SelectedEA.FDL1.Factory.Value);
         }
 
         private void UpdateEaList()
