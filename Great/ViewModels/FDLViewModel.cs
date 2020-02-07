@@ -562,6 +562,7 @@ namespace Great2.ViewModels
 
             // update timesheets and notifications
             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
+            ShowEditMenu = false;
         }
 
         private void UpdateFDLList()
