@@ -6,6 +6,7 @@ using Great2.Models;
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Utils;
+using Great2.Utils.Extensions;
 using Great2.Utils.Messages;
 using Great2.ViewModels.Database;
 using Great2.Views.Dialogs;
@@ -569,13 +570,11 @@ namespace Great2.ViewModels
         {
             FDLs.Clear();
 
-            string yr = CurrentYear.ToString();
             using (DBArchive db = new DBArchive())
             {
-                (from f in db.FDLs
-                 let year = f.Id.Substring(0, 4)
-                 where year == yr || f.Status == 0
-                 select f).ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
+                db.FDLs.SqlQuery(
+                    $"select * from FDL where SUBSTR(Id, 1, 4) = '{CurrentYear}' or (CAST(SUBSTR(Id, 1, 4) as int) < {CurrentYear} and Status == 0)")
+                    .ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
             }
         }
     }

@@ -355,7 +355,7 @@
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
-                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/car.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
                         </Fluent:Button.ToolTip>

@@ -104,8 +104,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Database\UOM.cs" />
+    <Compile Include="Models\DTO\UOMDTO.cs" />
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
     <Compile Include="Utils\ChartTypeEnum.cs" />
+    <Compile Include="Utils\Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\Notifications\DesktopNotificationManagerCompat.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
@@ -556,6 +559,7 @@
     <Resource Include="Images\32\wall-calendar.png" />
     <Resource Include="Images\32\clear-filters.png" />
     <Resource Include="Images\32\cpu.png" />
+    <Resource Include="Images\32\car.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -566,6 +570,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0018_08-02-2020_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0017_06-02-2020_update.sql">

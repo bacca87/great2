@@ -1,4 +1,5 @@
 ﻿using Great2.Models.Database;
+using Great2.Models.DTO;
 using Great2.Utils.Extensions;
 using System;
 using System.ComponentModel;
@@ -31,29 +32,49 @@ namespace Great2.ViewModels.Database
             }
         }
 
-        private long _startKm;
-        public long StartKm
+        private long _startDistance;
+        public long StartDistance
         {
-            get => _startKm;
+            get => _startDistance;
             set
             {
-                SetAndCheckChanged(ref _startKm, value);
-                RaisePropertyChanged(nameof(EndKm));
+                SetAndCheckChanged(ref _startDistance, value);
+                RaisePropertyChanged(nameof(EndDistance));
+                RaisePropertyChanged(nameof(TotalDrivenKm));
             }
         }
 
-        private long _endKm;
-        public long EndKm
+        private long _endDistance;
+        public long EndDistance
         {
-            get => _endKm;
+            get => _endDistance;
             set
             {
-                SetAndCheckChanged(ref _endKm, value);
-                RaisePropertyChanged(nameof(StartKm));
+                SetAndCheckChanged(ref _endDistance, value);
+                RaisePropertyChanged(nameof(StartDistance));
                 RaisePropertyChanged(nameof(EndLocation));
                 RaisePropertyChanged(nameof(RentEndTime));
                 RaisePropertyChanged(nameof(RentEndDate));
+                RaisePropertyChanged(nameof(TotalDrivenKm));
             }
+        }
+
+        private long _UOM;
+        public long UOM
+        {
+            get => _UOM;
+            set
+            {
+                SetAndCheckChanged(ref _UOM, value);
+                RaisePropertyChanged(nameof(TotalDrivenKm));
+            }
+        }
+
+        private UOMDTO _UOM1;
+        public UOMDTO UOM1
+        {
+            get => _UOM1;
+            set => Set(ref _UOM1, value);
         }
 
         private string _startLocation;
@@ -61,7 +82,6 @@ namespace Great2.ViewModels.Database
         {
             get => _startLocation;
             set => SetAndCheckChanged(ref _startLocation, value);
-
         }
 
         private string _endLocation;
@@ -71,7 +91,7 @@ namespace Great2.ViewModels.Database
             set
             {
                 SetAndCheckChanged(ref _endLocation, value);
-                RaisePropertyChanged(nameof(EndKm));
+                RaisePropertyChanged(nameof(EndDistance));
                 RaisePropertyChanged(nameof(RentEndDate));
             }
         }
@@ -81,7 +101,6 @@ namespace Great2.ViewModels.Database
         {
             get => _startDate;
             set => SetAndCheckChanged(ref _startDate, value);
-
         }
 
         private long _endDate;
@@ -89,7 +108,6 @@ namespace Great2.ViewModels.Database
         {
             get => _endDate;
             set => SetAndCheckChanged(ref _endDate, value);
-
         }
 
         private long _startFuelLevel;
@@ -97,7 +115,6 @@ namespace Great2.ViewModels.Database
         {
             get => _startFuelLevel;
             set => SetAndCheckChanged(ref _startFuelLevel, value);
-
         }
 
         private long _endFuelLevel;
@@ -105,8 +122,6 @@ namespace Great2.ViewModels.Database
         {
             get => _endFuelLevel;
             set => SetAndCheckChanged(ref _endFuelLevel, value);
-
-
         }
 
         private string _notes;
@@ -132,23 +147,20 @@ namespace Great2.ViewModels.Database
 
         public DateTime? RentEndDate
         {
-            get
-            {
-                if (EndDate > 0) return DateTime.Now.FromUnixTimestamp(EndDate);
-                return null;
-            }
+            get => EndDate > 0 ? DateTime.Now.FromUnixTimestamp(EndDate) : (DateTime ?)null;            
             set
             {
-                if (value == null) EndDate = 0;
+                if (value == null)
+                    EndDate = 0;
                 else
                     EndDate = ((DateTime)value).ToUnixTimestamp();
-                RaisePropertyChanged(nameof(EndKm));
+
+                RaisePropertyChanged(nameof(EndDistance));
                 RaisePropertyChanged(nameof(RentStartDate));
                 RaisePropertyChanged(nameof(RentStartTime));
                 RaisePropertyChanged(nameof(RentEndDate));
                 RaisePropertyChanged(nameof(RentEndTime));
                 RaisePropertyChanged(nameof(EndLocation));
-
             }
         }
 
@@ -163,13 +175,13 @@ namespace Great2.ViewModels.Database
 
         public TimeSpan? RentEndTime
         {
-            get { if (RentEndDate.HasValue) return RentEndDate.Value.TimeOfDay; return null; }
+            get => RentEndDate.HasValue ? RentEndDate.Value.TimeOfDay : (TimeSpan?)null;
             set
             {
                 if (value.HasValue)
                     RentEndDate = new DateTime(RentEndDate.Value.Year, RentEndDate.Value.Month, RentEndDate.Value.Day, value.Value.Hours, value.Value.Minutes, 0);
-                }
             }
+        }
 
         public TimeSpan? RentDuration => RentEndDate?.Subtract(RentStartDate);
 
@@ -177,17 +189,18 @@ namespace Great2.ViewModels.Database
         {
             get
             {
-                if (EndKm > 0)
+                if (EndDistance > StartDistance)
                 {
-                    return EndKm - StartKm;
-                }
-                else return StartKm;
-
+                    if (UOM == 1)
+                        return EndDistance - StartDistance;
+                    else
+                        return (long)((EndDistance / 0.62137) - (StartDistance / 0.62137)); 
+                }   
+                
+                return 0;
             }
         }
-
         #endregion
-
 
         #region Errors Validation
 
@@ -210,18 +223,18 @@ namespace Great2.ViewModels.Database
                 switch (columnName)
                 {
                     case "StartKm":
-                        if (EndKm < StartKm && EndKm > 0)
+                        if (EndDistance < StartDistance && EndDistance > 0)
                             return "Start Km must be lower than End Km";
                         break;
 
                     case "EndKm":
-                        if (EndKm < StartKm && EndKm > 0)
+                        if (EndDistance < StartDistance && EndDistance > 0)
                             return "Start Km must be lower than End Km";
 
-                        if (EndKm == 0 && RentEndDate.HasValue)
+                        if (EndDistance == 0 && RentEndDate.HasValue)
                             return "End Km must be set when defining end date";
 
-                        if (!String.IsNullOrWhiteSpace(EndLocation) && EndKm == 0)
+                        if (!String.IsNullOrWhiteSpace(EndLocation) && EndDistance == 0)
                             return "End Km must be set when defining end location";
                         break;
 
@@ -238,7 +251,7 @@ namespace Great2.ViewModels.Database
                         if (RentStartDate != null && RentEndDate < RentStartDate)
                             return "Dates not valid: End Date < Start Date";
 
-                        if (!RentEndDate.HasValue && EndKm > StartKm)
+                        if (!RentEndDate.HasValue && EndDistance > StartDistance)
                             return "End Date must be set when defining end km";
 
                         if (!RentEndDate.HasValue && !String.IsNullOrWhiteSpace(EndLocation))
@@ -254,7 +267,7 @@ namespace Great2.ViewModels.Database
                         if (RentEndDate.HasValue && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
                             return "End location is required when setting End Date";
 
-                        if (EndKm > StartKm && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
+                        if (EndDistance > StartDistance && (string.IsNullOrEmpty(EndLocation) || string.IsNullOrWhiteSpace(EndLocation)))
                             return "End location is required when setting End Km";
 
                         break;
@@ -271,12 +284,14 @@ namespace Great2.ViewModels.Database
 
         public CarRentalHistoryEVM(CarRentalHistory rent = null)
         {
+            UOM = 1;
             StartFuelLevel = 8;
             EndFuelLevel = 8;
             RentStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
             if (rent != null)
                 Auto.Mapper.Map(rent, this);
+
             IsChanged = false;
         }
 
@@ -318,6 +333,5 @@ namespace Great2.ViewModels.Database
 
             return false;
         }
-
     }
 }

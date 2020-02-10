@@ -9,6 +9,10 @@ namespace Great2.Utils.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string result = string.Empty;
+
+            if (value == null)
+                return result;
+
             try
             {
                 TimeSpan ts = (TimeSpan)value;

@@ -7,8 +7,9 @@ namespace Great2.Models.Database
     {
         public long Id { get; set; }
         public long Car { get; set; }
-        public long StartKm { get; set; }
-        public long? EndKm { get; set; }
+        public long StartDistance { get; set; }
+        public long? EndDistance { get; set; }
+        public long UOM { get; set; }
         public string StartLocation { get; set; }
         public string EndLocation { get; set; }
         public long StartDate { get; set; }
@@ -19,5 +20,7 @@ namespace Great2.Models.Database
 
         [ForeignKey("Car")]
         public virtual Car Car1 { get; set; }
+        [ForeignKey("UOM")]
+        public virtual UOM UOM1 { get; set; }
     }
 }

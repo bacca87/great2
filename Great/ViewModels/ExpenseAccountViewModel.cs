@@ -612,13 +612,12 @@ namespace Great2.ViewModels
         private void UpdateEaList()
         {
             ExpenseAccounts.Clear();
-            string yr = CurrentYear.ToString();
+
             using (DBArchive db = new DBArchive())
             {
-                (from ex in db.ExpenseAccounts
-                 let year = ex.FDL.Substring(0, 4)
-                 where year == yr || ex.Status == 0
-                 select ex).ToList().ForEach(ea=> ExpenseAccounts.Add( new ExpenseAccountEVM(ea)));
+                db.ExpenseAccounts.SqlQuery(
+                    $"select * from ExpenseAccount where SUBSTR(FDL, 1, 4) = '{CurrentYear}' or (CAST(SUBSTR(FDL, 1, 4) as int) < {CurrentYear} and Status == 0)")
+                    .ToList().ForEach(ea => ExpenseAccounts.Add(new ExpenseAccountEVM(ea)));
             }
         }
     }

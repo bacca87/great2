@@ -276,8 +276,8 @@ namespace Great2.Utils
                             try
                             {
                                 his.Car = _cars[licensePlate];
-                                his.StartKm = r.Field<int>("dbf_KmInizio");
-                                his.EndKm = r.Field<int>("dbf_KmFine");
+                                his.StartDistance = r.Field<int>("dbf_KmInizio");
+                                his.EndDistance = r.Field<int>("dbf_KmFine");
                                 his.StartLocation = r.Field<string>("dbf_LuogoPrel").Trim();
                                 his.EndLocation = r.Field<string>("dbf_LuogoDepo").Trim();
 

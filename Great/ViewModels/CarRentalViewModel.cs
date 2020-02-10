@@ -45,14 +45,12 @@ namespace Great2.ViewModels
 
                 if (updateDays)
                 {
-
                     RentStartDateFilter = new DateTime(_currentYear, 1, 1);
-                    RentStartDateFilter = new DateTime(_currentYear, 12, 31);
+                    RentEndDateFilter = new DateTime(_currentYear, 12, 31);
                     UpdateRentList();
                     FilteredRentals.MoveCurrentToFirst();
                     SelectedRent = (CarRentalHistoryEVM)FilteredRentals.CurrentItem;
                 }
-
             }
         }
 
@@ -72,7 +70,6 @@ namespace Great2.ViewModels
                 _isInputEnabled = value;
 
                 RaisePropertyChanged(nameof(IsInputEnabled), oldValue, value);
-
             }
         }
 
@@ -174,8 +171,6 @@ namespace Great2.ViewModels
                 
             }
         }
-
-
         #endregion
 
         #region Filter properties
@@ -233,8 +228,7 @@ namespace Great2.ViewModels
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
         #endregion
-
-
+        
         /// <summary>
         /// Initializes a new instance of the CarRentalViewModel class.
         /// </summary>
@@ -328,10 +322,14 @@ namespace Great2.ViewModels
 
         private void DeleteRent(CarRentalHistoryEVM cr)
         {
-            if (cr.Id == 0) return;
-
             if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
+                if (cr.Id == 0)
+                {
+                    SelectedRent = Rentals.FirstOrDefault();
+                    return;
+                }
+
                 using (DBArchive db = new DBArchive())
                 {
                     var rentalsWithSameCar = db.CarRentalHistories.Where(c => c.Car == cr.Car && c.Id != cr.Id).ToList();
@@ -418,7 +416,6 @@ namespace Great2.ViewModels
                 (from r in db.CarRentalHistories
                  where r.StartDate >= minTimeStamp && r.StartDate <= maxTimeStamp
                  select r).ToList().ForEach(c => Rentals.Add(new CarRentalHistoryEVM(c)));
-
             }
         }
     }

@@ -56,7 +56,6 @@ namespace Great2
                     .ForMember(x => x.Event1, opt => opt.Ignore())
                     .ForMember(x => x.Day1, opt => opt.Ignore());
 
-
                 cfg.CreateMap<DayEVM, DayEVM>();
                 cfg.CreateMap<Day, DayEVM>();
                 cfg.CreateMap<DayEVM, Day>()
@@ -89,6 +88,8 @@ namespace Great2
                 cfg.CreateMap<FactoryEVM, FactoryDTO>();
                 cfg.CreateMap<EventType, EventTypeDTO>();
                 cfg.CreateMap<Event, EventDTO>().ForMember(x => x.Status1, opt => opt.Ignore());
+                cfg.CreateMap<UOM, UOMDTO>();
+                cfg.CreateMap<UOMDTO, UOM>();
             });
 
             Mapper = config.CreateMapper();
