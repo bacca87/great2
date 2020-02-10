@@ -42,7 +42,15 @@ namespace Great2.ViewModels
 
                 using (DBArchive db = new DBArchive())
                 {
-                    if (db.OrderEmailRecipients.Where(r => r.Order == _order).Count() == 0 && UserSettings.Email.Recipients.NewOrderDefaults != null)
+                    if (_order == 0)
+                    {
+                        var recipients = db.OrderEmailRecipients.Where(r => r.Order == 0).Select(r => r);
+
+                        if (recipients.Count() > 0)
+                            db.OrderEmailRecipients.RemoveRange(recipients);
+                    }
+
+                    if ((_order == 0 || db.OrderEmailRecipients.Where(r => r.Order == _order).Count() == 0) && UserSettings.Email.Recipients.NewOrderDefaults != null)
                     {
                         // add default recipients for the order
                         foreach (var recipient in UserSettings.Email.Recipients.NewOrderDefaults)

@@ -379,7 +379,7 @@ namespace Great2.ViewModels
             
             using (DBArchive db = new DBArchive())
             {
-                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0 || fdl.Order == 0)
                     ShowDialog = true;
             }
 

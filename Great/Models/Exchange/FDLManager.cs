@@ -805,7 +805,7 @@ namespace Great2.Models
             Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
             // 2) try if there are other FDL with the same order
-            if (factory == null)
+            if (factory == null && fdl.Order != 0)
             {
                 factory = (from f in db.Factories
                            from d in db.FDLs
