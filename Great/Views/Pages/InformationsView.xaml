@@ -6,7 +6,7 @@
       mc:Ignorable="d" 
       DataContext="{Binding Informations, Source={StaticResource Locator}}"      
 	  Title="InformationsPage"
-      Style="{DynamicResource MetroPage}">
+      Style="{DynamicResource MahApps.Styles.Page}">
 
     <Grid Margin="20">
         <Grid.RowDefinitions>

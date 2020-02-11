@@ -8,6 +8,8 @@ namespace Great2.Models.DTO
         public string Name { get; set; }
         public string Address { get; set; }
         public bool OverrideAddressOnFDL { get; set; }
+        public long TransferType { get; set; }
+        public string CountryCode { get; set; }
 
         public FactoryDTO() { }
 

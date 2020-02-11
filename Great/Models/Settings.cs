@@ -588,6 +588,22 @@ namespace Great2.Models
             public const int MaxExpenseCount = 15;
             public const int NotesMaxLength = 352;
 
+            public const double DiariaValue = 51.64;
+            public const double PocketMoneyValue = 5;
+
+            public const int PocketMoneyType = 46;
+            public const int DiariaType = 20;
+            public const int PedaggiType = 44;
+            public const int ParcheggioType = 40;
+            public const int HotelEsteroType = 27;
+            public const int HotelItaliaType = 29;
+            public const int ExtraBagaglioType = 21;
+            public const int CarburanteEsteroType = 11;
+            public const int CarburanteItaliaType = 13;
+            public const int CommissioniValutaType = 19;
+
+            public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
+
             public const string EA_Accepted = "NOTA SPESE ACCETTATA";
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
             public const string EA_RejectedResubmission = "Reinvio nota spese";
@@ -1065,6 +1081,16 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
+            public static string DefaultCurrency
+            {
+                get => Settings.Default.Currency;
+                set
+                {
+                    Settings.Default.Currency = value;
+                    Settings.Default.Save();
+                }
+            }
         }
         #endregion
 
@@ -1503,33 +1529,26 @@ namespace Great2.Models
             {
                 try
                 {
-
-                    Fluent.ThemeManager.ChangeAppStyle(Application.Current,
-                        Fluent.ThemeManager.GetAccent(accent.ToString()),
-                        Fluent.ThemeManager.GetAppTheme(theme.ToString()));
-
-                    MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
-                        MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
-                        MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+                    //Fluent.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
+                    Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
+                    //Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
+                    MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
+                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
                 }
                 catch (Exception)
                 {
-
-
                 }
-
-
             }
 
             public static void AttachCustomThemes()
             {
-                Fluent.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
-                Fluent.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+                Fluent.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                Fluent.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
 
-                MahApps.Metro.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
-                MahApps.Metro.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+                MahApps.Metro.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                MahApps.Metro.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
             }
-
         }
 
         #endregion

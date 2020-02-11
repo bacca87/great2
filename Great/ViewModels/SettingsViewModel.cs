@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Great2.Models;
+using Great2.Models.Database;
 using Great2.Models.Interfaces;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
@@ -228,6 +229,20 @@ namespace Great2.ViewModels
             }
         }
 
+        private ObservableCollection<Currency> _Currencies;
+        public ObservableCollection<Currency> Currencies
+        {
+            get => _Currencies;
+            set => Set(ref _Currencies, value);
+        }
+
+        private string _DefaultCurrency;
+        public string DefaultCurrency
+        {
+            get => _DefaultCurrency;
+            set => Set(ref _DefaultCurrency, value);
+        }
+
         private IProvider Exchange;
         #endregion
 
@@ -253,6 +268,11 @@ namespace Great2.ViewModels
             MigrateDataCommand = new RelayCommand(MigrateData, () => { return DataDirectory != ApplicationSettings.Directories.Data; });
             LoadDataCommand = new RelayCommand(LoadData);
             ApplyChangesCommand = new RelayCommand(ApplyChanges);
+
+            using (DBArchive db = new DBArchive())
+            {
+                Currencies = new ObservableCollection<Currency>(db.Currencies);
+            }
 
             AvailableColors = new ObservableCollection<ColorItem>(MaterialColors.Colors.Select(c => new ColorItem(ColorConverter.ConvertFromString(c.Value) as Color?, c.Key)));
 
@@ -326,6 +346,8 @@ namespace Great2.ViewModels
                     FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
             }
 
+            DefaultCurrency = UserSettings.Localization.DefaultCurrency;
+
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;
 
@@ -375,6 +397,8 @@ namespace Great2.ViewModels
                 StringCollection CancellationRecipients = new StringCollection();
                 CancellationRecipients.AddRange(FDLCancelRequestRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
+
+                UserSettings.Localization.DefaultCurrency = DefaultCurrency;
 
                 UserSettings.Themes.Theme = Theme;
                 UserSettings.Themes.AccentColor = AccentColor;

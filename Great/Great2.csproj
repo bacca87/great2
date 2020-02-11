@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Great2</RootNamespace>
     <AssemblyName>Great2</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetPlatformVersion>10.0.1803.0</TargetPlatformVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -104,8 +104,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Database\UOM.cs" />
+    <Compile Include="Models\DTO\UOMDTO.cs" />
     <Compile Include="Utils\Behaviours\SelectAllFocusBehavior.cs" />
     <Compile Include="Utils\ChartTypeEnum.cs" />
+    <Compile Include="Utils\Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\Extensions\CustomTextFormatter.cs" />
     <Compile Include="Utils\Extensions\RichTextBoxEx.cs" />
@@ -119,6 +122,7 @@
     <Compile Include="Utils\WindowUtilities.cs" />
     <Compile Include="ViewModels\ChartDataPopupViewModel.cs" />
     <Compile Include="ViewModels\AddVirtualFDLViewModel.cs" />
+    <Compile Include="ViewModels\Database\ExpenseTypeEVM.cs" />
     <Compile Include="Views\Dialogs\ChartDataPopupView.xaml.cs">
       <DependentUpon>ChartDataPopupView.xaml</DependentUpon>
     </Compile>
@@ -557,6 +561,7 @@
     <Resource Include="Images\32\wall-calendar.png" />
     <Resource Include="Images\32\clear-filters.png" />
     <Resource Include="Images\32\cpu.png" />
+    <Resource Include="Images\32\car.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -567,6 +572,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0018_08-02-2020_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0017_06-02-2020_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0016_05-11-2019_update.sql">
@@ -642,40 +653,43 @@
       <Version>9.0.0</Version>
     </PackageReference>
     <PackageReference Include="Autoupdater.NET.Official">
-      <Version>1.5.7</Version>
+      <Version>1.5.8</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.4</Version>
+      <Version>2.0.5</Version>
     </PackageReference>
     <PackageReference Include="EntityFramework">
-      <Version>6.3.0</Version>
+      <Version>6.4.0</Version>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
-      <Version>3.6.0</Version>
+      <Version>3.8.1</Version>
     </PackageReference>
     <PackageReference Include="Fluent.Ribbon">
-      <Version>6.1.0.326</Version>
+      <Version>7.0.1</Version>
     </PackageReference>
     <PackageReference Include="GMap.NET.Windows">
-      <Version>1.9.3</Version>
+      <Version>1.9.9</Version>
     </PackageReference>
     <PackageReference Include="Great.LiveCharts">
       <Version>2.0.3</Version>
     </PackageReference>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf">
+      <Version>1.0.8</Version>
+    </PackageReference>
     <PackageReference Include="itext7">
-      <Version>7.1.8</Version>
+      <Version>7.1.9</Version>
     </PackageReference>
     <PackageReference Include="jQuery">
       <Version>3.4.1</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro">
-      <Version>1.6.5</Version>
+      <Version>2.0.0-alpha0660</Version>
     </PackageReference>
     <PackageReference Include="MaterialDesignColors">
-      <Version>1.2.0</Version>
+      <Version>1.2.3-ci981</Version>
     </PackageReference>
     <PackageReference Include="MaterialDesignThemes">
-      <Version>2.6.0</Version>
+      <Version>3.1.0-ci981</Version>
     </PackageReference>
     <PackageReference Include="MaterialMessageBox">
       <Version>1.0.0.11</Version>
@@ -684,31 +698,31 @@
       <Version>1.0.21</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp">
-      <Version>4.6.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Net.Http">
       <Version>2.2.29</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
-      <Version>10.0.17134.1000</Version>
+      <Version>10.0.19041.1-preview.vb-release</Version>
     </PackageReference>
     <PackageReference Include="MvvmLight">
       <Version>5.4.1.1</Version>
     </PackageReference>
     <PackageReference Include="Nager.Date">
-      <Version>1.25.6</Version>
+      <Version>1.25.10</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.2</Version>
+      <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.6.7</Version>
+      <Version>4.6.8</Version>
     </PackageReference>
     <PackageReference Include="Notifications.Wpf">
       <Version>0.1.1</Version>
     </PackageReference>
     <PackageReference Include="Portable.BouncyCastle">
-      <Version>1.8.5</Version>
+      <Version>1.8.5.2</Version>
     </PackageReference>
     <PackageReference Include="SampleDependency">
       <Version>1.0.0</Version>
@@ -720,19 +734,19 @@
       <Version>1.0.112</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive">
-      <Version>4.1.6</Version>
+      <Version>4.3.2</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>4.6.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.WindowsRuntime">
-      <Version>4.6.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.WindowsRuntime.UI.Xaml">
-      <Version>4.6.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
-      <Version>4.5.3</Version>
+      <Version>4.6.0-preview.18571.3</Version>
     </PackageReference>
     <PackageReference Include="TimePeriodLibrary.NET">
       <Version>2.1.1</Version>

@@ -430,9 +430,15 @@ namespace Great2.ViewModels.Database
         {
             if (Id > 0)
             {
-                db.Timesheets.Remove(db.Timesheets.SingleOrDefault(t => t.Id == Id));
-                db.SaveChanges();
-                Id = 0;
+                var timesheet = db.Timesheets.SingleOrDefault(t => t.Id == Id);
+
+                if (timesheet != null)
+                {
+                    db.Timesheets.Remove(timesheet);
+                    db.SaveChanges();
+                    Id = 0;
+                }
+
                 return true;
             }
             return false;

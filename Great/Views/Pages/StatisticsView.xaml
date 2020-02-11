@@ -8,15 +8,15 @@
       xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
       mc:Ignorable="d"
       DataContext="{Binding Statistics, Source={StaticResource Locator}}"
-      Style="{DynamicResource MetroPage}"
+      Style="{DynamicResource MahApps.Styles.Page}"
       IsVisibleChanged="Page_IsVisibleChanged">
     <Page.Resources>
         <Style x:Key="DefaultToolTip" TargetType="lvc:DefaultTooltip">
-            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource GrayBrush7}" />
+            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray7}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="FontSize" Value="{DynamicResource TooltipFontSize}" />
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Black}" />
         </Style>
         <Style x:Key="PieTooltip" TargetType="lvc:DefaultTooltip" BasedOn="{StaticResource DefaultToolTip}">
             <Setter Property="SelectionMode" Value="OnlySender" />
@@ -27,7 +27,7 @@
         <Style TargetType="lvc:LineSeries">
             <Setter Property="PointGeometrySize" Value="15" />
             <Setter Property="FontSize" Value="{DynamicResource TooltipFontSize}" />
-            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
             <Setter Property="LineSmoothness" Value="2"/>
             <Setter Property="Fill" Value="Transparent"/>
         </Style>
@@ -62,7 +62,7 @@
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
                         <lvc:PieChart.ChartLegend>
-                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                         </lvc:PieChart.ChartLegend>
                     </lvc:PieChart>
                 </Grid>
@@ -82,7 +82,7 @@
                             <lvc:CartesianChart.AxisX>
                                 <lvc:Axis Title="Month" 
                                       Labels="{Binding MonthsLabels}" 
-                                      Foreground="{DynamicResource TextBrush}">
+                                      Foreground="{DynamicResource MahApps.Brushes.Text}">
                                     <lvc:Axis.Separator>
                                         <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
                                     </lvc:Axis.Separator>
@@ -90,18 +90,18 @@
                             </lvc:CartesianChart.AxisX>
                             <lvc:CartesianChart.AxisY>
                                 <lvc:Axis Title="Hours" MinValue="0"
-                                    Foreground="{DynamicResource TextBrush}">
+                                    Foreground="{DynamicResource MahApps.Brushes.Text}">
                                     <lvc:Axis.Separator >
                                         <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                             <lvc:Separator.Stroke>
-                                                <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Gray7}" />
                                             </lvc:Separator.Stroke>
                                         </lvc:Separator>
                                     </lvc:Axis.Separator>
                                 </lvc:Axis>
                             </lvc:CartesianChart.AxisY>
                             <lvc:CartesianChart.ChartLegend>
-                                <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                                <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                             </lvc:CartesianChart.ChartLegend>
                         </lvc:CartesianChart>
                         <Label Grid.Row="2" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Hours by Type</Label>
@@ -110,9 +110,7 @@
                                 <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                             </lvc:CartesianChart.DataTooltip>
                             <lvc:CartesianChart.AxisX>
-                                <lvc:Axis Title="Month" 
-                          Labels="{Binding MonthsLabels}" 
-                          Foreground="{DynamicResource TextBrush}">
+                                <lvc:Axis Title="Month" Labels="{Binding MonthsLabels}" Foreground="{DynamicResource MahApps.Brushes.Text}">
                                     <lvc:Axis.Separator>
                                         <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
                                     </lvc:Axis.Separator>
@@ -120,18 +118,18 @@
                             </lvc:CartesianChart.AxisX>
                             <lvc:CartesianChart.AxisY>
                                 <lvc:Axis Title="Hours"
-                          Foreground="{DynamicResource TextBrush}">
+                          Foreground="{DynamicResource MahApps.Brushes.Text}">
                                     <lvc:Axis.Separator >
                                         <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                             <lvc:Separator.Stroke>
-                                                <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Gray7}" />
                                             </lvc:Separator.Stroke>
                                         </lvc:Separator>
                                     </lvc:Axis.Separator>
                                 </lvc:Axis>
                             </lvc:CartesianChart.AxisY>
                             <lvc:CartesianChart.ChartLegend>
-                                <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                                <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                             </lvc:CartesianChart.ChartLegend>
                         </lvc:CartesianChart>
                     </Grid>
@@ -169,14 +167,14 @@
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
                         <lvc:PieChart.ChartLegend>
-                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                         </lvc:PieChart.ChartLegend>
                     </lvc:PieChart>
 
                     <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Business Trip Meter</Label>
                     <lvc:Gauge x:Name="TravelCountGauge" Grid.Row="1" Grid.Column="2" Margin="5"
                    Uses360Mode="False" FromColor="Green" ToColor="Red"
-                   From="0" To="365" Value="{Binding TravelCount}" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}" >
+                   From="0" To="365" Value="{Binding TravelCount}" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}" >
                     </lvc:Gauge>
                     <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Visited Factories</Label>
                     <lvc:PieChart x:Name="FactoriesPieChart" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}" DataClick="Factories_DataClick">
@@ -184,7 +182,7 @@
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
                         <lvc:PieChart.ChartLegend>
-                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                            <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                         </lvc:PieChart.ChartLegend>
                     </lvc:PieChart>
                 </Grid>
@@ -217,7 +215,7 @@
                     <lvc:CartesianChart.AxisX>
                         <lvc:Axis Title="Month" 
                           Labels="{Binding MonthsLabels}" 
-                          Foreground="{DynamicResource TextBrush}">
+                          Foreground="{DynamicResource MahApps.Brushes.Text}">
                             <lvc:Axis.Separator>
                                 <lvc:Separator Step="1" StrokeThickness="2" StrokeDashArray="2"/>
                             </lvc:Axis.Separator>
@@ -225,18 +223,18 @@
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Km"
-                          Foreground="{DynamicResource TextBrush}">
+                          Foreground="{DynamicResource MahApps.Brushes.Text}">
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="{DynamicResource MahApps.Colors.Gray7}" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
             </Grid>
@@ -275,18 +273,18 @@
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Amount"
-                          Foreground="{DynamicResource TextBrush}" MaxValue="{Binding MaxExpenseChartValue}">
+                          Foreground="{DynamicResource MahApps.Brushes.Text}" MaxValue="{Binding MaxExpenseChartValue}">
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="{DynamicResource MahApps.Colors.Gray7}" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 
@@ -296,22 +294,22 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Jan" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Jan" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Amount"
-                          Foreground="{DynamicResource TextBrush}" MaxValue="{Binding MaxExpenseChartValue}">
+                          Foreground="{DynamicResource MahApps.Brushes.Text}" MaxValue="{Binding MaxExpenseChartValue}">
                             <lvc:Axis.Separator >
                                 <lvc:Separator StrokeThickness="2" StrokeDashArray="2">
                                     <lvc:Separator.Stroke>
-                                        <SolidColorBrush Color="{DynamicResource Gray7}" />
+                                        <SolidColorBrush Color="{DynamicResource MahApps.Colors.Gray7}" />
                                     </lvc:Separator.Stroke>
                                 </lvc:Separator>
                             </lvc:Axis.Separator>
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianFeb" Grid.Row="2" Grid.Column="1" Series="{Binding Expenses[1]}"  LegendLocation="None" >
@@ -319,7 +317,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Feb" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Feb" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -333,7 +331,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianMar"  Grid.Row="2" Grid.Column="2" Series="{Binding Expenses[2]}"  LegendLocation="None" >
@@ -341,7 +339,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Mar" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Mar" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -355,7 +353,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianApr" Grid.Row="2" Grid.Column="3" Series="{Binding Expenses[3]}"  LegendLocation="None" >
@@ -363,7 +361,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Apr" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Apr" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -377,7 +375,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianMay" Grid.Row="2" Grid.Column="4" Series="{Binding Expenses[4]}"  LegendLocation="None" >
@@ -385,7 +383,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="May" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="May" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -399,7 +397,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianJun" Grid.Row="2" Grid.Column="5" Series="{Binding Expenses[5]}"  LegendLocation="None" >
@@ -407,7 +405,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Jun" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Jun" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -421,7 +419,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianJul" Grid.Row="2" Grid.Column="6" Series="{Binding Expenses[6]}"  LegendLocation="None" >
@@ -429,7 +427,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Jul" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Jul" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -443,7 +441,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianAug" Grid.Row="2" Grid.Column="7" Series="{Binding Expenses[7]}"  LegendLocation="None" >
@@ -451,7 +449,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Aug" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Aug" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -465,7 +463,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianSep" Grid.Row="2" Grid.Column="8" Series="{Binding Expenses[8]}"  LegendLocation="None" >
@@ -473,7 +471,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Sep" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Sep" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -487,7 +485,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianOct" Grid.Row="2" Grid.Column="9" Series="{Binding Expenses[9]}"  LegendLocation="None" >
@@ -495,7 +493,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Oct" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Oct" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -509,7 +507,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianNov" Grid.Row="2" Grid.Column="10" Series="{Binding Expenses[10]}"  LegendLocation="None" >
@@ -517,7 +515,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Nov" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Nov" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -531,7 +529,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
                 <lvc:CartesianChart x:Name="ExpenseCartesianDec" Grid.Row="2" Grid.Column="11" Series="{Binding Expenses[11]}"  LegendLocation="None" >
@@ -539,7 +537,7 @@
                         <lvc:DefaultTooltip Style="{StaticResource DefaultToolTip}"/>
                     </lvc:CartesianChart.DataTooltip>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="Dec" Foreground="{DynamicResource TextBrush}" />
+                        <lvc:Axis Labels="Dec" Foreground="{DynamicResource MahApps.Brushes.Text}" />
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis ShowLabels="True" Foreground="Transparent" MaxValue="{Binding MaxExpenseChartValue}">
@@ -553,7 +551,7 @@
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.ChartLegend>
-                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource ControlBackgroundBrush}" Foreground="{DynamicResource TextBrush}"/>
+                        <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </lvc:CartesianChart.ChartLegend>
                 </lvc:CartesianChart>
             </Grid>

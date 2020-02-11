@@ -3,6 +3,8 @@ using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
 using Great2.Utils;
+using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -207,6 +209,7 @@ namespace Great2.ViewModels.Database
         #endregion;
 
         #region Display Properties
+        public string Factory_Display => FDL1?.Factory1?.Name;
         public string FDL_New_Display => $"{(NotifyAsNew ? "*" : "")}{FDL}{(IsVirtual ? "(V)" : string.Empty)}";
         public string FDL_Display => $"{FDL}{(IsVirtual ? " (Virtual)" : string.Empty)}";
         public string TotalAmount_Display => TotalAmount > 0 ? $"{TotalAmount}{CurrencyCode}" : string.Empty;
@@ -237,6 +240,173 @@ namespace Great2.ViewModels.Database
             RaisePropertyChanged(nameof(SaturdayAmount));
             RaisePropertyChanged(nameof(SundayAmount));
             RaisePropertyChanged(nameof(TotalAmount));
+
+            RaisePropertyChanged(nameof(TotalAmount_Display));
+            RaisePropertyChanged(nameof(DeductionAmount_Display));
+        }
+
+        private ExpenseEVM CreateExpense(int ExpenseTypeId)
+        {
+            ExpenseEVM expense = new ExpenseEVM() { ExpenseAccount = Id, Type = ExpenseTypeId };
+            expense.Save();
+            Expenses.Add(expense);
+
+            using (DBArchive db = new DBArchive())
+                expense.ExpenseType = new ExpenseTypeEVM(db.ExpenseTypes.SingleOrDefault(t => t.Id == ExpenseTypeId));
+
+            return expense;
+        }
+
+        public void UpdateDiaria(TimesheetEVM timesheet, bool remove, DBArchive db = null)
+        {
+            if (timesheet == null || !FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
+                return;
+
+            ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.DiariaType).FirstOrDefault();
+
+            if (expense == null)
+                expense = CreateExpense(ApplicationSettings.ExpenseAccount.DiariaType);
+
+            double? Diaria = remove ? (double?)null : ApplicationSettings.ExpenseAccount.DiariaValue;
+
+            if (!remove && 
+                ((timesheet.TravelPeriods != null && timesheet.WorkPeriods != null && timesheet.TravelPeriods.End > timesheet.WorkPeriods.End) ||
+                 (timesheet.TravelPeriods != null && timesheet.WorkPeriods == null)) &&
+                timesheet.TravelPeriods.End.TimeOfDay <= ApplicationSettings.ExpenseAccount.DiariaThreshold)
+                Diaria /= 2;
+
+            switch (timesheet.Date.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    expense.MondayAmount = Diaria;
+                    break;
+                case DayOfWeek.Tuesday:
+                    expense.TuesdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Wednesday:
+                    expense.WednesdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Thursday:
+                    expense.ThursdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Friday:
+                    expense.FridayAmount = Diaria;
+                    break;
+                case DayOfWeek.Saturday:
+                    expense.SaturdayAmount = Diaria;
+                    break;
+                case DayOfWeek.Sunday:
+                    expense.SundayAmount = Diaria;
+                    break;
+            }
+
+            if (db != null)
+                expense.Save(db);
+            else
+                expense.Save();
+
+            IsChanged = false;
+        }
+
+        public void UpdatePocketMoney(TimesheetEVM timesheet, bool remove, DBArchive db = null)
+        {
+            if (timesheet == null || FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
+                return;
+
+            ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.PocketMoneyType).FirstOrDefault();
+
+            if (expense == null)
+                expense = CreateExpense(ApplicationSettings.ExpenseAccount.PocketMoneyType);
+
+            double? PocketMoney = remove ? (double?)null : ApplicationSettings.ExpenseAccount.PocketMoneyValue;
+
+            switch (timesheet.Date.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    expense.MondayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Tuesday:
+                    expense.TuesdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Wednesday:
+                    expense.WednesdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Thursday:
+                    expense.ThursdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Friday:
+                    expense.FridayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Saturday:
+                    expense.SaturdayAmount = PocketMoney;
+                    break;
+                case DayOfWeek.Sunday:
+                    expense.SundayAmount = PocketMoney;
+                    break;
+            }
+
+            if (db != null)
+                expense.Save(db);
+            else
+                expense.Save();
+
+            IsChanged = false;
+        }
+
+        public void UpdateDiariaAndPocketMoney(ObservableCollection<TimesheetEVM> timesheets)
+        {
+            if (timesheets == null)
+                return;
+
+            foreach(var timesheet in timesheets)
+            {
+                UpdateDiaria(timesheet, false);
+                UpdatePocketMoney(timesheet, false);
+            }
+        }
+
+        public void InitExpenses()
+        {
+            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
+                CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType);
+
+            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
+                CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType);
+
+            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
+                CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType);
+
+            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
+                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType);
+
+            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
+                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType);
+
+            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
+                CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType);
+
+            IsChanged = false;
+        }
+
+        public void InitExpensesByCountry()
+        {
+            if (FDL1 == null || FDL1.Factory1 == null || FDL1.Factory1.CountryCode == null || FDL1.Factory1.CountryCode == string.Empty)
+                return;
+
+            string CountryCode = FDL1.Factory1.CountryCode;
+
+            if (CountryCode == "IT")
+            {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType);
+            }
+            else
+            {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType);
+            }
+
+            IsChanged = false;
         }
 
         public override bool Save(DBArchive db)
@@ -262,6 +432,7 @@ namespace Great2.ViewModels.Database
             if (exp != null)
             {
                 Auto.Mapper.Map(exp, this);
+                IsChanged = false;
                 return true;
             }
             return false;

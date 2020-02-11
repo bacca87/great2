@@ -18,7 +18,7 @@ namespace Great2.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Refresh(db);
-            }
+        }
 
         public abstract bool Refresh(DBArchive db);
 
@@ -26,7 +26,7 @@ namespace Great2.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Save(db);
-            }
+        }
 
         public abstract bool Save(DBArchive db);
 
@@ -34,24 +34,21 @@ namespace Great2.ViewModels.Database
         {
             using (DBArchive db = new DBArchive())
                 return Delete(db);
-            }
+        }
 
         public abstract bool Delete(DBArchive db);
 
         public void CheckChangedEntity()
         {
-
             //incomplete management
             if (!IsChanged)
-            {
                 return;
-            }
 
             if (MetroMessageBox.Show("Do you want to commit changes before leave selection?", "Save Items", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)           
                 Save();
-            
             else          
                 Refresh();
+
             IsChanged = false;
         }
 
@@ -61,8 +58,7 @@ namespace Great2.ViewModels.Database
 
             //Explicitly pass the propertyname and not the default CallMemberName:
             //When checking nested properties the parent name is passed and eventchanged is not fired
-            return Set(ref field, newValue,propertyName);
+            return Set(ref field, newValue, propertyName);
         }
-
     }
 }

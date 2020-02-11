@@ -222,6 +222,12 @@ namespace Great2.Models
 
                             if (tmpEA == null)
                             {
+                                if (NotifyAsNew && (ea.Currency == null || ea.Currency == string.Empty))
+                                {
+                                    ea.Currency = UserSettings.Localization.DefaultCurrency;
+                                    ea.Currency1 = db.Currencies.SingleOrDefault(c => c.Id == ea.Currency);
+                                }
+
                                 db.ExpenseAccounts.Add(ea);
                                 db.SaveChanges();
 
@@ -799,7 +805,7 @@ namespace Great2.Models
             Factory factory = db.Factories.SingleOrDefault(f => f.Address.ToLower() == address.ToLower());
 
             // 2) try if there are other FDL with the same order
-            if (factory == null)
+            if (factory == null && fdl.Order != 0)
             {
                 factory = (from f in db.Factories
                            from d in db.FDLs
@@ -1365,6 +1371,8 @@ namespace Great2.Models
                                                 File.Delete(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name);
                                                 deleteMessage = true;
                                             }
+                                            else
+                                                ea.InitExpenses();
                                         }
                                     }
                                     break;

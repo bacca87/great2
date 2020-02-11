@@ -23,14 +23,14 @@
             <xctk:Wizard.Resources>
                 <Style TargetType="{x:Type xctk:Wizard}">
                     <Style.Setters>
-                        <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource MahApps.Colors.AccentBase}" />
                     </Style.Setters>
                 </Style>
                 <Style TargetType="{x:Type xctk:WizardPage}">
                     <Style.Setters>
-                        <Setter Property="Background" Value="{StaticResource GrayBrush8}" />
-                        <Setter Property="ExteriorPanelBackground" Value="{StaticResource ControlBackgroundBrush}" />
-                        <Setter Property="HeaderBackground" Value="{StaticResource ControlBackgroundBrush}" />
+                        <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Gray8}" />
+                        <Setter Property="ExteriorPanelBackground" Value="{StaticResource MahApps.Brushes.Control.Background}" />
+                        <Setter Property="HeaderBackground" Value="{StaticResource MahApps.Brushes.Control.Background}" />
                     </Style.Setters>
                 </Style>
                 <conv:NegateBoolConverter x:Key="NegateBoolConverter"/>

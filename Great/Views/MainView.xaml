@@ -10,8 +10,7 @@
     Width="1024" 
     Height="768"
     MinWidth="800"
-    MinHeight="600"  
-    GlassFrameThickness="0"
+    MinHeight="600"      
     BorderThickness="0"
     WindowStartupLocation="CenterScreen" 
     Closing="RibbonWindow_Closing"
@@ -178,12 +177,12 @@
                             <Fluent:ScreenTip Title="June" Text="Set June as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
+                    <Fluent:ToggleButton Header="Jul" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Jul}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Jul}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="July" Text="Set July as the current month." />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
-                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun.png">
+                    <Fluent:ToggleButton Header="Aug" Command="{Binding SelectFirstDayInMonthCommand}" CommandParameter="{Binding Source={StaticResource Aug}}" IsChecked="{Binding CurrentMonth, Converter={StaticResource CompareIntConverter}, ConverterParameter={StaticResource Aug}}" SizeDefinition="Large" GroupName="gMonth" LargeIcon="pack://application:,,,/Great2;component/Images/32/sun-umbrella.png">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="August" Text="Set August as the current month." />
                         </Fluent:ToggleButton.ToolTip>
@@ -355,7 +354,7 @@
                                   IsSelected="{Binding ElementName=carrentalTab, Path=IsSelected, UpdateSourceTrigger=Explicit}">
 
                 <Fluent:RibbonGroupBox Header="Actions">
-                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/bus.png">
+                    <Fluent:Button Header="Add" Command="{Binding NewCommand}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/car.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Add Rent" Text="Add a new rent" />
                         </Fluent:Button.ToolTip>
@@ -638,20 +637,20 @@
         <TabControl Name="NavigationTabControl" PreviewMouseDown="NavigationTabControl_PreviewMouseDown" Grid.Row="1" TabStripPlacement="Bottom" Padding="0" Margin="0,10,0,0"            
                     DataContext="{Binding Notifications, Source={StaticResource Locator}}">
             <TabControl.Resources>
-                <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MetroTabControl}">
+                <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MahApps.Styles.TabControl}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabControl}">
                                 <DockPanel KeyboardNavigation.TabNavigation="Local" LastChildFill="True">
                                     <TabPanel IsItemsHost="True"                                              
-                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}" Background="{DynamicResource GrayBrush10}"/>
+                                              DockPanel.Dock="{TemplateBinding TabStripPlacement}" Background="{DynamicResource MahApps.Brushes.Gray10}"/>
                                     <ContentPresenter ContentSource="SelectedContent" />
                                 </DockPanel>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
-                <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
+                <Style TargetType="TabItem" BasedOn="{StaticResource MahApps.Styles.TabItem}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
@@ -669,7 +668,7 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="{DynamicResource AccentColorBrush}" />
+                                        <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.AccentBase}" />
                                     </Trigger>
                                     <Trigger Property="ap:NotificationHelper.NotificationCount" Value="0">
                                         <Setter TargetName="NotificationCount" Property="Visibility" Value="Hidden" />

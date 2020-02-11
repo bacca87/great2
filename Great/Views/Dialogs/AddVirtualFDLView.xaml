@@ -61,7 +61,7 @@ DESIGNER EXCEPTION
                   ItemsSource="{Binding Weeks}"
                   SelectedValue="{Binding SelectedWeekNr}"
                   IsEnabled="{Binding IsWeekEnabled}"/>
-        <mah:NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Order}" HasDecimals="False" HideUpDownButtons="True" Minimum="0" Margin="2"/>
+        <mah:NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Order}" NumericInputMode="Numbers" HideUpDownButtons="True" Minimum="0" Margin="2"/>
         <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding IsExtra}" VerticalAlignment="Center" Margin="2"/>
         <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Name="btnCancel" Content="Cancel" Click="btnCancel_Click" Margin="3"/>

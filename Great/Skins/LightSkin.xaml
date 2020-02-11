@@ -5,13 +5,7 @@
     <ResourceDictionary.MergedDictionaries>
 
         <!--Fluent Ribbon Styles-->
-        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseLight.xaml" />
-
-        <!-- Accent and AppTheme setting -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-        
-         <!--Needed also if overridden. I used a random color--> 
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/Light.Cobalt.xaml" />
 
         <!--Live Charts Styles-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />

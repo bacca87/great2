@@ -314,6 +314,5 @@ namespace Great2.ViewModels.Database
 
             return false;
         }
-
     }
 }

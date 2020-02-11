@@ -6,6 +6,7 @@ using Great2.Models;
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Utils;
+using Great2.Utils.Extensions;
 using Great2.Utils.Messages;
 using Great2.ViewModels.Database;
 using Great2.Views.Dialogs;
@@ -214,7 +215,7 @@ namespace Great2.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        public void NewFDL(NewItemMessage<FDLEVM> item)
+        private void NewFDL(NewItemMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -226,7 +227,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
+        private void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
             if (item.Sender == this)
                 return;
@@ -250,7 +251,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
+        private void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -274,7 +275,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
+        private void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -297,7 +298,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void NewFactory(NewItemMessage<FactoryEVM> item)
+        private void NewFactory(NewItemMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -313,7 +314,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        private void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -330,12 +331,16 @@ namespace Great2.ViewModels
 
                         foreach (var fdl in fdlToUpdate)
                             fdl.Factory1 = factory;
+
+                        // hack update combo
+                        Factories.Remove(factory);
+                        Factories.Add(factory);
                     }
                 })
             );
         }
 
-        public void FactoryDeleted(DeletedItemMessage<FactoryEVM> item)
+        private void FactoryDeleted(DeletedItemMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -374,7 +379,7 @@ namespace Great2.ViewModels
             
             using (DBArchive db = new DBArchive())
             {
-                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0)
+                if (db.OrderEmailRecipients.Count(r => r.Order == fdl.Order) == 0 || fdl.Order == 0)
                     ShowDialog = true;
             }
 
@@ -558,19 +563,18 @@ namespace Great2.ViewModels
 
             // update timesheets and notifications
             Messenger.Default.Send(new ItemChangedMessage<FDLEVM>(this, fdl));
+            ShowEditMenu = false;
         }
 
         private void UpdateFDLList()
         {
             FDLs.Clear();
 
-            string yr = CurrentYear.ToString();
             using (DBArchive db = new DBArchive())
             {
-                (from f in db.FDLs
-                 let year = f.Id.Substring(0, 4)
-                 where year == yr || f.Status == 0
-                 select f).ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
+                db.FDLs.SqlQuery(
+                    $"select * from FDL where SUBSTR(Id, 1, 4) = '{CurrentYear}' or (CAST(SUBSTR(Id, 1, 4) as int) < {CurrentYear} and Status == 0)")
+                    .ToList().ForEach(x => FDLs.Add(new FDLEVM(x)));
             }
         }
     }

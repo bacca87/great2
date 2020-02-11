@@ -2,6 +2,7 @@
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace Great2.ViewModels.Database
 {
@@ -109,8 +110,8 @@ namespace Great2.ViewModels.Database
 
         public double TotalAmount => (MondayAmount ?? 0) + (TuesdayAmount ?? 0) + (WednesdayAmount ?? 0) + (ThursdayAmount ?? 0) + (FridayAmount ?? 0) + (SaturdayAmount ?? 0) + (SundayAmount ?? 0);
 
-        public ExpenseTypeDTO _ExpenseType;
-        public ExpenseTypeDTO ExpenseType
+        public ExpenseTypeEVM _ExpenseType;
+        public ExpenseTypeEVM ExpenseType
         {
             get => _ExpenseType;
             set => Set(ref _ExpenseType, value);
@@ -135,7 +136,8 @@ namespace Great2.ViewModels.Database
             db.Expenses.AddOrUpdate(e);
             db.SaveChanges();
             Id = e.Id;
-            IsChanged = false;
+            Refresh(db);
+            IsChanged = false;            
             return true;
         }
 
@@ -146,7 +148,15 @@ namespace Great2.ViewModels.Database
 
         public override bool Refresh(DBArchive db)
         {
-            throw new System.NotImplementedException();
+            Expense expense = db.Expenses.SingleOrDefault(e => e.Id == Id);
+
+            if (expense != null)
+            { 
+                Auto.Mapper.Map(expense, this);
+                return true;
+            }
+
+            return false;
         }
 
         public override bool Equals(object obj)
@@ -175,6 +185,5 @@ namespace Great2.ViewModels.Database
 
             return base.GetHashCode();
         }
-
     }
 }

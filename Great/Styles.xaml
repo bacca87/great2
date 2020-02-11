@@ -5,15 +5,13 @@
                     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
                     xmlns:local="clr-namespace:Great2">
     <ResourceDictionary.MergedDictionaries>
-
         <!--Fluent Ribbon Styles-->
         <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
 
-        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->        
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-
+        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />-->
 
         <!--Live Charts Styles-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />
@@ -22,9 +20,7 @@
 
         <!--this is required always-->
         <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
-
     </ResourceDictionary.MergedDictionaries>
-
 
     <Style TargetType="Image" x:Key="DisabledImageStyle">
         <Style.Triggers>
@@ -101,7 +97,7 @@
         <Setter Property="Width" Value="70" />
     </Style>
 
-    <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+    <Style x:Key="timeSheetDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">
         <Setter Property="BorderThickness" Value="0.5"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">
@@ -135,7 +131,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="PopupDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+    <Style x:Key="PopupDatagridStyle"  TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">
         <Setter Property="BorderThickness" Value="0.5"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding  Date.DayOfWeek}" Value="Saturday">

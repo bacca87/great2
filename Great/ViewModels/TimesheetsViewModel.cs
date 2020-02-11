@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -352,11 +353,13 @@ namespace Great2.ViewModels
             ClipboardX.Clear();
             ClipboardX.AddItem("Day", dayClone);
         }
+
         public void CutDay(DayEVM day)
         {
             CopyDay(day);
             ResetDay(day);
         }
+
         public void PasteDay(DayEVM destinationDay)
         {
             if (destinationDay == null || !ClipboardX.Contains("Day"))
@@ -368,8 +371,7 @@ namespace Great2.ViewModels
                 return;
 
             destinationDay.Type = sourceDay.Type;
-
-
+            
             using (DBArchive db = new DBArchive())
             {
                 using (var transaction = db.Database.BeginTransaction())
@@ -382,17 +384,18 @@ namespace Great2.ViewModels
                         destinationDay.Timesheets.Clear();
                         destinationDay.Save(db);
 
-                        foreach (var timesheet in sourceDay.Timesheets)
+                        foreach (var sts in sourceDay.Timesheets)
                         {
+                            TimesheetEVM timesheet = new TimesheetEVM();
+                            Auto.Mapper.Map(sts, timesheet);
+
                             timesheet.Id = 0;
                             timesheet.Timestamp = destinationDay.Timestamp;
-                            destinationDay.Timesheets.Add(timesheet);
                             timesheet.Save(db);
+                            destinationDay.Timesheets.Add(timesheet);
                         }
 
                         transaction.Commit();
-                        SelectedWorkingDay.Refresh(db);
-                        SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
                     }
                     catch
                     {
@@ -401,19 +404,32 @@ namespace Great2.ViewModels
                 }
             }
 
+            int prima = destinationDay.Timesheets.Count();
+
+            SelectedWorkingDay.Refresh();
+            SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
+
+            var anal = destinationDay.Timesheets.Count();
+
+            if (anal > 1)
+            {
+                
+            }   
+
             foreach (var timesheet in destinationDay.Timesheets)
                 Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
-            }
+        }
+
         public void ResetDay(DayEVM day)
         {
             day.Timesheets?.ToList().ForEach(x => DeleteTimesheet(x));
 
             if (day.Delete())
-            {
                 day.EType = EDayType.WorkDay;
-            }
+
             day.RaisePropertyChanged(nameof(day.Notes_Display));
         }
+
         public void DeleteTimesheet(TimesheetEVM timesheet)
         {
             if (timesheet == null)
@@ -428,6 +444,7 @@ namespace Great2.ViewModels
                 Messenger.Default.Send(new DeletedItemMessage<TimesheetEVM>(this, timesheet));
             }
         }
+
         public void SaveTimesheet(TimesheetEVM timesheet)
         {
             if (timesheet == null)

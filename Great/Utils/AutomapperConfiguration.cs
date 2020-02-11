@@ -56,7 +56,6 @@ namespace Great2
                     .ForMember(x => x.Event1, opt => opt.Ignore())
                     .ForMember(x => x.Day1, opt => opt.Ignore());
 
-
                 cfg.CreateMap<DayEVM, DayEVM>();
                 cfg.CreateMap<Day, DayEVM>();
                 cfg.CreateMap<DayEVM, Day>()
@@ -68,6 +67,7 @@ namespace Great2
                 cfg.CreateMap<TimesheetEVM, Timesheet>()
                     .ForMember(x => x.Day, opt => opt.Ignore())
                     .ForMember(x => x.FDL1, opt => opt.Ignore());
+                cfg.CreateMap<TimesheetEVM, TimesheetEVM>(); // used for copy paste timesheets
 
                 cfg.CreateMap<Factory, FactoryEVM>();
                 cfg.CreateMap<FactoryEVM, Factory>()
@@ -77,6 +77,7 @@ namespace Great2
                 cfg.CreateMap<FDLStatus, FDLStatusDTO>();
                 cfg.CreateMap<Currency, CurrencyDTO>();
                 cfg.CreateMap<ExpenseType, ExpenseTypeDTO>();
+                cfg.CreateMap<ExpenseType, ExpenseTypeEVM>();
                 cfg.CreateMap<Factory, FactoryDTO>();
                 cfg.CreateMap<TransferType, TransferTypeDTO>();
                 cfg.CreateMap<FDLResult, FDLResultDTO>();
@@ -87,6 +88,8 @@ namespace Great2
                 cfg.CreateMap<FactoryEVM, FactoryDTO>();
                 cfg.CreateMap<EventType, EventTypeDTO>();
                 cfg.CreateMap<Event, EventDTO>().ForMember(x => x.Status1, opt => opt.Ignore());
+                cfg.CreateMap<UOM, UOMDTO>();
+                cfg.CreateMap<UOMDTO, UOM>();
             });
 
             Mapper = config.CreateMapper();

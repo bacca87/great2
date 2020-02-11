@@ -43,10 +43,10 @@
         <TabControl Grid.Row="0" TabStripPlacement="Left">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabPanel}">
-                    <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>                    
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}"/>                    
                 </Style>
-                <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroTabItem}">
-                    <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+                <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MahApps.Styles.TabItem}">
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}"/>
                 </Style>
             </TabControl.Resources>
             <TabItem Header="General">
@@ -124,6 +124,34 @@
                             <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
                         </StackPanel>
                     </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Expense Accounts">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Defaults" Margin="0,5">
+                        <StackPanel Grid.Row="0">
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock Text="Currency:" VerticalAlignment="Center" Margin="0,0,5,0"/>                                
+                                <ComboBox Grid.Column="1" Grid.Row="0" MinWidth="150" VerticalAlignment="Center"     
+                                    ItemsSource="{Binding Currencies}"
+                                    SelectedValue="{Binding DefaultCurrency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                                    DisplayMemberPath="Description" 
+                                    SelectedValuePath="Id"
+                                    FontSize="15"
+                                    IsEditable="True"
+                                    Width="350"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <!--<GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
+                        <StackPanel>
+                            
+                        </StackPanel>
+                    </GroupBox>-->
                 </Grid>
             </TabItem>
             <TabItem Header="Interface">
@@ -213,7 +241,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Background="{DynamicResource GrayBrush10}">
+        <Grid Grid.Row="1" Background="{DynamicResource MahApps.Brushes.Gray10}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>

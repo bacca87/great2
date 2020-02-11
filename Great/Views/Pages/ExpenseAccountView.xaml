@@ -15,7 +15,7 @@
       mc:Ignorable="d" 
       DataContext="{Binding ExpenseAccount, Source={StaticResource Locator}}"
       Title="ExpenseAccount"
-      Style="{DynamicResource MetroPage}">
+      Style="{DynamicResource MahApps.Styles.Page}">
     <Page.Resources>
         <CollectionViewSource x:Key="EACollectionView" Source="{Binding ExpenseAccounts}" IsLiveSortingRequested="True" >
             <CollectionViewSource.SortDescriptions>
@@ -57,7 +57,7 @@
                 VirtualizingPanel.ScrollUnit ="Item" 
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
-                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
                         <Style.Setters>
                             <Setter Property="TextBlock.FontSize" Value="15" />
                             <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
@@ -70,7 +70,7 @@
                             <Setter Property="TextBlock.TextAlignment" Value="Center" />
                         </Style.Setters>
                     </Style>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
@@ -115,7 +115,20 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
-                    <DataGridTextColumn Header="Factory" Binding="{Binding FDL1.Factory1.Name}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
+                    <DataGridTemplateColumn Header="Factory" CellStyle="{StaticResource BaseCellStyle}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                <Hyperlink NavigateUri="{Binding Factory_Display}" RequestNavigate="FactoryHyperlink_OnNavigate">
+                                    <Hyperlink.InputBindings>
+                                       <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.FactoryLinkCommand}"/>
+                                    </Hyperlink.InputBindings>
+                                    <TextBlock Text="{Binding Factory_Display}"/>
+                                </Hyperlink>
+                            </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Amount" Binding="{Binding TotalAmount_Display}" CellStyle="{StaticResource CenterAligned}" />
                     <DataGridTextColumn Header="Deductions" Binding="{Binding DeductionAmount_Display}" CellStyle="{StaticResource CenterAligned}"/>
                     <DataGridTextColumn Header="Currency" Binding="{Binding Currency1.Id}" CellStyle="{StaticResource CenterAligned}"/>
@@ -227,7 +240,7 @@
                 GridLinesVisibility="Horizontal"
                 ColumnWidth="*">
                 <DataGrid.Resources>
-                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
                         <Style.Setters>
                             <Setter Property="TextBlock.FontSize" Value="20" />
                             <Setter Property="BorderThickness" Value="5" />
@@ -244,7 +257,7 @@
                             <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         </Style.Setters>
                     </Style>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
@@ -269,7 +282,7 @@
                             <DataTemplate>
                                 <ComboBox
                                     ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypes}"
-                                    SelectedItem="{Binding ExpenseType}"
+                                    SelectedItem="{Binding ExpenseType, UpdateSourceTrigger=LostFocus}"
                                     SelectedValue="{Binding Type}"
                                     Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.ExpenseTypeText, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
                                     DisplayMemberPath="Description"

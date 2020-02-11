@@ -115,7 +115,7 @@ namespace Great2.ViewModels
             set => Set(ref _selectedExpense, value);
         }
 
-        public ObservableCollection<ExpenseTypeDTO> ExpenseTypes { get; internal set; }
+        public ObservableCollection<ExpenseTypeEVM> ExpenseTypes { get; internal set; }
         public ObservableCollection<CurrencyDTO> Currencies { get; internal set; }
 
         public MRUCollection<string> MRUEmailRecipients { get; set; }
@@ -141,6 +141,8 @@ namespace Great2.ViewModels
             set => Set(ref _showEditMenu, value);
         }
 
+        public Action<long> OnFactoryLink { get; set; }
+
         #endregion
 
         #region Commands Definitions
@@ -158,6 +160,7 @@ namespace Great2.ViewModels
         public RelayCommand PageUnloadedCommand { get; set; }
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
+        public RelayCommand FactoryLinkCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -214,11 +217,12 @@ namespace Great2.ViewModels
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
+            FactoryLinkCommand = new RelayCommand(FactoryLink);
 
             using (DBArchive db = new DBArchive())
             {
                 string year = CurrentYear.ToString();
-                ExpenseTypes = new ObservableCollection<ExpenseTypeDTO>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeDTO(t)));
+                ExpenseTypes = new ObservableCollection<ExpenseTypeEVM>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeEVM(t)));
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
                 ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }
@@ -229,6 +233,8 @@ namespace Great2.ViewModels
             MessengerInstance.Register<ItemChangedMessage<ExpenseAccountEVM>>(this, EAChanged);
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
+            MessengerInstance.Register<ItemChangedMessage<TimesheetEVM>>(this, TimeSheetChanged);
+            MessengerInstance.Register<DeletedItemMessage<TimesheetEVM>>(this, TimeSheetDeleted);
 
             List<string> recipients = UserSettings.Email.Recipients.MRU?.Cast<string>().ToList();
 
@@ -238,7 +244,7 @@ namespace Great2.ViewModels
                 MRUEmailRecipients = new MRUCollection<string>(ApplicationSettings.EmailRecipients.MRUSize);
         }
 
-        public void NewEA(NewItemMessage<ExpenseAccountEVM> item)
+        private void NewEA(NewItemMessage<ExpenseAccountEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -250,7 +256,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
+        private void EAChanged(ItemChangedMessage<ExpenseAccountEVM> item)
         {
             if (item.Sender == this)
                 return;
@@ -274,7 +280,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
+        private void FactoryChanged(ItemChangedMessage<FactoryEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -299,7 +305,7 @@ namespace Great2.ViewModels
             );
         }
 
-        public void FDLChanged(ItemChangedMessage<FDLEVM> item)
+        private void FDLChanged(ItemChangedMessage<FDLEVM> item)
         {
             // Using the dispatcher for preventing thread conflicts   
             Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
@@ -310,7 +316,59 @@ namespace Great2.ViewModels
                         var eaToUpdate = ExpenseAccounts.Where(e => e.FDL1 != null && e.FDL == item.Content.Id);
 
                         foreach (var ea in eaToUpdate)
-                            ea.FDL1.Factory1 = item.Content.Factory1;
+                        {
+                            if(ea.FDL1.Factory1 != item.Content.Factory1)
+                            {
+                                ea.FDL1.Factory1 = item.Content.Factory1;
+                                ea.RaisePropertyChanged(nameof(ea.Factory_Display));
+
+                                if(ea.FDL1.Factory1 != null)
+                                {
+                                    ea.InitExpensesByCountry();
+                                    ea.UpdateDiariaAndPocketMoney(item.Content.Timesheets);
+                                }
+                            }
+                        }   
+                    }
+                })
+            );
+        }
+
+        private void TimeSheetChanged(ItemChangedMessage<TimesheetEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.FDL == item.Content.FDL1?.Id && x.Currency == "EUR");
+
+                        if (ea != null)
+                        {                            
+                            ea.UpdateDiaria(item.Content, false);
+                            ea.UpdatePocketMoney(item.Content, false);
+                        }
+                    }
+                })
+            );
+        }
+
+        private void TimeSheetDeleted(DeletedItemMessage<TimesheetEVM> item)
+        {
+            // Using the dispatcher for preventing thread conflicts   
+            Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    if (item.Content != null)
+                    {
+                        ExpenseAccountEVM ea = ExpenseAccounts.SingleOrDefault(x => x.FDL == item.Content.FDL1?.Id && x.Currency == "EUR");
+
+                        if (ea != null)
+                        {
+                            ea.UpdateDiaria(item.Content, true);
+                            ea.UpdatePocketMoney(item.Content, true);
+                        }
                     }
                 })
             );
@@ -452,8 +510,8 @@ namespace Great2.ViewModels
 
                 if (dlg.ShowDialog() == true)
                     _fdlManager.SaveAs(ea, dlg.FileName);
-                }
             }
+        }
 
         public void Compile(ExpenseAccountEVM ea)
         {
@@ -480,8 +538,7 @@ namespace Great2.ViewModels
                 {
                     if (MetroMessageBox.Show("Some expenses are referencing days without fdl connected. Are you sure?", "Compile", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                         return;
-                    }
-
+                }
             }
 
             if (ea == null)
@@ -546,17 +603,21 @@ namespace Great2.ViewModels
             ea.Save();
         }
 
+        private void FactoryLink()
+        {
+            if (SelectedEA.FDL1.Factory.HasValue)
+                OnFactoryLink?.Invoke(SelectedEA.FDL1.Factory.Value);
+        }
+
         private void UpdateEaList()
         {
             ExpenseAccounts.Clear();
-            string yr = CurrentYear.ToString();
+
             using (DBArchive db = new DBArchive())
             {
-                (from ex in db.ExpenseAccounts
-                 let year = ex.FDL.Substring(0, 4)
-                 where year == yr || ex.Status == 0
-                 select ex).ToList().ForEach(ea=> ExpenseAccounts.Add( new ExpenseAccountEVM(ea)));
-
+                db.ExpenseAccounts.SqlQuery(
+                    $"select * from ExpenseAccount where SUBSTR(FDL, 1, 4) = '{CurrentYear}' or (CAST(SUBSTR(FDL, 1, 4) as int) < {CurrentYear} and Status == 0)")
+                    .ToList().ForEach(ea => ExpenseAccounts.Add(new ExpenseAccountEVM(ea)));
             }
         }
     }

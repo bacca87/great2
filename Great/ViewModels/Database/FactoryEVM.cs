@@ -65,12 +65,9 @@ namespace Great2.ViewModels.Database
             set => SetAndCheckChanged(ref _TransferType, value);
         }
 
-        private bool _IsForfait;
         public bool IsForfait
         {
-            get => _IsForfait;
-            set => SetAndCheckChanged(ref _IsForfait, value);
-
+            get => CheckForfaitCountry(CountryCode);
         }
 
         private bool _NotifyAsNew;
@@ -95,7 +92,11 @@ namespace Great2.ViewModels.Database
         public string CountryCode
         {
             get => _CountryCode;
-            set => SetAndCheckChanged(ref _CountryCode, value);
+            set
+            {
+                SetAndCheckChanged(ref _CountryCode, value);
+                RaisePropertyChanged(nameof(IsForfait));
+            }
         }
 
         private TransferTypeDTO _TransferType1;
@@ -236,8 +237,11 @@ namespace Great2.ViewModels.Database
             if (isExtraEurope) return 3;
 
             else return 0;
+        }
 
-
+        public static bool CheckForfaitCountry(string CountryCode)
+        {
+            return CountryCode != null && CountryCode != "IT" && CountryCode != "GB" && CountryCode != "CH" && CountryCode != "SE";
         }
     }
 }
