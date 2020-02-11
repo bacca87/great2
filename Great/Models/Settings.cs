@@ -1529,12 +1529,11 @@ namespace Great2.Models
             {
                 try
                 {
-                    //Fluent.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
-                    Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
-                    //Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
-                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
-                    MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
-                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                    Fluent.ThemeManager.ChangeTheme(Application.Current, theme.ToString());
+                    MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, theme.ToString());
+
+                    //Fluent.ThemeManager.ChangeThemeColorScheme(Application.Current, accent.ToString());
+                    //MahApps.Metro.ThemeManager.ChangeThemeColorScheme(Application.Current, accent.ToString());
                 }
                 catch (Exception)
                 {
