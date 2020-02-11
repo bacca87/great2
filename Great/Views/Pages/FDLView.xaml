@@ -14,7 +14,7 @@
       mc:Ignorable="d"
       DataContext="{Binding FDL, Source={StaticResource Locator}}"
       Title="FDLView"
-      Style="{DynamicResource MetroPage}">
+      Style="{DynamicResource MahApps.Styles.Page}">
 
     <Page.Resources>
         <CollectionViewSource x:Key="FDLCollectionView" Source="{Binding FDLs}" IsLiveSortingRequested="True" >
@@ -56,7 +56,7 @@
                 VirtualizingPanel.VirtualizationMode="Standard"
                 Loaded="fdlDataGridView_Loaded">
                 <DataGrid.Resources>
-                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
                         <Style.Setters>
                             <Setter Property="TextBlock.FontSize" Value="15" />
                             <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
@@ -69,7 +69,7 @@
                             <Setter Property="TextBlock.TextAlignment" Value="Center" />
                         </Style.Setters>
                     </Style>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
 
@@ -229,7 +229,7 @@
                       IsReadOnly="True"
                       Height="160">
                 <DataGrid.Resources>
-                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
                         <Style.Setters>
                             <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
                             <Setter Property="BorderThickness" Value="0" />
@@ -246,7 +246,7 @@
                             <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         </Style.Setters>
                     </Style>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                         <Setter Property="ContentTemplate">
                             <Setter.Value>
                                 <DataTemplate>
@@ -271,7 +271,7 @@
             </DataGrid>
             <Grid Grid.Row="2" Margin="5">
                 <Grid.Resources>
-                    <Style TargetType="CheckBox" BasedOn="{StaticResource MetroCheckBox}">
+                    <Style TargetType="CheckBox" BasedOn="{StaticResource MahApps.Styles.CheckBox}">
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
                         <Setter Property="IsEnabled" Value="{Binding IsInputEnabled}"/>

@@ -43,7 +43,7 @@
                   RowStyle="{DynamicResource PopupDatagridStyle}"
                   VirtualizingPanel.VirtualizationMode="Standard">
             <DataGrid.Resources>
-                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
                     <Style.Setters>
                         <Setter Property="TextBlock.FontSize" Value="15" />
                         <!--<Setter Property="TextBlock.FontFamily" Value="Verdana" />-->
@@ -61,7 +61,7 @@
                         <Setter Property="TextBlock.TextAlignment" Value="Right" />
                     </Style.Setters>
                 </Style>
-                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>

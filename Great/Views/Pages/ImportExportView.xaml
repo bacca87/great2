@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       DataContext="{Binding ImportExport, Source={StaticResource Locator}}"
       Title="ImportExportView"
-      Style="{DynamicResource MetroPage}">
+      Style="{DynamicResource MahApps.Styles.Page}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>

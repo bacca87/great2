@@ -14,7 +14,7 @@
       mc:Ignorable="d" 
       DataContext="{Binding CarRental, Source={StaticResource Locator}}"
       Title="CarRental"
-      Style="{DynamicResource MetroPage}">
+      Style="{DynamicResource MahApps.Styles.Page}">
     <Page.Resources>
         <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
         <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
@@ -59,7 +59,7 @@
                 VirtualizingPanel.ScrollUnit ="Item"   
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
-                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
+                    <Style x:Key="BaseCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
                         <Style.Setters>
                             <Setter Property="TextBlock.FontSize" Value="15" />
                             <Setter Property="BorderThickness" Value="5" />
@@ -76,7 +76,7 @@
                             <Setter Property="TextBlock.TextAlignment" Value="Right" />
                         </Style.Setters>
                     </Style>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>

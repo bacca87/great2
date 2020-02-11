@@ -43,10 +43,10 @@
         <TabControl Grid.Row="0" TabStripPlacement="Left">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabPanel}">
-                    <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>                    
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}"/>                    
                 </Style>
-                <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroTabItem}">
-                    <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+                <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MahApps.Styles.TabItem}">
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}"/>
                 </Style>
             </TabControl.Resources>
             <TabItem Header="General">
@@ -241,7 +241,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Background="{DynamicResource GrayBrush10}">
+        <Grid Grid.Row="1" Background="{DynamicResource MahApps.Brushes.Gray10}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>

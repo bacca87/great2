@@ -1529,33 +1529,26 @@ namespace Great2.Models
             {
                 try
                 {
-
-                    Fluent.ThemeManager.ChangeAppStyle(Application.Current,
-                        Fluent.ThemeManager.GetAccent(accent.ToString()),
-                        Fluent.ThemeManager.GetAppTheme(theme.ToString()));
-
-                    MahApps.Metro.ThemeManager.ChangeAppStyle(Application.Current,
-                        MahApps.Metro.ThemeManager.GetAccent(accent.ToString()),
-                        MahApps.Metro.ThemeManager.GetAppTheme(theme.ToString()));
+                    //Fluent.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
+                    Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
+                    //Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
+                    MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
+                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
                 }
                 catch (Exception)
                 {
-
-
                 }
-
-
             }
 
             public static void AttachCustomThemes()
             {
-                Fluent.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
-                Fluent.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+                Fluent.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                Fluent.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
 
-                MahApps.Metro.ThemeManager.AddAppTheme("DarkSkin", new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
-                MahApps.Metro.ThemeManager.AddAppTheme("LightSkin", new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+                MahApps.Metro.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
+                MahApps.Metro.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
             }
-
         }
 
         #endregion
