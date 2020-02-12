@@ -1222,9 +1222,9 @@ namespace Great2.Models
         #endregion
 
         #region Themes
-
         public static class Themes
         {
+            #region Properties
             //used to compare with origina theme settings without restarting the application
             private static ResourceDictionary _LightSkinDictionary;
             private static ResourceDictionary LightSkinDictionary
@@ -1237,9 +1237,7 @@ namespace Great2.Models
                         _LightSkinDictionary.Source = new Uri("Skins/LightSkin.xaml", UriKind.Relative);
                     }
                     return _LightSkinDictionary;
-
                 }
-
             }
 
             private static ResourceDictionary _DarkSkinDictionary;
@@ -1253,9 +1251,7 @@ namespace Great2.Models
                         _DarkSkinDictionary.Source = new Uri("Skins/DarkSkin.xaml", UriKind.Relative);
                     }
                     return _DarkSkinDictionary;
-
                 }
-
             }
 
             public static ETheme Theme
@@ -1267,6 +1263,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static EAccentColor AccentColor
             {
                 get => (EAccentColor)Settings.Default.AccentColor;
@@ -1284,9 +1281,9 @@ namespace Great2.Models
                 {
                     Settings.Default.CustomSaturdayColorUsed = value;
                     Settings.Default.Save();
-
                 }
             }
+
             public static SolidColorBrush CustomSaturdayColor
             {
                 get => Settings.Default.SaturdayColor;
@@ -1306,6 +1303,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomSundayColor
             {
                 get => Settings.Default.SundayColor;
@@ -1325,6 +1323,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomHolidayColor
             {
                 get => Settings.Default.HolidayColor;
@@ -1344,6 +1343,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomVacationColor
             {
                 get => Settings.Default.VacationColor;
@@ -1363,6 +1363,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomSickColor
             {
                 get => Settings.Default.SickColor;
@@ -1382,6 +1383,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomHomeworkColor
             {
                 get => Settings.Default.HomeworkColor;
@@ -1401,6 +1403,7 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
+
             public static SolidColorBrush CustomSpecialLeaveColor
             {
                 get => Settings.Default.SpecialLeaveColor;
@@ -1411,6 +1414,11 @@ namespace Great2.Models
                 }
             }
 
+            public static Fluent.Theme CurrentFluentTheme { get; set; }
+            public static MahApps.Metro.Theme CurrentMetroTheme { get; set; }
+            #endregion
+
+            #region Methods
             public static SolidColorBrush IdealForegroundColor(Color bg)
             {
                 var baseLightForeColor = (Color)ColorConverter.ConvertFromString("#ffffff");
@@ -1438,40 +1446,35 @@ namespace Great2.Models
             {
                 // Get the original resource dictionary and compare it with the selected one
 
-                var usedDict = Theme == ETheme.LightSkin ? LightSkinDictionary : DarkSkinDictionary;
+                var usedDict = Theme == ETheme.Light ? LightSkinDictionary : DarkSkinDictionary;
 
                 if (IsCustomSaturdayColorUsed)
                 {
                     ApplySingleColor("DefaultSaturdayColor", CustomSaturdayColor);
                     ApplySingleColor("BestForegroundSaturdayColor", IdealForegroundColor(CustomSaturdayColor.Color));
                 }
-
                 else
                 {
                     ApplySingleColor("DefaultSaturdayColor", usedDict["DefaultSaturdayColor"] as SolidColorBrush);
                     ApplySingleColor("BestForegroundSaturdayColor", usedDict["BestForegroundSaturdayColor"] as SolidColorBrush);
                 }
 
-
                 if (IsCustomSundayColorUsed)
                 {
                     ApplySingleColor("DefaultSundayColor", CustomSundayColor);
                     ApplySingleColor("BestForegroundSundayColor", IdealForegroundColor(CustomSundayColor.Color));
                 }
-                    
                 else
                 {
                     ApplySingleColor("DefaultSundayColor", usedDict["DefaultSundayColor"] as SolidColorBrush);
                     ApplySingleColor("BestForegroundSundayColor", usedDict["BestForegroundSundayColor"] as SolidColorBrush);
                 }
 
-
                 if (IsCustomHolidayColorUsed)
                 {
                     ApplySingleColor("DefaultHolidayColor", CustomHolidayColor);
                     ApplySingleColor("BestForegroundHolidayColor", IdealForegroundColor(CustomHolidayColor.Color));
                 }
-
                 else
                 { 
                     ApplySingleColor("DefaultHolidayColor", usedDict["DefaultHolidayColor"] as SolidColorBrush);
@@ -1483,7 +1486,6 @@ namespace Great2.Models
                     ApplySingleColor("DefaultVacationColor", CustomVacationColor);
                     ApplySingleColor("BestForegroundVacationColor", IdealForegroundColor(CustomVacationColor.Color));
                 }
-
                 else
                 { 
                     ApplySingleColor("DefaultVacationColor", usedDict["DefaultVacationColor"] as SolidColorBrush);
@@ -1495,7 +1497,6 @@ namespace Great2.Models
                     ApplySingleColor("DefaultSickColor", CustomSickColor);
                     ApplySingleColor("BestForegroundSickColor", IdealForegroundColor(CustomSickColor.Color));
                 }
-
                 else 
                 { 
                     ApplySingleColor("DefaultSickColor", usedDict["DefaultSickColor"] as SolidColorBrush);
@@ -1529,12 +1530,41 @@ namespace Great2.Models
             {
                 try
                 {
-                    //Fluent.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
-                    Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
-                    //Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
-                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, "Dark.Red");
-                    MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}");
-                    //MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                    ResourceDictionary GreatSkin = null;
+
+                    switch (theme)
+                    {
+                        case ETheme.Dark:
+                            GreatSkin = DarkSkinDictionary;
+                            break;
+
+                        case ETheme.Light:
+                            GreatSkin = LightSkinDictionary;
+                            break;
+                    }
+
+                    if (CurrentFluentTheme != null || CurrentMetroTheme != null)
+                    {
+                        // remove old theme and accent
+                        GreatSkin.MergedDictionaries.Remove(CurrentFluentTheme.Resources);
+                        GreatSkin.MergedDictionaries.Remove(CurrentMetroTheme.Resources);
+
+                        // hack: in order to refresh the theme with the new preferencies, we must set a different theme from the previous one
+                        Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                        MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                    }
+
+                    // get the theme matching the selected accent color
+                    CurrentFluentTheme = Fluent.ThemeManager.GetTheme($"{theme.ToString()}.{accent.ToString()}");
+                    CurrentMetroTheme = MahApps.Metro.ThemeManager.GetTheme($"{theme.ToString()}.{accent.ToString()}");
+
+                    // add the default theme to our custom one
+                    GreatSkin.MergedDictionaries.Add(CurrentFluentTheme.Resources);
+                    GreatSkin.MergedDictionaries.Add(CurrentMetroTheme.Resources);
+
+                    // change the theme
+                    Fluent.ThemeManager.ChangeTheme(Application.Current, theme.ToString() + "Skin");
+                    MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, theme.ToString() + "Skin");
                 }
                 catch (Exception)
                 {
@@ -1543,22 +1573,21 @@ namespace Great2.Models
 
             public static void AttachCustomThemes()
             {
-                Fluent.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
-                Fluent.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
-
-                MahApps.Metro.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/DarkSkin.xaml"));
-                MahApps.Metro.ThemeManager.AddTheme(new Uri("pack://application:,,,/Great2;component/Skins/LightSkin.xaml"));
+                Fluent.ThemeManager.AddTheme(DarkSkinDictionary);
+                Fluent.ThemeManager.AddTheme(LightSkinDictionary);
+                MahApps.Metro.ThemeManager.AddTheme(DarkSkinDictionary);
+                MahApps.Metro.ThemeManager.AddTheme(LightSkinDictionary);
             }
+            #endregion
         }
-
         #endregion
     }
     #endregion
 
     public enum ETheme : int
     {
-        DarkSkin = 0,
-        LightSkin = 1
+        Dark = 0,
+        Light = 1
     }
 
     public enum EAccentColor : int
