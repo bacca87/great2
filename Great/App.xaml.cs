@@ -48,6 +48,7 @@ namespace Great2
 
                 if (count > 1)
                 {
+                    MessageBox.Show("Cannot start Great2, another istance is already running!", "Great2", MessageBoxButton.OK, MessageBoxImage.Warning);
                     Environment.Exit(1);
                     return;
                 }
