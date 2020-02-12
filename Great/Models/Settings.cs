@@ -1543,18 +1543,26 @@ namespace Great2.Models
                             break;
                     }
 
-                    if (CurrentFluentTheme != null)
+                    if (CurrentFluentTheme != null || CurrentMetroTheme != null)
+                    {
+                        // remove old theme and accent
                         GreatSkin.MergedDictionaries.Remove(CurrentFluentTheme.Resources);
-
-                    if (CurrentMetroTheme != null)
                         GreatSkin.MergedDictionaries.Remove(CurrentMetroTheme.Resources);
 
+                        // hack: in order to refresh the theme with the new preferencies, we must set a different theme from the previous one
+                        Fluent.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                        MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, $"{theme.ToString()}.{accent.ToString()}");
+                    }
+
+                    // get the theme matching the selected accent color
                     CurrentFluentTheme = Fluent.ThemeManager.GetTheme($"{theme.ToString()}.{accent.ToString()}");
                     CurrentMetroTheme = MahApps.Metro.ThemeManager.GetTheme($"{theme.ToString()}.{accent.ToString()}");
 
+                    // add the default theme to our custom one
                     GreatSkin.MergedDictionaries.Add(CurrentFluentTheme.Resources);
                     GreatSkin.MergedDictionaries.Add(CurrentMetroTheme.Resources);
 
+                    // change the theme
                     Fluent.ThemeManager.ChangeTheme(Application.Current, theme.ToString() + "Skin");
                     MahApps.Metro.ThemeManager.ChangeTheme(Application.Current, theme.ToString() + "Skin");
                 }
@@ -1567,7 +1575,6 @@ namespace Great2.Models
             {
                 Fluent.ThemeManager.AddTheme(DarkSkinDictionary);
                 Fluent.ThemeManager.AddTheme(LightSkinDictionary);
-
                 MahApps.Metro.ThemeManager.AddTheme(DarkSkinDictionary);
                 MahApps.Metro.ThemeManager.AddTheme(LightSkinDictionary);
             }
