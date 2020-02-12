@@ -1372,7 +1372,10 @@ namespace Great2.Models
                                                 deleteMessage = true;
                                             }
                                             else
+                                            {
                                                 ea.InitExpenses();
+                                                ea.InitExpensesByCountry();
+                                            }   
                                         }
                                     }
                                     break;
