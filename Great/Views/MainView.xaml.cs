@@ -21,7 +21,8 @@ namespace Great2.Views
     /// </summary>
     public partial class MainView : RibbonWindow
     {
-        DispatcherTimer CheckForUpdatesTimer;
+        private DispatcherTimer CheckForUpdatesTimer;
+        private bool ForceClose = false;
 
         public MainView()
         {
@@ -74,6 +75,7 @@ namespace Great2.Views
 
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
+            ForceClose = true;
             Close();
         }
 
@@ -123,7 +125,15 @@ namespace Great2.Views
 
         private void RibbonWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            CheckEntities();
+            if (ForceClose)
+            {
+                CheckEntities();
+            }
+            else
+            {
+                Hide();
+                e.Cancel = true;
+            }
         }
 
         private void NavigationTabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -156,6 +166,28 @@ namespace Great2.Views
             AddVirtualFDLView view = new AddVirtualFDLView();
             view.Owner = this;
             view.ShowDialog();
+        }
+
+        private void MyNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if(Visibility == Visibility.Hidden)
+            {
+                Show();
+
+                if(WindowState == WindowState.Minimized)
+                    WindowState = WindowState.Normal;
+            }
+        }
+
+        private void RibbonWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+                Hide();
+        }
+
+        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
