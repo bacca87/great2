@@ -257,6 +257,13 @@ namespace Great2.ViewModels
             set => Set(ref _cdc, value);
         }
 
+        private bool _AutomaticAllowance;
+        public bool AutomaticAllowance
+        {
+            get => _AutomaticAllowance;
+            set => Set(ref _AutomaticAllowance, value);
+        }
+
         private IProvider Exchange;
         #endregion
 
@@ -361,6 +368,7 @@ namespace Great2.ViewModels
             }
 
             DefaultCurrency = UserSettings.Localization.DefaultCurrency;
+            AutomaticAllowance = UserSettings.Options.AutomaticAllowance;
             ExcelExpenseAccount = UserSettings.Advanced.ExcelExpenseAccount;
             CDC = UserSettings.Advanced.CDC;
 
@@ -415,6 +423,7 @@ namespace Great2.ViewModels
                 UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
 
                 UserSettings.Localization.DefaultCurrency = DefaultCurrency;
+                UserSettings.Options.AutomaticAllowance = AutomaticAllowance;
                 UserSettings.Advanced.ExcelExpenseAccount = ExcelExpenseAccount;
                 UserSettings.Advanced.CDC = CDC;
 

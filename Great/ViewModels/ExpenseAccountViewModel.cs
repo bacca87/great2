@@ -494,8 +494,8 @@ namespace Great2.ViewModels
                 SaveFileDialog dlg = new SaveFileDialog();
                 dlg.Title = "Save Expense Account As...";
                 dlg.FileName = ea.FileName;
-                dlg.DefaultExt = ".pdf";
-                dlg.Filter = "EA (.pdf) | *.pdf";
+                dlg.DefaultExt = ea.IsExcel ? ".xlsx" : ".pdf";
+                dlg.Filter = ea.IsExcel ? "EA (.xlsx) | *.xlsx" : "EA (.pdf) | *.pdf";
                 dlg.AddExtension = true;
                 dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 

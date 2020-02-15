@@ -1520,6 +1520,22 @@ namespace Great2.Models
         }
         #endregion
 
+        #region Options
+        public static class Options
+        {
+            public static bool AutomaticAllowance
+            {
+                get => Settings.Default.AutomaticAllowance;
+                set
+                {
+                    Settings.Default.AutomaticAllowance = value;
+                    Settings.Default.Save();
+                }
+            }
+            
+        }
+        #endregion
+
         #region Advanced
         public static class Advanced
         {

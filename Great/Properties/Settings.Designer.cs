@@ -425,5 +425,17 @@ namespace Great2.Properties {
                 this["CachedDisplayName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutomaticAllowance {
+            get {
+                return ((bool)(this["AutomaticAllowance"]));
+            }
+            set {
+                this["AutomaticAllowance"] = value;
+            }
+        }
     }
 }
