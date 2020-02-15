@@ -211,6 +211,13 @@ namespace Great2.ViewModels
             set => Set(ref _NewOrderDefaultRecipients, value);
         }
 
+        public string _EANewMessageDefaultRecipients;
+        public string EANewMessageDefaultRecipients
+        {
+            get => _EANewMessageDefaultRecipients;
+            set => Set(ref _EANewMessageDefaultRecipients, value);
+        }
+
         public string _FDLCancelRequestRecipients;
         public string FDLCancelRequestRecipients
         {
@@ -299,6 +306,7 @@ namespace Great2.ViewModels
 
             NewOrderDefaultRecipients = string.Empty;
             FDLCancelRequestRecipients = string.Empty;
+            EANewMessageDefaultRecipients = string.Empty;
         }
 
         public void SelectFolder()
@@ -372,6 +380,12 @@ namespace Great2.ViewModels
             ExcelExpenseAccount = UserSettings.Advanced.ExcelExpenseAccount;
             CDC = UserSettings.Advanced.CDC;
 
+            if (UserSettings.Email.Recipients.EANewMessageDefaultRecipients != null)
+            {
+                foreach (string address in UserSettings.Email.Recipients.EANewMessageDefaultRecipients)
+                    EANewMessageDefaultRecipients += EANewMessageDefaultRecipients == string.Empty ? address : "; " + address;
+            }
+
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;
 
@@ -426,6 +440,10 @@ namespace Great2.ViewModels
                 UserSettings.Options.AutomaticAllowance = AutomaticAllowance;
                 UserSettings.Advanced.ExcelExpenseAccount = ExcelExpenseAccount;
                 UserSettings.Advanced.CDC = CDC;
+
+                StringCollection EARecipients = new StringCollection();
+                EARecipients.AddRange(EANewMessageDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                UserSettings.Email.Recipients.EANewMessageDefaultRecipients = EARecipients;
 
                 UserSettings.Themes.Theme = Theme;
                 UserSettings.Themes.AccentColor = AccentColor;

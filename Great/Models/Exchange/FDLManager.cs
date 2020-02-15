@@ -1254,9 +1254,14 @@ namespace Great2.Models
             {
                 ExpenseAccountEVM ea = file as ExpenseAccountEVM;
                 message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+
+                foreach (string recipient in UserSettings.Email.Recipients.EANewMessageDefaultRecipients)
+                {
+                    if (!message.ToRecipients.Contains(recipient))
+                        message.ToRecipients.Add(recipient);
+                }
             }
 
-            //message.ToRecipients.Add(address);
             message.Attachments.Add(file.FilePath);
 
             return OutlookHelper.NewMessage(message);

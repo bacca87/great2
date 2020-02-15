@@ -252,7 +252,7 @@
                                 </Fluent:GalleryItem.ToolTip>
                                 <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
                             </Fluent:GalleryItem>
-                            <Fluent:GalleryItem Tag="Message:">
+                            <Fluent:GalleryItem Tag="Message:" Command="{Binding NewMessageCommand}" CommandParameter="{Binding SelectedFDL}">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected FDL by email." />
                                 </Fluent:GalleryItem.ToolTip>

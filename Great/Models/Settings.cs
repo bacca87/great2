@@ -1516,6 +1516,16 @@ namespace Great2.Models
                         Settings.Default.Save();
                     }
                 }
+
+                public static StringCollection EANewMessageDefaultRecipients
+                {
+                    get => Settings.Default.EANewMessageDefaultRecipients;
+                    set
+                    {
+                        Settings.Default.EANewMessageDefaultRecipients = value;
+                        Settings.Default.Save();
+                    }
+                }
             }
         }
         #endregion

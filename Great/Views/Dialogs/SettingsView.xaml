@@ -151,9 +151,13 @@
                     <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
                         <StackPanel Margin="0.5">
                             <CheckBox Content="Enable excel expense accounts" IsChecked="{Binding ExcelExpenseAccount}"/>
-                            <StackPanel Margin="20,2,2,2" Orientation="Horizontal">
+                            <StackPanel Margin="0,5" Orientation="Horizontal">
                                 <TextBlock VerticalAlignment="Center">CDC:</TextBlock>
                                 <mah:NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding CDC}" IsEnabled="{Binding ExcelExpenseAccount}" NumericInputMode="Numbers" HideUpDownButtons="True" Minimum="0" Width="100" Margin="2"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,5" Orientation="Vertical">
+                                <TextBlock Text="Default email recipients for EA (separated by &quot;;&quot;): "/>
+                                <TextBox Text="{Binding EANewMessageDefaultRecipients, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding ExcelExpenseAccount}"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>

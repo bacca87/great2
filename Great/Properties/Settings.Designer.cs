@@ -437,5 +437,16 @@ namespace Great2.Properties {
                 this["AutomaticAllowance"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection EANewMessageDefaultRecipients {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["EANewMessageDefaultRecipients"]));
+            }
+            set {
+                this["EANewMessageDefaultRecipients"] = value;
+            }
+        }
     }
 }
