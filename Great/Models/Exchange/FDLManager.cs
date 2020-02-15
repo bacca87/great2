@@ -1174,7 +1174,7 @@ namespace Great2.Models
             message.Type = EEmailMessageType.SAP_Notification;
             message.DataInfo = file;
             message.Importance = Importance.High;
-            message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
+            message.ToRecipients.Add("baccarani.m@elettric80.it");//(ApplicationSettings.EmailRecipients.FDLSystem);
 
             if (file is FDLEVM)
             {
@@ -1235,6 +1235,31 @@ namespace Great2.Models
             message.Attachments.Add(file.FilePath);
 
             return exchange.SendEmail(message);
+        }
+
+        public bool NewOutlookMessage(IFDLFile file)
+        {
+            if (file == null)
+                return false;
+
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.Message;
+
+            if (file is FDLEVM)
+            {
+                FDLEVM fdl = file as FDLEVM;
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            }
+            else if (file is ExpenseAccountEVM)
+            {
+                ExpenseAccountEVM ea = file as ExpenseAccountEVM;
+                message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+            }
+
+            //message.ToRecipients.Add(address);
+            message.Attachments.Add(file.FilePath);
+
+            return OutlookHelper.NewMessage(message);
         }
 
         public bool SendCancellationRequest(FDLEVM fdl)

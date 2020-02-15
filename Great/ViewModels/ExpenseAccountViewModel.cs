@@ -93,6 +93,7 @@ namespace Great2.ViewModels
                     IsInputEnabled = true;
 
                     SendToSAPCommand.RaiseCanExecuteChanged();
+                    NewMessageCommand.RaiseCanExecuteChanged();
                     CompileCommand.RaiseCanExecuteChanged();
                     SendByEmailCommand.RaiseCanExecuteChanged();
                     SaveAsCommand.RaiseCanExecuteChanged();
@@ -141,6 +142,7 @@ namespace Great2.ViewModels
         #region Commands Definitions
         public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> NewMessageCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> CompileCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SaveAsCommand { get; set; }
@@ -200,6 +202,7 @@ namespace Great2.ViewModels
             SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            NewMessageCommand = new RelayCommand<ExpenseAccountEVM>(NewMessage, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             CompileCommand = new RelayCommand<ExpenseAccountEVM>(Compile, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             SendByEmailCommand = new RelayCommand<string>(SendByEmail, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
@@ -424,24 +427,9 @@ namespace Great2.ViewModels
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
-            string[] attachments = null;
-
-            if (ea.IsExcel)
-            {
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Title = "Expense Account Attachments";
-                dialog.Filter = "All Files |*.*";
-                dialog.Multiselect = true;
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                dialog.ShowDialog();
-
-                attachments = dialog.FileNames;
-            }
-
             using (new WaitCursor())
             {
-                if (_fdlManager.SendToSAP(ea, attachments))
+                if (_fdlManager.SendToSAP(ea))
                     ea.EStatus = EFDLStatus.Waiting; // don't save the fdl status until the message is sent
             }
         }
@@ -481,6 +469,20 @@ namespace Great2.ViewModels
                 UserSettings.Email.Recipients.MRU = collection;
 
                 _fdlManager.SendTo(address, SelectedEA);
+            }
+        }
+
+        public void NewMessage(ExpenseAccountEVM ea)
+        {
+            if (!SelectedEA.IsCompiled)
+            {
+                MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            using (new WaitCursor())
+            {
+                _fdlManager.NewOutlookMessage(ea);
             }
         }
 

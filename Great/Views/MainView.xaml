@@ -422,13 +422,13 @@
                             <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
                         </Fluent:DropDownButton.ToolTip>
                         <Fluent:Gallery GroupBy="Tag" Orientation="Horizontal" ItemWidth="32" ItemHeight="32">
-                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedEA}" Tag="Message:">
+                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedEA}" Tag="Message:" IsEnabled="{Binding SelectedEA.IsExcel, Converter={StaticResource NegateBoolConverter}}">
                                 <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system." />
+                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system."/>
                                 </Fluent:GalleryItem.ToolTip>
                                 <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
                             </Fluent:GalleryItem>
-                            <Fluent:GalleryItem Tag="Message:">
+                            <Fluent:GalleryItem Tag="Message:" Command="{Binding NewMessageCommand}" CommandParameter="{Binding SelectedEA}">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected expense account by email." />
                                 </Fluent:GalleryItem.ToolTip>
