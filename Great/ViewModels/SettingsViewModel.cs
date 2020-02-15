@@ -243,6 +243,20 @@ namespace Great2.ViewModels
             set => Set(ref _DefaultCurrency, value);
         }
 
+        private bool _excelExpenseAccount;
+        public bool ExcelExpenseAccount
+        {
+            get => _excelExpenseAccount;
+            set => Set(ref _excelExpenseAccount, value);
+        }
+
+        private int _cdc;
+        public int CDC
+        {
+            get => _cdc;
+            set => Set(ref _cdc, value);
+        }
+
         private IProvider Exchange;
         #endregion
 
@@ -347,6 +361,8 @@ namespace Great2.ViewModels
             }
 
             DefaultCurrency = UserSettings.Localization.DefaultCurrency;
+            ExcelExpenseAccount = UserSettings.Advanced.ExcelExpenseAccount;
+            CDC = UserSettings.Advanced.CDC;
 
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;
@@ -399,6 +415,8 @@ namespace Great2.ViewModels
                 UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
 
                 UserSettings.Localization.DefaultCurrency = DefaultCurrency;
+                UserSettings.Advanced.ExcelExpenseAccount = ExcelExpenseAccount;
+                UserSettings.Advanced.CDC = CDC;
 
                 UserSettings.Themes.Theme = Theme;
                 UserSettings.Themes.AccentColor = AccentColor;

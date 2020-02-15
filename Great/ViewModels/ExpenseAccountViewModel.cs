@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -90,7 +91,6 @@ namespace Great2.ViewModels
                 {
                     SelectedExpense = null;
                     IsInputEnabled = true;
-                    UpdateDaysOfWeek();
 
                     SendToSAPCommand.RaiseCanExecuteChanged();
                     CompileCommand.RaiseCanExecuteChanged();
@@ -125,13 +125,6 @@ namespace Great2.ViewModels
         {
             get => _sendToEmailRecipient;
             set => Set(ref _sendToEmailRecipient, value);
-        }
-
-        private DateTime?[] _DaysOfWeek;
-        public DateTime?[] DaysOfWeek
-        {
-            get => _DaysOfWeek;
-            set => Set(ref _DaysOfWeek, value);
         }
 
         private bool _showEditMenu;
@@ -374,23 +367,6 @@ namespace Great2.ViewModels
             );
         }
 
-        private void UpdateDaysOfWeek()
-        {
-            if (SelectedEA == null)
-                return;
-
-            DateTime StartDay = DateTime.Now.FromUnixTimestamp(SelectedEA.FDL1.StartDay);
-            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
-            var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
-
-            DateTime?[] tmpDays = new DateTime?[7];
-
-            for (int i = 0; i < 7; i++)
-                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
-
-            DaysOfWeek = tmpDays;
-        }
-
         public void SaveEA(ExpenseAccountEVM ea)
         {
             if (ea == null || ea.IsReadOnly)
@@ -444,13 +420,28 @@ namespace Great2.ViewModels
                 return;
             }
 
-            if (ea.EStatus == EFDLStatus.Waiting &&
+            if ((ea.EStatus == EFDLStatus.Waiting || ea.EStatus == EFDLStatus.Accepted) &&
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
+            string[] attachments = null;
+
+            if (ea.IsExcel)
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Title = "Expense Account Attachments";
+                dialog.Filter = "All Files |*.*";
+                dialog.Multiselect = true;
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                dialog.ShowDialog();
+
+                attachments = dialog.FileNames;
+            }
+
             using (new WaitCursor())
-            {                
-                if (_fdlManager.SendToSAP(ea))
+            {
+                if (_fdlManager.SendToSAP(ea, attachments))
                     ea.EStatus = EFDLStatus.Waiting; // don't save the fdl status until the message is sent
             }
         }
@@ -509,7 +500,12 @@ namespace Great2.ViewModels
                 dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                 if (dlg.ShowDialog() == true)
-                    _fdlManager.SaveAs(ea, dlg.FileName);
+                {
+                    if (ea.IsExcel)
+                        File.Copy(ea.FilePath, dlg.FileName, true);
+                    else
+                        _fdlManager.SaveAs(ea, dlg.FileName);
+                }   
             }
         }
 
@@ -548,13 +544,14 @@ namespace Great2.ViewModels
             {
                 string filePath;
 
-                if (_fdlManager.CreateXFDF(ea, out filePath))
-                {
+                if(ea.IsExcel)
+                    _fdlManager.Compile(ea, ea.FilePath);
+                else if (_fdlManager.CreateXFDF(ea, out filePath))
                     Process.Start(filePath);
-                    ea.IsCompiled = true;
-                    ea.NotifyAsNew = false;
-                    ea.Save();
-                }
+
+                ea.IsCompiled = true;
+                ea.NotifyAsNew = false;
+                ea.Save();
             }
         }
 

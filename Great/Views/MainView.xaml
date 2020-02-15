@@ -15,7 +15,6 @@
     BorderThickness="0"
     WindowStartupLocation="CenterScreen" 
     Closing="RibbonWindow_Closing"
-    StateChanged="RibbonWindow_StateChanged"
     WindowState="Maximized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -45,7 +44,7 @@
                         <Fluent:SeparatorTabItem />
                         <Fluent:Button Name="settingsButton" Header="Settings" Click="SettingsButton_Click"/>
                         <Fluent:SeparatorTabItem />
-                        <Fluent:Button Name="exitButton" Header="Exit" Click="exitButton_Click"/>
+                        <Fluent:Button Name="exitButton" Header="Quit" Click="exitButton_Click"/>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
@@ -721,7 +720,8 @@
             TrayMouseDoubleClick="MyNotifyIcon_TrayMouseDoubleClick">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu Background="LightCoral">
-                    <MenuItem Name="ExitMenuItem" Header="Quit Great2" Click="exitButton_Click" />
+                    <MenuItem Name="OpenMenuItem" Header="Open Great2" Click="MyNotifyIcon_TrayMouseDoubleClick" />
+                    <MenuItem Name="ExitMenuItem" Header="Quit" Click="exitButton_Click" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>

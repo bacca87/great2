@@ -178,16 +178,5 @@ namespace Great2.Views
                     WindowState = WindowState.Normal;
             }
         }
-
-        private void RibbonWindow_StateChanged(object sender, EventArgs e)
-        {
-            if (WindowState == WindowState.Minimized)
-                Hide();
-        }
-
-        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

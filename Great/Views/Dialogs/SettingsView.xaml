@@ -147,11 +147,15 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                    <!--<GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
+                    <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
                         <StackPanel>
-                            
+                            <CheckBox Content="Enable excel expense accounts" IsChecked="{Binding ExcelExpenseAccount}"/>
+                            <StackPanel Margin="20,2,2,2" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center">CDC:</TextBlock>
+                                <mah:NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding CDC}" IsEnabled="{Binding ExcelExpenseAccount}" NumericInputMode="Numbers" HideUpDownButtons="True" Minimum="0" Width="100" Margin="2"/>
+                            </StackPanel>
                         </StackPanel>
-                    </GroupBox>-->
+                    </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Interface">

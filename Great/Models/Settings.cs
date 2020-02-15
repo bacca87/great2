@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.DirectoryServices.AccountManagement;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
@@ -610,6 +611,7 @@ namespace Great2.Models
 
             public static class FieldNames
             {
+                #region PDF Fields
                 public const string Technician = "data[0].#subform[0].W_SNAME[0]";
                 public const string DateFrom = "data[0].#subform[0].DATA[0]";
                 public const string DateTo = "data[0].#subform[0].DATA[1]";
@@ -795,10 +797,168 @@ namespace Great2.Models
                 public const string EX15_Sat_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day6[0]";
                 public const string EX15_Sun_Amount = "data[0].#subform[0].Tabella6[0].Riga15[0].r15day7[0]";
                 public const string EX15_Total = "data[0].#subform[0].Tabella6[0].Riga15[0].r15totale[0]";
+                #endregion
+
+                #region Excel Fields
+                public const string xls_Technician = "G4";
+                public const string xls_DateFrom = "C6";
+                public const string xls_DateTo = "E6";
+                public const string xls_Customer = "C8";
+                public const string xls_Address = "C10";
+                public const string xls_Currency = "I13";
+                public const string xls_CDC = "E4";
+                public const string xls_FDLNumber = "I8";
+                public const string xls_Order = "C13";
+                public const string xls_SignatureDate = "H43";
+                public const string xls_Notes = "A39";
+
+                public const string xls_Mon_Date = "C16";
+                public const string xls_Tue_Date = "D16";
+                public const string xls_Wed_Date = "E16";
+                public const string xls_Thu_Date = "F16";
+                public const string xls_Fri_Date = "G16";
+                public const string xls_Sat_Date = "H16";
+                public const string xls_Sun_Date = "I16";
+
+                public const string xls_EX1_Type = "A17";
+                public const string xls_EX1_Mon_Amount = "C17";
+                public const string xls_EX1_Tue_Amount = "D17";
+                public const string xls_EX1_Wed_Amount = "E17";
+                public const string xls_EX1_Thu_Amount = "F17";
+                public const string xls_EX1_Fri_Amount = "G17";
+                public const string xls_EX1_Sat_Amount = "H17";
+                public const string xls_EX1_Sun_Amount = "I17";
+
+                public const string xls_EX2_Type = "A18";
+                public const string xls_EX2_Mon_Amount = "C18";
+                public const string xls_EX2_Tue_Amount = "D18";
+                public const string xls_EX2_Wed_Amount = "E18";
+                public const string xls_EX2_Thu_Amount = "F18";
+                public const string xls_EX2_Fri_Amount = "G18";
+                public const string xls_EX2_Sat_Amount = "H18";
+                public const string xls_EX2_Sun_Amount = "I18";
+
+                public const string xls_EX3_Type = "A19";
+                public const string xls_EX3_Mon_Amount = "C19";
+                public const string xls_EX3_Tue_Amount = "D19";
+                public const string xls_EX3_Wed_Amount = "E19";
+                public const string xls_EX3_Thu_Amount = "F19";
+                public const string xls_EX3_Fri_Amount = "G19";
+                public const string xls_EX3_Sat_Amount = "H19";
+                public const string xls_EX3_Sun_Amount = "I19";
+
+                public const string xls_EX4_Type = "A20";
+                public const string xls_EX4_Mon_Amount = "C20";
+                public const string xls_EX4_Tue_Amount = "D20";
+                public const string xls_EX4_Wed_Amount = "E20";
+                public const string xls_EX4_Thu_Amount = "F20";
+                public const string xls_EX4_Fri_Amount = "G20";
+                public const string xls_EX4_Sat_Amount = "H20";
+                public const string xls_EX4_Sun_Amount = "I20";
+
+                public const string xls_EX5_Type = "A21";
+                public const string xls_EX5_Mon_Amount = "C21";
+                public const string xls_EX5_Tue_Amount = "D21";
+                public const string xls_EX5_Wed_Amount = "E21";
+                public const string xls_EX5_Thu_Amount = "F21";
+                public const string xls_EX5_Fri_Amount = "G21";
+                public const string xls_EX5_Sat_Amount = "H21";
+                public const string xls_EX5_Sun_Amount = "I21";
+
+                public const string xls_EX6_Type = "A22";
+                public const string xls_EX6_Mon_Amount = "C22";
+                public const string xls_EX6_Tue_Amount = "D22";
+                public const string xls_EX6_Wed_Amount = "E22";
+                public const string xls_EX6_Thu_Amount = "F22";
+                public const string xls_EX6_Fri_Amount = "G22";
+                public const string xls_EX6_Sat_Amount = "H22";
+                public const string xls_EX6_Sun_Amount = "I22";
+
+                public const string xls_EX7_Type = "A23";
+                public const string xls_EX7_Mon_Amount = "C23";
+                public const string xls_EX7_Tue_Amount = "D23";
+                public const string xls_EX7_Wed_Amount = "E23";
+                public const string xls_EX7_Thu_Amount = "F23";
+                public const string xls_EX7_Fri_Amount = "G23";
+                public const string xls_EX7_Sat_Amount = "H23";
+                public const string xls_EX7_Sun_Amount = "I23";
+
+                public const string xls_EX8_Type = "A24";
+                public const string xls_EX8_Mon_Amount = "C24";
+                public const string xls_EX8_Tue_Amount = "D24";
+                public const string xls_EX8_Wed_Amount = "E24";
+                public const string xls_EX8_Thu_Amount = "F24";
+                public const string xls_EX8_Fri_Amount = "G24";
+                public const string xls_EX8_Sat_Amount = "H24";
+                public const string xls_EX8_Sun_Amount = "I24";
+
+                public const string xls_EX9_Type = "A25";
+                public const string xls_EX9_Mon_Amount = "C25";
+                public const string xls_EX9_Tue_Amount = "D25";
+                public const string xls_EX9_Wed_Amount = "E25";
+                public const string xls_EX9_Thu_Amount = "F25";
+                public const string xls_EX9_Fri_Amount = "G25";
+                public const string xls_EX9_Sat_Amount = "H25";
+                public const string xls_EX9_Sun_Amount = "I25";
+
+                public const string xls_EX10_Type = "A26";
+                public const string xls_EX10_Mon_Amount = "C26";
+                public const string xls_EX10_Tue_Amount = "D26";
+                public const string xls_EX10_Wed_Amount = "E26";
+                public const string xls_EX10_Thu_Amount = "F26";
+                public const string xls_EX10_Fri_Amount = "G26";
+                public const string xls_EX10_Sat_Amount = "H26";
+                public const string xls_EX10_Sun_Amount = "I26";
+
+                public const string xls_EX11_Type = "A27";
+                public const string xls_EX11_Mon_Amount = "C27";
+                public const string xls_EX11_Tue_Amount = "D27";
+                public const string xls_EX11_Wed_Amount = "E27";
+                public const string xls_EX11_Thu_Amount = "F27";
+                public const string xls_EX11_Fri_Amount = "G27";
+                public const string xls_EX11_Sat_Amount = "H27";
+                public const string xls_EX11_Sun_Amount = "I27";
+
+                public const string xls_EX12_Type = "A28";
+                public const string xls_EX12_Mon_Amount = "C28";
+                public const string xls_EX12_Tue_Amount = "D28";
+                public const string xls_EX12_Wed_Amount = "E28";
+                public const string xls_EX12_Thu_Amount = "F28";
+                public const string xls_EX12_Fri_Amount = "G28";
+                public const string xls_EX12_Sat_Amount = "H28";
+                public const string xls_EX12_Sun_Amount = "I28";
+
+                public const string xls_EX13_Type = "A29";
+                public const string xls_EX13_Mon_Amount = "C29";
+                public const string xls_EX13_Tue_Amount = "D29";
+                public const string xls_EX13_Wed_Amount = "E29";
+                public const string xls_EX13_Thu_Amount = "F29";
+                public const string xls_EX13_Fri_Amount = "G29";
+                public const string xls_EX13_Sat_Amount = "H29";
+                public const string xls_EX13_Sun_Amount = "I29";
+
+                public const string xls_EX14_Type = "A30";
+                public const string xls_EX14_Mon_Amount = "C30";
+                public const string xls_EX14_Tue_Amount = "D30";
+                public const string xls_EX14_Wed_Amount = "E30";
+                public const string xls_EX14_Thu_Amount = "F30";
+                public const string xls_EX14_Fri_Amount = "G30";
+                public const string xls_EX14_Sat_Amount = "H30";
+                public const string xls_EX14_Sun_Amount = "I30";
+ 
+                public const string xls_EX15_Type = "A31";
+                public const string xls_EX15_Mon_Amount = "C31";
+                public const string xls_EX15_Tue_Amount = "D31";
+                public const string xls_EX15_Wed_Amount = "E31";
+                public const string xls_EX15_Thu_Amount = "F31";
+                public const string xls_EX15_Fri_Amount = "G31";
+                public const string xls_EX15_Sat_Amount = "H31";
+                public const string xls_EX15_Sun_Amount = "I31";
+                #endregion
 
                 #region Helpers
 
-                #region ExpenseMatrix
+                #region PDF ExpenseMatrix
                 public static readonly Dictionary<string, string>[] ExpenseMatrix = new Dictionary<string, string>[]
                 {
                     new Dictionary<string, string>
@@ -984,6 +1144,177 @@ namespace Great2.Models
                 };
                 #endregion
 
+                #region Excel ExpenseMatrix
+                public static readonly Dictionary<string, string>[] xls_ExpenseMatrix = new Dictionary<string, string>[]
+                {
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX1_Type},
+                        { "Mon_Amount", xls_EX1_Mon_Amount},
+                        { "Tue_Amount", xls_EX1_Tue_Amount},
+                        { "Wed_Amount", xls_EX1_Wed_Amount},
+                        { "Thu_Amount", xls_EX1_Thu_Amount},
+                        { "Fri_Amount", xls_EX1_Fri_Amount},
+                        { "Sat_Amount", xls_EX1_Sat_Amount},
+                        { "Sun_Amount", xls_EX1_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX2_Type},
+                        { "Mon_Amount", xls_EX2_Mon_Amount},
+                        { "Tue_Amount", xls_EX2_Tue_Amount},
+                        { "Wed_Amount", xls_EX2_Wed_Amount},
+                        { "Thu_Amount", xls_EX2_Thu_Amount},
+                        { "Fri_Amount", xls_EX2_Fri_Amount},
+                        { "Sat_Amount", xls_EX2_Sat_Amount},
+                        { "Sun_Amount", xls_EX2_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX3_Type},
+                        { "Mon_Amount", xls_EX3_Mon_Amount},
+                        { "Tue_Amount", xls_EX3_Tue_Amount},
+                        { "Wed_Amount", xls_EX3_Wed_Amount},
+                        { "Thu_Amount", xls_EX3_Thu_Amount},
+                        { "Fri_Amount", xls_EX3_Fri_Amount},
+                        { "Sat_Amount", xls_EX3_Sat_Amount},
+                        { "Sun_Amount", xls_EX3_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX4_Type},
+                        { "Mon_Amount", xls_EX4_Mon_Amount},
+                        { "Tue_Amount", xls_EX4_Tue_Amount},
+                        { "Wed_Amount", xls_EX4_Wed_Amount},
+                        { "Thu_Amount", xls_EX4_Thu_Amount},
+                        { "Fri_Amount", xls_EX4_Fri_Amount},
+                        { "Sat_Amount", xls_EX4_Sat_Amount},
+                        { "Sun_Amount", xls_EX4_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX5_Type},
+                        { "Mon_Amount", xls_EX5_Mon_Amount},
+                        { "Tue_Amount", xls_EX5_Tue_Amount},
+                        { "Wed_Amount", xls_EX5_Wed_Amount},
+                        { "Thu_Amount", xls_EX5_Thu_Amount},
+                        { "Fri_Amount", xls_EX5_Fri_Amount},
+                        { "Sat_Amount", xls_EX5_Sat_Amount},
+                        { "Sun_Amount", xls_EX5_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX6_Type},
+                        { "Mon_Amount", xls_EX6_Mon_Amount},
+                        { "Tue_Amount", xls_EX6_Tue_Amount},
+                        { "Wed_Amount", xls_EX6_Wed_Amount},
+                        { "Thu_Amount", xls_EX6_Thu_Amount},
+                        { "Fri_Amount", xls_EX6_Fri_Amount},
+                        { "Sat_Amount", xls_EX6_Sat_Amount},
+                        { "Sun_Amount", xls_EX6_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX7_Type},
+                        { "Mon_Amount", xls_EX7_Mon_Amount},
+                        { "Tue_Amount", xls_EX7_Tue_Amount},
+                        { "Wed_Amount", xls_EX7_Wed_Amount},
+                        { "Thu_Amount", xls_EX7_Thu_Amount},
+                        { "Fri_Amount", xls_EX7_Fri_Amount},
+                        { "Sat_Amount", xls_EX7_Sat_Amount},
+                        { "Sun_Amount", xls_EX7_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX8_Type},
+                        { "Mon_Amount", xls_EX8_Mon_Amount},
+                        { "Tue_Amount", xls_EX8_Tue_Amount},
+                        { "Wed_Amount", xls_EX8_Wed_Amount},
+                        { "Thu_Amount", xls_EX8_Thu_Amount},
+                        { "Fri_Amount", xls_EX8_Fri_Amount},
+                        { "Sat_Amount", xls_EX8_Sat_Amount},
+                        { "Sun_Amount", xls_EX8_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX9_Type},
+                        { "Mon_Amount", xls_EX9_Mon_Amount},
+                        { "Tue_Amount", xls_EX9_Tue_Amount},
+                        { "Wed_Amount", xls_EX9_Wed_Amount},
+                        { "Thu_Amount", xls_EX9_Thu_Amount},
+                        { "Fri_Amount", xls_EX9_Fri_Amount},
+                        { "Sat_Amount", xls_EX9_Sat_Amount},
+                        { "Sun_Amount", xls_EX9_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX10_Type},
+                        { "Mon_Amount", xls_EX10_Mon_Amount},
+                        { "Tue_Amount", xls_EX10_Tue_Amount},
+                        { "Wed_Amount", xls_EX10_Wed_Amount},
+                        { "Thu_Amount", xls_EX10_Thu_Amount},
+                        { "Fri_Amount", xls_EX10_Fri_Amount},
+                        { "Sat_Amount", xls_EX10_Sat_Amount},
+                        { "Sun_Amount", xls_EX10_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX11_Type},
+                        { "Mon_Amount", xls_EX11_Mon_Amount},
+                        { "Tue_Amount", xls_EX11_Tue_Amount},
+                        { "Wed_Amount", xls_EX11_Wed_Amount},
+                        { "Thu_Amount", xls_EX11_Thu_Amount},
+                        { "Fri_Amount", xls_EX11_Fri_Amount},
+                        { "Sat_Amount", xls_EX11_Sat_Amount},
+                        { "Sun_Amount", xls_EX11_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX12_Type},
+                        { "Mon_Amount", xls_EX12_Mon_Amount},
+                        { "Tue_Amount", xls_EX12_Tue_Amount},
+                        { "Wed_Amount", xls_EX12_Wed_Amount},
+                        { "Thu_Amount", xls_EX12_Thu_Amount},
+                        { "Fri_Amount", xls_EX12_Fri_Amount},
+                        { "Sat_Amount", xls_EX12_Sat_Amount},
+                        { "Sun_Amount", xls_EX12_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX13_Type},
+                        { "Mon_Amount", xls_EX13_Mon_Amount},
+                        { "Tue_Amount", xls_EX13_Tue_Amount},
+                        { "Wed_Amount", xls_EX13_Wed_Amount},
+                        { "Thu_Amount", xls_EX13_Thu_Amount},
+                        { "Fri_Amount", xls_EX13_Fri_Amount},
+                        { "Sat_Amount", xls_EX13_Sat_Amount},
+                        { "Sun_Amount", xls_EX13_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX14_Type},
+                        { "Mon_Amount", xls_EX14_Mon_Amount},
+                        { "Tue_Amount", xls_EX14_Tue_Amount},
+                        { "Wed_Amount", xls_EX14_Wed_Amount},
+                        { "Thu_Amount", xls_EX14_Thu_Amount},
+                        { "Fri_Amount", xls_EX14_Fri_Amount},
+                        { "Sat_Amount", xls_EX14_Sat_Amount},
+                        { "Sun_Amount", xls_EX14_Sun_Amount},
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "Type",       xls_EX15_Type},
+                        { "Mon_Amount", xls_EX15_Mon_Amount},
+                        { "Tue_Amount", xls_EX15_Tue_Amount},
+                        { "Wed_Amount", xls_EX15_Wed_Amount},
+                        { "Thu_Amount", xls_EX15_Thu_Amount},
+                        { "Fri_Amount", xls_EX15_Fri_Amount},
+                        { "Sat_Amount", xls_EX15_Sat_Amount},
+                        { "Sun_Amount", xls_EX15_Sun_Amount},
+                    }
+                };
+                #endregion
+
                 public static readonly Dictionary<DayOfWeek, string> Days = new Dictionary<DayOfWeek, string>()
                 {
                     { DayOfWeek.Monday, Mon_Date },
@@ -1097,6 +1428,16 @@ namespace Great2.Models
         #region Email
         public static class Email
         {
+            public static string CachedDisplayName
+            {
+                get => Settings.Default.CachedDisplayName;
+                set
+                {
+                    Settings.Default.CachedDisplayName = value;
+                    Settings.Default.Save();
+                }
+            }
+
             public static bool UseDefaultCredentials
             {
                 get => Settings.Default.UseDefaultCredentials;
@@ -1112,6 +1453,7 @@ namespace Great2.Models
                 get => Settings.Default.EmailAddress;
                 set
                 {
+                    CachedDisplayName = string.Empty;
                     Settings.Default.EmailAddress = value;
                     Settings.Default.Save();
                 }
@@ -1215,6 +1557,26 @@ namespace Great2.Models
                 set
                 {
                     Settings.Default.MigrationDataFolder = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool ExcelExpenseAccount
+            {
+                get => Settings.Default.ExcelExpenseAccount;
+                set
+                {
+                    Settings.Default.ExcelExpenseAccount = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static int CDC
+            {
+                get => Settings.Default.CDC;
+                set
+                {
+                    Settings.Default.CDC = value;
                     Settings.Default.Save();
                 }
             }

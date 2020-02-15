@@ -3,9 +3,11 @@ using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
 using Great2.Utils;
+using Great2.Utils.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
+using System.IO;
 using System.Linq;
 
 namespace Great2.ViewModels.Database
@@ -191,6 +193,13 @@ namespace Great2.ViewModels.Database
             }
         }
 
+        private DateTime?[] _DaysOfWeek;
+        public DateTime?[] DaysOfWeek
+        {
+            get => _DaysOfWeek;
+            set => Set(ref _DaysOfWeek, value);
+        }
+
         public double? MondayAmount => Expenses?.Sum(x => x.MondayAmount);
         public double? TuesdayAmount => Expenses?.Sum(x => x.TuesdayAmount);
         public double? WednesdayAmount => Expenses?.Sum(x => x.WednesdayAmount);
@@ -206,6 +215,8 @@ namespace Great2.ViewModels.Database
             get => _InsertExpenseEnabled;
             set => Set(ref _InsertExpenseEnabled, value);
         }
+
+        public bool IsExcel => Path.GetExtension(FileName) == ".xlsx";
         #endregion;
 
         #region Display Properties
@@ -224,7 +235,10 @@ namespace Great2.ViewModels.Database
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             if (ea != null)
+            {
                 Auto.Mapper.Map(ea, this);
+                InitDaysOfWeek();
+            }
 
             IsChanged = false;
         }
@@ -245,14 +259,25 @@ namespace Great2.ViewModels.Database
             RaisePropertyChanged(nameof(DeductionAmount_Display));
         }
 
-        private ExpenseEVM CreateExpense(int ExpenseTypeId)
+        private ExpenseEVM CreateExpense(int ExpenseTypeId, DBArchive db = null)
         {
             ExpenseEVM expense = new ExpenseEVM() { ExpenseAccount = Id, Type = ExpenseTypeId };
-            expense.Save();
-            Expenses.Add(expense);
 
-            using (DBArchive db = new DBArchive())
-                expense.ExpenseType = new ExpenseTypeEVM(db.ExpenseTypes.SingleOrDefault(t => t.Id == ExpenseTypeId));
+            if(db != null)
+            {
+                expense.Save(db);
+                expense.Refresh(db);
+            }
+            else
+            {
+                using (DBArchive db2 = new DBArchive())
+                {
+                    expense.Save(db2);
+                    expense.Refresh(db2);
+                }   
+            }
+            
+            Expenses.Add(expense);
 
             return expense;
         }
@@ -365,30 +390,44 @@ namespace Great2.ViewModels.Database
             }
         }
 
-        public void InitExpenses()
+        public void InitDaysOfWeek()
+        {
+            DateTime StartDay = DateTime.Now.FromUnixTimestamp(FDL1.StartDay);
+            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
+            var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
+
+            DateTime?[] tmpDays = new DateTime?[7];
+
+            for (int i = 0; i < 7; i++)
+                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
+
+            DaysOfWeek = tmpDays;
+        }
+
+        public void InitExpenses(DBArchive db = null)
         {
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType);
+                CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType, db);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType);
+                CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType, db);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType);
+                CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType, db);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType);
+                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType, db);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType);
+                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType, db);
 
             if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType);
+                CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType, db);
 
             IsChanged = false;
         }
 
-        public void InitExpensesByCountry()
+        public void InitExpensesByCountry(DBArchive db = null)
         {
             if (FDL1 == null || FDL1.Factory1 == null || FDL1.Factory1.CountryCode == null || FDL1.Factory1.CountryCode == string.Empty)
                 return;
@@ -398,12 +437,12 @@ namespace Great2.ViewModels.Database
             if (CountryCode == "IT")
             {
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType);
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType, db);
             }
             else
             {
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType);
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType, db);
             }
 
             IsChanged = false;
@@ -429,8 +468,12 @@ namespace Great2.ViewModels.Database
         public override bool Refresh(DBArchive db)
         {
             var exp = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
+
             if (exp != null)
             {
+                db.Entry(exp).Reference(p => p.FDL1).Load();
+                db.Entry(exp).Reference(p => p.Currency1).Load();
+
                 Auto.Mapper.Map(exp, this);
                 IsChanged = false;
                 return true;

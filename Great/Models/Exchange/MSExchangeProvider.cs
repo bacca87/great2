@@ -117,6 +117,15 @@ namespace Great2.Models
 
             exServiceUri = exService.Url;
 
+            // Cache user display name
+            if (string.IsNullOrEmpty(UserSettings.Email.CachedDisplayName))
+            {
+                string name = GetUserDisplayName(UserSettings.Email.EmailAddress);
+
+                if (name != null && name != string.Empty)
+                    UserSettings.Email.CachedDisplayName = name;
+            }
+
             if ((emailSenderThread == null || !emailSenderThread.IsAlive) && !exitToken.IsCancellationRequested)
             {
                 emailSenderThread = new Thread(EmailSenderThread);
@@ -617,6 +626,18 @@ namespace Great2.Models
                 return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
             else
                 return null;
+        }
+
+        public string GetUserDisplayName(string email)
+        {
+            try
+            {
+                NameResolutionCollection ncCol = exService.ResolveName(email, ResolveNameSearchLocation.DirectoryOnly, true);
+                return ncCol[0].Contact.DisplayName;
+            }
+            catch { }
+
+            return string.Empty;
         }
 
         public bool SendEmail(EmailMessageDTO message)

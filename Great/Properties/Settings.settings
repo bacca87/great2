@@ -95,5 +95,14 @@
     <Setting Name="Currency" Type="System.String" Scope="User">
       <Value Profile="(Default)">EUR</Value>
     </Setting>
+    <Setting Name="ExcelExpenseAccount" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CDC" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CachedDisplayName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

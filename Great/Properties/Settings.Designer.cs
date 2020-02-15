@@ -389,5 +389,41 @@ namespace Great2.Properties {
                 this["Currency"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExcelExpenseAccount {
+            get {
+                return ((bool)(this["ExcelExpenseAccount"]));
+            }
+            set {
+                this["ExcelExpenseAccount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CDC {
+            get {
+                return ((int)(this["CDC"]));
+            }
+            set {
+                this["CDC"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CachedDisplayName {
+            get {
+                return ((string)(this["CachedDisplayName"]));
+            }
+            set {
+                this["CachedDisplayName"] = value;
+            }
+        }
     }
 }

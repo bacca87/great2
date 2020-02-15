@@ -151,7 +151,8 @@ namespace Great2.ViewModels.Database
             Expense expense = db.Expenses.SingleOrDefault(e => e.Id == Id);
 
             if (expense != null)
-            { 
+            {
+                db.Entry(expense).Reference(p => p.ExpenseType).Load();
                 Auto.Mapper.Map(expense, this);
                 return true;
             }
