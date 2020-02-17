@@ -1431,7 +1431,12 @@ namespace Great2.Models
                             switch (GetFileType(attachment.Name))
                             {
                                 case EFileType.FDL:
-                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
+                                    bool existOnDb = false;
+
+                                    using (DBArchive db = new DBArchive())
+                                        existOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
+
+                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name) || !existOnDb)
                                     {
                                         bool exist = false;
 
@@ -1478,7 +1483,12 @@ namespace Great2.Models
                                     }
                                     break;
                                 case EFileType.ExpenseAccount:
-                                    if (!UserSettings.Advanced.ExcelExpenseAccount && !File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
+                                    bool existOnDb = false;
+
+                                    using (DBArchive db = new DBArchive())
+                                        existOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
+
+                                    if (!UserSettings.Advanced.ExcelExpenseAccount && (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name) || !existOnDb))
                                     {
                                         bool exist = false;
 
@@ -1506,7 +1516,7 @@ namespace Great2.Models
                                                     ea.InitExpenses(db);
                                                     ea.InitExpensesByCountry(db);
                                                 }
-                                            }   
+                                            }
                                         }
                                     }
                                     break;
