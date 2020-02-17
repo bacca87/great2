@@ -114,6 +114,9 @@ namespace Great2.Utils
                         {
                             File.Copy(file.FullName, Path.Combine(ApplicationSettings.Directories.FDL, file.Name), true);
 
+                            if (UserSettings.Advanced.ExcelExpenseAccount)
+                                FDLManager.CreateExcelEA(fdl);
+
                             using (DBArchive db = new DBArchive())
                             {
                                 // we must override recived fdl with the same of current dbcontext istance

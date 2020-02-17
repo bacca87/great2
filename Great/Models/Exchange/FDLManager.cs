@@ -1312,6 +1312,41 @@ namespace Great2.Models
             return true;
         }
 
+        public ExpenseAccountEVM CreateExcelEA(FDLEVM fdl)
+        {
+            if (!UserSettings.Advanced.ExcelExpenseAccount)
+                return null;
+
+            ExpenseAccountEVM ea = new ExpenseAccountEVM();
+            ea.FDL = fdl.Id;
+            ea.CdC = UserSettings.Advanced.CDC;
+            ea.NotifyAsNew = true;
+            ea.Currency = UserSettings.Localization.DefaultCurrency;
+            ea.FileName = Path.GetFileNameWithoutExtension(fdl.FileName) + " R.xlsx";
+
+            using (DBArchive db = new DBArchive())
+            {
+                ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(x => x.FileName == ea.FileName);
+
+                if (tmpEA != null)
+                    ea = new ExpenseAccountEVM(tmpEA);
+                else
+                {
+                    ea.Save(db);
+                    ea.Refresh(db);
+                    ea.InitDaysOfWeek();
+                    ea.InitExpenses(db);
+                    ea.InitExpensesByCountry(db);
+                }
+            }
+
+            File.WriteAllBytes(ea.FilePath, Properties.Resources.ExpenseAccount);
+
+            Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, ea));
+
+            return ea;
+        }
+
         private void ProcessMessage(EmailMessage message)
         {
             EMessageType type = GetMessageType(message);
@@ -1458,27 +1493,7 @@ namespace Great2.Models
                                                 deleteMessage = true;
                                             }
                                             else if (UserSettings.Advanced.ExcelExpenseAccount)
-                                            {
-                                                ExpenseAccountEVM ea = new ExpenseAccountEVM();
-                                                ea.FDL = fdl.Id;
-                                                ea.CdC = UserSettings.Advanced.CDC;
-                                                ea.NotifyAsNew = true;
-                                                ea.Currency = UserSettings.Localization.DefaultCurrency;
-                                                ea.FileName = Path.GetFileNameWithoutExtension(fdl.FileName) + " R.xlsx";
-
-                                                File.WriteAllBytes(ea.FilePath, Properties.Resources.ExpenseAccount);
-
-                                                using (DBArchive db = new DBArchive())
-                                                {   
-                                                    ea.Save(db);
-                                                    ea.Refresh(db);
-                                                    ea.InitDaysOfWeek();
-                                                    ea.InitExpenses(db);
-                                                    ea.InitExpensesByCountry(db);
-                                                }
-
-                                                Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, ea));
-                                            }
+                                                CreateExcelEA(fdl);
                                         }
                                     }
                                     break;

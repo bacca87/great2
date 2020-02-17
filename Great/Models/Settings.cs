@@ -602,6 +602,7 @@ namespace Great2.Models
             public const int CarburanteEsteroType = 11;
             public const int CarburanteItaliaType = 13;
             public const int CommissioniValutaType = 19;
+            public const int TaxiType = 65;
 
             public const int PocketMoney1Type = 102;
             public const int DailyAllowanceType = 89;
@@ -611,6 +612,7 @@ namespace Great2.Models
             public const int ExtraBaggageType = 90;
             public const int FuelType = 85;            
             public const int CurrencyTransactionFeesType = 88;
+            public const int Taxi1Type = 115;
 
             public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
 

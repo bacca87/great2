@@ -408,6 +408,9 @@ namespace Great2.ViewModels.Database
         {
             if(IsExcel)
             {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.Taxi1Type))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.Taxi1Type, db);
+
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TollType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.TollType, db);
 
@@ -428,6 +431,9 @@ namespace Great2.ViewModels.Database
             }
             else
             {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TaxiType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.TaxiType, db);
+
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType, db);
 
