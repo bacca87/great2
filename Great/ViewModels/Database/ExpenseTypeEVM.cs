@@ -19,6 +19,13 @@ namespace Great2.ViewModels.Database
             get => _Description;
             set => Set(ref _Description, value);
         }
+
+        public long _Category;
+        public long Category
+        {
+            get => _Category;
+            set => Set(ref _Category, value);
+        }
         #endregion
 
         public ExpenseTypeEVM() { }

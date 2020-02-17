@@ -92,6 +92,9 @@ namespace Great2.ViewModels
                     SelectedExpense = null;
                     IsInputEnabled = true;
 
+                    using (DBArchive db = new DBArchive())
+                        ExpenseTypes = new ObservableCollection<ExpenseTypeEVM>(db.ExpenseTypes.Where(t => t.Category == (SelectedEA.IsExcel ? 1 : 0)).ToList().Select(t => new ExpenseTypeEVM(t)));
+
                     SendToSAPCommand.RaiseCanExecuteChanged();
                     NewMessageCommand.RaiseCanExecuteChanged();
                     CompileCommand.RaiseCanExecuteChanged();
@@ -217,8 +220,7 @@ namespace Great2.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
-                string year = CurrentYear.ToString();
-                ExpenseTypes = new ObservableCollection<ExpenseTypeEVM>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeEVM(t)));
+                string year = CurrentYear.ToString();                
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
                 ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }

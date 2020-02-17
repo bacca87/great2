@@ -575,6 +575,9 @@
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="UpgradeScripts\0019_17-02-2020_update.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="UpgradeScripts\0018_08-02-2020_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

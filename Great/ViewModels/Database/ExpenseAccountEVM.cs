@@ -290,7 +290,7 @@ namespace Great2.ViewModels.Database
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.DiariaType).FirstOrDefault();
 
             if (expense == null)
-                expense = CreateExpense(ApplicationSettings.ExpenseAccount.DiariaType);
+                expense = CreateExpense(IsExcel ? ApplicationSettings.ExpenseAccount.DailyAllowanceType : ApplicationSettings.ExpenseAccount.DiariaType);
 
             double? Diaria = remove ? (double?)null : ApplicationSettings.ExpenseAccount.DiariaValue;
 
@@ -341,7 +341,7 @@ namespace Great2.ViewModels.Database
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.PocketMoneyType).FirstOrDefault();
 
             if (expense == null)
-                expense = CreateExpense(ApplicationSettings.ExpenseAccount.PocketMoneyType);
+                expense = CreateExpense(IsExcel ? ApplicationSettings.ExpenseAccount.PocketMoney1Type : ApplicationSettings.ExpenseAccount.PocketMoneyType);
 
             double? PocketMoney = remove ? (double?)null : ApplicationSettings.ExpenseAccount.PocketMoneyValue;
 
@@ -406,23 +406,46 @@ namespace Great2.ViewModels.Database
 
         public void InitExpenses(DBArchive db = null)
         {
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType, db);
+            if(IsExcel)
+            {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TollType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.TollType, db);
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParkingType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ParkingType, db);
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBaggageType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBaggageType, db);
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.FuelType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.FuelType, db);
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CurrencyTransactionFeesType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CurrencyTransactionFeesType, db);
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelType, db);
+            }
+            else
+            {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType, db);
+            }
 
             IsChanged = false;
         }
@@ -434,15 +457,18 @@ namespace Great2.ViewModels.Database
 
             string CountryCode = FDL1.Factory1.CountryCode;
 
-            if (CountryCode == "IT")
+            if (!IsExcel)
             {
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType, db);
-            }
-            else
-            {
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType, db);
+                if (CountryCode == "IT")
+                {
+                    if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
+                        CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType, db);
+                }
+                else
+                {
+                    if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
+                        CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType, db);
+                }
             }
 
             IsChanged = false;

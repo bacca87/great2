@@ -603,6 +603,15 @@ namespace Great2.Models
             public const int CarburanteItaliaType = 13;
             public const int CommissioniValutaType = 19;
 
+            public const int PocketMoney1Type = 102;
+            public const int DailyAllowanceType = 89;
+            public const int TollType = 101;
+            public const int ParkingType = 100;
+            public const int HotelType = 94;
+            public const int ExtraBaggageType = 90;
+            public const int FuelType = 85;            
+            public const int CurrencyTransactionFeesType = 88;
+
             public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
 
             public const string EA_Accepted = "NOTA SPESE ACCETTATA";
