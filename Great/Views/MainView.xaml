@@ -527,6 +527,41 @@
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Search">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Fluent:TextBox Grid.Column="0" Name="searchBox" Header="Address:" Width="400" IsEnabled="{Binding IsInputEnabled}" VerticalAlignment="Center" Margin="5">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=searchBox}" Key="Return" />
+                            </TextBox.InputBindings>
+                        </Fluent:TextBox>
+                        <Fluent:Button Grid.Column="1" Header="Search" Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=searchBox}" IsEnabled="{Binding IsInputEnabled}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/24/search.png" >
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Search" Text="Search the address on map." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Grid>                    
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="View" VerticalContentAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Margin="5">
+                            <TextBlock Text="Zoom Level:" Margin="0,0,0,3"/>
+                            <Slider Width="100" SmallChange="1" IsSnapToTickEnabled="True" Value="{Binding CurrentZoomLevel}" Minimum="{Binding MinZoomLevel}" Maximum="{Binding MaxZoomLevel}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"/>
+                        </StackPanel>
+                        <Fluent:Button Grid.Column="1" Header="Zoom All" Command="{Binding ZoomAllCommand}" LargeIcon="pack://application:,,,/Great2;component/Images/24/map-map-marker.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Zoom All Markers" Text="Zoom and center all the markers on the map." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Grid>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="STATISTICS" 
                                   DataContext="{Binding Statistics, Source={StaticResource Locator}}"

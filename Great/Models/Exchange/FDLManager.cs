@@ -1174,7 +1174,7 @@ namespace Great2.Models
             message.Type = EEmailMessageType.SAP_Notification;
             message.DataInfo = file;
             message.Importance = Importance.High;
-            message.ToRecipients.Add("baccarani.m@elettric80.it");//(ApplicationSettings.EmailRecipients.FDLSystem);
+            message.ToRecipients.Add(ApplicationSettings.EmailRecipients.FDLSystem);
 
             if (file is FDLEVM)
             {

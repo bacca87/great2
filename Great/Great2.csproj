@@ -563,6 +563,7 @@
     <Resource Include="Images\32\clear-filters.png" />
     <Resource Include="Images\32\cpu.png" />
     <Resource Include="Images\32\car.png" />
+    <Resource Include="Images\24\search.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

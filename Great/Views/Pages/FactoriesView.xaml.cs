@@ -47,15 +47,18 @@ namespace Great2.Views
             factoriesMapControl.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
             factoriesMapControl.Position = new PointLatLng(0, 0);
 
-            zoomSlider.Maximum = factoriesMapControl.MaxZoom;
-            zoomSlider.Minimum = factoriesMapControl.MinZoom;
-            zoomSlider.Value = factoriesMapControl.Zoom;
+            _viewModel.MaxZoomLevel = factoriesMapControl.MaxZoom;
+            _viewModel.MinZoomLevel = factoriesMapControl.MinZoom;
+
+            _viewModel.CurrentZoomLevel = factoriesMapControl.Zoom;
 
             _viewModel.PropertyChanged += FactoriesView_PropertyChangedEventHandler;
             _viewModel.OnZoomOnFactoryRequest += OnZoomOnFactoryRequest;
 
             _viewModel.Factories.CollectionChanged += Factories_CollectionChanged;
             _viewModel.OnFactoryUpdated += OnFactoryUpdated;
+            _viewModel.OnZoomAll += () => { factoriesMapControl.ZoomAndCenterMarkers(null); };
+            _viewModel.OnSearch += (text) => { SearchLocation(text); };
         }
 
         private void OnFactoryUpdated(FactoryEVM factory)
@@ -149,15 +152,14 @@ namespace Great2.Views
             }
 
             splitter.IsEnabled = !enable;
-            searchEntryTextBox.IsEnabled = !enable;
-            goButton.IsEnabled = !enable;
+            _viewModel.IsInputEnabled = !enable;
 
             latlngButton.IsChecked = enable;
         }
 
-        private void SearchLocation()
+        private void SearchLocation(string address)
         {
-            PointLatLng? point = GetPointFromAddress(searchEntryTextBox.Text.Trim());
+            PointLatLng? point = GetPointFromAddress(address.Trim());
 
             if (point.HasValue)
             {
@@ -354,6 +356,10 @@ namespace Great2.Views
                         tempPosMarker = null;
                     }
                     break;
+
+                case nameof(_viewModel.CurrentZoomLevel):
+                    factoriesMapControl.Zoom = _viewModel.CurrentZoomLevel;
+                    break;
             }
         }
 
@@ -422,24 +428,6 @@ namespace Great2.Views
             }
         }
 
-        private void goButton_Click(object sender, RoutedEventArgs e)
-        {
-            SearchLocation();
-        }
-
-        private void searchEntryTextBox_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                SearchLocation();
-            }
-        }
-
-        private void zoomOutButton_Click(object sender, RoutedEventArgs e)
-        {
-            factoriesMapControl.ZoomAndCenterMarkers(null);
-        }
-
         private void factoryListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left && factoriesListView.SelectedItem != null)
@@ -454,15 +442,9 @@ namespace Great2.Views
             }
         }
 
-        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            factoriesMapControl.Zoom = e.NewValue;
-        }
-
         private void factoriesMapControl_OnMapZoomChanged()
         {
-            zoomSlider.Value = factoriesMapControl.Zoom;
-            zoomLabel.Content = factoriesMapControl.Zoom + "x";
+            _viewModel.CurrentZoomLevel = factoriesMapControl.Zoom;
         }
 
         private void factoriesMapControl_Loaded(object sender, RoutedEventArgs e)

@@ -38,6 +38,7 @@
                     <Border Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource MahApps.Brushes.Accent}"/>
                     <Image Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/Images/24/map-marker-red.png" Stretch="None" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"/>
                     <TextBlock Grid.Row="0" Grid.Column="1"
+                               Margin="0,0,5,0"
                                FontSize="18" 
                                FontWeight="Bold" 
                                TextWrapping="Wrap" 
@@ -46,6 +47,7 @@
                                Text="{Binding Name}"/>
 
                     <TextBlock Grid.Row="1" Grid.ColumnSpan="2" 
+                               Margin="3"
                                TextWrapping="Wrap" 
                                Background="{DynamicResource MahApps.Brushes.Gray10}" 
                                VerticalAlignment="Top" 
