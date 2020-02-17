@@ -1431,12 +1431,12 @@ namespace Great2.Models
                             switch (GetFileType(attachment.Name))
                             {
                                 case EFileType.FDL:
-                                    bool existOnDb = false;
+                                    bool FDLexistOnDb = false;
 
                                     using (DBArchive db = new DBArchive())
-                                        existOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
+                                        FDLexistOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
 
-                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name) || !existOnDb)
+                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name) || !FDLexistOnDb)
                                     {
                                         bool exist = false;
 
@@ -1483,12 +1483,12 @@ namespace Great2.Models
                                     }
                                     break;
                                 case EFileType.ExpenseAccount:
-                                    bool existOnDb = false;
+                                    bool EAexistOnDb = false;
 
                                     using (DBArchive db = new DBArchive())
-                                        existOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
+                                        EAexistOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
 
-                                    if (!UserSettings.Advanced.ExcelExpenseAccount && (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name) || !existOnDb))
+                                    if (!UserSettings.Advanced.ExcelExpenseAccount && (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name) || !EAexistOnDb))
                                     {
                                         bool exist = false;
 
