@@ -612,7 +612,7 @@ namespace Great2.Models
             public const int ExtraBaggageType = 90;
             public const int FuelType = 85;            
             public const int CurrencyTransactionFeesType = 88;
-            public const int Taxi1Type = 115;
+            public const int Taxi1Type = 112;
 
             public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
 
