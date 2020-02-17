@@ -171,12 +171,10 @@ namespace Great2.Views
         private void MyNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             if(Visibility == Visibility.Hidden)
-            {
                 Show();
 
-                if(WindowState == WindowState.Minimized)
-                    WindowState = WindowState.Normal;
-            }
+            if (WindowState == WindowState.Minimized)
+                WindowState = WindowState.Normal;
         }
     }
 }
