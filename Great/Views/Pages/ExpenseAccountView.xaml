@@ -220,7 +220,8 @@
             </Grid>            
             <FrameworkElement Name="dummyElement" Visibility="Collapsed"/>
             <!--HACK FOR SET DATAGRID COLUMNS READONLY-->
-            <DataGrid 
+            <DataGrid
+                MinColumnWidth="80"
                 Grid.Row="1"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
@@ -277,7 +278,7 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>-->
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Expense Type" CellStyle="{StaticResource BaseCellStyle}" Width="200">
+                    <DataGridTemplateColumn Header="Expense Type" CellStyle="{StaticResource BaseCellStyle}" Width="200" MinWidth="200">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox
