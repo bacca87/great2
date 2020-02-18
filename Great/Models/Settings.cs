@@ -8,7 +8,6 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.DirectoryServices.AccountManagement;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;

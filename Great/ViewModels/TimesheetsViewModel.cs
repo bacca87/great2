@@ -352,6 +352,12 @@ namespace Great2.ViewModels
                             TimesheetEVM timesheet = new TimesheetEVM();
                             Auto.Mapper.Map(sts, timesheet);
 
+                            if(sourceDay.WeekNr != destinationDay.WeekNr)
+                            {
+                                timesheet.FDL = null;
+                                timesheet.FDL1 = null;
+                            }
+
                             timesheet.Id = 0;
                             timesheet.Timestamp = destinationDay.Timestamp;
                             timesheet.Save(db);
@@ -367,17 +373,8 @@ namespace Great2.ViewModels
                 }
             }
 
-            int prima = destinationDay.Timesheets.Count();
-
             SelectedWorkingDay.Refresh();
             SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
-
-            var anal = destinationDay.Timesheets.Count();
-
-            if (anal > 1)
-            {
-                
-            }   
 
             foreach (var timesheet in destinationDay.Timesheets)
                 Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
