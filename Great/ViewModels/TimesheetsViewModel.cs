@@ -116,6 +116,7 @@ namespace Great2.ViewModels
             get => _selectedTimesheet;
             set
             {
+                _selectedTimesheet?.CheckChangedEntity();
                 Set(ref _selectedTimesheet, value);
                 UpdateInputsEnablement();
             }
@@ -504,7 +505,7 @@ namespace Great2.ViewModels
                             {
                                 foreach (var day in daysToRefresh)
                                     day.Refresh(db);
-                                }
+                            }
 
                             // update fdls combo
                             if (fdl != null)
