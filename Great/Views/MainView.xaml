@@ -321,6 +321,11 @@
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                    <Fluent:Button Header="Print" Command="{Binding PrintCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/printer.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Print" Text="Print the selected FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Virtual">
                     <Fluent:Button Name="AddVirtualFdlButton" Header="Add Virtual FDL" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/cpu.png" Click="AddVirtualFdlButton_Click">
@@ -488,6 +493,11 @@
                     <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected EA to file..." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Print" Command="{Binding PrintCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/printer.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Print" Text="Print the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>

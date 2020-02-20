@@ -362,15 +362,19 @@ namespace Great2.ViewModels
             AutoAssignFactories = UserSettings.Advanced.AutoAssignFactories;
 
             AskOrderRecipients = UserSettings.Email.Recipients.AskOrderRecipients;
-                        
+
             if (UserSettings.Email.Recipients.NewOrderDefaults != null)
             {
+                NewOrderDefaultRecipients = string.Empty;
+
                 foreach (string address in UserSettings.Email.Recipients.NewOrderDefaults)
                     NewOrderDefaultRecipients += NewOrderDefaultRecipients == string.Empty ? address : "; " + address;
             }
-                        
+
             if (UserSettings.Email.Recipients.FDLCancelRequest != null)
             {
+                FDLCancelRequestRecipients = string.Empty;
+
                 foreach (string address in UserSettings.Email.Recipients.FDLCancelRequest)
                     FDLCancelRequestRecipients += FDLCancelRequestRecipients == string.Empty ? address : "; " + address;
             }
@@ -382,6 +386,8 @@ namespace Great2.ViewModels
 
             if (UserSettings.Email.Recipients.EANewMessageDefaultRecipients != null)
             {
+                EANewMessageDefaultRecipients = string.Empty;
+
                 foreach (string address in UserSettings.Email.Recipients.EANewMessageDefaultRecipients)
                     EANewMessageDefaultRecipients += EANewMessageDefaultRecipients == string.Empty ? address : "; " + address;
             }
