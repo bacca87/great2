@@ -565,6 +565,8 @@
     <Resource Include="Images\32\car.png" />
     <Resource Include="Images\24\search.png" />
     <Resource Include="Images\32\printer.png" />
+    <Resource Include="Images\Logos\Autoupdater.png" />
+    <Resource Include="Images\Logos\Livecharts.gif" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -703,9 +705,6 @@
     <PackageReference Include="MaterialDesignThemes">
       <Version>3.1.0-ci981</Version>
     </PackageReference>
-    <PackageReference Include="MaterialMessageBox">
-      <Version>1.0.0.11</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Bcl.Build">
       <Version>1.0.21</Version>
     </PackageReference>
@@ -735,9 +734,6 @@
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.6.8</Version>
-    </PackageReference>
-    <PackageReference Include="Notifications.Wpf">
-      <Version>0.1.1</Version>
     </PackageReference>
     <PackageReference Include="Portable.BouncyCastle">
       <Version>1.8.5.2</Version>

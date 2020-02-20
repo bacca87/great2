@@ -82,6 +82,9 @@
                         <Hyperlink NavigateUri="https://www.sqlite.org" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="SQLite">
                             <Image Source="pack://application:,,,/Great2;component/Images/Logos/sqlite.gif" Stretch="Fill" Width="100" Margin="5"/>
                         </Hyperlink>
+                        <Hyperlink NavigateUri="https://lvcharts.net/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MahApps.Metro">
+                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/livecharts.gif" Stretch="Fill" Width="200" Margin="5"/>
+                        </Hyperlink>
                         <LineBreak/>
                         <Hyperlink NavigateUri="https://github.com/xceedsoftware/wpftoolkit" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Extended WPF Toolkit™">
                             <Image Source="pack://application:,,,/Great2;component/Images/Logos/WPF_Toolkit.png" Stretch="Fill" Width="200" Margin="5"/>
@@ -91,6 +94,9 @@
                         </Hyperlink>
                         <Hyperlink NavigateUri="https://mahapps.com/" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MahApps.Metro">
                             <Image Source="pack://application:,,,/Great2;component/Images/Logos/mahapps.metro.png" Stretch="Fill" Width="80" Margin="5"/>
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/ravibpatel/AutoUpdater.NET" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="MahApps.Metro">
+                            <Image Source="pack://application:,,,/Great2;component/Images/Logos/autoupdater.png" Stretch="Fill" Width="200" Margin="5"/>
                         </Hyperlink>
                         <LineBreak/>
                         <LineBreak/>
@@ -104,6 +110,14 @@
                         <LineBreak/>
                         <Hyperlink NavigateUri="http://paomedia.github.io/small-n-flat/" RequestNavigate="Hyperlink_RequestNavigate">
                             small-n-flat
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/jhabjan/Ghostscript.NET" RequestNavigate="Hyperlink_RequestNavigate">
+                            Ghostscript.NET
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/hardcodet/wpf-notifyicon" RequestNavigate="Hyperlink_RequestNavigate">
+                            Hardcodet NotifyIcon for WPF
                         </Hyperlink>
                         <LineBreak/>
                     </Paragraph>
