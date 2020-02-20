@@ -98,6 +98,8 @@ namespace Great2.Models
             public const string FDL_CHK = "f2@elettric80.it";
             public const string HR = "hr@elettric80.it";
             public const string SAP = "sap@elettric80.it";
+
+            public const string FDL_CHK_Display = "fdl_chk";
         }
         #endregion
 
