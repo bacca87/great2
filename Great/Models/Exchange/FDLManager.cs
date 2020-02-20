@@ -1350,33 +1350,38 @@ namespace Great2.Models
 
         public bool Print(IFDLFile file)
         {
-            switch (Path.GetExtension(file.FileName).ToLower())
+            try
             {
-                case ".pdf":
-                    using (GhostscriptProcessor processor = new GhostscriptProcessor())
-                    {
-                        List<string> parameters = new List<string>();
-                        parameters.Add("-empty");
-                        parameters.Add("-dPrinted");
-                        parameters.Add("-dBATCH");
-                        parameters.Add("-dNOPAUSE");
-                        parameters.Add("-dNOSAFER");
-                        parameters.Add("-dNumCopies=1");
-                        parameters.Add("-sDEVICE=mswinpr2");
-                        parameters.Add("-dBitsPerPixel=24");
-                        parameters.Add("-f");
-                        parameters.Add(file.FilePath);
+                switch (Path.GetExtension(file.FileName).ToLower())
+                {
+                    case ".pdf":
+                        using (GhostscriptProcessor processor = new GhostscriptProcessor())
+                        {
+                            List<string> parameters = new List<string>();
+                            parameters.Add("-empty");
+                            parameters.Add("-dPrinted");
+                            parameters.Add("-dBATCH");
+                            parameters.Add("-dNOPAUSE");
+                            parameters.Add("-dNOSAFER");
+                            parameters.Add("-dNumCopies=1");
+                            parameters.Add("-sDEVICE=mswinpr2");
+                            parameters.Add("-dBitsPerPixel=24");
+                            parameters.Add("-f");
+                            parameters.Add(file.FilePath);
 
-                        processor.StartProcessing(parameters.ToArray(), null);
-                    }
-                    break;
+                            processor.StartProcessing(parameters.ToArray(), null);
+                        }
+                        return true;
 
-                case ".xlsx":
-                    ExcelHelper.Print(file.FilePath);
-                    break;
+                    case ".xlsx":
+                        return ExcelHelper.Print(file.FilePath);
+                }
+            }
+            catch (Exception ex)
+            {
             }
 
-            return true;
+            return false;
         }
 
         private void ProcessMessage(EmailMessage message)

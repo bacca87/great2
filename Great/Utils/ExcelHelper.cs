@@ -12,12 +12,14 @@ namespace Great2.Utils
 {
     public class ExcelHelper
     {
+        private static bool IsPrinting = false;
+
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         private static WorksheetPart GetWorksheetPartByName(SpreadsheetDocument doc, string sheetName)
         {
@@ -181,6 +183,14 @@ namespace Great2.Utils
 
         public static bool Print(string filepath)
         {
+            if (IsPrinting)
+            {
+                MetroMessageBox.Show("Printing is already in progress!", "Warning", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                return false;
+            }
+
+            IsPrinting = true;
+
             Task.Factory.StartNew(() =>
             {
                 try
@@ -213,6 +223,10 @@ namespace Great2.Utils
                 catch (Exception ex)
                 {
 
+                }
+                finally
+                {
+                    IsPrinting = false;
                 }
             });
 
