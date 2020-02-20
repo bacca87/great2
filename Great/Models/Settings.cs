@@ -613,7 +613,8 @@ namespace Great2.Models
             public const int CurrencyTransactionFeesType = 88;
             public const int Taxi1Type = 112;
 
-            public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
+            public static readonly TimeSpan DiariaStartThreshold = new TimeSpan(14, 0, 0);
+            public static readonly TimeSpan DiariaEndThreshold = new TimeSpan(19, 0, 0);
 
             public const string EA_Accepted = "NOTA SPESE ACCETTATA";
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";

@@ -294,10 +294,10 @@ namespace Great2.ViewModels.Database
 
             double? Diaria = remove ? (double?)null : ApplicationSettings.ExpenseAccount.DiariaValue;
 
-            if (!remove && 
-                ((timesheet.TravelPeriods != null && timesheet.WorkPeriods != null && timesheet.TravelPeriods.End > timesheet.WorkPeriods.End) ||
-                 (timesheet.TravelPeriods != null && timesheet.WorkPeriods == null)) &&
-                timesheet.TravelPeriods.End.TimeOfDay <= ApplicationSettings.ExpenseAccount.DiariaThreshold)
+            if (!remove &&
+                (timesheet.TravelPeriods != null && timesheet.WorkPeriods == null && (timesheet.TravelPeriods.Start.TimeOfDay >= ApplicationSettings.ExpenseAccount.DiariaStartThreshold || (timesheet.TravelPeriods.End.Day == timesheet.TravelPeriods.Start.Day && timesheet.TravelPeriods.End.TimeOfDay <= ApplicationSettings.ExpenseAccount.DiariaEndThreshold))) ||
+                (timesheet.TravelPeriods != null && timesheet.WorkPeriods != null && timesheet.TravelPeriods.Start < timesheet.WorkPeriods.Start && timesheet.TravelPeriods.Start.TimeOfDay >= ApplicationSettings.ExpenseAccount.DiariaStartThreshold) ||
+                (timesheet.TravelPeriods != null && timesheet.WorkPeriods != null && timesheet.TravelPeriods.End > timesheet.WorkPeriods.End && timesheet.TravelPeriods.End.Day == timesheet.TravelPeriods.Start.Day && timesheet.TravelPeriods.End.TimeOfDay <= ApplicationSettings.ExpenseAccount.DiariaEndThreshold))
                 Diaria /= 2;
 
             switch (timesheet.Date.DayOfWeek)
