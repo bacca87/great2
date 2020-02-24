@@ -408,8 +408,17 @@ namespace Great2.ViewModels.Database
         {
             if(IsExcel)
             {
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.Taxi1Type))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.Taxi1Type, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.LunchType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.LunchType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.DinnerType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.DinnerType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.FuelType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.FuelType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelType, db);
 
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TollType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.TollType, db);
@@ -417,22 +426,28 @@ namespace Great2.ViewModels.Database
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParkingType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.ParkingType, db);
 
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.Taxi1Type))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.Taxi1Type, db);
+
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBaggageType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBaggageType, db);
 
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.FuelType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.FuelType, db);
-
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CurrencyTransactionFeesType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.CurrencyTransactionFeesType, db);
-
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelType, db);
             }
             else
             {
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TaxiType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.TaxiType, db);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PranzoType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.PranzoType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CenaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CenaType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType, db);
 
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType, db);
@@ -440,14 +455,11 @@ namespace Great2.ViewModels.Database
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType, db);
 
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TaxiType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.TaxiType, db);
+
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType, db);
-
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType, db);
-
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType, db);
 
                 if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
                     CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType, db);
