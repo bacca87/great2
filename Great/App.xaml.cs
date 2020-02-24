@@ -208,24 +208,28 @@ namespace Great2
                 string SourcePath = ApplicationSettings.Directories.Data.TrimEnd('\\');
                 string DestinationPath = UserSettings.Advanced.MigrationDataFolder.TrimEnd('\\');
 
-                // Now Create all of the directories
-                foreach (string dirPath in Directory.GetDirectories(SourcePath, "*", SearchOption.AllDirectories))
-                    Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
+                if (SourcePath != DestinationPath)
+                {
+                    // Now Create all of the directories
+                    foreach (string dirPath in Directory.GetDirectories(SourcePath, "*", SearchOption.AllDirectories))
+                        Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
 
-                // Copy all the files & Replaces any files with the same name
-                foreach (string newPath in Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories))
-                    File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
+                    // Copy all the files & Replaces any files with the same name
+                    foreach (string newPath in Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories))
+                        File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
 
-                ApplicationSettings.Directories.Data = UserSettings.Advanced.MigrationDataFolder;
-                    
-                // Delete old folder and its contents
-                Directory.Delete(SourcePath, true);
+                    ApplicationSettings.Directories.Data = UserSettings.Advanced.MigrationDataFolder;
+
+                    // Delete old folder and its contents
+                    Directory.Delete(SourcePath, true);
+                }
 
                 UserSettings.Advanced.MigrationDataFolder = string.Empty;
             }
             catch (Exception ex)
             {
                 MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(ex, "MigrateDataFolder()");
             }
         }
 
