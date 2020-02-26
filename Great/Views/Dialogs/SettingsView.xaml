@@ -250,7 +250,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Background="{DynamicResource MahApps.Brushes.Gray10}">
+        <Grid Grid.Row="1" Background="{DynamicResource MahApps.Brushes.AccentBase}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
