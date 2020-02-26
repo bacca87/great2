@@ -32,6 +32,7 @@ namespace Great2.Views
             {
                 AutoUpdater.HttpUserAgent = ApplicationSettings.General.UserAgent;
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+                AutoUpdater.BasicAuthXML = new BasicAuthentication(ApplicationSettings.General.GithubClientId, ApplicationSettings.General.GithubClientSecret);
 
                 CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
                 CheckForUpdatesTimer.Tick += CheckForUpdatesTimer_Tick;
@@ -44,7 +45,7 @@ namespace Great2.Views
             // check for updates
             if (!ApplicationSettings.General.ImportInProgress)
             {
-                AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress);
+                AutoUpdater.Start(ApplicationSettings.General.GithubReleasesInfoUrl);
                 CheckForUpdatesTimer.Interval = TimeSpan.FromMinutes(10); // slow down the update check in order to not overload the github api (max 5000 request per hour)
             }   
             else
