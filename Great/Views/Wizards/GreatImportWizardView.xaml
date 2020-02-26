@@ -23,7 +23,7 @@
             <xctk:Wizard.Resources>
                 <Style TargetType="{x:Type xctk:Wizard}">
                     <Style.Setters>
-                        <Setter Property="Background" Value="{DynamicResource MahApps.Colors.AccentBase}" />
+                        <Setter Property="Background" Value="{StaticResource MahApps.Brushes.AccentBase}" />
                     </Style.Setters>
                 </Style>
                 <Style TargetType="{x:Type xctk:WizardPage}">

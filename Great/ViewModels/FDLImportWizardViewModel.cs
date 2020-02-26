@@ -234,7 +234,7 @@ namespace Great2.ViewModels
             refreshTimer.Stop();
             Refresh();
 
-            MessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
+            MetroMessageBox.Show("The application will be restarted in order to apply changes.", "Restart Required", MessageBoxButton.OK, MessageBoxImage.Information);
             Process.Start(Application.ResourceAssembly.Location, "-m");
             Application.Current.Shutdown();
         }
