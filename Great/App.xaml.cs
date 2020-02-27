@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -168,7 +169,7 @@ namespace Great2
                                     user_version = Convert.ToInt32(reader.GetValue(0));
                             }
 
-                            foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                            foreach (var f in Directory.GetFiles(Directory.GetParent(Assembly.GetEntryAssembly().Location) + "\\UpgradeScripts\\", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
                             {
                                 if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
                                     continue;
