@@ -30,6 +30,7 @@ namespace Great2.Views
 
             if (!Debugger.IsAttached)
             {
+                AutoUpdater.ShowSkipButton = false;
                 AutoUpdater.HttpUserAgent = ApplicationSettings.General.UserAgent;
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
                 AutoUpdater.BasicAuthXML = new BasicAuthentication(ApplicationSettings.General.GithubClientId, ApplicationSettings.General.GithubClientSecret);
