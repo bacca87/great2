@@ -6,47 +6,47 @@ namespace Great2.ViewModels
 {
     public class InformationsViewModel : ViewModelBase
     {
-        private Assembly assembly = Assembly.GetExecutingAssembly();
+        private static Assembly assembly = Assembly.GetExecutingAssembly();
 
         /// <summary>
         /// Gets the Title property.
         /// </summary>
-        public string Title => (assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0] as AssemblyTitleAttribute).Title;
+        public static string Title => (assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0] as AssemblyTitleAttribute).Title;
 
         /// <summary>
         /// Gets the Description property.
         /// </summary>
-        public string Description => (assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0] as AssemblyDescriptionAttribute).Description;
+        public static string Description => (assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0] as AssemblyDescriptionAttribute).Description;
 
         /// <summary>
         /// Gets the Company property.
         /// </summary>
-        public string Company => (assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0] as AssemblyCompanyAttribute).Company;
+        public static string Company => (assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0] as AssemblyCompanyAttribute).Company;
 
         /// <summary>
         /// Gets the Copyright property.
         /// </summary>
-        public string Copyleft => (assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0] as AssemblyCopyrightAttribute).Copyright;
+        public static string Copyleft => (assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0] as AssemblyCopyrightAttribute).Copyright;
 
         /// <summary>
         /// Gets the Product property.
         /// </summary>
-        public string Product => (assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0] as AssemblyProductAttribute).Product;
+        public static string Product => (assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0] as AssemblyProductAttribute).Product;
 
         /// <summary>
         /// Gets the Version property.
         /// </summary>
-        public string Version => FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
+        public static string Version => FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
 
         /// <summary>
         /// Gets the Version property.
         /// </summary>
-        public string AppNameAndVersion => Title + " v" + Version;
+        public static string AppNameAndVersion => Title + " v" + Version;
 
         /// <summary>
         /// Gets the ProductDescription property.
         /// </summary>
-        public string ProductDescription
+        public static string ProductDescription
         {
             get;
             internal set;

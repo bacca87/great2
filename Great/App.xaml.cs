@@ -56,7 +56,7 @@ namespace Great2
 
             SplashScreen splash = null;
 
-            if (!Debugger.IsAttached)
+            if (UserSettings.Options.ShowSplashScreen)
             {
                 splash = new SplashScreen();
                 MainWindow = splash;
@@ -91,6 +91,7 @@ namespace Great2
                     //initialize the main window, set it as the application main window
                     //and close the splash screen
                     MainView window = new MainView();
+
                     window.ContentRendered += (s, args) =>
                     {
                         if (splash != null)
@@ -98,7 +99,17 @@ namespace Great2
                     };
 
                     MainWindow = window;
-                    window.Show();
+
+                    if (UserSettings.Options.StartMinimized)
+                    {
+                        // hack to correctly initialize the fluent ribbon tabs visibility
+                        MainWindow.WindowState = WindowState.Minimized;
+                        MainWindow.Show();
+                        MainWindow.Hide();
+                        MainWindow.WindowState = WindowState.Maximized;
+                    }                        
+                    else
+                        MainWindow.Show();
                 });
             });
         }

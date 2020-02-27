@@ -1562,7 +1562,36 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
-            
+
+            public static bool ShowSplashScreen
+            {
+                get => Settings.Default.ShowSplashScreen;
+                set
+                {
+                    Settings.Default.ShowSplashScreen = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool StartMinimized
+            {
+                get => Settings.Default.StartMinimized;
+                set
+                {
+                    Settings.Default.StartMinimized = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool LaunchAtSystemStartup
+            {
+                get => Settings.Default.LaunchAtSystemStartup;
+                set
+                {
+                    Settings.Default.LaunchAtSystemStartup = value;
+                    Settings.Default.Save();
+                }
+            }
         }
         #endregion
 

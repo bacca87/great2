@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Great2.Models;
 using Great2.Models.Database;
 using Great2.Models.Interfaces;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Nager.Date;
 using System;
@@ -11,6 +12,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
@@ -26,6 +28,27 @@ namespace Great2.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         #region Properties
+
+        private bool _ShowSplashScreen;
+        public bool ShowSplashScreen
+        {
+            get => _ShowSplashScreen;
+            set => Set(ref _ShowSplashScreen, value);
+        }
+
+        private bool _StartMinimized;
+        public bool StartMinimized
+        {
+            get => _StartMinimized;
+            set => Set(ref _StartMinimized, value);
+        }
+
+        private bool _LaunchAtSystemStartup;
+        public bool LaunchAtSystemStartup
+        {
+            get => _LaunchAtSystemStartup;
+            set => Set(ref _LaunchAtSystemStartup, value);
+        }
 
         private CountryCode _Country;
         public CountryCode Country
@@ -350,6 +373,10 @@ namespace Great2.ViewModels
 
         private void LoadData()
         {
+            ShowSplashScreen = UserSettings.Options.ShowSplashScreen;
+            LaunchAtSystemStartup = UserSettings.Options.LaunchAtSystemStartup;
+            StartMinimized = UserSettings.Options.StartMinimized;
+
             Country = UserSettings.Localization.Country;
             DataDirectory = ApplicationSettings.Directories.Data;
 
@@ -416,6 +443,12 @@ namespace Great2.ViewModels
         {
             using (new WaitCursor())
             {
+                UserSettings.Options.ShowSplashScreen = ShowSplashScreen;
+                UserSettings.Options.LaunchAtSystemStartup = LaunchAtSystemStartup;
+                UserSettings.Options.StartMinimized = StartMinimized;
+
+                RegisterInStartup(LaunchAtSystemStartup);
+
                 UserSettings.Localization.Country = Country;
 
                 UserSettings.Email.UseDefaultCredentials = UseWindowsAuthentication;
@@ -475,6 +508,17 @@ namespace Great2.ViewModels
 
                 Close();
             }
+        }
+
+        private void RegisterInStartup(bool isChecked)
+        {
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            string AppName = InformationsViewModel.Title;
+
+            if (isChecked)
+                registryKey.SetValue(AppName, Assembly.GetEntryAssembly().Location);
+            else if(registryKey.GetValue(AppName) != null)
+                registryKey.DeleteValue(AppName);
         }
     }
 }

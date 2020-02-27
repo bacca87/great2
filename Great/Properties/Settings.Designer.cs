@@ -448,5 +448,41 @@ namespace Great2.Properties {
                 this["EANewMessageDefaultRecipients"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowSplashScreen {
+            get {
+                return ((bool)(this["ShowSplashScreen"]));
+            }
+            set {
+                this["ShowSplashScreen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartMinimized {
+            get {
+                return ((bool)(this["StartMinimized"]));
+            }
+            set {
+                this["StartMinimized"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LaunchAtSystemStartup {
+            get {
+                return ((bool)(this["LaunchAtSystemStartup"]));
+            }
+            set {
+                this["LaunchAtSystemStartup"] = value;
+            }
+        }
     }
 }
