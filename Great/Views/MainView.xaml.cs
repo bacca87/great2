@@ -176,7 +176,11 @@ namespace Great2.Views
         private void MyNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             if(Visibility == Visibility.Hidden)
+            {
                 Show();
+                TimesheetsViewModel timesheetVM = SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
+                timesheetVM.OnSelectToday?.Invoke(timesheetVM.SelectedWorkingDay);
+            }
 
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;
