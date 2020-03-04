@@ -31,6 +31,7 @@ namespace Great2
         {
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             AppDomain.CurrentDomain.UnhandledException += Great2_UnhandledException;
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory); //or set executing Assembly location path in param
 
             // Register AUMID, COM server, and activator
             DesktopNotificationManagerCompat.RegisterAumidAndComServer<Great2NotificationActivator>(ApplicationSettings.General.AUMID);
@@ -169,7 +170,7 @@ namespace Great2
                                     user_version = Convert.ToInt32(reader.GetValue(0));
                             }
 
-                            foreach (var f in Directory.GetFiles(Directory.GetParent(Assembly.GetEntryAssembly().Location) + "\\UpgradeScripts\\", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                            foreach (var f in Directory.GetFiles(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory) + "\\UpgradeScripts\\", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
                             {
                                 if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
                                     continue;
