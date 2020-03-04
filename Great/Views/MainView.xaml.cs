@@ -178,6 +178,8 @@ namespace Great2.Views
             if(Visibility == Visibility.Hidden)
             {
                 Show();
+
+                // hack for focus the last selected day when the mainwindow starts from hidden state
                 TimesheetsViewModel timesheetVM = SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
                 timesheetVM.OnSelectToday?.Invoke(timesheetVM.SelectedWorkingDay);
             }
