@@ -361,8 +361,12 @@ namespace Great2.ViewModels
 
                             timesheet.Id = 0;
                             timesheet.Timestamp = destinationDay.Timestamp;
-                            timesheet.Save(db);
-                            destinationDay.Timesheets.Add(timesheet);
+
+                            if (timesheet.TotalTime.HasValue || !string.IsNullOrEmpty(timesheet.FDL) || !string.IsNullOrEmpty(timesheet.Notes))
+                            {
+                                timesheet.Save(db);
+                                destinationDay.Timesheets.Add(timesheet);
+                            }
                         }
 
                         transaction.Commit();
