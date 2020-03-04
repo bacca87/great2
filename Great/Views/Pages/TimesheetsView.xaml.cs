@@ -45,9 +45,9 @@ namespace Great2.Views.Pages
             workingDaysDataGrid.UpdateLayout();
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
 
-            // scroll 45 unit up for showing current group header
+            // scroll 1 unit up for showing current group header
             workingDaysDataGrid.UpdateLayout();
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 45);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 1);
         }
 
         private void scrollToSelectedDay(DayEVM day)
@@ -56,6 +56,10 @@ namespace Great2.Views.Pages
             scrollViewer.ScrollToHome();
             workingDaysDataGrid.UpdateLayout();
             workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
+
+            // scroll down for centering in the middle of the grid the selected day
+            workingDaysDataGrid.UpdateLayout();
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 15);
         }
 
         #region Time MaskedTextBox Autocomplete Methods 
@@ -83,10 +87,7 @@ namespace Great2.Views.Pages
             if (!timesheetPanel.IsExpanded)
                 return;
 
-            // hack for scrolling to the selected day 
-            scrollViewer.ScrollToHome();
-            workingDaysDataGrid.UpdateLayout();
-            workingDaysDataGrid.ScrollIntoView(workingDaysDataGrid.SelectedItem);
+            scrollToSelectedDay((DayEVM)workingDaysDataGrid.SelectedItem);
         }
 
         private void Page_KeyDown(object sender, KeyEventArgs e)
