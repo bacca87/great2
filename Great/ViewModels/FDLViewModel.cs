@@ -82,6 +82,7 @@ namespace Great2.ViewModels
                     MarkAsAcceptedCommand.RaiseCanExecuteChanged();
                     MarkAsCancelledCommand.RaiseCanExecuteChanged();
                     SendCancellationRequestCommand.RaiseCanExecuteChanged();
+                    PrintCommand.RaiseCanExecuteChanged();
                 }
                 else
                     IsInputEnabled = false;
@@ -154,6 +155,7 @@ namespace Great2.ViewModels
         public RelayCommand<FDLEVM> MarkAsAcceptedCommand { get; set; }
         public RelayCommand<FDLEVM> MarkAsCancelledCommand { get; set; }
         public RelayCommand<FDLEVM> SendCancellationRequestCommand { get; set; }
+        public RelayCommand<FDLEVM> PrintCommand { get; set; }
 
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
@@ -186,6 +188,7 @@ namespace Great2.ViewModels
             MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            PrintCommand = new RelayCommand<FDLEVM>(Print, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
 
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
@@ -455,6 +458,14 @@ namespace Great2.ViewModels
             {
                 _fdlManager.NewOutlookMessage(fdl);
             }
+        }
+
+        public void Print(FDLEVM fdl)
+        {
+            if (fdl == null)
+                return;
+
+            _fdlManager.Print(fdl);
         }
 
         public void SaveAs(FDLEVM fdl)

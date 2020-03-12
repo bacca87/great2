@@ -104,6 +104,7 @@ namespace Great2.ViewModels
                     MarkAsRefundedCommand.RaiseCanExecuteChanged();
                     MarkAsAcceptedCommand.RaiseCanExecuteChanged();
                     MarkAsCancelledCommand.RaiseCanExecuteChanged();
+                    PrintCommand.RaiseCanExecuteChanged();
                 }
                 else
                     IsInputEnabled = false;
@@ -159,6 +160,7 @@ namespace Great2.ViewModels
         public RelayCommand NextYearCommand { get; set; }
         public RelayCommand PreviousYearCommand { get; set; }
         public RelayCommand FactoryLinkCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> PrintCommand { get; set; }
         #endregion
 
         #region Errors Validation
@@ -213,6 +215,7 @@ namespace Great2.ViewModels
             MarkAsRefundedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsRefunded, (x) => { return SelectedEA != null; });
             MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            PrintCommand = new RelayCommand<ExpenseAccountEVM>(Print, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedEA?.CheckChangedEntity(); });
@@ -486,6 +489,14 @@ namespace Great2.ViewModels
             {
                 _fdlManager.NewOutlookMessage(ea);
             }
+        }
+
+        public void Print(ExpenseAccountEVM ea)
+        {
+            if (ea == null)
+                return;
+
+            _fdlManager.Print(ea);
         }
 
         public void SaveAs(ExpenseAccountEVM ea)

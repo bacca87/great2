@@ -387,7 +387,12 @@ namespace Great2.ViewModels.Database
             Timesheets = new ObservableCollectionEx<TimesheetEVM>();
 
             if (day != null)
+            {
                 Auto.Mapper.Map(day, this);
+
+                foreach (var ts in Timesheets)
+                    ts.IsChanged = false;
+            }   
 
             Timesheets.CollectionChanged += (sender, e) => UpdateInfo();
             Timesheets.ItemPropertyChanged += (sender, e) => UpdateInfo();

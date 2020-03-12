@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace Great2
         {
             GlobalDiagnosticsContext.Set("logDirectory", ApplicationSettings.Directories.Log);
             AppDomain.CurrentDomain.UnhandledException += Great2_UnhandledException;
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory); //or set executing Assembly location path in param
 
             // Register AUMID, COM server, and activator
             DesktopNotificationManagerCompat.RegisterAumidAndComServer<Great2NotificationActivator>(ApplicationSettings.General.AUMID);
@@ -56,7 +58,7 @@ namespace Great2
 
             SplashScreen splash = null;
 
-            if (!Debugger.IsAttached)
+            if (UserSettings.Options.ShowSplashScreen)
             {
                 splash = new SplashScreen();
                 MainWindow = splash;
@@ -91,6 +93,7 @@ namespace Great2
                     //initialize the main window, set it as the application main window
                     //and close the splash screen
                     MainView window = new MainView();
+
                     window.ContentRendered += (s, args) =>
                     {
                         if (splash != null)
@@ -98,7 +101,17 @@ namespace Great2
                     };
 
                     MainWindow = window;
-                    window.Show();
+
+                    if (UserSettings.Options.StartMinimized)
+                    {
+                        // hack to correctly initialize the fluent ribbon tabs visibility
+                        MainWindow.WindowState = WindowState.Minimized;
+                        MainWindow.Show();
+                        MainWindow.Hide();
+                        MainWindow.WindowState = WindowState.Maximized;
+                    }                        
+                    else
+                        MainWindow.Show();
                 });
             });
         }
@@ -157,7 +170,7 @@ namespace Great2
                                     user_version = Convert.ToInt32(reader.GetValue(0));
                             }
 
-                            foreach (var f in Directory.GetFiles("UpgradeScripts/", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
+                            foreach (var f in Directory.GetFiles(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory) + "\\UpgradeScripts\\", "*.sql").OrderBy(f => Int32.Parse(Regex.Match(f, @"\d+").Value)))
                             {
                                 if (!int.TryParse(Path.GetFileName(f).Split('_').First(), out int scriptVersion))
                                     continue;
@@ -208,24 +221,28 @@ namespace Great2
                 string SourcePath = ApplicationSettings.Directories.Data.TrimEnd('\\');
                 string DestinationPath = UserSettings.Advanced.MigrationDataFolder.TrimEnd('\\');
 
-                // Now Create all of the directories
-                foreach (string dirPath in Directory.GetDirectories(SourcePath, "*", SearchOption.AllDirectories))
-                    Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
+                if (SourcePath != DestinationPath)
+                {
+                    // Now Create all of the directories
+                    foreach (string dirPath in Directory.GetDirectories(SourcePath, "*", SearchOption.AllDirectories))
+                        Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
 
-                // Copy all the files & Replaces any files with the same name
-                foreach (string newPath in Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories))
-                    File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
+                    // Copy all the files & Replaces any files with the same name
+                    foreach (string newPath in Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories))
+                        File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
 
-                ApplicationSettings.Directories.Data = UserSettings.Advanced.MigrationDataFolder;
-                    
-                // Delete old folder and its contents
-                Directory.Delete(SourcePath, true);
+                    ApplicationSettings.Directories.Data = UserSettings.Advanced.MigrationDataFolder;
+
+                    // Delete old folder and its contents
+                    Directory.Delete(SourcePath, true);
+                }
 
                 UserSettings.Advanced.MigrationDataFolder = string.Empty;
             }
             catch (Exception ex)
             {
                 MetroMessageBox.Show($"Migration Failed!\nException: {ex.Message}", "Migration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(ex, "MigrateDataFolder()");
             }
         }
 

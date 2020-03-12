@@ -39,9 +39,8 @@
                   CanUserSortColumns="False" 
                   IsReadOnly="True"                  
                   SelectionMode="Single"
-                  HeadersVisibility="Column"           
-                  HorizontalContentAlignment="Center"
-                  HorizontalScrollBarVisibility="Hidden"
+                  HeadersVisibility="Column"
+                  HorizontalContentAlignment="Center"                  
                   ItemsSource="{Binding Source={StaticResource WorkingDaysCollectionView}}"
                   SelectedItem="{Binding SelectedWorkingDay}"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
@@ -140,7 +139,7 @@
             </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Day" Binding="{Binding Date.DayOfYear}" FontWeight="Regular" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>                
+                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
                 <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>

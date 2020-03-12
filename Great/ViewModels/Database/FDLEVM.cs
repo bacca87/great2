@@ -232,8 +232,6 @@ namespace Great2.ViewModels.Database
 
         public string FilePath => ApplicationSettings.Directories.FDL + FileName;
 
-        public int Year => Convert.ToInt32(Id.Substring(0, 4));
-
         private bool _IsNew;
         public bool IsNew // used for sorting purpose
         {

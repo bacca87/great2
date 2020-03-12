@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using GalaSoft.MvvmLight.Messaging;
+using Ghostscript.NET.Processor;
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
@@ -1345,6 +1346,42 @@ namespace Great2.Models
             Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, ea));
 
             return ea;
+        }
+
+        public bool Print(IFDLFile file)
+        {
+            try
+            {
+                switch (Path.GetExtension(file.FileName).ToLower())
+                {
+                    case ".pdf":
+                        using (GhostscriptProcessor processor = new GhostscriptProcessor())
+                        {
+                            List<string> parameters = new List<string>();
+                            parameters.Add("-empty");
+                            parameters.Add("-dPrinted");
+                            parameters.Add("-dBATCH");
+                            parameters.Add("-dNOPAUSE");
+                            parameters.Add("-dNOSAFER");
+                            parameters.Add("-dNumCopies=1");
+                            parameters.Add("-sDEVICE=mswinpr2");
+                            parameters.Add("-dBitsPerPixel=24");
+                            parameters.Add("-f");
+                            parameters.Add(file.FilePath);
+
+                            processor.StartProcessing(parameters.ToArray(), null);
+                        }
+                        return true;
+
+                    case ".xlsx":
+                        return ExcelHelper.Print(file.FilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return false;
         }
 
         private void ProcessMessage(EmailMessage message)

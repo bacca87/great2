@@ -8,7 +8,6 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.DirectoryServices.AccountManagement;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
@@ -99,6 +98,8 @@ namespace Great2.Models
             public const string FDL_CHK = "f2@elettric80.it";
             public const string HR = "hr@elettric80.it";
             public const string SAP = "sap@elettric80.it";
+
+            public const string FDL_CHK_Display = "fdl_chk";
         }
         #endregion
 
@@ -603,6 +604,8 @@ namespace Great2.Models
             public const int CarburanteItaliaType = 13;
             public const int CommissioniValutaType = 19;
             public const int TaxiType = 65;
+            public const int PranzoType = 47;
+            public const int CenaType = 15;
 
             public const int PocketMoney1Type = 102;
             public const int DailyAllowanceType = 89;
@@ -613,8 +616,11 @@ namespace Great2.Models
             public const int FuelType = 85;            
             public const int CurrencyTransactionFeesType = 88;
             public const int Taxi1Type = 112;
+            public const int LunchType = 103;
+            public const int DinnerType = 86;
 
-            public static readonly TimeSpan DiariaThreshold = new TimeSpan(19, 0, 0);
+            public static readonly TimeSpan DiariaStartThreshold = new TimeSpan(14, 0, 0);
+            public static readonly TimeSpan DiariaEndThreshold = new TimeSpan(19, 0, 0);
 
             public const string EA_Accepted = "NOTA SPESE ACCETTATA";
             public const string EA_Rejected = "NOTA SPESE RIFIUTATA";
@@ -1351,7 +1357,10 @@ namespace Great2.Models
             public const int WaitForNextEventCheck = 600000; //10 minutes
             public const int WaitForCredentialsCheck = 1000;
 
-            public const string ReleasesInfoAddress = "https://api.github.com/repos/bacca87/great2/releases";
+            public const string GithubReleasesInfoUrl = "https://api.github.com/repos/bacca87/great2/releases";
+            public const string GithubClientId = "db30fa115978abf38684";
+            public const string GithubClientSecret = "69b0fb16859aa6c0db9aeed534fb35cac63ad9d3";
+
             public const string IntranetAddress = "https://intranet.elettric80.it";
 
             public static bool ImportInProgress = false;
@@ -1553,7 +1562,36 @@ namespace Great2.Models
                     Settings.Default.Save();
                 }
             }
-            
+
+            public static bool ShowSplashScreen
+            {
+                get => Settings.Default.ShowSplashScreen;
+                set
+                {
+                    Settings.Default.ShowSplashScreen = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool StartMinimized
+            {
+                get => Settings.Default.StartMinimized;
+                set
+                {
+                    Settings.Default.StartMinimized = value;
+                    Settings.Default.Save();
+                }
+            }
+
+            public static bool LaunchAtSystemStartup
+            {
+                get => Settings.Default.LaunchAtSystemStartup;
+                set
+                {
+                    Settings.Default.LaunchAtSystemStartup = value;
+                    Settings.Default.Save();
+                }
+            }
         }
         #endregion
 

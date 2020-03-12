@@ -108,7 +108,7 @@ namespace Great2.Utils
 
                         // try with XFA format
                         if (fdl == null)
-                            fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, false, false);
+                            fdl = FDLManager.ImportFDLFromFile(file.FullName, true, false, false, false, true);
 
                         if (fdl != null)
                         {
@@ -119,17 +119,17 @@ namespace Great2.Utils
 
                             using (DBArchive db = new DBArchive())
                             {
-                                // we must override recived fdl with the same of current dbcontext istance
+                                // we must override received fdl with the same of current dbcontext istance
                                 FDL currentFdl = db.FDLs.SingleOrDefault(f => f.Id == fdl.Id);
 
                                 if (currentFdl != null)
                                 {
-                                    if(currentFdl.WeekNr < DateTime.Now.WeekNr())
-                                    {
-                                        currentFdl.Status = (long)EFDLStatus.Accepted;
+                                    FDLEVM tmpFdl = new FDLEVM(currentFdl);
 
-                                        db.FDLs.AddOrUpdate(currentFdl);
-                                        db.SaveChanges();
+                                    if(tmpFdl.StartDayDate.Year < DateTime.Now.Year || (tmpFdl.StartDayDate.Year == DateTime.Now.Year && tmpFdl.WeekNr < DateTime.Now.WeekNr()))
+                                    {
+                                        tmpFdl.EStatus = EFDLStatus.Accepted;
+                                        tmpFdl.Save(db);
                                     }   
                                 }
                                 else
@@ -193,14 +193,13 @@ namespace Great2.Utils
 
                                 if (currentEA != null)
                                 {
-                                    if (currentEA?.FDL1.WeekNr < DateTime.Now.WeekNr())
-                                    {
-                                        currentEA.Status = (long)EFDLStatus.Accepted;
+                                    currentEA.Status = currentEA.FDL1.Status;
+
+                                    if(currentEA.Status == (long)EFDLStatus.Accepted)
                                         currentEA.IsRefunded = true;
 
-                                        db.ExpenseAccounts.AddOrUpdate(currentEA);
-                                        db.SaveChanges();
-                                    }
+                                    db.ExpenseAccounts.AddOrUpdate(currentEA);
+                                    db.SaveChanges();
                                 }
                                 else
                                     Error("Missing EA on database. Should never happen.");

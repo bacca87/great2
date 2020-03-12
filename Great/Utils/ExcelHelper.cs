@@ -4,11 +4,23 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Great2.Utils
 {
     public class ExcelHelper
     {
+        private static bool IsPrinting = false;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
         private static WorksheetPart GetWorksheetPartByName(SpreadsheetDocument doc, string sheetName)
         {
             IEnumerable<Sheet> sheets = doc.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().Where(s => s.Name == sheetName);
@@ -167,6 +179,65 @@ namespace Great2.Utils
             wspart.Worksheet.Save();
 
             return true;
+        }
+
+        public static bool Print(string filepath)
+        {
+            if (IsPrinting)
+            {
+                MetroMessageBox.Show("Printing is already in progress!", "Warning", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                return false;
+            }
+
+            IsPrinting = true;
+
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    Excel.Application excelApp = new Excel.Application();
+                    
+                    // Open the Workbook:
+                    Excel.Workbook wb = excelApp.Workbooks.Open(filepath);
+
+                    // Get the first worksheet.
+                    // (Excel uses base 1 indexing, not base 0.)
+                    Excel.Worksheet ws = (Excel.Worksheet)wb.Worksheets[1];
+
+                    Excel.Dialog dialog = excelApp.Dialogs[Excel.XlBuiltInDialog.xlDialogPrint];
+                    BringExcelWindowToFront(excelApp);
+                    dialog.Show();
+
+                    // Cleanup:
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    Marshal.FinalReleaseComObject(ws);
+
+                    wb.Close(false);
+                    Marshal.FinalReleaseComObject(wb);
+
+                    excelApp.Quit();
+                    Marshal.FinalReleaseComObject(excelApp);
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    IsPrinting = false;
+                }
+            });
+
+            return true;
+        }
+
+        private static void BringExcelWindowToFront(Excel.Application xlApp)
+        {
+            string caption = xlApp.Caption;
+            IntPtr handler = FindWindow(null, caption);
+            SetForegroundWindow(handler);
         }
     }
 }

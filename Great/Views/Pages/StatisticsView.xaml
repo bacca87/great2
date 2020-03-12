@@ -41,17 +41,21 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="70*"/>
-                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="80*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Days Worked" Count="{Binding WorkedDays}" Click="Tile_Click" ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Holidays Worked" Count="{Binding WorkedHolidays}" Click="Tile_Click"   ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Saturdays Worked" Count="{Binding WorkedSaturdays}" Click="Tile_Click"   ></mah:Tile>
-                    <mah:Tile Grid.Row="0" Grid.ColumnSpan="2" TitleFontSize="15" Title="Sundays Worked" Count="{Binding WorkedSundays}" Click="Tile_Click"  ></mah:Tile>
-                </StackPanel>
-                <Grid Grid.Row="2" Grid.Column="0"  >
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="25*"/>
+                    </Grid.ColumnDefinitions>
+                    <mah:Tile Width="Auto" Height="Auto" Grid.Column="0" HorizontalTitleAlignment="Center" CountFontSize="40" TitleFontSize="15" Title="Days Worked" Count="{Binding WorkedDays}" Click="Tile_Click"/>
+                    <mah:Tile Width="Auto" Height="Auto" Grid.Column="1" HorizontalTitleAlignment="Center" CountFontSize="40" TitleFontSize="15" Title="Holidays Worked" Count="{Binding WorkedHolidays}" Click="Tile_Click"/>
+                    <mah:Tile Width="Auto" Height="Auto" Grid.Column="2" HorizontalTitleAlignment="Center" CountFontSize="40" TitleFontSize="15" Title="Saturdays Worked" Count="{Binding WorkedSaturdays}" Click="Tile_Click"/>
+                    <mah:Tile Width="Auto" Height="Auto" Grid.Column="3" HorizontalTitleAlignment="Center" CountFontSize="40" TitleFontSize="15" Title="Sundays Worked" Count="{Binding WorkedSundays}" Click="Tile_Click"/>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="0"  >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="10*"></RowDefinition>
                         <RowDefinition Height="90*"></RowDefinition>
@@ -140,29 +144,18 @@
         <TabItem x:Name="FactoriesTab" Header="Factories" Style="{DynamicResource NoHeaderTabItem}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="45*"/>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="70*"/>
-                    <RowDefinition Height="5*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1" Grid.Column="0"  >
+                <Grid Grid.Row="0" Grid.Column="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="10*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="30*"></RowDefinition>
-                        <RowDefinition Height="10*"></RowDefinition>
-                        <RowDefinition Height="45*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="70*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45*"></ColumnDefinition>
-                        <ColumnDefinition Width="5*"></ColumnDefinition>
-                        <ColumnDefinition Width="45*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Business Trip by Type</Label>
-                    <lvc:PieChart x:Name="FactoryTypesPieChart" Grid.Row="1" Grid.Column="0"  Series="{Binding FactoryTypes}" DataClick="FactoriesByType_DataClick" LegendLocation="Left">
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Business Trip by Type</Label>
+                    <lvc:PieChart Grid.Row="1" Grid.Column="0" x:Name="FactoryTypesPieChart" Series="{Binding FactoryTypes}" DataClick="FactoriesByType_DataClick" LegendLocation="Right">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -170,14 +163,8 @@
                             <lvc:DefaultLegend BulletSize="20" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                         </lvc:PieChart.ChartLegend>
                     </lvc:PieChart>
-
-                    <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Business Trip Meter</Label>
-                    <lvc:Gauge x:Name="TravelCountGauge" Grid.Row="1" Grid.Column="2" Margin="5"
-                   Uses360Mode="False" FromColor="Green" ToColor="Red"
-                   From="0" To="365" Value="{Binding TravelCount}" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}" >
-                    </lvc:Gauge>
-                    <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontWeight="Bold"  FontSize="20" >Visited Factories</Label>
-                    <lvc:PieChart x:Name="FactoriesPieChart" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LegendLocation="Left" InnerRadius="1" Hoverable="True" Series="{Binding Factories}" DataClick="Factories_DataClick">
+                    <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" >Visited Factories</Label>
+                    <lvc:PieChart Grid.Row="3" Grid.Column="0" x:Name="FactoriesPieChart" LegendLocation="Right" InnerRadius="1" Hoverable="True" Series="{Binding Factories}" DataClick="Factories_DataClick">
                         <lvc:PieChart.DataTooltip>
                             <lvc:DefaultTooltip Style="{StaticResource PieTooltip}"/>
                         </lvc:PieChart.DataTooltip>
@@ -186,16 +173,18 @@
                         </lvc:PieChart.ChartLegend>
                     </lvc:PieChart>
                 </Grid>
-                <Grid Grid.Row="1" Grid.Column="2">
+                <Grid Grid.Row="0" Grid.Column="1" ShowGridLines="True">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="10*"></RowDefinition>
-                            <RowDefinition Height="90*"></RowDefinition>
-                        </Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="70*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="30*"></RowDefinition>
+                        </Grid.RowDefinitions>                        
                         <Label Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20">Visited Countries Heat Map</Label>
-
                         <lvc:GeoMap Grid.Row="1" x:Name="GeoFactoryCountries" HeatMap="{Binding FactoryCountries}" Background="Transparent" LandClick="GeoFactoryCountries_LandClick" UseLayoutRounding="True" Source="World.xml" Margin="10,10,50,10" />
-
+                        <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20" >Business Trip Meter</Label>
+                        <lvc:Gauge Grid.Row="3" x:Name="TravelCountGauge" Margin="5" Uses360Mode="False" FromColor="Green" ToColor="Red" From="0" To="365" Value="{Binding TravelCount}" Background="{DynamicResource MahApps.Brushes.Control.Background}" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                     </Grid>
                 </Grid>
             </Grid>

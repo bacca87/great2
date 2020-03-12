@@ -30,10 +30,12 @@ namespace Great2.Views
 
             if (!Debugger.IsAttached)
             {
+                AutoUpdater.ShowSkipButton = false;
                 AutoUpdater.HttpUserAgent = ApplicationSettings.General.UserAgent;
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+                AutoUpdater.BasicAuthXML = new BasicAuthentication(ApplicationSettings.General.GithubClientId, ApplicationSettings.General.GithubClientSecret);
 
-                CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
+                CheckForUpdatesTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
                 CheckForUpdatesTimer.Tick += CheckForUpdatesTimer_Tick;
                 CheckForUpdatesTimer.Start();
             }
@@ -43,7 +45,10 @@ namespace Great2.Views
         {
             // check for updates
             if (!ApplicationSettings.General.ImportInProgress)
-                AutoUpdater.Start(ApplicationSettings.General.ReleasesInfoAddress); 
+            {
+                AutoUpdater.Start(ApplicationSettings.General.GithubReleasesInfoUrl);
+                CheckForUpdatesTimer.Interval = TimeSpan.FromMinutes(10); // slow down the update check in order to not overload the github api (max 5000 request per hour)
+            }   
             else
                 CheckForUpdatesTimer.IsEnabled = false;
         }
@@ -171,7 +176,13 @@ namespace Great2.Views
         private void MyNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             if(Visibility == Visibility.Hidden)
+            {
                 Show();
+
+                // hack for focus the last selected day when the mainwindow starts from hidden state
+                TimesheetsViewModel timesheetVM = SimpleIoc.Default.GetInstance<TimesheetsViewModel>();
+                timesheetVM.OnSelectToday?.Invoke(timesheetVM.SelectedWorkingDay);
+            }
 
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;

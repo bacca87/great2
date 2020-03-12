@@ -116,6 +116,7 @@ namespace Great2.ViewModels
             get => _selectedTimesheet;
             set
             {
+                _selectedTimesheet?.CheckChangedEntity();
                 Set(ref _selectedTimesheet, value);
                 UpdateInputsEnablement();
             }
@@ -389,10 +390,20 @@ namespace Great2.ViewModels
                             TimesheetEVM timesheet = new TimesheetEVM();
                             Auto.Mapper.Map(sts, timesheet);
 
+                            if(sourceDay.WeekNr != destinationDay.WeekNr)
+                            {
+                                timesheet.FDL = null;
+                                timesheet.FDL1 = null;
+                            }
+
                             timesheet.Id = 0;
                             timesheet.Timestamp = destinationDay.Timestamp;
-                            timesheet.Save(db);
-                            destinationDay.Timesheets.Add(timesheet);
+
+                            if (timesheet.TotalTime.HasValue || !string.IsNullOrEmpty(timesheet.FDL) || !string.IsNullOrEmpty(timesheet.Notes))
+                            {
+                                timesheet.Save(db);
+                                destinationDay.Timesheets.Add(timesheet);
+                            }
                         }
 
                         transaction.Commit();
@@ -404,17 +415,8 @@ namespace Great2.ViewModels
                 }
             }
 
-            int prima = destinationDay.Timesheets.Count();
-
             SelectedWorkingDay.Refresh();
             SelectedWorkingDay.RaisePropertyChanged(nameof(SelectedWorkingDay.Notes_Display));
-
-            var anal = destinationDay.Timesheets.Count();
-
-            if (anal > 1)
-            {
-                
-            }   
 
             foreach (var timesheet in destinationDay.Timesheets)
                 Messenger.Default.Send(new ItemChangedMessage<TimesheetEVM>(this, timesheet));
@@ -544,7 +546,7 @@ namespace Great2.ViewModels
                             {
                                 foreach (var day in daysToRefresh)
                                     day.Refresh(db);
-                                }
+                            }
 
                             // update fdls combo
                             if (fdl != null)

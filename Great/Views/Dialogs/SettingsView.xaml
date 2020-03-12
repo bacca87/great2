@@ -55,6 +55,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <GroupBox Grid.Row="0" Header="Regional Settings" HorizontalAlignment="Left" Margin="0,5">
                         <GroupBox.Resources>
@@ -93,7 +94,14 @@
                             <PasswordBox Grid.Row="2" Grid.Column="1" ap:PasswordHelper.BindPassword="true" ap:PasswordHelper.BoundPassword="{Binding EmailPassword, Mode=TwoWay}" IsEnabled="{Binding UseWindowsAuthentication, Converter={StaticResource NegateBoolConverter}}"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Row="2" Header="Advanced" HorizontalAlignment="Left" Margin="0,5">
+                    <GroupBox Grid.Row="2" Header="Options" HorizontalAlignment="Left" Margin="0,5">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <CheckBox Content="Show splash screen." IsChecked="{Binding ShowSplashScreen}"/>
+                            <CheckBox Content="Launch at system startup." IsChecked="{Binding LaunchAtSystemStartup}"/>
+                            <CheckBox Content="Start minimized." IsChecked="{Binding StartMinimized}"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="3" Header="Advanced" HorizontalAlignment="Left" Margin="0,5">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                             <TextBlock Text="Data Directory:" VerticalAlignment="Center"/>
                             <TextBox Margin="5" Text="{Binding DataDirectory}" Width="300"/>
@@ -250,7 +258,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Background="{DynamicResource MahApps.Brushes.Gray10}">
+        <Grid Grid.Row="1" Background="{DynamicResource MahApps.Brushes.AccentBase}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>

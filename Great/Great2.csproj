@@ -564,6 +564,9 @@
     <Resource Include="Images\32\cpu.png" />
     <Resource Include="Images\32\car.png" />
     <Resource Include="Images\24\search.png" />
+    <Resource Include="Images\32\printer.png" />
+    <Resource Include="Images\Logos\Autoupdater.png" />
+    <Resource Include="Images\Logos\Livecharts.gif" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -675,6 +678,9 @@
     <PackageReference Include="Fluent.Ribbon">
       <Version>7.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Ghostscript.NET">
+      <Version>1.2.1</Version>
+    </PackageReference>
     <PackageReference Include="GMap.NET.Windows">
       <Version>1.9.9</Version>
     </PackageReference>
@@ -685,7 +691,7 @@
       <Version>1.0.8</Version>
     </PackageReference>
     <PackageReference Include="itext7">
-      <Version>7.1.9</Version>
+      <Version>7.1.10</Version>
     </PackageReference>
     <PackageReference Include="jQuery">
       <Version>3.4.1</Version>
@@ -699,9 +705,6 @@
     <PackageReference Include="MaterialDesignThemes">
       <Version>3.1.0-ci981</Version>
     </PackageReference>
-    <PackageReference Include="MaterialMessageBox">
-      <Version>1.0.0.11</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Bcl.Build">
       <Version>1.0.21</Version>
     </PackageReference>
@@ -710,6 +713,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Net.Http">
       <Version>2.2.29</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Office.Interop.Excel">
+      <Version>15.0.4795.1000</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Office.Interop.Outlook">
       <Version>15.0.4797.1003</Version>
@@ -728,9 +734,6 @@
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.6.8</Version>
-    </PackageReference>
-    <PackageReference Include="Notifications.Wpf">
-      <Version>0.1.1</Version>
     </PackageReference>
     <PackageReference Include="Portable.BouncyCastle">
       <Version>1.8.5.2</Version>

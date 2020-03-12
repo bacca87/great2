@@ -10,8 +10,8 @@
     Title="GREAT²" 
     Width="1024" 
     Height="768"
-    MinWidth="800"
-    MinHeight="600"      
+    MinWidth="1024"
+    MinHeight="768"      
     BorderThickness="0"
     WindowStartupLocation="CenterScreen" 
     Closing="RibbonWindow_Closing"
@@ -321,6 +321,11 @@
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected FDL to file..." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                    <Fluent:Button Header="Print" Command="{Binding PrintCommand}" CommandParameter="{Binding SelectedFDL}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/printer.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Print" Text="Print the selected FDL." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Virtual">
                     <Fluent:Button Name="AddVirtualFdlButton" Header="Add Virtual FDL" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/cpu.png" Click="AddVirtualFdlButton_Click">
@@ -488,6 +493,11 @@
                     <Fluent:Button Header="Save As" Command="{Binding SaveAsCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/floppy.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Save as" Text="Save the selected EA to file..." />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Print" Command="{Binding PrintCommand}" CommandParameter="{Binding SelectedEA}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/32/printer.png">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Print" Text="Print the selected FDL." />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>

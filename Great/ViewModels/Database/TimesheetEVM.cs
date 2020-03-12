@@ -37,7 +37,7 @@ namespace Great2.ViewModels.Database
             get => _TravelStartTimeAM;
             set
             {
-                Set(ref _TravelStartTimeAM, value);
+                SetAndCheckChanged(ref _TravelStartTimeAM, value);
                 RaisePropertyChanged(nameof(TravelStartTimeAM_t));
                 UpdateTotals();
             }
@@ -49,7 +49,7 @@ namespace Great2.ViewModels.Database
             get => _TravelEndTimeAM;
             set
             {
-                Set(ref _TravelEndTimeAM, value);
+                SetAndCheckChanged(ref _TravelEndTimeAM, value);
                 RaisePropertyChanged(nameof(TravelEndTimeAM_t));
                 UpdateTotals();
             }
@@ -61,7 +61,7 @@ namespace Great2.ViewModels.Database
             get => _TravelStartTimePM;
             set
             {
-                Set(ref _TravelStartTimePM, value);
+                SetAndCheckChanged(ref _TravelStartTimePM, value);
                 RaisePropertyChanged(nameof(TravelStartTimePM_t));
                 UpdateTotals();
             }
@@ -73,7 +73,7 @@ namespace Great2.ViewModels.Database
             get => _TravelEndTimePM;
             set
             {
-                Set(ref _TravelEndTimePM, value);
+                SetAndCheckChanged(ref _TravelEndTimePM, value);
                 RaisePropertyChanged(nameof(TravelEndTimePM_t));
                 UpdateTotals();
             }
@@ -85,7 +85,7 @@ namespace Great2.ViewModels.Database
             get => _WorkStartTimeAM;
             set
             {
-                Set(ref _WorkStartTimeAM, value);
+                SetAndCheckChanged(ref _WorkStartTimeAM, value);
                 RaisePropertyChanged(nameof(WorkStartTimeAM_t));
                 UpdateTotals();
             }
@@ -97,7 +97,7 @@ namespace Great2.ViewModels.Database
             get => _WorkEndTimeAM;
             set
             {
-                Set(ref _WorkEndTimeAM, value);
+                SetAndCheckChanged(ref _WorkEndTimeAM, value);
                 RaisePropertyChanged(nameof(WorkEndTimeAM_t));
                 UpdateTotals();
             }
@@ -109,7 +109,7 @@ namespace Great2.ViewModels.Database
             get => _WorkStartTimePM;
             set
             {
-                Set(ref _WorkStartTimePM, value);
+                SetAndCheckChanged(ref _WorkStartTimePM, value);
                 RaisePropertyChanged(nameof(WorkStartTimePM_t));
                 UpdateTotals();
             }
@@ -121,7 +121,7 @@ namespace Great2.ViewModels.Database
             get => _WorkEndTimePM;
             set
             {
-                Set(ref _WorkEndTimePM, value);
+                SetAndCheckChanged(ref _WorkEndTimePM, value);
                 RaisePropertyChanged(nameof(WorkEndTimePM_t));
                 UpdateTotals();
             }
@@ -412,6 +412,7 @@ namespace Great2.ViewModels.Database
         {
             if (timesheet != null)
                 Auto.Mapper.Map(timesheet, this);
+
             IsChanged = false;
         }
 
@@ -423,6 +424,7 @@ namespace Great2.ViewModels.Database
             db.Timesheets.AddOrUpdate(timesheet);
             db.SaveChanges();
             Id = timesheet.Id;
+            IsChanged = false;
             return true;
         }
 
@@ -437,6 +439,7 @@ namespace Great2.ViewModels.Database
                     db.Timesheets.Remove(timesheet);
                     db.SaveChanges();
                     Id = 0;
+                    IsChanged = false;
                 }
 
                 return true;
@@ -447,10 +450,14 @@ namespace Great2.ViewModels.Database
         public override bool Refresh(DBArchive db)
         {
             var timesheet = db.Timesheets.SingleOrDefault(t => t.Id == Id);
-            db.Entry(timesheet).Reference(p => p.FDL1).Load();
-
+            
             if (timesheet != null)
-                return Auto.Mapper.Map(timesheet, this) != null;
+            {
+                db.Entry(timesheet).Reference(p => p.FDL1).Load();
+                Auto.Mapper.Map(timesheet, this);
+                IsChanged = false;
+                return true;
+            }
 
             return false;
         }
@@ -462,5 +469,32 @@ namespace Great2.ViewModels.Database
             RaisePropertyChanged(nameof(TravelTime));
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is TimesheetEVM)
+            {
+                TimesheetEVM exp = obj as TimesheetEVM;
+                return Id == exp.Id &&
+                       FDL == exp.FDL &&
+                       TravelStartTimeAM == exp.TravelStartTimeAM &&
+                       TravelEndTimeAM == exp.TravelEndTimeAM &&
+                       TravelStartTimePM == exp.TravelStartTimePM &&
+                       TravelEndTimePM == exp.TravelEndTimePM &&
+                       WorkStartTimeAM == exp.WorkStartTimeAM &&
+                       WorkEndTimeAM == exp.WorkEndTimeAM &&
+                       WorkStartTimePM == exp.WorkStartTimePM &&
+                       WorkEndTimePM == exp.WorkEndTimePM &&
+                       Notes == exp.Notes;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            //Override needed only for dictionaries 
+            //https://www.codeproject.com/Tips/1255596/Overriding-Equals-GetHashCode-Laconically-in-CShar
+
+            return base.GetHashCode();
+        }
     }
 }

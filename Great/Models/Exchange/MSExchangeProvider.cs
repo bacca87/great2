@@ -286,7 +286,7 @@ namespace Great2.Models
                     SearchFilter.IsEqualTo f1 = new SearchFilter.IsEqualTo(EmailMessageSchema.From, new EmailAddress(ApplicationSettings.EmailRecipients.FDLSystem));
                     // In order to import FDL and EA files, the only way is to work around the "from" address check.
                     // To do this we check if in the recipient fdl_chk is present and, at a later time, we will check if the sender is the FDL System
-                    SearchFilter.ContainsSubstring f2 = new SearchFilter.ContainsSubstring(ItemSchema.DisplayTo, "fdl_chk", ContainmentMode.Substring, ComparisonMode.IgnoreCase);
+                    SearchFilter.ContainsSubstring f2 = new SearchFilter.ContainsSubstring(ItemSchema.DisplayTo, ApplicationSettings.EmailRecipients.FDL_CHK_Display, ContainmentMode.Substring, ComparisonMode.IgnoreCase);
                     SearchFilter.SearchFilterCollection compoundFilter = new SearchFilter.SearchFilterCollection(LogicalOperator.Or, f1, f2);
 
                     foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), compoundFilter, folderView, itemView))
@@ -331,7 +331,8 @@ namespace Great2.Models
                 switch (e.EventType)
                 {
                     case EventType.NewMail:
-                        NotifyNewMessage(message);
+                        if(message.From.Address == ApplicationSettings.EmailRecipients.FDLSystem || message.DisplayTo == ApplicationSettings.EmailRecipients.FDL_CHK_Display)
+                            NotifyNewMessage(message);
                         break;
 
                     default:
