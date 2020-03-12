@@ -6,6 +6,7 @@ namespace Great2.Models.DTO
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public string CompanyName { get; set; }
         public string Address { get; set; }
         public bool OverrideAddressOnFDL { get; set; }
         public long TransferType { get; set; }

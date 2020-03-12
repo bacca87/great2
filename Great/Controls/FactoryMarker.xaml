@@ -26,19 +26,34 @@
                 <ImageBrush x:Name="MarkerImage" Stretch="None"/>
             </Rectangle.Fill>
             <Rectangle.ToolTip>
-                <StackPanel Background="Honeydew" Height="Auto" Width="200">
-                    <StackPanel Background="LightBlue" Height="30" Width="200" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                        <Image VerticalAlignment="Top"  Width="30" Height="30" Source="pack://application:,,,/Images/24/map-map-marker.png" Name="image1" />
-                        <TextBlock FontFamily="Aharoni" FontSize="24" FontWeight="Bold" Foreground="Black" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" HorizontalAlignment="Right" Width="143">
-                            <Run FontFamily="Andalus" FontSize="18" FontWeight="Normal" Text="{Binding Name}"/>
-                        </TextBlock>
-                    </StackPanel>
-                    <StackPanel Width="200" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                        <TextBlock TextWrapping="Wrap" Foreground="#FFF9F4F4" Background="{x:Null}" VerticalAlignment="Top" MaxWidth="200">
-                            <Run FontFamily="Verdana" FontSize="11" FontWeight="Normal" Foreground="#FF151514" Text="{Binding Address}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>                        
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource MahApps.Brushes.Accent}"/>
+                    <Image Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/Images/24/map-marker-red.png" Stretch="None" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1"
+                               Margin="0,0,5,0"
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               TextWrapping="Wrap" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Left"
+                               Text="{Binding Name}"/>
+
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" 
+                               Margin="3"
+                               TextWrapping="Wrap" 
+                               Background="{DynamicResource MahApps.Brushes.Gray10}" 
+                               VerticalAlignment="Top" 
+                               MaxWidth="300"
+                               Text="{Binding Address}" />                    
+                </Grid>
             </Rectangle.ToolTip>
         </Rectangle>
     </Grid>

@@ -3,9 +3,11 @@ using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
 using Great2.Utils;
+using Great2.Utils.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Migrations;
+using System.IO;
 using System.Linq;
 
 namespace Great2.ViewModels.Database
@@ -191,6 +193,13 @@ namespace Great2.ViewModels.Database
             }
         }
 
+        private DateTime?[] _DaysOfWeek;
+        public DateTime?[] DaysOfWeek
+        {
+            get => _DaysOfWeek;
+            set => Set(ref _DaysOfWeek, value);
+        }
+
         public double? MondayAmount => Expenses?.Sum(x => x.MondayAmount);
         public double? TuesdayAmount => Expenses?.Sum(x => x.TuesdayAmount);
         public double? WednesdayAmount => Expenses?.Sum(x => x.WednesdayAmount);
@@ -206,6 +215,8 @@ namespace Great2.ViewModels.Database
             get => _InsertExpenseEnabled;
             set => Set(ref _InsertExpenseEnabled, value);
         }
+
+        public bool IsExcel => Path.GetExtension(FileName) == ".xlsx";
         #endregion;
 
         #region Display Properties
@@ -224,7 +235,10 @@ namespace Great2.ViewModels.Database
             Expenses.ItemPropertyChanged += (sender, e) => UpdateTotals();
 
             if (ea != null)
+            {
                 Auto.Mapper.Map(ea, this);
+                InitDaysOfWeek();
+            }
 
             IsChanged = false;
         }
@@ -245,27 +259,38 @@ namespace Great2.ViewModels.Database
             RaisePropertyChanged(nameof(DeductionAmount_Display));
         }
 
-        private ExpenseEVM CreateExpense(int ExpenseTypeId)
+        private ExpenseEVM CreateExpense(int ExpenseTypeId, DBArchive db = null)
         {
             ExpenseEVM expense = new ExpenseEVM() { ExpenseAccount = Id, Type = ExpenseTypeId };
-            expense.Save();
-            Expenses.Add(expense);
 
-            using (DBArchive db = new DBArchive())
-                expense.ExpenseType = new ExpenseTypeEVM(db.ExpenseTypes.SingleOrDefault(t => t.Id == ExpenseTypeId));
+            if(db != null)
+            {
+                expense.Save(db);
+                expense.Refresh(db);
+            }
+            else
+            {
+                using (DBArchive db2 = new DBArchive())
+                {
+                    expense.Save(db2);
+                    expense.Refresh(db2);
+                }   
+            }
+            
+            Expenses.Add(expense);
 
             return expense;
         }
 
         public void UpdateDiaria(TimesheetEVM timesheet, bool remove, DBArchive db = null)
         {
-            if (timesheet == null || !FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
+            if (!UserSettings.Options.AutomaticAllowance || timesheet == null || !FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
                 return;
 
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.DiariaType).FirstOrDefault();
 
             if (expense == null)
-                expense = CreateExpense(ApplicationSettings.ExpenseAccount.DiariaType);
+                expense = CreateExpense(IsExcel ? ApplicationSettings.ExpenseAccount.DailyAllowanceType : ApplicationSettings.ExpenseAccount.DiariaType);
 
             double? Diaria = remove ? (double?)null : ApplicationSettings.ExpenseAccount.DiariaValue;
 
@@ -310,13 +335,13 @@ namespace Great2.ViewModels.Database
 
         public void UpdatePocketMoney(TimesheetEVM timesheet, bool remove, DBArchive db = null)
         {
-            if (timesheet == null || FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
+            if (!UserSettings.Options.AutomaticAllowance || timesheet == null || FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
                 return;
 
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.PocketMoneyType).FirstOrDefault();
 
             if (expense == null)
-                expense = CreateExpense(ApplicationSettings.ExpenseAccount.PocketMoneyType);
+                expense = CreateExpense(IsExcel ? ApplicationSettings.ExpenseAccount.PocketMoney1Type : ApplicationSettings.ExpenseAccount.PocketMoneyType);
 
             double? PocketMoney = remove ? (double?)null : ApplicationSettings.ExpenseAccount.PocketMoneyValue;
 
@@ -355,7 +380,7 @@ namespace Great2.ViewModels.Database
 
         public void UpdateDiariaAndPocketMoney(ObservableCollection<TimesheetEVM> timesheets)
         {
-            if (timesheets == null)
+            if (!UserSettings.Options.AutomaticAllowance || timesheets == null)
                 return;
 
             foreach(var timesheet in timesheets)
@@ -365,45 +390,91 @@ namespace Great2.ViewModels.Database
             }
         }
 
-        public void InitExpenses()
+        public void InitDaysOfWeek()
         {
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType);
+            DateTime StartDay = DateTime.Now.FromUnixTimestamp(FDL1.StartDay);
+            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
+            var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType);
+            DateTime?[] tmpDays = new DateTime?[7];
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType);
+            for (int i = 0; i < 7; i++)
+                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType);
+            DaysOfWeek = tmpDays;
+        }
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType);
+        public void InitExpenses(DBArchive db = null)
+        {
+            if(IsExcel)
+            {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.Taxi1Type))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.Taxi1Type, db);
 
-            if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
-                CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType);
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TollType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.TollType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParkingType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ParkingType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBaggageType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBaggageType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.FuelType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.FuelType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CurrencyTransactionFeesType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CurrencyTransactionFeesType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelType, db);
+            }
+            else
+            {
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.TaxiType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.TaxiType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.PedaggiType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.PedaggiType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ParcheggioType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ParcheggioType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.ExtraBagaglioType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.ExtraBagaglioType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteEsteroType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteEsteroType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CarburanteItaliaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CarburanteItaliaType, db);
+
+                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.CommissioniValutaType))
+                    CreateExpense(ApplicationSettings.ExpenseAccount.CommissioniValutaType, db);
+            }
 
             IsChanged = false;
         }
 
-        public void InitExpensesByCountry()
+        public void InitExpensesByCountry(DBArchive db = null)
         {
             if (FDL1 == null || FDL1.Factory1 == null || FDL1.Factory1.CountryCode == null || FDL1.Factory1.CountryCode == string.Empty)
                 return;
 
             string CountryCode = FDL1.Factory1.CountryCode;
 
-            if (CountryCode == "IT")
+            if (!IsExcel)
             {
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType);
-            }
-            else
-            {
-                if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
-                    CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType);
+                if (CountryCode == "IT")
+                {
+                    if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelItaliaType))
+                        CreateExpense(ApplicationSettings.ExpenseAccount.HotelItaliaType, db);
+                }
+                else
+                {
+                    if (!Expenses.Any(e => e.Type == ApplicationSettings.ExpenseAccount.HotelEsteroType))
+                        CreateExpense(ApplicationSettings.ExpenseAccount.HotelEsteroType, db);
+                }
             }
 
             IsChanged = false;
@@ -429,8 +500,12 @@ namespace Great2.ViewModels.Database
         public override bool Refresh(DBArchive db)
         {
             var exp = db.ExpenseAccounts.SingleOrDefault(x => x.Id == Id);
+
             if (exp != null)
             {
+                db.Entry(exp).Reference(p => p.FDL1).Load();
+                db.Entry(exp).Reference(p => p.Currency1).Load();
+
                 Auto.Mapper.Map(exp, this);
                 IsChanged = false;
                 return true;

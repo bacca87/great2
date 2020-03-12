@@ -6,6 +6,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:ap="clr-namespace:Great2.Utils.AttachedProperties"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
     Title="GREAT²" 
     Width="1024" 
     Height="768"
@@ -43,7 +44,7 @@
                         <Fluent:SeparatorTabItem />
                         <Fluent:Button Name="settingsButton" Header="Settings" Click="SettingsButton_Click"/>
                         <Fluent:SeparatorTabItem />
-                        <Fluent:Button Name="exitButton" Header="Exit" Click="exitButton_Click"/>
+                        <Fluent:Button Name="exitButton" Header="Quit" Click="exitButton_Click"/>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
@@ -251,7 +252,7 @@
                                 </Fluent:GalleryItem.ToolTip>
                                 <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
                             </Fluent:GalleryItem>
-                            <Fluent:GalleryItem Tag="Message:">
+                            <Fluent:GalleryItem Tag="Message:" Command="{Binding NewMessageCommand}" CommandParameter="{Binding SelectedFDL}">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected FDL by email." />
                                 </Fluent:GalleryItem.ToolTip>
@@ -421,13 +422,13 @@
                             <Fluent:ScreenTip Title="Send EA by Email" Text="Send the selected expense account by email." />
                         </Fluent:DropDownButton.ToolTip>
                         <Fluent:Gallery GroupBy="Tag" Orientation="Horizontal" ItemWidth="32" ItemHeight="32">
-                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedEA}" Tag="Message:">
+                            <Fluent:GalleryItem Command="{Binding SendToSAPCommand}" CommandParameter="{Binding SelectedEA}" Tag="Message:" IsEnabled="{Binding SelectedEA.IsExcel, Converter={StaticResource NegateBoolConverter}}">
                                 <Fluent:GalleryItem.ToolTip>
-                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system." />
+                                    <Fluent:ScreenTip Title="Send to SAP" Text="Send the selected expense account to the SAP system."/>
                                 </Fluent:GalleryItem.ToolTip>
                                 <Image Source="pack://application:,,,/Great2;component/Images/24/cloud-up.png" Width="24" />
                             </Fluent:GalleryItem>
-                            <Fluent:GalleryItem Tag="Message:">
+                            <Fluent:GalleryItem Tag="Message:" Command="{Binding NewMessageCommand}" CommandParameter="{Binding SelectedEA}">
                                 <Fluent:GalleryItem.ToolTip>
                                     <Fluent:ScreenTip Title="New Message" Text="Send the selected expense account by email." />
                                 </Fluent:GalleryItem.ToolTip>
@@ -525,6 +526,41 @@
                             <Fluent:ScreenTip Title="Delete Factory" Text="Delete the selected factory" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Search">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Fluent:TextBox Grid.Column="0" Name="searchBox" Header="Address:" Width="400" IsEnabled="{Binding IsInputEnabled}" VerticalAlignment="Center" Margin="5">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=searchBox}" Key="Return" />
+                            </TextBox.InputBindings>
+                        </Fluent:TextBox>
+                        <Fluent:Button Grid.Column="1" Header="Search" Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=searchBox}" IsEnabled="{Binding IsInputEnabled}" SizeDefinition="Large" LargeIcon="pack://application:,,,/Great2;component/Images/24/search.png" >
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Search" Text="Search the address on map." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Grid>                    
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="View" VerticalContentAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Margin="5">
+                            <TextBlock Text="Zoom Level:" Margin="0,0,0,3"/>
+                            <Slider Width="100" SmallChange="1" IsSnapToTickEnabled="True" Value="{Binding CurrentZoomLevel}" Minimum="{Binding MinZoomLevel}" Maximum="{Binding MaxZoomLevel}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"/>
+                        </StackPanel>
+                        <Fluent:Button Grid.Column="1" Header="Zoom All" Command="{Binding ZoomAllCommand}" LargeIcon="pack://application:,,,/Great2;component/Images/24/map-map-marker.png">
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Zoom All Markers" Text="Zoom and center all the markers on the map." />
+                            </Fluent:Button.ToolTip>
+                        </Fluent:Button>
+                    </Grid>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="STATISTICS" 
@@ -710,5 +746,19 @@
                 <TextBlock Margin="5,0,0,0" Text="{Binding ExchangeStatus, Converter={StaticResource StringToUpperCaseConverter}, StringFormat={}EXCHANGE: {0}}"/>
             </Fluent:StatusBarItem>
         </Fluent:StatusBar>
+        <tb:TaskbarIcon x:Name="myNotifyIcon"
+            Visibility="Visible"
+            IconSource="/Great2.ico"
+            ToolTipText="Great2"
+            MenuActivation="LeftOrRightClick"
+            PopupActivation="DoubleClick"
+            TrayMouseDoubleClick="MyNotifyIcon_TrayMouseDoubleClick">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu Background="LightCoral">
+                    <MenuItem Name="OpenMenuItem" Header="Open Great2" Click="MyNotifyIcon_TrayMouseDoubleClick" />
+                    <MenuItem Name="ExitMenuItem" Header="Quit" Click="exitButton_Click" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Grid>
 </Fluent:RibbonWindow>

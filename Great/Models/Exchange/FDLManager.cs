@@ -1,7 +1,9 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using DocumentFormat.OpenXml.Packaging;
+using GalaSoft.MvvmLight.Messaging;
 using Great2.Models.Database;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
+using Great2.Utils;
 using Great2.Utils.Extensions;
 using Great2.Utils.Messages;
 using Great2.ViewModels.Database;
@@ -64,7 +66,7 @@ namespace Great2.Models
                         else if (e.Message.DataInfo is ExpenseAccountEVM)
                         {
                             ExpenseAccountEVM ea = e.Message.DataInfo as ExpenseAccountEVM;
-                            ea.EStatus = EFDLStatus.Waiting;
+                            ea.EStatus = ea.IsExcel ? EFDLStatus.Accepted : EFDLStatus.Waiting;
                             ea.NotifyAsNew = false;
                             ea.LastSAPSendTimestamp = DateTime.Now.ToUnixTimestamp();
                             ea.Save();
@@ -1019,39 +1021,104 @@ namespace Great2.Models
             return fields;
         }
 
-        private void Compile(IFDLFile file, string destFileName)
+        private Dictionary<string, object> GetExcelFields(ExpenseAccountEVM ea)
         {
-            PdfDocument pdfDoc = null;
+            Dictionary<string, object> fields = new Dictionary<string, object>();
 
+            var expenses = ea.Expenses.ToList();
+
+            for (int i = 0; i < ApplicationSettings.ExpenseAccount.FieldNames.xls_ExpenseMatrix.Count(); i++)
+            {
+                var entry = ApplicationSettings.ExpenseAccount.FieldNames.xls_ExpenseMatrix[i];
+
+                ExpenseEVM expense = null;
+
+                if (i < expenses.Count())
+                    expense = expenses[i];
+
+                if (expense != null)
+                {
+                    fields.Add(entry["Type"],  expense.ExpenseType.Description);
+
+                    if (expense.MondayAmount.HasValue) fields.Add(entry["Mon_Amount"], expenses[i].MondayAmount.Value);
+                    if (expense.TuesdayAmount.HasValue) fields.Add(entry["Tue_Amount"], expenses[i].TuesdayAmount.Value);
+                    if (expense.WednesdayAmount.HasValue) fields.Add(entry["Wed_Amount"], expenses[i].WednesdayAmount.Value);
+                    if (expense.ThursdayAmount.HasValue) fields.Add(entry["Thu_Amount"], expenses[i].ThursdayAmount.Value);
+                    if (expense.FridayAmount.HasValue) fields.Add(entry["Fri_Amount"], expenses[i].FridayAmount.Value);
+                    if (expense.SaturdayAmount.HasValue) fields.Add(entry["Sat_Amount"], expenses[i].SaturdayAmount.Value);
+                    if (expense.SundayAmount.HasValue) fields.Add(entry["Sun_Amount"], expenses[i].SundayAmount.Value);
+                }
+            }
+
+            if(ea.DaysOfWeek[0].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Mon_Date, ea.DaysOfWeek[0].Value);
+            if(ea.DaysOfWeek[1].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Tue_Date, ea.DaysOfWeek[1].Value);
+            if(ea.DaysOfWeek[2].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Wed_Date, ea.DaysOfWeek[2].Value);
+            if(ea.DaysOfWeek[3].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Thu_Date, ea.DaysOfWeek[3].Value);
+            if(ea.DaysOfWeek[4].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Fri_Date, ea.DaysOfWeek[4].Value);
+            if(ea.DaysOfWeek[5].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Sat_Date, ea.DaysOfWeek[5].Value);
+            if(ea.DaysOfWeek[6].HasValue) fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Sun_Date, ea.DaysOfWeek[6].Value);
+
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Technician, UserSettings.Email.CachedDisplayName);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_CDC, ea.CdC);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_DateFrom, ea.DaysOfWeek.Where(d => d.HasValue).Select(d => d.Value).FirstOrDefault());
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_DateTo, ea.DaysOfWeek.Where(d => d.HasValue).Select(d => d.Value).LastOrDefault());
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Customer, ea.FDL1.Factory1.CompanyName);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Address, ea.FDL1.Factory1.Address);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_FDLNumber, ea.FDL);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Order, ea.FDL1.Order);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Currency, ea.Currency);
+            fields.Add(ApplicationSettings.ExpenseAccount.FieldNames.xls_Notes, ea.Notes ?? string.Empty);
+
+            return fields;
+        }
+
+        public void Compile(IFDLFile file, string destFileName)
+        {
             try
             {
-                pdfDoc = new PdfDocument(new PdfReader(file.FilePath), new PdfWriter(destFileName));
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-                IDictionary<string, PdfFormField> fields = form.GetFormFields();
-
-                if (file is FDLEVM)
+                switch(Path.GetExtension(file.FileName).ToLower())
                 {
-                    // this is an hack for display fixed fields on saved read only FDL
-                    foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
-                    {
-                        if (fields.ContainsKey(entry.Key))
-                            fields[entry.Key].SetValue(entry.Value);
-                    }
-                }
+                    case ".pdf":
+                        using (PdfDocument pdfDoc = new PdfDocument(new PdfReader(file.FilePath), new PdfWriter(destFileName)))
+                        {
+                            PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                            IDictionary<string, PdfFormField> fields = form.GetFormFields();
 
-                foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
-                {
-                    if (fields.ContainsKey(entry.Key))
-                        fields[entry.Key].SetValue(entry.Value);
+                            if (file is FDLEVM)
+                            {
+                                // this is an hack for display fixed fields on saved read only FDL
+                                foreach (KeyValuePair<string, string> entry in GetXFAFormFields(form.GetXfaForm()))
+                                {
+                                    if (fields.ContainsKey(entry.Key))
+                                        fields[entry.Key].SetValue(entry.Value);
+                                }
+                            }
+
+                            foreach (KeyValuePair<string, string> entry in GetAcroFormFields(file, true))
+                            {
+                                if (fields.ContainsKey(entry.Key))
+                                    fields[entry.Key].SetValue(entry.Value);
+                            }
+                        }
+                        break;
+
+                    case ".xlsx":
+                        if(file is ExpenseAccountEVM)
+                        {
+                            using (SpreadsheetDocument doc = SpreadsheetDocument.Open(destFileName, true))
+                            {
+                                foreach (KeyValuePair<string, object> entry in GetExcelFields(file as ExpenseAccountEVM))
+                                {
+                                    ExcelHelper.SetCellValue(doc, "Spese", entry.Key, entry.Value);
+                                }
+                            }
+                        }
+                        break;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Debugger.Break();
-            }
-            finally
-            {
-                pdfDoc?.Close();
             }
         }
 
@@ -1098,7 +1165,7 @@ namespace Great2.Models
             xmlDoc.Save(XFDFFileName);
         }
 
-        public bool SendToSAP(IFDLFile file)
+        public bool SendToSAP(IFDLFile file, string[] attachments = null)
         {
             if (file == null)
                 return false;
@@ -1133,6 +1200,15 @@ namespace Great2.Models
 
             message.Attachments.Add(file.FilePath);
 
+            if(attachments != null)
+            {
+                foreach(string attachment in attachments)
+                {
+                    if(!message.Attachments.Contains(attachment))
+                        message.Attachments.Add(attachment);
+                }
+            }
+
             return exchange.SendEmail(message);
         }
 
@@ -1159,6 +1235,36 @@ namespace Great2.Models
             message.Attachments.Add(file.FilePath);
 
             return exchange.SendEmail(message);
+        }
+
+        public bool NewOutlookMessage(IFDLFile file)
+        {
+            if (file == null)
+                return false;
+
+            EmailMessageDTO message = new EmailMessageDTO();
+            message.Type = EEmailMessageType.Message;
+
+            if (file is FDLEVM)
+            {
+                FDLEVM fdl = file as FDLEVM;
+                message.Subject = $"FDL {fdl.Id} - Factory {(fdl.Factory1 != null ? fdl.Factory1.Name : "Unknown")} - Order {fdl.Order}";
+            }
+            else if (file is ExpenseAccountEVM)
+            {
+                ExpenseAccountEVM ea = file as ExpenseAccountEVM;
+                message.Subject = $"Expense Account {ea.FDL} - Factory {(ea.FDL1.Factory1 != null ? ea.FDL1.Factory1.Name : "Unknown")} - Order {ea.FDL1.Order}";
+
+                foreach (string recipient in UserSettings.Email.Recipients.EANewMessageDefaultRecipients)
+                {
+                    if (!message.ToRecipients.Contains(recipient))
+                        message.ToRecipients.Add(recipient);
+                }
+            }
+
+            message.Attachments.Add(file.FilePath);
+
+            return OutlookHelper.NewMessage(message);
         }
 
         public bool SendCancellationRequest(FDLEVM fdl)
@@ -1204,6 +1310,41 @@ namespace Great2.Models
             FilePath = Path.GetDirectoryName(file.FilePath) + "\\" + Path.GetFileNameWithoutExtension(file.FilePath) + ".XFDF";
             CompileXFDF(file, file.FilePath, FilePath);
             return true;
+        }
+
+        public ExpenseAccountEVM CreateExcelEA(FDLEVM fdl)
+        {
+            if (!UserSettings.Advanced.ExcelExpenseAccount)
+                return null;
+
+            ExpenseAccountEVM ea = new ExpenseAccountEVM();
+            ea.FDL = fdl.Id;
+            ea.CdC = UserSettings.Advanced.CDC;
+            ea.NotifyAsNew = true;
+            ea.Currency = UserSettings.Localization.DefaultCurrency;
+            ea.FileName = Path.GetFileNameWithoutExtension(fdl.FileName) + " R.xlsx";
+
+            using (DBArchive db = new DBArchive())
+            {
+                ExpenseAccount tmpEA = db.ExpenseAccounts.SingleOrDefault(x => x.FileName == ea.FileName);
+
+                if (tmpEA != null)
+                    ea = new ExpenseAccountEVM(tmpEA);
+                else
+                {
+                    ea.Save(db);
+                    ea.Refresh(db);
+                    ea.InitDaysOfWeek();
+                    ea.InitExpenses(db);
+                    ea.InitExpensesByCountry(db);
+                }
+            }
+
+            File.WriteAllBytes(ea.FilePath, Properties.Resources.ExpenseAccount);
+
+            Messenger.Default.Send(new NewItemMessage<ExpenseAccountEVM>(this, ea));
+
+            return ea;
         }
 
         private void ProcessMessage(EmailMessage message)
@@ -1325,7 +1466,12 @@ namespace Great2.Models
                             switch (GetFileType(attachment.Name))
                             {
                                 case EFileType.FDL:
-                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name))
+                                    bool FDLexistOnDb = false;
+
+                                    using (DBArchive db = new DBArchive())
+                                        FDLexistOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
+
+                                    if (!File.Exists(ApplicationSettings.Directories.FDL + fileAttachment.Name) || !FDLexistOnDb)
                                     {
                                         bool exist = false;
 
@@ -1346,11 +1492,18 @@ namespace Great2.Models
                                                 File.Delete(ApplicationSettings.Directories.FDL + fileAttachment.Name);
                                                 deleteMessage = true;
                                             }
+                                            else if (UserSettings.Advanced.ExcelExpenseAccount)
+                                                CreateExcelEA(fdl);
                                         }
                                     }
                                     break;
                                 case EFileType.ExpenseAccount:
-                                    if (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name))
+                                    bool EAexistOnDb = false;
+
+                                    using (DBArchive db = new DBArchive())
+                                        EAexistOnDb = db.ExpenseAccounts.Any(ea => ea.FileName == fileAttachment.Name);
+
+                                    if (!UserSettings.Advanced.ExcelExpenseAccount && (!File.Exists(ApplicationSettings.Directories.ExpenseAccount + fileAttachment.Name) || !EAexistOnDb))
                                     {
                                         bool exist = false;
 
@@ -1372,7 +1525,13 @@ namespace Great2.Models
                                                 deleteMessage = true;
                                             }
                                             else
-                                                ea.InitExpenses();
+                                            {
+                                                using (DBArchive db = new DBArchive())
+                                                {
+                                                    ea.InitExpenses(db);
+                                                    ea.InitExpensesByCountry(db);
+                                                }
+                                            }
                                         }
                                     }
                                     break;

@@ -50,18 +50,7 @@
                 </Style>
             </Gmap:GMapControl.Resources>
         </Gmap:GMapControl>
-        <WrapPanel Grid.Row="0" Margin="10" Orientation="Horizontal">
-            <TextBox Name="searchEntryTextBox" Margin="0,0,10,0" Width="500" FontSize="15" Padding="3" KeyUp="searchEntryTextBox_KeyUp" />
-            <Button Name="goButton" Click="goButton_Click">Go</Button>
-        </WrapPanel>
-        <Button Name="zoomOutButton" Grid.Row="0" Margin="10" Width="Auto" HorizontalAlignment="Right" VerticalAlignment="Top" Click="zoomOutButton_Click" ToolTip="Zoom and center all the markers.">
-            <Image Source="pack://application:,,,/Images/24/map-map-marker.png" Stretch="None" />
-        </Button>
-        <WrapPanel Grid.Row="0" Margin="10" Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <Slider Name="zoomSlider" Orientation="Vertical" Height="100" ToolTip="Zoom level" ValueChanged="zoomSlider_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" HorizontalAlignment="Right"/>
-            <Label Name="zoomLabel" Content="5x" />
-        </WrapPanel>
-
+        
         <GridSplitter Name="splitter" Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Cursor="SizeNS"/>
 
         <Grid Grid.Row="2">

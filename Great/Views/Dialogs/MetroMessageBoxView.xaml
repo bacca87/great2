@@ -11,14 +11,12 @@
     ShowCloseButton="False"
     VerticalAlignment="Center"
     ResizeMode="NoResize"
-
     WindowStyle="None"
     xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     WindowStartupLocation="CenterScreen"
     Width="600"
     Height="250">
-
     <Grid Name="MainContentControl" x:FieldModifier="public">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -27,7 +25,7 @@
         </Grid.RowDefinitions>
         <Image Visibility="Visible" x:Name="IconImage"  
             Grid.Row="1" Grid.Column="0"
-               Margin="10,10,10,60"
+            Margin="10,10,10,60"
             Stretch="Uniform"
             MaxHeight="40"
             VerticalAlignment="Center"

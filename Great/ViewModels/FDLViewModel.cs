@@ -74,6 +74,7 @@ namespace Great2.ViewModels
                     IsInputEnabled = true;
 
                     SendToSAPCommand.RaiseCanExecuteChanged();
+                    NewMessageCommand.RaiseCanExecuteChanged();
                     CompileCommand.RaiseCanExecuteChanged();
                     SendByEmailCommand.RaiseCanExecuteChanged();
                     OpenCommand.RaiseCanExecuteChanged();
@@ -145,6 +146,7 @@ namespace Great2.ViewModels
         public RelayCommand<FDLEVM> SaveCommand { get; set; }
 
         public RelayCommand<FDLEVM> SendToSAPCommand { get; set; }
+        public RelayCommand<FDLEVM> NewMessageCommand { get; set; }
         public RelayCommand<FDLEVM> CompileCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<FDLEVM> SaveAsCommand { get; set; }
@@ -176,6 +178,7 @@ namespace Great2.ViewModels
             SaveCommand = new RelayCommand<FDLEVM>(SaveFDL, (FDLEVM fdl) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<FDLEVM>(SendToSAP, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            NewMessageCommand = new RelayCommand<FDLEVM>(NewMessage, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             CompileCommand = new RelayCommand<FDLEVM>(Compile, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             SendByEmailCommand = new RelayCommand<string>(SendByEmail, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             SaveAsCommand = new RelayCommand<FDLEVM>(SaveAs, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
@@ -373,7 +376,7 @@ namespace Great2.ViewModels
                 return;
             }
 
-            if (fdl.EStatus == EFDLStatus.Waiting &&
+            if ((fdl.EStatus == EFDLStatus.Waiting || fdl.EStatus == EFDLStatus.Accepted) &&
                 MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
             
@@ -437,6 +440,20 @@ namespace Great2.ViewModels
                 UserSettings.Email.Recipients.MRU = collection;
 
                 _fdlManager.SendTo(address, SelectedFDL);
+            }
+        }
+
+        public void NewMessage(FDLEVM fdl)
+        {
+            if (!SelectedFDL.IsCompiled)
+            {
+                MetroMessageBox.Show("The selected FDL is not compiled! Compile the FDL before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            using (new WaitCursor())
+            {
+                _fdlManager.NewOutlookMessage(fdl);
             }
         }
 

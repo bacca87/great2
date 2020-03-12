@@ -389,5 +389,64 @@ namespace Great2.Properties {
                 this["Currency"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExcelExpenseAccount {
+            get {
+                return ((bool)(this["ExcelExpenseAccount"]));
+            }
+            set {
+                this["ExcelExpenseAccount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CDC {
+            get {
+                return ((int)(this["CDC"]));
+            }
+            set {
+                this["CDC"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CachedDisplayName {
+            get {
+                return ((string)(this["CachedDisplayName"]));
+            }
+            set {
+                this["CachedDisplayName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutomaticAllowance {
+            get {
+                return ((bool)(this["AutomaticAllowance"]));
+            }
+            set {
+                this["AutomaticAllowance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection EANewMessageDefaultRecipients {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["EANewMessageDefaultRecipients"]));
+            }
+            set {
+                this["EANewMessageDefaultRecipients"] = value;
+            }
+        }
     }
 }

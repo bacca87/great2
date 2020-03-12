@@ -120,8 +120,8 @@
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
                         <StackPanel>
-                            <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}"/>
-                            <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}"/>
+                            <CheckBox Content="Add automatically new factories." IsChecked="{Binding AutoAddFactories}" Margin="0,5,0,0"/>
+                            <CheckBox Content="Auto assign factories to the new FDLs." IsChecked="{Binding AutoAssignFactories}" Margin="0,5,0,0"/>
                         </StackPanel>
                     </GroupBox>
                 </Grid>
@@ -132,10 +132,10 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <GroupBox Header="Defaults" Margin="0,5">
+                    <GroupBox Header="Options" Margin="0,5">
                         <StackPanel Grid.Row="0">
                             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock Text="Currency:" VerticalAlignment="Center" Margin="0,0,5,0"/>                                
+                                <TextBlock Text="Default Currency:" VerticalAlignment="Center" Margin="0,0,5,0"/>                                
                                 <ComboBox Grid.Column="1" Grid.Row="0" MinWidth="150" VerticalAlignment="Center"     
                                     ItemsSource="{Binding Currencies}"
                                     SelectedValue="{Binding DefaultCurrency, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
@@ -145,13 +145,22 @@
                                     IsEditable="True"
                                     Width="350"/>
                             </StackPanel>
+                            <CheckBox Content="Automatic daily allowance and pocket money" Margin="0,5" IsChecked="{Binding AutomaticAllowance}"/>
                         </StackPanel>
                     </GroupBox>
-                    <!--<GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
-                        <StackPanel>
-                            
+                    <GroupBox Grid.Row="1" Header="Advanced" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
+                        <StackPanel Margin="0.5">
+                            <CheckBox Content="Enable excel expense accounts" IsChecked="{Binding ExcelExpenseAccount}"/>
+                            <StackPanel Margin="0,5" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center">CDC:</TextBlock>
+                                <mah:NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding CDC}" IsEnabled="{Binding ExcelExpenseAccount}" NumericInputMode="Numbers" HideUpDownButtons="True" Minimum="0" Width="100" Margin="2"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,5" Orientation="Vertical">
+                                <TextBlock Text="Default email recipients for EA (separated by &quot;;&quot;): "/>
+                                <TextBox Text="{Binding EANewMessageDefaultRecipients, UpdateSourceTrigger=LostFocus}" IsEnabled="{Binding ExcelExpenseAccount}"/>
+                            </StackPanel>
                         </StackPanel>
-                    </GroupBox>-->
+                    </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Interface">

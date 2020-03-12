@@ -211,6 +211,13 @@ namespace Great2.ViewModels
             set => Set(ref _NewOrderDefaultRecipients, value);
         }
 
+        public string _EANewMessageDefaultRecipients;
+        public string EANewMessageDefaultRecipients
+        {
+            get => _EANewMessageDefaultRecipients;
+            set => Set(ref _EANewMessageDefaultRecipients, value);
+        }
+
         public string _FDLCancelRequestRecipients;
         public string FDLCancelRequestRecipients
         {
@@ -241,6 +248,27 @@ namespace Great2.ViewModels
         {
             get => _DefaultCurrency;
             set => Set(ref _DefaultCurrency, value);
+        }
+
+        private bool _excelExpenseAccount;
+        public bool ExcelExpenseAccount
+        {
+            get => _excelExpenseAccount;
+            set => Set(ref _excelExpenseAccount, value);
+        }
+
+        private int _cdc;
+        public int CDC
+        {
+            get => _cdc;
+            set => Set(ref _cdc, value);
+        }
+
+        private bool _AutomaticAllowance;
+        public bool AutomaticAllowance
+        {
+            get => _AutomaticAllowance;
+            set => Set(ref _AutomaticAllowance, value);
         }
 
         private IProvider Exchange;
@@ -278,6 +306,7 @@ namespace Great2.ViewModels
 
             NewOrderDefaultRecipients = string.Empty;
             FDLCancelRequestRecipients = string.Empty;
+            EANewMessageDefaultRecipients = string.Empty;
         }
 
         public void SelectFolder()
@@ -347,6 +376,15 @@ namespace Great2.ViewModels
             }
 
             DefaultCurrency = UserSettings.Localization.DefaultCurrency;
+            AutomaticAllowance = UserSettings.Options.AutomaticAllowance;
+            ExcelExpenseAccount = UserSettings.Advanced.ExcelExpenseAccount;
+            CDC = UserSettings.Advanced.CDC;
+
+            if (UserSettings.Email.Recipients.EANewMessageDefaultRecipients != null)
+            {
+                foreach (string address in UserSettings.Email.Recipients.EANewMessageDefaultRecipients)
+                    EANewMessageDefaultRecipients += EANewMessageDefaultRecipients == string.Empty ? address : "; " + address;
+            }
 
             Theme = UserSettings.Themes.Theme;
             AccentColor = UserSettings.Themes.AccentColor;
@@ -399,6 +437,13 @@ namespace Great2.ViewModels
                 UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
 
                 UserSettings.Localization.DefaultCurrency = DefaultCurrency;
+                UserSettings.Options.AutomaticAllowance = AutomaticAllowance;
+                UserSettings.Advanced.ExcelExpenseAccount = ExcelExpenseAccount;
+                UserSettings.Advanced.CDC = CDC;
+
+                StringCollection EARecipients = new StringCollection();
+                EARecipients.AddRange(EANewMessageDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                UserSettings.Email.Recipients.EANewMessageDefaultRecipients = EARecipients;
 
                 UserSettings.Themes.Theme = Theme;
                 UserSettings.Themes.AccentColor = AccentColor;

@@ -110,14 +110,14 @@
     <Compile Include="Utils\ChartTypeEnum.cs" />
     <Compile Include="Utils\Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
-    <Compile Include="Utils\Extensions\CustomTextFormatter.cs" />
-    <Compile Include="Utils\Extensions\RichTextBoxEx.cs" />
+    <Compile Include="Utils\ExcelHelper.cs" />
     <Compile Include="Utils\Notifications\DesktopNotificationManagerCompat.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
     <Compile Include="Utils\MaterialColors.cs" />
     <Compile Include="Utils\Messages\ProviderEmailSentMessage.cs" />
     <Compile Include="Utils\MetroMessageBox.cs" />
     <Compile Include="Utils\Notifications\Great2NotificationActivator.cs" />
+    <Compile Include="Utils\OutlookHelper.cs" />
     <Compile Include="Utils\ToastNotificationHelper.cs" />
     <Compile Include="Utils\WindowUtilities.cs" />
     <Compile Include="ViewModels\ChartDataPopupViewModel.cs" />
@@ -408,7 +408,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="DB\archive.db3" />
+    <None Include="Data\DB\archive.db3" />
+    <None Include="Data\Templates\ExpenseAccount.xlsx" />
     <None Include="Nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -562,6 +563,7 @@
     <Resource Include="Images\32\clear-filters.png" />
     <Resource Include="Images\32\cpu.png" />
     <Resource Include="Images\32\car.png" />
+    <Resource Include="Images\24\search.png" />
     <Content Include="UpgradeScripts\0005_31-07-2019_update .sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -572,6 +574,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0019_17-02-2020_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0018_08-02-2020_update.sql">
@@ -658,6 +663,9 @@
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.5</Version>
     </PackageReference>
+    <PackageReference Include="DocumentFormat.OpenXml">
+      <Version>2.10.0</Version>
+    </PackageReference>
     <PackageReference Include="EntityFramework">
       <Version>6.4.0</Version>
     </PackageReference>
@@ -702,6 +710,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Net.Http">
       <Version>2.2.29</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Office.Interop.Outlook">
+      <Version>15.0.4797.1003</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
       <Version>10.0.19041.1-preview.vb-release</Version>
@@ -760,6 +771,17 @@
     <PackageReference Include="WPFToolkit">
       <Version>3.5.50211.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -18,6 +18,13 @@ namespace Great2.ViewModels
     {
         #region Properties
 
+        private bool _IsInputEnabled;
+        public bool IsInputEnabled
+        {
+            get => _IsInputEnabled;
+            set => Set(ref _IsInputEnabled, value);
+        }
+
         private bool _showEditMenu;
         public bool ShowEditMenu
         {
@@ -25,14 +32,34 @@ namespace Great2.ViewModels
             set => Set(ref _showEditMenu, value);
         }
 
-
         private bool _ShowExpandable;
         public bool ShowExpandable
         {
             get => _ShowExpandable;
             set => Set(ref _ShowExpandable, value);
-
         }
+
+        private int _MinZoomLevel;
+        public int MinZoomLevel
+        {
+            get => _MinZoomLevel;
+            set => Set(ref _MinZoomLevel, value);
+        }
+
+        private int _MaxZoomLevel;
+        public int MaxZoomLevel
+        {
+            get => _MaxZoomLevel;
+            set => Set(ref _MaxZoomLevel, value);
+        }
+
+        private double _CurrentZoomLevel;
+        public double CurrentZoomLevel
+        {
+            get => _CurrentZoomLevel;
+            set => Set(ref _CurrentZoomLevel, value);
+        }
+
         public ObservableCollection<TransferTypeDTO> TransferTypes { get; set; }
 
         public ObservableCollectionEx<FactoryEVM> Factories { get; set; }
@@ -51,6 +78,8 @@ namespace Great2.ViewModels
 
         public Action<FactoryEVM> OnZoomOnFactoryRequest { get; set; }
         public Action<FactoryEVM> OnFactoryUpdated { get; set; }
+        public Action OnZoomAll { get; set; }
+        public Action<string> OnSearch { get; set; }
         #endregion
 
         #region Commands
@@ -59,6 +88,8 @@ namespace Great2.ViewModels
         public RelayCommand<FactoryEVM> NewFactoryCommand { get; set; }
         public RelayCommand GotFocusCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
+        public RelayCommand ZoomAllCommand { get; set; }
+        public RelayCommand<string> SearchCommand { get; set; }
 
         public RelayCommand PageUnloadedCommand { get; set; }
 
@@ -83,14 +114,14 @@ namespace Great2.ViewModels
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
             PageUnloadedCommand = new RelayCommand(() => { SelectedFactory?.CheckChangedEntity(); });
-
+            ZoomAllCommand = new RelayCommand(() => { OnZoomAll?.Invoke(); });
+            SearchCommand = new RelayCommand<string>((text) => { OnSearch?.Invoke(text); });
 
             MessengerInstance.Register<NewItemMessage<FactoryEVM>>(this, NewFactory);
 
             SelectedFactory = Factories.FirstOrDefault();
+            IsInputEnabled = true;
         }
-
-
 
         private void NewFactory(FactoryEVM obj)
         {

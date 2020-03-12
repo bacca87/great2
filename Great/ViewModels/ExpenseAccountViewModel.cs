@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -90,9 +91,12 @@ namespace Great2.ViewModels
                 {
                     SelectedExpense = null;
                     IsInputEnabled = true;
-                    UpdateDaysOfWeek();
+
+                    using (DBArchive db = new DBArchive())
+                        ExpenseTypes = new ObservableCollection<ExpenseTypeEVM>(db.ExpenseTypes.Where(t => t.Category == (SelectedEA.IsExcel ? 1 : 0)).ToList().Select(t => new ExpenseTypeEVM(t)));
 
                     SendToSAPCommand.RaiseCanExecuteChanged();
+                    NewMessageCommand.RaiseCanExecuteChanged();
                     CompileCommand.RaiseCanExecuteChanged();
                     SendByEmailCommand.RaiseCanExecuteChanged();
                     SaveAsCommand.RaiseCanExecuteChanged();
@@ -127,13 +131,6 @@ namespace Great2.ViewModels
             set => Set(ref _sendToEmailRecipient, value);
         }
 
-        private DateTime?[] _DaysOfWeek;
-        public DateTime?[] DaysOfWeek
-        {
-            get => _DaysOfWeek;
-            set => Set(ref _DaysOfWeek, value);
-        }
-
         private bool _showEditMenu;
         public bool ShowEditMenu
         {
@@ -148,6 +145,7 @@ namespace Great2.ViewModels
         #region Commands Definitions
         public RelayCommand<ExpenseAccountEVM> SaveCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SendToSAPCommand { get; set; }
+        public RelayCommand<ExpenseAccountEVM> NewMessageCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> CompileCommand { get; set; }
         public RelayCommand<string> SendByEmailCommand { get; set; }
         public RelayCommand<ExpenseAccountEVM> SaveAsCommand { get; set; }
@@ -207,6 +205,7 @@ namespace Great2.ViewModels
             SaveCommand = new RelayCommand<ExpenseAccountEVM>(SaveEA, (ExpenseAccountEVM ea) => { return IsInputEnabled; });
 
             SendToSAPCommand = new RelayCommand<ExpenseAccountEVM>(SendToSAP, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            NewMessageCommand = new RelayCommand<ExpenseAccountEVM>(NewMessage, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             CompileCommand = new RelayCommand<ExpenseAccountEVM>(Compile, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             SendByEmailCommand = new RelayCommand<string>(SendByEmail, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
@@ -221,8 +220,7 @@ namespace Great2.ViewModels
 
             using (DBArchive db = new DBArchive())
             {
-                string year = CurrentYear.ToString();
-                ExpenseTypes = new ObservableCollection<ExpenseTypeEVM>(db.ExpenseTypes.ToList().Select(t => new ExpenseTypeEVM(t)));
+                string year = CurrentYear.ToString();                
                 Currencies = new ObservableCollection<CurrencyDTO>(db.Currencies.ToList().Select(c => new CurrencyDTO(c)));
                 ExpenseAccounts = new ObservableCollectionEx<ExpenseAccountEVM>(db.ExpenseAccounts.ToList().Select(ea => new ExpenseAccountEVM(ea)));
             }
@@ -374,23 +372,6 @@ namespace Great2.ViewModels
             );
         }
 
-        private void UpdateDaysOfWeek()
-        {
-            if (SelectedEA == null)
-                return;
-
-            DateTime StartDay = DateTime.Now.FromUnixTimestamp(SelectedEA.FDL1.StartDay);
-            DateTime StartDayOfWeek = StartDay.AddDays((int)DayOfWeek.Monday - (int)StartDay.DayOfWeek);
-            var Days = Enumerable.Range(0, 7).Select(i => StartDayOfWeek.AddDays(i)).ToArray();
-
-            DateTime?[] tmpDays = new DateTime?[7];
-
-            for (int i = 0; i < 7; i++)
-                tmpDays[i] = Days[i].Month == StartDay.Month ? Days[i] : (DateTime?)null;
-
-            DaysOfWeek = tmpDays;
-        }
-
         public void SaveEA(ExpenseAccountEVM ea)
         {
             if (ea == null || ea.IsReadOnly)
@@ -444,12 +425,12 @@ namespace Great2.ViewModels
                 return;
             }
 
-            if (ea.EStatus == EFDLStatus.Waiting &&
+            if ((ea.EStatus == EFDLStatus.Waiting || ea.EStatus == EFDLStatus.Accepted) &&
                 MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             using (new WaitCursor())
-            {                
+            {
                 if (_fdlManager.SendToSAP(ea))
                     ea.EStatus = EFDLStatus.Waiting; // don't save the fdl status until the message is sent
             }
@@ -493,6 +474,20 @@ namespace Great2.ViewModels
             }
         }
 
+        public void NewMessage(ExpenseAccountEVM ea)
+        {
+            if (!SelectedEA.IsCompiled)
+            {
+                MetroMessageBox.Show("The selected EA is not compiled! Compile the EA before send it by e-mail. Operation cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            using (new WaitCursor())
+            {
+                _fdlManager.NewOutlookMessage(ea);
+            }
+        }
+
         public void SaveAs(ExpenseAccountEVM ea)
         {
             if (ea == null)
@@ -503,13 +498,18 @@ namespace Great2.ViewModels
                 SaveFileDialog dlg = new SaveFileDialog();
                 dlg.Title = "Save Expense Account As...";
                 dlg.FileName = ea.FileName;
-                dlg.DefaultExt = ".pdf";
-                dlg.Filter = "EA (.pdf) | *.pdf";
+                dlg.DefaultExt = ea.IsExcel ? ".xlsx" : ".pdf";
+                dlg.Filter = ea.IsExcel ? "EA (.xlsx) | *.xlsx" : "EA (.pdf) | *.pdf";
                 dlg.AddExtension = true;
                 dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                 if (dlg.ShowDialog() == true)
-                    _fdlManager.SaveAs(ea, dlg.FileName);
+                {
+                    if (ea.IsExcel)
+                        File.Copy(ea.FilePath, dlg.FileName, true);
+                    else
+                        _fdlManager.SaveAs(ea, dlg.FileName);
+                }   
             }
         }
 
@@ -548,13 +548,14 @@ namespace Great2.ViewModels
             {
                 string filePath;
 
-                if (_fdlManager.CreateXFDF(ea, out filePath))
-                {
+                if(ea.IsExcel)
+                    _fdlManager.Compile(ea, ea.FilePath);
+                else if (_fdlManager.CreateXFDF(ea, out filePath))
                     Process.Start(filePath);
-                    ea.IsCompiled = true;
-                    ea.NotifyAsNew = false;
-                    ea.Save();
-                }
+
+                ea.IsCompiled = true;
+                ea.NotifyAsNew = false;
+                ea.Save();
             }
         }
 

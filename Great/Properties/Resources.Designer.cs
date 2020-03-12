@@ -69,5 +69,15 @@ namespace Great2.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ExpenseAccount {
+            get {
+                object obj = ResourceManager.GetObject("ExpenseAccount", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
