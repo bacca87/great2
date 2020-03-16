@@ -12,6 +12,7 @@ namespace Great2.Utils
         FactoriesByType,
         Factories,
         Tile,
-        WorldMap
+        WorldMap,
+        Tags
     }
 }

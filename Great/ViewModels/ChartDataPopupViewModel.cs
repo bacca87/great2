@@ -215,6 +215,13 @@ namespace Great2.ViewModels
             set => Set(ref _chartType, value);
         }
 
+        private List<string> _selectedTags;
+        public List<string> SelectedTags
+        {
+            get => _selectedTags;
+            set => Set(ref _selectedTags, value);
+        }
+
         private string _key;
         public string Key
         {
@@ -236,6 +243,13 @@ namespace Great2.ViewModels
             set => Set(ref _year, value);
         }
 
+        private bool _hyperlinksEnabled;
+        public bool HyperlinksEnabled
+        {
+            get => _hyperlinksEnabled;
+            set => Set(ref _hyperlinksEnabled, value);
+        }
+
         public string YearStr { get => Year.ToString(); }
 
         public long StartDate { get => new DateTime(Year, 1, 1).ToUnixTimestamp(); }
@@ -243,7 +257,6 @@ namespace Great2.ViewModels
 
         public ObservableCollectionEx<DayEVM> Days
         {
-
             get
             {
                 using (var db = new DBArchive())
@@ -364,6 +377,25 @@ namespace Great2.ViewModels
 
                                 values.ToList().ForEach(x => days.Add(new DayEVM(x)));
                                 return days;
+                            }
+
+                        case EChartType.Tags:
+                            {
+                                ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
+
+                                Title = "";
+
+                               
+                                db.Days.ToList().ForEach(x => days.Add(new DayEVM(x)));
+
+                                var d2 = from d in days
+                                       from ts in d.Timesheets
+                                       from tag in ts.Tags
+                                       where SelectedTags.Any(x => x == tag) && d.Date.Year.ToString()== YearStr
+                                       select d;
+
+                                return new ObservableCollectionEx<DayEVM>( d2);
+
                             }
                     }
 

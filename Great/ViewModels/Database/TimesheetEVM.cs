@@ -143,7 +143,7 @@ namespace Great2.ViewModels.Database
 
         public List<string> Tags
         {
-            get => _Notes?.Split(' ').Where(x => x.Length > 1 && x.StartsWith("#")).ToList();
+            get => _Notes?.Split(' ').Where(x => x.Length > 1 && x.StartsWith("#")).ToList() ?? new List<string>();
         }
 
         private DayDTO _Day;

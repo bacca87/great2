@@ -111,6 +111,7 @@
     <Compile Include="Utils\Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\ExcelHelper.cs" />
+    <Compile Include="Utils\Extensions\IntelliRichTextBox.cs" />
     <Compile Include="Utils\Notifications\DesktopNotificationManagerCompat.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
     <Compile Include="Utils\MaterialColors.cs" />

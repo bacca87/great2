@@ -64,8 +64,8 @@ namespace Great2.ViewModels
 
                 if (updateDays)
                     UpdateWorkingDays();
-                }
             }
+        }
 
         private int _currentMonth = DateTime.Now.Month;
         public int CurrentMonth
@@ -122,18 +122,20 @@ namespace Great2.ViewModels
             }
         }
 
-        private ObservableCollection<string> _tags;
         public ObservableCollection<string> Tags
         {
-            get => _tags;
-            set => Set(ref _tags, value);
-        }
+            get
+            {
+                if (WorkingDays == null) return new ObservableCollection<string>();
 
-        private ObservableCollection<string> _tagIdentifiers;
-        public ObservableCollection<string> TagIdentifiers
-        {
-            get => _tagIdentifiers;
-            set => Set(ref _tagIdentifiers, value);
+               return new ObservableCollection<string>
+                (from d in WorkingDays
+                 from ts in d.Timesheets
+                 where ts != null
+                 from t in ts.Tags
+                 where t != null
+                 select t);
+            } 
         }
 
         private FDLEVM _selectedFDL;
@@ -181,8 +183,6 @@ namespace Great2.ViewModels
         /// </summary>
         public TimesheetsViewModel()
         {
-            Tags = new ObservableCollection<string>();
-            TagIdentifiers = new ObservableCollection<string>();
             NextYearCommand = new RelayCommand(() => CurrentYear++);
             PreviousYearCommand = new RelayCommand(() => CurrentYear--);
             SelectFirstDayInMonthCommand = new RelayCommand<int>(SelectFirstDayInMonth);
@@ -213,8 +213,7 @@ namespace Great2.ViewModels
 
             UpdateWorkingDays();
 
-            if (Tags.Count() == 0) Tags.Add("Test");
-            if (TagIdentifiers.Count() == 0) TagIdentifiers.Add("#");
+
         }
 
         private void UpdateWorkingDays()
@@ -235,13 +234,13 @@ namespace Great2.ViewModels
                         {
                             var de = new DayEVM(currentDay);
                             days.Add(de);
-                            var notes = de.Timesheets.Select(x => x.Notes).Where(x => x != null).Where(x=> x.Contains("#"));
+                            var notes = de.Timesheets.Select(x => x.Notes).Where(x => x != null).Where(x => x.Contains("#"));
 
                             foreach (string s in notes)
                             {
                                 var parts = s.Split(' ');
 
-                                foreach (string str in parts.Where(x=> x.StartsWith("#")))
+                                foreach (string str in parts.Where(x => x.StartsWith("#")))
                                 {
                                     if (!Tags.Contains(str)) Tags.Add(str);
                                 }
@@ -252,9 +251,9 @@ namespace Great2.ViewModels
                         }
                         else
                             days.Add(new DayEVM { Date = day });
-                        }
                     }
                 }
+            }
 
             WorkingDays = days;
         }
@@ -264,7 +263,7 @@ namespace Great2.ViewModels
             IsAddNewEnabled = SelectedWorkingDay != null && (SelectedWorkingDay.EType == EDayType.WorkDay || SelectedWorkingDay.EType == EDayType.HomeWorkDay);
             IsInputEnabled = IsAddNewEnabled && SelectedTimesheet != null;
         }
-        
+
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
         {
             int days = DateTime.DaysInMonth(year, month);
@@ -324,7 +323,7 @@ namespace Great2.ViewModels
 
                 else
                     cancel = true;
-                }
+            }
 
             if ((day.Date.DayOfWeek == DayOfWeek.Saturday || day.Date.DayOfWeek == DayOfWeek.Sunday || day.IsHoliday)
             && (type == EDayType.VacationDay || type == EDayType.SickLeave || type == EDayType.SpecialLeave))
@@ -372,7 +371,7 @@ namespace Great2.ViewModels
                 return;
 
             destinationDay.Type = sourceDay.Type;
-            
+
             using (DBArchive db = new DBArchive())
             {
                 using (var transaction = db.Database.BeginTransaction())
@@ -390,7 +389,7 @@ namespace Great2.ViewModels
                             TimesheetEVM timesheet = new TimesheetEVM();
                             Auto.Mapper.Map(sts, timesheet);
 
-                            if(sourceDay.WeekNr != destinationDay.WeekNr)
+                            if (sourceDay.WeekNr != destinationDay.WeekNr)
                             {
                                 timesheet.FDL = null;
                                 timesheet.FDL1 = null;
@@ -457,7 +456,7 @@ namespace Great2.ViewModels
                 MetroMessageBox.Show("Invalid time period! Operation cancelled.", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            else if(!timesheet.TotalTime.HasValue && SelectedFDL == null && (timesheet.Notes == null || timesheet.Notes.Trim() == string.Empty))
+            else if (!timesheet.TotalTime.HasValue && SelectedFDL == null && (timesheet.Notes == null || timesheet.Notes.Trim() == string.Empty))
             {
                 MetroMessageBox.Show("Empty timesheets are allowed only if at least a FDL or a Note are assigned!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
