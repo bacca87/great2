@@ -27,6 +27,14 @@
                 <System:String>Id</System:String>
             </CollectionViewSource.LiveSortingProperties>
         </CollectionViewSource>
+        <CollectionViewSource x:Key="TimesheetsCollectionView" Source="{Binding SelectedFDL.Timesheets}" IsLiveSortingRequested="True" >
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Timestamp" Direction="Ascending" />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.LiveSortingProperties>
+                <System:String>Timestamp</System:String>
+            </CollectionViewSource.LiveSortingProperties>
+        </CollectionViewSource>
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -216,7 +224,7 @@
                 </StackPanel>
             </Grid>
             <DataGrid Grid.Row="1"
-                      ItemsSource="{Binding SelectedFDL.Timesheets}"                      
+                      ItemsSource="{Binding Source={StaticResource TimesheetsCollectionView}}"                      
                       SelectedItem="{Binding SelectedTimesheet}"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"                         
