@@ -160,6 +160,7 @@
                                 FontSize="15"                                  
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" 
+                                ContentAssistSource="{Binding Tags,Mode=TwoWay}" 
                                 Text="{Binding Notes_Display,Mode=OneWay}" IsDocumentEnabled="True" IsReadOnly="True" Cursor="Arrow" >
 
                                 <xctk:RichTextBox.TextFormatter>

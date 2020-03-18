@@ -122,20 +122,12 @@ namespace Great2.ViewModels
             }
         }
 
+        private ObservableCollection<string> _tags;
         public ObservableCollection<string> Tags
         {
-            get
-            {
-                if (WorkingDays == null) return new ObservableCollection<string>();
+            get => _tags;
+            set => _tags = value;
 
-               return new ObservableCollection<string>
-                (from d in WorkingDays
-                 from ts in d.Timesheets
-                 where ts != null
-                 from t in ts.Tags
-                 where t != null
-                 select t);
-            } 
         }
 
         private FDLEVM _selectedFDL;
@@ -219,6 +211,7 @@ namespace Great2.ViewModels
         private void UpdateWorkingDays()
         {
             ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
+            Tags = new ObservableCollection<string>();
 
             using (DBArchive db = new DBArchive())
             {
@@ -487,6 +480,12 @@ namespace Great2.ViewModels
                 // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
                 timesheet.FDL1 = null;
                 timesheet.FDL = null;
+            }
+
+            foreach (var t in timesheet.Tags)
+            {
+                if (!Tags.Contains(t))
+                    Tags.Add(t);
             }
 
             using (DBArchive db = new DBArchive())
