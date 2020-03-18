@@ -127,7 +127,6 @@ namespace Great2.ViewModels
         {
             get => _tags;
             set => _tags = value;
-
         }
 
         private FDLEVM _selectedFDL;
@@ -198,7 +197,6 @@ namespace Great2.ViewModels
             SaveTimesheetCommand = new RelayCommand<TimesheetEVM>(SaveTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
             DeleteTimesheetCommand = new RelayCommand<TimesheetEVM>(DeleteTimesheet, (TimesheetEVM timesheet) => { return IsInputEnabled; });
 
-
             MessengerInstance.Register<ItemChangedMessage<DayEVM>>(this, DayTypeChanged);
             MessengerInstance.Register<ItemChangedMessage<FDLEVM>>(this, FDLChanged);
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
@@ -239,8 +237,6 @@ namespace Great2.ViewModels
                                 }
 
                             }
-
-
                         }
                         else
                             days.Add(new DayEVM { Date = day });

@@ -151,7 +151,7 @@
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
 
-                <DataGridTemplateColumn Header="NOTES"  Width="300">
+                <DataGridTemplateColumn Header="Notes"  Width="300">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Behaviours:IntelliRichTextBox BorderThickness="0" Height="20" BorderBrush="Transparent"

@@ -384,7 +384,6 @@ namespace Great2.ViewModels
                                 ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
 
                                 Title = "";
-
                                
                                 db.Days.ToList().ForEach(x => days.Add(new DayEVM(x)));
 
