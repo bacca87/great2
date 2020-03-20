@@ -91,8 +91,8 @@ namespace Great2.ViewModels
             }
         }
 
-        private TimesheetDTO _selectedTimesheet;
-        public TimesheetDTO SelectedTimesheet
+        private TimesheetEVM _selectedTimesheet;
+        public TimesheetEVM SelectedTimesheet
         {
             get => _selectedTimesheet;
             set => Set(ref _selectedTimesheet, value);

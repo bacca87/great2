@@ -228,7 +228,12 @@ namespace Great2.ViewModels.Database
             set => Set(ref _FDLResult, value);
         }
 
-        public ObservableCollection<TimesheetEVM> Timesheets { get; set; }
+        public ObservableCollection<TimesheetEVM> _Timesheets;
+        public ObservableCollection<TimesheetEVM> Timesheets
+        {
+            get => _Timesheets;
+            set => Set(ref _Timesheets, value);
+        }
 
         public string FilePath => ApplicationSettings.Directories.FDL + FileName;
 
@@ -276,7 +281,11 @@ namespace Great2.ViewModels.Database
             Timesheets = new ObservableCollection<TimesheetEVM>();
 
             if (fdl != null)
+            {
                 Auto.Mapper.Map(fdl, this);
+                Timesheets = new ObservableCollection<TimesheetEVM>(Timesheets.OrderBy(t => t.Timestamp));
+            }   
+
             IsChanged = false;
         }
 
@@ -303,6 +312,8 @@ namespace Great2.ViewModels.Database
             if (fdl != null)
             {
                 Auto.Mapper.Map(fdl, this);
+
+                Timesheets = new ObservableCollection<TimesheetEVM>(Timesheets.OrderBy(t => t.Timestamp));
 
                 //foreach (TimesheetEVM timesheet in Timesheets)
                 //    timesheet.Refresh(db);
