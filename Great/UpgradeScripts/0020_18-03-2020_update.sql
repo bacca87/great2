@@ -28,3 +28,8 @@ CREATE TABLE [Timesheet]
 INSERT INTO TimeSheet SELECT *FROM _timesheet;
 
 PRAGMA foreign_keys=on;
+
+--=========================================================================
+-- MANDATORY: Increment internal db version
+PRAGMA user_version = 20;
+--=========================================================================

@@ -202,6 +202,26 @@ namespace Great2.ViewModels
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
 
             UpdateWorkingDays();
+            LoadTags();
+
+
+        }
+
+
+        private void LoadTags()
+        {
+
+            Tags = new ObservableCollection<string>((from d in WorkingDays
+                                                     from t in d.Timesheets
+                                                     where t.Notes != null
+                                                     where t.Notes.Contains("#")
+                                                     let words = t.Notes.Split(' ')
+                                                     from tag in words
+                                                     where tag.StartsWith("#")
+                                                     let parsed = tag.Replace("\r", String.Empty)
+                                                                     .Replace("\n", String.Empty)
+                                                     select parsed).Distinct());
+
 
 
         }
@@ -225,18 +245,7 @@ namespace Great2.ViewModels
                         {
                             var de = new DayEVM(currentDay);
                             days.Add(de);
-                            var notes = de.Timesheets.Select(x => x.Notes).Where(x => x != null).Where(x => x.Contains("#"));
 
-                            foreach (string s in notes)
-                            {
-                                var parts = s.Split(' ');
-
-                                foreach (string str in parts.Where(x => x.StartsWith("#")))
-                                {
-                                    if (!Tags.Contains(str)) Tags.Add(str);
-                                }
-
-                            }
                         }
                         else
                             days.Add(new DayEVM { Date = day });
