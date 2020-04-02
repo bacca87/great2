@@ -234,9 +234,7 @@ namespace Great2.ViewModels
                         Day currentDay = db.Days.SingleOrDefault(d => d.Timestamp == timestamp);
 
                         if (currentDay != null)
-                        {
                             days.Add(new DayEVM(currentDay));
-                        }
                         else
                             days.Add(new DayEVM { Date = day });
                     }
@@ -308,7 +306,6 @@ namespace Great2.ViewModels
 
                     day.Timesheets.Clear();
                 }
-
                 else
                     cancel = true;
             }
