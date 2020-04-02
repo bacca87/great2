@@ -111,6 +111,7 @@
     <Compile Include="Utils\Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Utils\Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Utils\ExcelHelper.cs" />
+    <Compile Include="Utils\Extensions\IntelliRichTextBox.cs" />
     <Compile Include="Utils\Notifications\DesktopNotificationManagerCompat.cs" />
     <Compile Include="Utils\Extensions\MaskedTextBoxHelper.cs" />
     <Compile Include="Utils\MaterialColors.cs" />
@@ -577,6 +578,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0006_06-08-2019_update .sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpgradeScripts\0020_18-03-2020_update.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UpgradeScripts\0019_17-02-2020_update.sql">

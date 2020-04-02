@@ -64,8 +64,8 @@ namespace Great2.ViewModels
 
                 if (updateDays)
                     UpdateWorkingDays();
-                }
             }
+        }
 
         private int _currentMonth = DateTime.Now.Month;
         public int CurrentMonth
@@ -120,6 +120,13 @@ namespace Great2.ViewModels
                 Set(ref _selectedTimesheet, value);
                 UpdateInputsEnablement();
             }
+        }
+
+        private ObservableCollection<string> _tags;
+        public ObservableCollection<string> Tags
+        {
+            get => _tags;
+            set => _tags = value;
         }
 
         private FDLEVM _selectedFDL;
@@ -195,12 +202,27 @@ namespace Great2.ViewModels
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
 
             UpdateWorkingDays();
+            LoadTags();
+        }
+
+        private void LoadTags()
+        {
+            Tags = new ObservableCollection<string>((from d in WorkingDays
+                                                     from t in d.Timesheets
+                                                     where t.Notes != null
+                                                     where t.Notes.Contains("#")
+                                                     let words = t.Notes.Split(' ')
+                                                     from tag in words
+                                                     where tag.StartsWith("#")
+                                                     let parsed = tag.Replace("\r", String.Empty)
+                                                                     .Replace("\n", String.Empty)
+                                                     select parsed).Distinct());
         }
 
         private void UpdateWorkingDays()
         {
             ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
-
+            
             using (DBArchive db = new DBArchive())
             {
                 for (int month = 1; month <= 12; month++)
@@ -215,9 +237,9 @@ namespace Great2.ViewModels
                             days.Add(new DayEVM(currentDay));
                         else
                             days.Add(new DayEVM { Date = day });
-                        }
                     }
                 }
+            }
 
             WorkingDays = days;
         }
@@ -227,7 +249,7 @@ namespace Great2.ViewModels
             IsAddNewEnabled = SelectedWorkingDay != null && (SelectedWorkingDay.EType == EDayType.WorkDay || SelectedWorkingDay.EType == EDayType.HomeWorkDay);
             IsInputEnabled = IsAddNewEnabled && SelectedTimesheet != null;
         }
-        
+
         public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
         {
             int days = DateTime.DaysInMonth(year, month);
@@ -284,10 +306,9 @@ namespace Great2.ViewModels
 
                     day.Timesheets.Clear();
                 }
-
                 else
                     cancel = true;
-                }
+            }
 
             if ((day.Date.DayOfWeek == DayOfWeek.Saturday || day.Date.DayOfWeek == DayOfWeek.Sunday || day.IsHoliday)
             && (type == EDayType.VacationDay || type == EDayType.SickLeave || type == EDayType.SpecialLeave))
@@ -335,7 +356,7 @@ namespace Great2.ViewModels
                 return;
 
             destinationDay.Type = sourceDay.Type;
-            
+
             using (DBArchive db = new DBArchive())
             {
                 using (var transaction = db.Database.BeginTransaction())
@@ -353,7 +374,7 @@ namespace Great2.ViewModels
                             TimesheetEVM timesheet = new TimesheetEVM();
                             Auto.Mapper.Map(sts, timesheet);
 
-                            if(sourceDay.WeekNr != destinationDay.WeekNr)
+                            if (sourceDay.WeekNr != destinationDay.WeekNr)
                             {
                                 timesheet.FDL = null;
                                 timesheet.FDL1 = null;
@@ -420,7 +441,7 @@ namespace Great2.ViewModels
                 MetroMessageBox.Show("Invalid time period! Operation cancelled.", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            else if(!timesheet.TotalTime.HasValue && SelectedFDL == null && (timesheet.Notes == null || timesheet.Notes.Trim() == string.Empty))
+            else if (!timesheet.TotalTime.HasValue && SelectedFDL == null && (timesheet.Notes == null || timesheet.Notes.Trim() == string.Empty))
             {
                 MetroMessageBox.Show("Empty timesheets are allowed only if at least a FDL or a Note are assigned!", "Invalid Timesheet", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -451,6 +472,12 @@ namespace Great2.ViewModels
                 // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
                 timesheet.FDL1 = null;
                 timesheet.FDL = null;
+            }
+
+            foreach (var t in timesheet.Tags)
+            {
+                if (!Tags.Contains(t))
+                    Tags.Add(t);
             }
 
             using (DBArchive db = new DBArchive())

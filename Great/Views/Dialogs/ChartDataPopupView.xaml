@@ -7,7 +7,9 @@
              xmlns:local="clr-namespace:Great2.Views.Dialogs"
              xmlns:util="clr-namespace:Great2.Utils"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             mc:Ignorable="d" 
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:Behaviours="clr-namespace:Great2.Utils.Extensions"
+    mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding DataPopup, Source={StaticResource Locator}}"
              WindowStartupLocation="CenterOwner"
@@ -71,7 +73,24 @@
                 <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>
-                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>
+                <DataGridTemplateColumn Header="NOTES"  Width="300">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Behaviours:IntelliRichTextBox BorderThickness="0" Height="20"
+                                Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
+                                FontSize="15"                                  
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Text="{Binding Notes_Display,Mode=OneWay}" 
+                                IsDocumentEnabled="{Binding HyperlinksEnabled}" IsReadOnly="True" Cursor="Hand" >
+                                <xctk:RichTextBox.TextFormatter>
+                                    <xctk:PlainTextFormatter />
+                                </xctk:RichTextBox.TextFormatter>
+
+                            </Behaviours:IntelliRichTextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
