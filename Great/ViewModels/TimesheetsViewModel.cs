@@ -203,14 +203,10 @@ namespace Great2.ViewModels
 
             UpdateWorkingDays();
             LoadTags();
-
-
         }
-
 
         private void LoadTags()
         {
-
             Tags = new ObservableCollection<string>((from d in WorkingDays
                                                      from t in d.Timesheets
                                                      where t.Notes != null
@@ -221,16 +217,12 @@ namespace Great2.ViewModels
                                                      let parsed = tag.Replace("\r", String.Empty)
                                                                      .Replace("\n", String.Empty)
                                                      select parsed).Distinct());
-
-
-
         }
 
         private void UpdateWorkingDays()
         {
             ObservableCollectionEx<DayEVM> days = new ObservableCollectionEx<DayEVM>();
-            Tags = new ObservableCollection<string>();
-
+            
             using (DBArchive db = new DBArchive())
             {
                 for (int month = 1; month <= 12; month++)
@@ -243,9 +235,7 @@ namespace Great2.ViewModels
 
                         if (currentDay != null)
                         {
-                            var de = new DayEVM(currentDay);
-                            days.Add(de);
-
+                            days.Add(new DayEVM(currentDay));
                         }
                         else
                             days.Add(new DayEVM { Date = day });
