@@ -149,25 +149,22 @@
                 <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="*"/>
-
-                <DataGridTemplateColumn Header="Notes"  MinWidth="300">
+                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}"/>
+                <DataGridTemplateColumn Header="Notes">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Behaviours:IntelliRichTextBox BorderThickness="0" Height="20" BorderBrush="Transparent" MinWidth="300"
-                                OnLinkClick="RichTextBoxEx_TagClick"
-                                Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
-                                FontSize="15"                                  
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" 
-                                ContentAssistSource="{Binding Tags,Mode=TwoWay}" 
-                                Text="{Binding Notes_Display,Mode=OneWay}" IsDocumentEnabled="True" IsReadOnly="True" Cursor="Arrow" >
-
-                                <xctk:RichTextBox.TextFormatter>
-                                    <xctk:PlainTextFormatter />
-                                </xctk:RichTextBox.TextFormatter>
-                                
-                            </Behaviours:IntelliRichTextBox>
+                            <Grid>
+                                <Behaviours:IntelliRichTextBox BorderThickness="0" Height="20" BorderBrush="Transparent" MinWidth="500"
+                                    OnLinkClick="RichTextBoxEx_TagClick"
+                                    Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
+                                    FontSize="15"
+                                    VerticalAlignment="Center" 
+                                    Text="{Binding Notes_Display,Mode=OneWay}" IsDocumentEnabled="True" IsReadOnly="True" Cursor="Arrow" >
+                                    <xctk:RichTextBox.TextFormatter>
+                                        <xctk:PlainTextFormatter />
+                                    </xctk:RichTextBox.TextFormatter>
+                                </Behaviours:IntelliRichTextBox>
+                            </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -235,70 +232,47 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
-                <Grid Grid.Column="2" Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Column="0" Grid.Row="1" Margin="5">
-                        <Expander x:Name="editTimesheetPanel" Header="EDIT" ExpandDirection="Left" MinHeight="200" HorizontalAlignment="Left" Margin="5" IsExpanded="True">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" Margin="0.2,0">
+                <Grid Grid.Column="2" Grid.Row="0" Margin="5">
+                    <Expander x:Name="editTimesheetPanel" Header="EDIT" ExpandDirection="Left" MinHeight="200" HorizontalAlignment="Left" Margin="5" IsExpanded="True">
+                        <Grid>
+                            <Grid.Resources>
+                                <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Center">Travel<LineBreak/>Start Time</TextBlock>
+                            <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
+                            <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
+                            <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
+                            <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">FDL</TextBlock>
+                            <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">Notes</TextBlock>
 
-                                    <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                                        <Grid.Resources>
-                                            <conv:StringToTimeSpanConverter x:Key="StringToTimeSpanConverter" />
-                                        </Grid.Resources>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="50"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Center">Travel<LineBreak/>Start Time</TextBlock>
-                                        <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Center">Work<LineBreak/>Start Time</TextBlock>
-                                        <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" TextAlignment="Center">Work<LineBreak/>End Time</TextBlock>
-                                        <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" TextAlignment="Center">Travel<LineBreak/>End Time</TextBlock>
-                                        <TextBlock Grid.Row="3" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">FDL</TextBlock>
-                                        <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center">Notes</TextBlock>
+                            <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                            <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                            <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                            <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
+                            <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                            <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                            <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
+                            <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
 
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
-                                        <xctk:MaskedTextBox Grid.Row="1" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimeAM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput"  />
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTimesheet.TravelStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="2" Text="{Binding SelectedTimesheet.WorkStartTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workstartTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectedTimesheet.WorkEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource workendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-                                        <xctk:MaskedTextBox Grid.Row="2" Grid.Column="4" Text="{Binding SelectedTimesheet.TravelEndTimePM_t, StringFormat=hh\\:mm, Converter={StaticResource StringToTimeSpanConverter},ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Style="{DynamicResource travelendTextBox}" IsEnabled="{Binding IsInputEnabled}" PreviewLostKeyboardFocus="MaskedTextBox_PreviewLostKeyboardFocus" PreviewTextInput="MaskedTextBox_PreviewTextInput" />
-
-                                        <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3" 
+                            <ComboBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3" 
                                                   HorizontalAlignment="Center" 
                                                   VerticalAlignment="Center" 
                                                   Width="295"
@@ -306,44 +280,41 @@
                                                   IsEnabled="{Binding IsInputEnabled}" 
                                                   DisplayMemberPath="FDL_Factory_Display" 
                                                   SelectedValuePath="Id" 
-                                                  SelectedIndex="0">    
-                                            <ComboBox.Resources>
-                                                <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
-                                            </ComboBox.Resources>
-                                            <ComboBox.ItemsSource>
-                                                <CompositeCollection>
-                                                    <e:FDLEVM/>
-                                                    <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
-                                                </CompositeCollection>
-                                            </ComboBox.ItemsSource>
-                                        </ComboBox>
-                                        <Grid Grid.Column="1" Grid.ColumnSpan="4"  Grid.Row="4">
-                                            <Behaviours:IntelliRichTextBox
-                                                OnLinkClick="RichTextBoxEx_TagClick"
-                                                HorizontalAlignment="Center" 
-                                                VerticalAlignment="Center" 
-                                                Width="295" 
-                                                Height="100" 
-                                                Text="{Binding SelectedTimesheet.Notes,Mode=TwoWay}" 
-                                                ContentAssistSource="{Binding Tags,Mode=OneWay}" 
-                                                IsEnabled="{Binding IsInputEnabled}"
-                                                IsDocumentEnabled="{Binding IsInputEnabled}">
-                                                <xctk:RichTextBox.TextFormatter>
-                                                    <xctk:PlainTextFormatter />
-                                                </xctk:RichTextBox.TextFormatter>
-                                            </Behaviours:IntelliRichTextBox>
-                                        </Grid>
-                                        <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
-                                            <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}"/>
-                                            <Button Margin="2" Content="New" Command="{Binding CreateNewTimesheetCommand}" />
-                                            <Button Margin="2" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </StackPanel>
+                                                  SelectedIndex="0">
+                                <ComboBox.Resources>
+                                    <CollectionViewSource x:Key="Items" Source="{Binding FDLs}" />
+                                </ComboBox.Resources>
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <e:FDLEVM/>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
+                            <Grid Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="4">
+                                <Behaviours:IntelliRichTextBox                                     
+                                        Margin="2.5"
+                                        OnLinkClick="RichTextBoxEx_TagClick"
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        Height="60"
+                                        Width="300"
+                                        Text="{Binding SelectedTimesheet.Notes,Mode=TwoWay}" 
+                                        ContentAssistSource="{Binding Tags,Mode=OneWay}" 
+                                        IsEnabled="{Binding IsInputEnabled}"
+                                        IsDocumentEnabled="{Binding IsInputEnabled}">
+                                    <xctk:RichTextBox.TextFormatter>
+                                        <xctk:PlainTextFormatter />
+                                    </xctk:RichTextBox.TextFormatter>
+                                </Behaviours:IntelliRichTextBox>
                             </Grid>
-                        </Expander>
-                    </Grid>
-                    <Grid Grid.Column="1" Grid.Row="1" Margin="5"/>
+                            <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
+                                <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}"/>
+                                <Button Margin="2" Content="New" Command="{Binding CreateNewTimesheetCommand}" />
+                                <Button Margin="2" Content="Save" Command="{Binding SaveTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
                 </Grid>
             </Grid>
         </Expander>

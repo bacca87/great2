@@ -393,8 +393,6 @@ namespace Great2.Utils.Extensions
             LastWord = splitText[splitText.Length - 1];
         }
 
-
-
         #region .ctor
 
         public IntelliRichTextBox()
@@ -403,7 +401,7 @@ namespace Great2.Utils.Extensions
         }
 
         void RichTextBoxEx_Loaded(object sender, RoutedEventArgs e)
-        {
+        {            
             if (IntellisenseList.Parent == null)
             {
                 //init the assist list box
@@ -419,11 +417,8 @@ namespace Great2.Utils.Extensions
             IntellisenseList.SetValue(Panel.ZIndexProperty, 1000);
 
             if (ContentAssistTriggers.Count == 0)
-            {
                 ContentAssistTriggers.Add('#');
-            }
 
-            BorderBrush = Brushes.Transparent;
             IntellisenseList.MaxHeight = 100;
             IntellisenseList.MinWidth = 100;
             IntellisenseList.HorizontalAlignment = HorizontalAlignment.Left;
@@ -469,7 +464,6 @@ namespace Great2.Utils.Extensions
         }
 
         #endregion
-
 
         #region Content Assist
 
@@ -579,7 +573,6 @@ namespace Great2.Utils.Extensions
         }
 
         #endregion
-
     }
 
 }
