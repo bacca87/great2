@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Great2.Views.Dialogs"
+             xmlns:local="clr-namespace:Great2"
              xmlns:util="clr-namespace:Great2.Utils"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -73,24 +73,7 @@
                 <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
                 <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>
-                <DataGridTemplateColumn Header="NOTES"  Width="300">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Behaviours:IntelliRichTextBox BorderThickness="0" Height="20"
-                                Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
-                                FontSize="15"                                  
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" 
-                                Text="{Binding Notes_Display,Mode=OneWay}" 
-                                IsDocumentEnabled="{Binding HyperlinksEnabled}" IsReadOnly="True" Cursor="Hand" >
-                                <xctk:RichTextBox.TextFormatter>
-                                    <xctk:PlainTextFormatter />
-                                </xctk:RichTextBox.TextFormatter>
-
-                            </Behaviours:IntelliRichTextBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

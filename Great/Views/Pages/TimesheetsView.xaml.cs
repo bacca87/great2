@@ -1,14 +1,9 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Great2.Utils;
+﻿using Great2.Utils;
 using Great2.Utils.Extensions;
 using Great2.ViewModels;
 using Great2.ViewModels.Database;
-using Great2.Views.Dialogs;
-using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-
 
 namespace Great2.Views.Pages
 {
@@ -99,26 +94,5 @@ namespace Great2.Views.Pages
             if (e.Key == Key.Escape)
                 timesheetPanel.IsExpanded = false;
         }
-
-        private void RichTextBoxEx_TagClick(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var _dataViewModel = SimpleIoc.Default.GetInstance<ChartDataPopupViewModel>();
-
-            if (_dataViewModel == null)
-                return;
-
-            _dataViewModel.ChartType = EChartType.Tags;
-            var tags = new List<string>();
-            tags.Add((e.OriginalSource as Hyperlink).Tag.ToString());
-            _dataViewModel.SelectedTags = tags;
-            _dataViewModel.HyperlinksEnabled = false;
-            _dataViewModel.Year = (DataContext as TimesheetsViewModel).SelectedTimesheet.Date.Year;
-
-            ChartDataPopupView view = new ChartDataPopupView();
-            view.ShowDialog();
-
-        }
-
-
     }
 }

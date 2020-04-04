@@ -141,11 +141,6 @@ namespace Great2.ViewModels.Database
             set => SetAndCheckChanged(ref _Notes, value);
         }
 
-        public List<string> Tags
-        {
-            get => _Notes?.Split(' ').Where(x => x.Length > 1 && x.StartsWith("#")).ToList() ?? new List<string>();
-        }
-
         private DayDTO _Day;
         public DayDTO Day
         {
@@ -419,6 +414,8 @@ namespace Great2.ViewModels.Database
         public override bool Save(DBArchive db)
         {
             Timesheet timesheet = new Timesheet();
+
+            Notes.Trim(' ', '\n', '\r');
 
             Auto.Mapper.Map(this, timesheet);
             db.Timesheets.AddOrUpdate(timesheet);

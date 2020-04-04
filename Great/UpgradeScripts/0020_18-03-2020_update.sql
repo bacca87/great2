@@ -1,6 +1,6 @@
 ﻿--=========================================================================
 -- Date: 18/08/2020
--- Description: Chenged timesheet notes max lenght
+-- Description: Changed timesheet notes max length
 -- Author: Andrea Corradini
 --=========================================================================
 

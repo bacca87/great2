@@ -1389,6 +1389,7 @@ namespace Great2.Models
         {
             public const int MinYear = 1980;
             public const int MaxYear = 2100;
+            public const int NoteMaxLength = 255;
         }
         #endregion
 

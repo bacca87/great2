@@ -21,6 +21,8 @@ namespace Great2.ViewModels
     public class TimesheetsViewModel : ViewModelBase
     {
         #region Properties
+        public int MaxNoteLength => ApplicationSettings.Timesheets.NoteMaxLength;
+
         private bool _isAddNewEnabled = false;
         public bool IsAddNewEnabled
         {
@@ -122,13 +124,6 @@ namespace Great2.ViewModels
             }
         }
 
-        private ObservableCollection<string> _tags;
-        public ObservableCollection<string> Tags
-        {
-            get => _tags;
-            set => _tags = value;
-        }
-
         private FDLEVM _selectedFDL;
         public FDLEVM SelectedFDL
         {
@@ -202,21 +197,6 @@ namespace Great2.ViewModels
             MessengerInstance.Register<ItemChangedMessage<FactoryEVM>>(this, FactoryChanged);
 
             UpdateWorkingDays();
-            LoadTags();
-        }
-
-        private void LoadTags()
-        {
-            Tags = new ObservableCollection<string>((from d in WorkingDays
-                                                     from t in d.Timesheets
-                                                     where t.Notes != null
-                                                     where t.Notes.Contains("#")
-                                                     let words = t.Notes.Split(' ')
-                                                     from tag in words
-                                                     where tag.StartsWith("#")
-                                                     let parsed = tag.Replace("\r", String.Empty)
-                                                                     .Replace("\n", String.Empty)
-                                                     select parsed).Distinct());
         }
 
         private void UpdateWorkingDays()
@@ -472,12 +452,6 @@ namespace Great2.ViewModels
                 // if FDL is empty, we need to reset the FDL1 nav prop for prevent validation errors
                 timesheet.FDL1 = null;
                 timesheet.FDL = null;
-            }
-
-            foreach (var t in timesheet.Tags)
-            {
-                if (!Tags.Contains(t))
-                    Tags.Add(t);
             }
 
             using (DBArchive db = new DBArchive())

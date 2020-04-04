@@ -365,15 +365,11 @@ namespace Great2.ViewModels.Database
                 foreach (TimesheetEVM timesheet in Timesheets)
                 {
                     if (!string.IsNullOrEmpty(timesheet.Notes))
-                    {
-                        notes += timesheet?.Notes + ";";
-                    }
+                        notes += (timesheet?.Notes + ";").Replace("\n", "").Replace("\r", "");
                 }
 
                 if (!string.IsNullOrEmpty(notes))
-                {
                     notes = notes.Remove(notes.Length - 1);
-                }
 
                 return notes;
             }

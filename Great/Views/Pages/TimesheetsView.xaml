@@ -150,24 +150,7 @@
                 <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
                 <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}"/>
-                <DataGridTemplateColumn Header="Notes">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Behaviours:IntelliRichTextBox BorderThickness="0" Height="20" BorderBrush="Transparent" MinWidth="500"
-                                    OnLinkClick="RichTextBoxEx_TagClick"
-                                    Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
-                                    FontSize="15"
-                                    VerticalAlignment="Center" 
-                                    Text="{Binding Notes_Display,Mode=OneWay}" IsDocumentEnabled="True" IsReadOnly="True" Cursor="Arrow" >
-                                    <xctk:RichTextBox.TextFormatter>
-                                        <xctk:PlainTextFormatter />
-                                    </xctk:RichTextBox.TextFormatter>
-                                </Behaviours:IntelliRichTextBox>
-                            </Grid>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" MinWidth="500"/>
                 <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
@@ -240,19 +223,19 @@
                             </Grid.Resources>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="AM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="PM" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -290,24 +273,18 @@
                                         <CollectionContainer Collection="{Binding Source={StaticResource Items}}" />
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
-                            </ComboBox>
-                            <Grid Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="4">
-                                <Behaviours:IntelliRichTextBox                                     
-                                        Margin="2.5"
-                                        OnLinkClick="RichTextBoxEx_TagClick"
-                                        HorizontalAlignment="Center" 
-                                        VerticalAlignment="Center"
-                                        Height="60"
-                                        Width="300"
-                                        Text="{Binding SelectedTimesheet.Notes,Mode=TwoWay}" 
-                                        ContentAssistSource="{Binding Tags,Mode=OneWay}" 
-                                        IsEnabled="{Binding IsInputEnabled}"
-                                        IsDocumentEnabled="{Binding IsInputEnabled}">
-                                    <xctk:RichTextBox.TextFormatter>
-                                        <xctk:PlainTextFormatter />
-                                    </xctk:RichTextBox.TextFormatter>
-                                </Behaviours:IntelliRichTextBox>
-                            </Grid>
+                            </ComboBox>                            
+                            <TextBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="4" Margin="2.5"
+                                     Height="60"
+                                     Width="295"
+                                     AcceptsReturn="True" 
+                                     AcceptsTab="True"
+                                     MaxLength="{Binding NoteMaxLength, Mode=OneWay}"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Disabled"
+                                     TextWrapping="Wrap"
+                                     Text="{Binding SelectedTimesheet.Notes}" 
+                                     IsEnabled="{Binding IsInputEnabled}"/>
                             <StackPanel Margin="2" Grid.Column="5" Grid.Row ="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="center">
                                 <Button Margin="2" Content="Delete" Command="{Binding DeleteTimesheetCommand}" CommandParameter="{Binding SelectedTimesheet}"/>
                                 <Button Margin="2" Content="New" Command="{Binding CreateNewTimesheetCommand}" />
