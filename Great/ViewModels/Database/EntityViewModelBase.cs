@@ -44,7 +44,7 @@ namespace Great2.ViewModels.Database
             if (!IsChanged)
                 return;
 
-            if (MetroMessageBox.Show("Do you want to save changes?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)           
+            if (MetroMessageBox.Show("Would you like to save changes?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)           
                 Save();
             else          
                 Refresh();

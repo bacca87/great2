@@ -380,7 +380,7 @@ namespace Great2.ViewModels
             }
 
             if ((fdl.EStatus == EFDLStatus.Waiting || fdl.EStatus == EFDLStatus.Accepted) &&
-                MetroMessageBox.Show("The selected FDL was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                MetroMessageBox.Show("The selected FDL was already sent. Would you like to send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
             
             using (DBArchive db = new DBArchive())

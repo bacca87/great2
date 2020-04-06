@@ -429,7 +429,7 @@ namespace Great2.ViewModels
             }
 
             if ((ea.EStatus == EFDLStatus.Waiting || ea.EStatus == EFDLStatus.Accepted) &&
-                MetroMessageBox.Show("The selected expense account was already sent. Do you want send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                MetroMessageBox.Show("The selected expense account was already sent. Would you like to send it again?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
 
             using (new WaitCursor())

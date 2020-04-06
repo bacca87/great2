@@ -322,7 +322,7 @@ namespace Great2.ViewModels
 
         private void DeleteRent(CarRentalHistoryEVM cr)
         {
-            if (MetroMessageBox.Show("Do you want to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
+            if (MetroMessageBox.Show("Would you like to delete the selected rent?", "Rent Delete", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
             {
                 if (cr.Id == 0)
                 {
