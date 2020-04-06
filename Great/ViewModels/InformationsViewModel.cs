@@ -59,7 +59,7 @@ namespace Great2.ViewModels
         {
             ProductDescription = "This software has been designed to ease the business traveler's tasks.\n" +
                 "Keep track of your worked hours, expense accounts, travels and check your stats to be always informed about your activities.\n" +
-                "Please feel free to contribute to this project helping us to add new feature and keep everithing up to date, just visit our website for download the source code and start to improve it!\n\n" +
+                "Please feel free to contribute to this project helping us adding new feature and keep it up to date, just visit our website for download the source code and start to improve it!\n\n" +
                 "A special thanks to Andrea 'Cina' Ghinelli, the original ideator of this very useful software!";
         }
     }
