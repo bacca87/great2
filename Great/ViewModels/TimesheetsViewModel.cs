@@ -21,7 +21,7 @@ namespace Great2.ViewModels
     public class TimesheetsViewModel : ViewModelBase
     {
         #region Properties
-        public int MaxNoteLength => ApplicationSettings.Timesheets.NoteMaxLength;
+        public int NoteMaxLength => ApplicationSettings.Timesheets.NoteMaxLength;
 
         private bool _isAddNewEnabled = false;
         public bool IsAddNewEnabled

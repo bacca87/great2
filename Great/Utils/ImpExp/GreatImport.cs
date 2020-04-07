@@ -248,7 +248,7 @@ namespace Great2.Utils
                             car.LicensePlate = r.Field<string>("dbf_Targa").Trim();
                             car.Brand = r.Field<string>("dbf_Marca").Trim();
                             car.Model = r.Field<string>("dbf_Modello").Trim();
-                            car.CarRentalCompany = carCompanies.SingleOrDefault(cc => cc.Field<int>("Dbf_Index") == r.Field<int>("Dbf_Nolo")).Field<string>("Dbf_Descrizione");
+                            car.CarRentalCompany = carCompanies.SingleOrDefault(cc => cc.Field<int>("Dbf_Index") == r.Field<short>("Dbf_Nolo")).Field<string>("Dbf_Descrizione");
 
                             db.Cars.AddOrUpdate(x => x.LicensePlate, car);
                             db.SaveChanges();
@@ -280,6 +280,7 @@ namespace Great2.Utils
                                 his.EndDistance = r.Field<int>("dbf_KmFine");
                                 his.StartLocation = r.Field<string>("dbf_LuogoPrel").Trim();
                                 his.EndLocation = r.Field<string>("dbf_LuogoDepo").Trim();
+                                his.UOM = 1;
 
                                 his.StartDate = (r.Field<DateTime>("dbf_DataPrel") + r.Field<DateTime>("dbf_OraPrel").TimeOfDay).ToUnixTimestamp();
                                 his.EndDate = (r.Field<DateTime>("dbf_DataDepo") + r.Field<DateTime>("dbf_OraDepo").TimeOfDay).ToUnixTimestamp();
@@ -288,7 +289,14 @@ namespace Great2.Utils
                                 his.EndFuelLevel = r.Field<short>("dbf_SerbRicon");
                                 his.Notes = r.Field<string>("dbf_Note").Trim();
 
-                                db.CarRentalHistories.AddOrUpdate(x => x.StartDate, his);
+                                var rentToDelete = db.CarRentalHistories.SingleOrDefault(h => h.Car == his.Car && h.StartDate == his.StartDate);
+
+                                if (rentToDelete != null)
+                                    db.CarRentalHistories.Remove(rentToDelete);
+
+                                db.CarRentalHistories.Add(his);
+
+                                db.SaveChanges();
 
                                 Message($"Rent {DateTime.Now.FromUnixTimestamp(his.StartDate).ToShortDateString()} Car {licensePlate} OK");
                             }
@@ -298,8 +306,6 @@ namespace Great2.Utils
                             }
                         }
                     }
-
-                    db.SaveChanges();
                 }
             }
             catch (Exception ex)

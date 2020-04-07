@@ -27,6 +27,8 @@ CREATE TABLE [Timesheet]
  
 INSERT INTO TimeSheet SELECT *FROM _timesheet;
 
+DROP TABLE _timesheet;
+
 PRAGMA foreign_keys=on;
 
 --=========================================================================
