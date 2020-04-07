@@ -782,7 +782,7 @@ namespace Great2.Models
                                 }
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             transaction.Rollback();
                             fdlEVM = null;
@@ -790,7 +790,7 @@ namespace Great2.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 fdlEVM = null;
             }

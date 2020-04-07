@@ -415,7 +415,7 @@ namespace Great2.ViewModels.Database
         {
             Timesheet timesheet = new Timesheet();
 
-            Notes.Trim(' ', '\n', '\r');
+            Notes?.Trim(' ', '\n', '\r');
 
             Auto.Mapper.Map(this, timesheet);
             db.Timesheets.AddOrUpdate(timesheet);
