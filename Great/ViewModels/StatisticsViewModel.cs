@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Great2.ViewModels
 {
@@ -683,25 +684,36 @@ namespace Great2.ViewModels
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
 
                 //Get all expense accounts connected to selected year
-                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp >= startDate &&
-                ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp <= endDate).ToList().Select(e => new
-                {
-                    d = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
-                    e = new ExpenseAccountEVM(e)
-                });
+                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp >= startDate && ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp <= endDate).ToList()
+                               .Select(e => new
+                               {
+                                   day = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
+                                   expense = new ExpenseAccountEVM(e)
+                               });
+                
+                var Totals = from ex in expenses
+                             select new
+                             {
+                                 ex.day.Date.Month,
+                                 ex.expense.Currency,
+                                 TotalAmount = (ex.expense.TotalAmount ?? 0) - (ex.expense.IsRefunded ? ex.expense.TotalAmount ?? 0 : 0),
+                                 RefoundAmount = (ex.expense.IsRefunded ? (ex.expense.TotalAmount ?? 0) - (ex.expense.DeductionAmount ?? 0) : 0),
+                                 DeductionAmount = ex.expense.DeductionAmount ?? 0
+                             };
 
-                var groupedMyMonth = from ex in expenses
-                                     group ex by new { ex.d.Date.Month, ex.e.Currency, ex.e.TotalAmount, ex.e.DeductionAmount } into grouped
+                var groupedByMonth = from tot in Totals
+                                     group tot by new { tot.Month, tot.Currency, tot.TotalAmount, tot.RefoundAmount, tot.DeductionAmount } into grouped
                                      select new
                                      {
                                          Amount = grouped.Key.TotalAmount,
+                                         Refund = grouped.Key.RefoundAmount,
                                          Currency = grouped.Key.Currency,
                                          Deduction = grouped.Key.DeductionAmount,
                                          Month = grouped.Key.Month
                                      };
 
                 //For every currency in year
-                foreach (var month in groupedMyMonth.ToLookup(result => result.Month, result => new { result.Month, result.Deduction, result.Amount, result.Currency }))
+                foreach (var month in groupedByMonth.ToLookup(result => result.Month, result => new { result.Month, result.Refund, result.Deduction, result.Amount, result.Currency }))
                 {
                     int monthNumber = month.Select(x => x.Month).First() - 1;
                     var groupedByCurrency = month.GroupBy(x => x.Currency);
@@ -711,25 +723,42 @@ namespace Great2.ViewModels
                     {
                         if (cur.Key == null) continue;
 
-                        var eaSum = cur.Sum(x => x.Amount ?? 0);
+                        double eaSum = cur.Sum(x => x.Amount + x.Refund + x.Deduction);
 
                         MaxExpenseChartValue = eaSum > MaxExpenseChartValue ? eaSum : _MaxExpenseChartValue;
 
                         CurrencyLabel = chartPoint => chartPoint.Y.ToString("N2") + " " + cur.Key;
-                        ChartValues<double> TotalDeducted = new ChartValues<double>();
-                        ChartValues<double> TotalRefound = new ChartValues<double>();
 
-                        TotalDeducted.Add(cur.Sum(x => x.Deduction ?? 0));
-                        TotalRefound.Add(cur.Sum(x => (x.Amount ?? 0) - (x.Deduction ?? 0)));
+                        ChartValues<double> TotalAmount = new ChartValues<double>();
+                        ChartValues<double> TotalDeducted = new ChartValues<double>();
+                        ChartValues<double> TotalRefund = new ChartValues<double>();
+
+                        TotalAmount.Add(cur.Sum(x => x.Amount));
+                        TotalDeducted.Add(cur.Sum(x => x.Deduction));
+                        TotalRefund.Add(cur.Sum(x => x.Refund));
 
                         Expenses[monthNumber].Add(new StackedColumnSeries
                         {
-                            Title = "Refounded",
-                            Values = TotalRefound,
+                            Title = "Refunded",
+                            Values = TotalRefund,
                             DataLabels = false,
                             LabelPoint = CurrencyLabel,
                             Grouping = cur.Key,
-                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                            Fill = new SolidColorBrush((ColorConverter.ConvertFromString(MaterialColors.GREEN_700) as Color?).Value),
+                            Stroke = new SolidColorBrush((ColorConverter.ConvertFromString(MaterialColors.GREEN_700) as Color?).Value),
+                        });
+
+                        Expenses[monthNumber].Add(new StackedColumnSeries
+                        {
+                            Title = "Pending Refund",
+                            Values = TotalAmount,
+                            DataLabels = false,
+                            LabelPoint = CurrencyLabel,
+                            Grouping = cur.Key,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                            Fill = new SolidColorBrush((ColorConverter.ConvertFromString(MaterialColors.YELLOW_700) as Color?).Value),
+                            Stroke = new SolidColorBrush((ColorConverter.ConvertFromString(MaterialColors.YELLOW_700) as Color?).Value),
                         });
 
                         Expenses[monthNumber].Add(new StackedColumnSeries
@@ -739,7 +768,9 @@ namespace Great2.ViewModels
                             DataLabels = false,
                             LabelPoint = CurrencyLabel,
                             Grouping = cur.Key,
-                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                            Fill = new SolidColorBrush((ColorConverter.ConvertFromString(MaterialColors.RED_700) as Color?).Value),
+                            Stroke = new SolidColorBrush((ColorConverter.ConvertFromString(MaterialColors.RED_700) as Color?).Value),
                         });
 
                     }

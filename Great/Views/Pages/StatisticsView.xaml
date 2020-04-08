@@ -229,7 +229,7 @@
             </Grid>
         </TabItem>
         
-        <TabItem x:Name="TabExpenses" Header="Expenses" Style="{DynamicResource NoHeaderTabItem}">
+        <TabItem x:Name="ExpensesTab" Header="Expenses" Style="{DynamicResource NoHeaderTabItem}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20*"/>
