@@ -73,17 +73,13 @@ namespace Great2.Views
             var marker = factoriesMapControl.Markers.SingleOrDefault(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
 
             if (marker != null)
-            {
                 factoriesMapControl.Markers.Remove(marker);
-            }
 
             // add new updated marker            
             var point = Task.Run(async () => await GetFactoryCoordsAsync(factory));
 
             if (point.Result.HasValue)
-            {
                 factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
-            }
         }
 
         private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -96,33 +92,25 @@ namespace Great2.Views
                         FactoryEVM factory = obj as FactoryEVM;
 
                         if (tempMarker != null)
-                        {
                             factoriesMapControl.Markers.Remove(tempMarker);
-                        }
 
                         if (factoriesMapControl.Markers.Any(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id))
-                        {
                             return;
-                        }
 
                         var point = Task.Run(async () => await GetFactoryCoordsAsync(factory));
 
                         if (point.Result.HasValue)
-                        {
                             factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
-                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var obj in e.OldItems)
                     {
                         FactoryEVM factory = obj as FactoryEVM;
-                        var marker = factoriesMapControl.Markers.SingleOrDefault(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
+                        var markers = factoriesMapControl.Markers.Where(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
 
-                        if (marker != null)
-                        {
+                        foreach(var marker in markers)
                             factoriesMapControl.Markers.Remove(marker);
-                        }
                     }
                     break;
             }
@@ -135,9 +123,7 @@ namespace Great2.Views
             if (enable)
             {
                 if (tempMarker != null)
-                {
                     factoriesMapControl.Markers.Remove(tempMarker);
-                }
 
                 lastCursor = Mouse.OverrideCursor;
                 Mouse.OverrideCursor = Cursors.Cross;
@@ -204,9 +190,7 @@ namespace Great2.Views
                     FactoryMarker marker = factoriesMapControl.Markers.Where(m => ((FactoryEVM)((FactoryMarker)m.Shape).DataContext).Id == factory.Id).Select(m => m.Shape as FactoryMarker).FirstOrDefault();
 
                     if (marker != null)
-                    {
                         marker.PlayBounce();
-                    }
                 }
             }
         }

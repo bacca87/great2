@@ -271,7 +271,9 @@ namespace Great2.ViewModels
                                            Overtime50 = g.Sum(x => x.Overtime50 ?? 0),
                                            Overtime100 = g.Sum(x => x.Overtime100 ?? 0),
 
+                                           Office = g.Sum(x => x.EType == EDayType.WorkDay ? x.Timesheets.Where(t => string.IsNullOrEmpty(t.FDL)).Sum(t => t.TotalTime ?? 0) : 0),                                           
                                            HomeWoring = g.Sum(x => x.HoursOfHomeWorking ?? 0),
+                                           BusinessTrip = g.Sum(x => x.Timesheets.Where(t => !string.IsNullOrEmpty(t.FDL)).Sum(t => t.TotalTime ?? 0)),
                                            Vacations = g.Sum(x => x.EType == EDayType.VacationDay ? 8 : 0),
                                            Leave = g.Sum(x => x.HoursOfLeave ?? 0),
                                            SpecialLeave = g.Sum(x => x.HoursOfSpecialLeave ?? 0),
@@ -290,6 +292,8 @@ namespace Great2.ViewModels
                 ChartValues<float> LeaveValues = new ChartValues<float>();
                 ChartValues<float> SickLeaveValues = new ChartValues<float>();
                 ChartValues<float> HomeWorkValues = new ChartValues<float>();
+                ChartValues<float> BusinessTripValues = new ChartValues<float>();
+                ChartValues<float> OfficeValues = new ChartValues<float>();
 
                 for (int m = 1; m <= 12; m++)
                 {
@@ -304,7 +308,9 @@ namespace Great2.ViewModels
                         Overtime50Values.Add(month.Overtime50);
                         Overtime100Values.Add(month.Overtime100);
 
+                        OfficeValues.Add(month.Office);
                         HomeWorkValues.Add(month.HomeWoring);
+                        BusinessTripValues.Add(month.BusinessTrip);
                         SickLeaveValues.Add(month.SickLeave);
                         LeaveValues.Add(month.Leave);
                         VacationsValues.Add(month.Vacations);
@@ -319,7 +325,9 @@ namespace Great2.ViewModels
                         Overtime50Values.Add(float.NaN);
                         Overtime100Values.Add(float.NaN);
 
+                        OfficeValues.Add(float.NaN);
                         HomeWorkValues.Add(float.NaN);
+                        BusinessTripValues.Add(float.NaN);
                         SickLeaveValues.Add(float.NaN);
                         LeaveValues.Add(float.NaN);
                         VacationsValues.Add(float.NaN);
@@ -377,42 +385,49 @@ namespace Great2.ViewModels
                 {
                     new StackedColumnSeries()
                     {
-                        Title = "Office work hours",
-                        Values = TotalTimeValues,
+                        Title = "Office",
+                        Values = OfficeValues,
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },
                     new StackedColumnSeries()
                     {
-                        Title = "Home working hours",
+                        Title = "Home Working",
                         Values = HomeWorkValues,
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },
                     new StackedColumnSeries()
                     {
-                        Title = "Vacation Hours",
+                        Title = "Business Trip",
+                        Values = BusinessTripValues,
+                        DataLabels = false,
+                        LabelPoint = HoursLabel
+                    },
+                    new StackedColumnSeries()
+                    {
+                        Title = "Vacation",
                         Values = VacationsValues,
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },
                     new StackedColumnSeries()
                     {
-                        Title = "Leave Hours",
+                        Title = "Leave",
                         Values = LeaveValues,
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },
                     new StackedColumnSeries()
                     {
-                        Title = "Special Leave Hours",
+                        Title = "Special Leave",
                         Values = SpecialLeaveValues,
                         DataLabels = false,
                         LabelPoint = HoursLabel
                     },
                     new StackedColumnSeries
                     {
-                        Title = "Sick Leave Hours",
+                        Title = "Sick Leave",
                         Values = SickLeaveValues,
                         DataLabels = false,
                         LabelPoint = HoursLabel
