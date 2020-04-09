@@ -34,7 +34,6 @@
                   Grid.Row="0"
                   AutoGenerateColumns="False" 
                   CanUserReorderColumns="False" 
-                  CanUserResizeColumns="False" 
                   CanUserResizeRows="False" 
                   CanUserSortColumns="False" 
                   IsReadOnly="True"                  
@@ -68,8 +67,8 @@
                     </Style.Setters>
                 </Style>
                 <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
-                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                </Style>
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />                    
+                </Style>                
             </DataGrid.Resources>
             <DataGrid.GroupStyle>
                 <GroupStyle>
@@ -138,20 +137,20 @@
                 <KeyBinding Key="V" Modifiers="Ctrl" Command="{Binding PasteDayCommand}" CommandParameter="{Binding SelectedWorkingDay}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Day" Binding="{Binding Date.DayOfYear}" FontWeight="Regular" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}"/>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}"/>
-                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Hours of Leave" Binding="{Binding HoursOfLeave, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}"/>
-                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}"/>
-                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" MinWidth="500"/>
-                <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}"/>
+                <DataGridTextColumn Header="Day" Binding="{Binding Date.DayOfYear}" FontWeight="Regular" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Week" Binding="{Binding WeekNr_Display}" FontWeight="Bold" CellStyle="{StaticResource BaseCellStyle}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat='dddd dd MMMM'}" CellStyle="{StaticResource RightAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Total Time" Binding="{Binding TotalTime, StringFormat=N2}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Work Time" Binding="{Binding WorkTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Travel Time" Binding="{Binding TravelTime, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Hours of Leave" Binding="{Binding HoursOfLeave, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Overtime 34%" Binding="{Binding Overtime34, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Overtime 35%" Binding="{Binding Overtime35, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Overtime 50%" Binding="{Binding Overtime50, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Overtime 100%" Binding="{Binding Overtime100, StringFormat=N2}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
+                <DataGridTextColumn Header="Factories" Binding="{Binding Factories_Display}" CellStyle="{StaticResource BaseCellStyle}" CanUserResize="True" MinWidth="100" Width="300"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes_Display}" CellStyle="{StaticResource BaseCellStyle}" CanUserResize="True" MinWidth="100" Width="300"/>
+                <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayLocalName}" CellStyle="{StaticResource CenterAligned}" CanUserResize="False"/>
             </DataGrid.Columns>
         </DataGrid>
         <Expander x:Name="timesheetPanel" Header="TIMESHEET INFO" Grid.Row="2" IsExpanded="False" Expanded="TimesheetPanel_Expanded" ExpandDirection="Up">
