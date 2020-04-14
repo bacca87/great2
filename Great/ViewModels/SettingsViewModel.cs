@@ -516,7 +516,7 @@ namespace Great2.ViewModels
             string AppName = InformationsViewModel.Title;
 
             if (isChecked)
-                registryKey.SetValue(AppName, AppDomain.CurrentDomain.BaseDirectory);
+                registryKey.SetValue(AppName, Assembly.GetExecutingAssembly().Location);
             else if(registryKey.GetValue(AppName) != null)
                 registryKey.DeleteValue(AppName);
         }
