@@ -684,7 +684,7 @@ namespace Great2.ViewModels
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
 
                 //Get all expense accounts connected to selected year
-                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp >= startDate && ea.FDL1.Timesheets.FirstOrDefault().Day.Timestamp <= endDate).ToList()
+                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.StartDay >= startDate && ea.FDL1.StartDay <= endDate).ToList()
                                .Select(e => new
                                {
                                    day = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
@@ -697,19 +697,19 @@ namespace Great2.ViewModels
                                  ex.day.Date.Month,
                                  ex.expense.Currency,
                                  TotalAmount = (ex.expense.TotalAmount ?? 0) - (ex.expense.IsRefunded ? ex.expense.TotalAmount ?? 0 : 0),
-                                 RefoundAmount = (ex.expense.IsRefunded ? (ex.expense.TotalAmount ?? 0) - (ex.expense.DeductionAmount ?? 0) : 0),
+                                 RefundAmount = (ex.expense.IsRefunded ? (ex.expense.TotalAmount ?? 0) - (ex.expense.DeductionAmount ?? 0) : 0),
                                  DeductionAmount = ex.expense.DeductionAmount ?? 0
                              };
 
                 var groupedByMonth = from tot in Totals
-                                     group tot by new { tot.Month, tot.Currency, tot.TotalAmount, tot.RefoundAmount, tot.DeductionAmount } into grouped
+                                     group tot by new { tot.Month, tot.Currency } into g
                                      select new
                                      {
-                                         Amount = grouped.Key.TotalAmount,
-                                         Refund = grouped.Key.RefoundAmount,
-                                         Currency = grouped.Key.Currency,
-                                         Deduction = grouped.Key.DeductionAmount,
-                                         Month = grouped.Key.Month
+                                         Amount = g.Sum(x => x.TotalAmount),
+                                         Refund = g.Sum(x => x.RefundAmount),
+                                         Currency = g.First().Currency,
+                                         Deduction = g.Sum(x => x.DeductionAmount),
+                                         Month = g.First().Month
                                      };
 
                 //For every currency in year
