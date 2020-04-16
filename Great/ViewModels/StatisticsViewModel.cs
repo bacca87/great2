@@ -684,7 +684,7 @@ namespace Great2.ViewModels
                 long endDate = new DateTime(SelectedYear, 12, 31).ToUnixTimestamp();
 
                 //Get all expense accounts connected to selected year
-                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.StartDay >= startDate && ea.FDL1.StartDay <= endDate).ToList()
+                var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.StartDay >= startDate && ea.FDL1.StartDay <= endDate && ea.Status == 2).ToList()
                                .Select(e => new
                                {
                                    day = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
