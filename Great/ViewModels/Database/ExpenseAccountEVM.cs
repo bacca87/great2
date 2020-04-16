@@ -198,6 +198,8 @@ namespace Great2.ViewModels.Database
             set => Set(ref _DaysOfWeek, value);
         }
 
+        public DateTime StartDayDate => DateTime.Now.FromUnixTimestamp(FDL1.StartDay);
+
         public double? MondayAmount => Expenses?.Sum(x => x.MondayAmount);
         public double? TuesdayAmount => Expenses?.Sum(x => x.TuesdayAmount);
         public double? WednesdayAmount => Expenses?.Sum(x => x.WednesdayAmount);

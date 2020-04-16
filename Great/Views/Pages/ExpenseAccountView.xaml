@@ -115,6 +115,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="FDL Number" Binding="{Binding FDL_New_Display}" FontWeight="Bold" CellStyle="{StaticResource CenterAligned}"/>
+                    <DataGridTextColumn Header="Month" Binding="{Binding StartDayDate, StringFormat=MMMM}" CellStyle="{StaticResource BaseCellStyle}"/>
                     <DataGridTemplateColumn Header="Factory" CellStyle="{StaticResource BaseCellStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
