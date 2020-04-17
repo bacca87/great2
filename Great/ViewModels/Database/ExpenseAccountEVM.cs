@@ -284,7 +284,7 @@ namespace Great2.ViewModels.Database
 
         public void UpdateDiaria(TimesheetEVM timesheet, bool remove, DBArchive db = null)
         {
-            if (!UserSettings.Options.AutomaticAllowance || timesheet == null || !FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
+            if (!UserSettings.Options.AutomaticAllowance || timesheet == null || timesheet?.FDL1?.Factory1 == null || !FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
                 return;
 
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.DiariaType).FirstOrDefault();
@@ -335,7 +335,7 @@ namespace Great2.ViewModels.Database
 
         public void UpdatePocketMoney(TimesheetEVM timesheet, bool remove, DBArchive db = null)
         {
-            if (!UserSettings.Options.AutomaticAllowance || timesheet == null || FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
+            if (!UserSettings.Options.AutomaticAllowance || timesheet == null || timesheet?.FDL1?.Factory1 == null || FactoryEVM.CheckForfaitCountry(timesheet?.FDL1?.Factory1?.CountryCode))
                 return;
 
             ExpenseEVM expense = Expenses.Where(e => e.Type == ApplicationSettings.ExpenseAccount.PocketMoneyType).FirstOrDefault();
