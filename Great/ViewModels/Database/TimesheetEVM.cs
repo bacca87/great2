@@ -452,6 +452,7 @@ namespace Great2.ViewModels.Database
             {
                 db.Entry(timesheet).Reference(p => p.FDL1).Load();
                 Auto.Mapper.Map(timesheet, this);
+                FDL1?.RaisePropertyChanged(nameof(FDL1.FDL_Factory_Display));
                 IsChanged = false;
                 return true;
             }

@@ -84,35 +84,49 @@ namespace Great2.Views
 
         private void Factories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.Action)
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var obj in e.NewItems)
-                    {
-                        FactoryEVM factory = obj as FactoryEVM;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (var obj in e.NewItems)
+                        {
+                            FactoryEVM factory = obj as FactoryEVM;
 
-                        if (tempMarker != null)
-                            factoriesMapControl.Markers.Remove(tempMarker);
+                            if (tempMarker != null)
+                                factoriesMapControl.Markers.Remove(tempMarker);
 
-                        if (factoriesMapControl.Markers.Any(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id))
-                            return;
+                            if (factoriesMapControl.Markers.Any(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id))
+                                return;
 
-                        var point = Task.Run(async () => await GetFactoryCoordsAsync(factory));
+                            var point = Task.Run(async () => await GetFactoryCoordsAsync(factory));
 
-                        if (point.Result.HasValue)
-                            factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var obj in e.OldItems)
-                    {
-                        FactoryEVM factory = obj as FactoryEVM;
-                        var markers = factoriesMapControl.Markers.Where(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
+                            if (point.Result.HasValue)
+                                factoriesMapControl.Markers.Add(CreateMarker((PointLatLng)point.Result, factory, FactoryMarkerColor.Red));
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (var obj in e.OldItems)
+                        {
+                            FactoryEVM factory = obj as FactoryEVM;
+                            var markers = factoriesMapControl.Markers.Where(f => f.Tag != null && f.Tag is FactoryEVM && (f.Tag as FactoryEVM).Id == factory.Id);
 
-                        foreach(var marker in markers)
-                            factoriesMapControl.Markers.Remove(marker);
-                    }
-                    break;
+                            foreach (var marker in markers)
+                            {
+                                try
+                                {
+                                    factoriesMapControl.Markers.Remove(marker);
+                                }
+                                catch { }
+                            }
+                                
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 

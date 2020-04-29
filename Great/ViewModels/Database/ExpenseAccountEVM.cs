@@ -331,6 +331,12 @@ namespace Great2.ViewModels.Database
                 expense.Save();
 
             IsChanged = false;
+            IsCompiled = false;
+
+            if (db != null)
+                Save(db);
+            else
+                Save();
         }
 
         public void UpdatePocketMoney(TimesheetEVM timesheet, bool remove, DBArchive db = null)
@@ -376,6 +382,12 @@ namespace Great2.ViewModels.Database
                 expense.Save();
 
             IsChanged = false;
+            IsCompiled = false;
+
+            if (db != null)
+                Save(db);
+            else
+                Save();
         }
 
         public void UpdateDiariaAndPocketMoney(ObservableCollection<TimesheetEVM> timesheets)

@@ -314,10 +314,6 @@ namespace Great2.ViewModels.Database
                 Auto.Mapper.Map(fdl, this);
 
                 Timesheets = new ObservableCollection<TimesheetEVM>(Timesheets.OrderBy(t => t.Timestamp));
-
-                //foreach (TimesheetEVM timesheet in Timesheets)
-                //    timesheet.Refresh(db);
-
                 return true;
             }
 

@@ -453,6 +453,8 @@ namespace Great2.ViewModels.Database
                 foreach (TimesheetEVM timesheet in Timesheets)
                     timesheet.Refresh(db);
 
+                RaisePropertyChanged(nameof(Factories_Display));
+
                 return true;
             }
 
