@@ -354,7 +354,7 @@ namespace Great2.ViewModels
                             TimesheetEVM timesheet = new TimesheetEVM();
                             Auto.Mapper.Map(sts, timesheet);
 
-                            if (sourceDay.WeekNr != destinationDay.WeekNr)
+                            if (sourceDay.WeekNr != destinationDay.WeekNr || sourceDay.Date.Month != destinationDay.Date.Month)
                             {
                                 timesheet.FDL = null;
                                 timesheet.FDL1 = null;
