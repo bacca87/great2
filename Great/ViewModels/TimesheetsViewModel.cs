@@ -101,7 +101,7 @@ namespace Great2.ViewModels
                     using (DBArchive db = new DBArchive())
                     {
                         string year = CurrentYear.ToString(); // hack for query
-                        FDLs = new ObservableCollection<FDLEVM>(db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr).ToList().Select(fdl => new FDLEVM(fdl)).Where(fdl => fdl.StartDayDate.Month == SelectedWorkingDay.Date.Month));
+                        FDLs = new ObservableCollection<FDLEVM>(db.FDLs.Where(fdl => fdl.Id.Substring(0, 4) == year && fdl.WeekNr == SelectedWorkingDay.WeekNr && fdl.Status != 4).ToList().Select(fdl => new FDLEVM(fdl)).Where(fdl => fdl.StartDayDate.Month == SelectedWorkingDay.Date.Month));
                     }
 
                     RaisePropertyChanged(nameof(FDLs));
