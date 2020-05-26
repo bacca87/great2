@@ -185,8 +185,8 @@ namespace Great2.ViewModels
             SendByEmailCommand = new RelayCommand<string>(SendByEmail, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             SaveAsCommand = new RelayCommand<FDLEVM>(SaveAs, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             OpenCommand = new RelayCommand<FDLEVM>(Open, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
-            MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
-            MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
+            MarkAsAcceptedCommand = new RelayCommand<FDLEVM>(MarkAsAccepted, (x) => { return SelectedFDL != null; });
+            MarkAsCancelledCommand = new RelayCommand<FDLEVM>(MarkAsCancelled, (x) => { return SelectedFDL != null; });
             SendCancellationRequestCommand = new RelayCommand<FDLEVM>(CancellationRequest, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
             PrintCommand = new RelayCommand<FDLEVM>(Print, (x) => { return SelectedFDL != null && !SelectedFDL.IsVirtual; });
 
