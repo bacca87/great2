@@ -213,8 +213,8 @@ namespace Great2.ViewModels
             SaveAsCommand = new RelayCommand<ExpenseAccountEVM>(SaveAs, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             OpenCommand = new RelayCommand<ExpenseAccountEVM>(Open, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             MarkAsRefundedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsRefunded, (x) => { return SelectedEA != null; });
-            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
-            MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
+            MarkAsAcceptedCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsAccepted, (x) => { return SelectedEA != null; });
+            MarkAsCancelledCommand = new RelayCommand<ExpenseAccountEVM>(MarkAsCancelled, (x) => { return SelectedEA != null; });
             PrintCommand = new RelayCommand<ExpenseAccountEVM>(Print, (x) => { return SelectedEA != null && !SelectedEA.IsVirtual; });
             GotFocusCommand = new RelayCommand(() => { ShowEditMenu = true; });
             LostFocusCommand = new RelayCommand(() => { });
