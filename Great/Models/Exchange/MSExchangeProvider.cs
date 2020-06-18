@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Great2.Models.DTO;
 using Great2.Models.Interfaces;
+using Great2.Utils;
 using Great2.Utils.Messages;
 using Microsoft.Exchange.WebServices.Data;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Net;
 using System.Net.Mail;
 using System.Threading;
+using System.Linq;
 using static Great2.Models.ExchangeTraceListener;
 
 namespace Great2.Models
@@ -28,11 +31,6 @@ namespace Great2.Models
         public event EventHandler<MessageEventArgs> OnMessageSent;
 
         private Thread mainThread;
-        private Thread emailSenderThread;
-        private Thread subscribeThread;
-        private Thread syncThread;
-
-        private Uri exServiceUri;
 
         private ConcurrentQueue<EmailMessageDTO> emailQueue = new ConcurrentQueue<EmailMessageDTO>();
 
@@ -80,23 +78,28 @@ namespace Great2.Models
             {
                 try
                 {
-                    if (!UserSettings.Email.UseDefaultCredentials)
-                        exService.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-                    
-                    exService.AutodiscoverUrl(UserSettings.Email.UseDefaultCredentials ? UserPrincipal.Current.EmailAddress : UserSettings.Email.EmailAddress, (string redirectionUrl) =>
+                    if (UserSettings.Email.UseDefaultCredentials)
                     {
-                        // The default for the validation callback is to reject the URL.
-                        bool result = false;
-                        Uri redirectionUri = new Uri(redirectionUrl);
+                        exService.AutodiscoverUrl(UserPrincipal.Current.EmailAddress, (string redirectionUrl) =>
+                        {
+                            // The default for the validation callback is to reject the URL.
+                            bool result = false;
+                            Uri redirectionUri = new Uri(redirectionUrl);
 
-                        // Validate the contents of the redirection URL. In this simple validation
-                        // callback, the redirection URL is considered valid if it is using HTTPS
-                        // to encrypt the authentication credentials. 
-                        if (redirectionUri.Scheme == "https")
-                            result = true;
+                            // Validate the contents of the redirection URL. In this simple validation
+                            // callback, the redirection URL is considered valid if it is using HTTPS
+                            // to encrypt the authentication credentials. 
+                            if (redirectionUri.Scheme == "https")
+                                result = true;
 
-                        return result;
-                    });
+                            return result;
+                        });
+                    }
+                    else
+                    {
+                        exService.Credentials = new OAuthCredentials(GetAuthenticationToken());
+                        exService.Url = new Uri("https://outlook.office365.com/EWS/Exchange.asmx");
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -115,8 +118,6 @@ namespace Great2.Models
 
             Status = EProviderStatus.Connecting;
 
-            exServiceUri = exService.Url;
-
             // Cache user display name
             if (string.IsNullOrEmpty(UserSettings.Email.CachedDisplayName))
             {
@@ -126,46 +127,20 @@ namespace Great2.Models
                     UserSettings.Email.CachedDisplayName = name;
             }
 
-            if ((emailSenderThread == null || !emailSenderThread.IsAlive) && !exitToken.IsCancellationRequested)
-            {
-                emailSenderThread = new Thread(EmailSenderThread);
-                emailSenderThread.Name = "Email Sender";
-                emailSenderThread.IsBackground = true;
-                emailSenderThread.Start();
-            }
+            SubscribeNotifications(exService, trace);
 
-            if ((subscribeThread == null || !subscribeThread.IsAlive) && !exitToken.IsCancellationRequested)
-            {
-                subscribeThread = new Thread(SubscribeNotificationsThread);
-                subscribeThread.Name = "Exchange Subscription Thread";
-                subscribeThread.IsBackground = true;
-                subscribeThread.Start();
-            }
+            ExchangeSync(exService, trace);
 
-            if ((syncThread == null || !syncThread.IsAlive) && !exitToken.IsCancellationRequested)
+            while (!exitToken.IsCancellationRequested)
             {
-                syncThread = new Thread(ExchangeSync);
-                syncThread.Name = "Exchange Sync";
-                syncThread.IsBackground = true;
-                syncThread.Start();
+                EmailSender(exService, trace);
+                Wait(ApplicationSettings.General.WaitForNextEmailCheck);
             }
         }
 
-        private void EmailSenderThread()
-        {
-            ExchangeTraceListener trace = new ExchangeTraceListener();
-            ExchangeService service = new ExchangeService
-            {
-                TraceListener = trace,
-                TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,                
-                Url = exServiceUri
-            };
-
-            if (!UserSettings.Email.UseDefaultCredentials)
-                service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-
-            while (!exitToken.IsCancellationRequested)
+        private void EmailSender(ExchangeService service, ExchangeTraceListener trace)
+        {   
+            lock(service)
             {
                 while (!emailQueue.IsEmpty)
                 {
@@ -209,25 +184,11 @@ namespace Great2.Models
                     }
                     while (!IsSent);
                 }
-
-                Wait(ApplicationSettings.General.WaitForNextEmailCheck);
             }
         }
 
-        private void SubscribeNotificationsThread()
+        private void SubscribeNotifications(ExchangeService service, ExchangeTraceListener trace)
         {
-            ExchangeTraceListener trace = new ExchangeTraceListener();
-            ExchangeService service = new ExchangeService
-            {
-                TraceListener = trace,
-                TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,
-                Url = exServiceUri
-            };
-
-            if (!UserSettings.Email.UseDefaultCredentials)
-                service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-
             subconn = new StreamingSubscriptionConnection(service, 30);
 
             do
@@ -242,7 +203,7 @@ namespace Great2.Models
                     subconn.OnDisconnect += Connection_OnDisconnect;
                     subconn.Open();
                 }
-                catch
+                catch (Exception ex)
                 {
                     if (trace.Result == ETraceResult.LoginError)
                     {
@@ -255,20 +216,8 @@ namespace Great2.Models
             } while ((subconn == null || !subconn.IsOpen) && !exitToken.IsCancellationRequested);
         }
 
-        private void ExchangeSync()
+        private void ExchangeSync(ExchangeService service, ExchangeTraceListener trace)
         {
-            ExchangeTraceListener trace = new ExchangeTraceListener();
-            ExchangeService service = new ExchangeService
-            {
-                TraceListener = trace,
-                TraceFlags = TraceFlags.AutodiscoverConfiguration,
-                TraceEnabled = true,
-                Url = exServiceUri
-            };
-
-            if (!UserSettings.Email.UseDefaultCredentials)
-                service.Credentials = new WebCredentials(UserSettings.Email.EmailAddress, UserSettings.Email.EmailPassword);
-
             bool IsSynced = false;
             Status = EProviderStatus.Syncronizing;
 
@@ -289,24 +238,27 @@ namespace Great2.Models
                     SearchFilter.ContainsSubstring f2 = new SearchFilter.ContainsSubstring(ItemSchema.DisplayTo, ApplicationSettings.EmailRecipients.FDL_CHK_Display, ContainmentMode.Substring, ComparisonMode.IgnoreCase);
                     SearchFilter.SearchFilterCollection compoundFilter = new SearchFilter.SearchFilterCollection(LogicalOperator.Or, f1, f2);
 
-                    foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), compoundFilter, folderView, itemView))
+                    lock(service)
                     {
-                        if (exitToken.IsCancellationRequested) break;
+                        foreach (Item item in FindItemsInSubfolders(service, new FolderId(WellKnownFolderName.MsgFolderRoot), compoundFilter, folderView, itemView))
+                        {
+                            if (exitToken.IsCancellationRequested) break;
 
-                        if (!(item is EmailMessage))
-                            continue;
+                            if (!(item is EmailMessage))
+                                continue;
 
-                        EmailMessage message = EmailMessage.Bind(service, item.Id);
+                            EmailMessage message = EmailMessage.Bind(service, item.Id);
 
-                        // Double check in order to avoiding wrong fdl import (bugfix check the commment above) 
-                        if (message.From.Address.ToLower() == ApplicationSettings.EmailRecipients.FDLSystem.ToLower())
-                            NotifyNewMessage(message);
+                            // Double check in order to avoiding wrong fdl import (bugfix check the commment above) 
+                            if (message.From.Address.ToLower() == ApplicationSettings.EmailRecipients.FDLSystem.ToLower())
+                                NotifyNewMessage(message);
+                        }
                     }
 
                     IsSynced = true;
                     Status = EProviderStatus.Syncronized;
                 }
-                catch
+                catch (Exception ex)
                 {
                     if (trace.Result == ETraceResult.LoginError)
                     {
@@ -323,58 +275,108 @@ namespace Great2.Models
         #region Subscription Events Handling
         private void Connection_OnNotificationEvent(object sender, NotificationEventArgs args)
         {
-            foreach (NotificationEvent e in args.Events)
+            lock(exService)
             {
-                var itemEvent = (ItemEvent)e;
-                EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
-
-                switch (e.EventType)
+                foreach (NotificationEvent e in args.Events)
                 {
-                    case EventType.NewMail:
-                        if(message.From.Address == ApplicationSettings.EmailRecipients.FDLSystem || message.DisplayTo == ApplicationSettings.EmailRecipients.FDL_CHK_Display)
-                            NotifyNewMessage(message);
-                        break;
+                    var itemEvent = (ItemEvent)e;
+                    EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
 
-                    default:
-                        break;
+                    switch (e.EventType)
+                    {
+                        case EventType.NewMail:
+                            if (message.From.Address == ApplicationSettings.EmailRecipients.FDLSystem || message.DisplayTo == ApplicationSettings.EmailRecipients.FDL_CHK_Display)
+                                NotifyNewMessage(message);
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
         }
 
         private void Connection_OnDisconnect(object sender, SubscriptionErrorEventArgs args)
         {
-            StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
-
-            try
+            lock(exService)
             {
-                connection.Open();
-            }
-            catch (Exception)
-            {
-                if (Status != EProviderStatus.Error)
-                    Status = EProviderStatus.Offline;
+                StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
-                connection.Dispose();
-                Connect();
+                try
+                {
+                    connection.Open();
+                }
+                catch (Exception)
+                {
+                    if (Status != EProviderStatus.Error)
+                        Status = EProviderStatus.Offline;
+
+                    connection.Dispose();
+                    Connect();
+                }
             }
         }
 
         private void Connection_OnSubscriptionError(object sender, SubscriptionErrorEventArgs args)
         {
-            Debugger.Break();
+            lock(exService)
+            {
+                Debugger.Break();
 
-            StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
+                StreamingSubscriptionConnection connection = sender as StreamingSubscriptionConnection;
 
-            if (!connection.IsOpen)
-                connection.Close();
+                if (!connection.IsOpen)
+                    connection.Close();
 
-            connection.Dispose();
-            Status = EProviderStatus.Error;
-            Connect();
+                connection.Dispose();
+                Status = EProviderStatus.Error;
+                Connect();
+            }
         }
         #endregion
 
         #region Private Methods
+
+        private string GetAuthenticationToken()
+        {
+            string token = string.Empty;
+
+            var Authentication = System.Threading.Tasks.Task.Run(async () =>
+            {
+                IPublicClientApplication _clientApp = PublicClientApplicationBuilder
+                        .Create(ApplicationSettings.General.MSALClientId)
+                        .WithAuthority(AzureCloudInstance.AzurePublic, ApplicationSettings.General.MSALTenant)
+                        .WithDefaultRedirectUri()
+                        .Build();
+
+                MsalTokenCacheHelper.EnableSerialization(_clientApp.UserTokenCache);
+                
+                // Force disconnect (debug use)
+                //var accounts = await _clientApp.GetAccountsAsync();
+                //if (accounts.Any())
+                //{
+                //    try
+                //    {
+                //        await _clientApp.RemoveAsync(accounts.FirstOrDefault());
+                //    }
+                //    catch (MsalException ex)
+                //    {
+                //        Debug.WriteLine($"Error signing-out user: {ex.Message}");
+                //    }
+                //}
+
+                List<string> scopes = new List<string>();
+                scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All");
+
+                MsalAuthenticationProvider provider = new MsalAuthenticationProvider(_clientApp, scopes.ToArray());
+                token = await provider.GetTokenAsync();
+            });
+
+            System.Threading.Tasks.Task.WaitAll(Authentication);
+
+            return token;
+        }
+
         private void Wait(int milliseconds)
         {
             try
@@ -576,39 +578,7 @@ namespace Great2.Models
                 catch { }
             }
 
-            if (emailSenderThread != null && !emailSenderThread.Join(3000))
-            {
-                try
-                {
-                    Debugger.Break();
-                    emailSenderThread.Abort();
-                }
-                catch { }
-            }
-
-            if (subscribeThread != null && !subscribeThread.Join(3000))
-            {
-                try
-                {
-                    Debugger.Break();
-                    subscribeThread.Abort();
-                }
-                catch { }
-            }
-
-            if (syncThread != null && !syncThread.Join(3000))
-            {
-                try
-                {
-                    Debugger.Break();
-                    syncThread.Abort();
-                }
-                catch { }
-            }
-
             mainThread = null;
-            subscribeThread = null;
-            syncThread = null;
 
             try
             {
@@ -623,22 +593,28 @@ namespace Great2.Models
 
         public NameResolutionCollection ResolveName(string filter)
         {
-            if (exService.Url != null)
-                return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
-            else
-                return null;
+            lock(exService)
+            {
+                if (exService.Url != null)
+                    return exService.ResolveName(filter, ResolveNameSearchLocation.ContactsThenDirectory, true);
+                else
+                    return null;
+            }
         }
 
         public string GetUserDisplayName(string email)
         {
-            try
+            lock (exService)
             {
-                NameResolutionCollection ncCol = exService.ResolveName(email, ResolveNameSearchLocation.DirectoryOnly, true);
-                return ncCol[0].Contact.DisplayName;
-            }
-            catch { }
+                try
+                {
+                    NameResolutionCollection ncCol = exService.ResolveName(email, ResolveNameSearchLocation.DirectoryOnly, true);
+                    return ncCol[0].Contact.DisplayName;
+                }
+                catch { }
 
-            return string.Empty;
+                return string.Empty;
+            }
         }
 
         public bool SendEmail(EmailMessageDTO message)
@@ -665,30 +641,33 @@ namespace Great2.Models
 
         public bool IsServiceAvailable()
         {
-            try
+            lock(exService)
             {
-                if (exServiceUri == null)
-                    return false;
-
-                var request = (HttpWebRequest)WebRequest.Create(exServiceUri.Scheme + "://" + exServiceUri.Host);
-                request.UserAgent = ApplicationSettings.General.UserAgent;
-                request.KeepAlive = false;
-                request.AllowAutoRedirect = true;
-                request.MaximumAutomaticRedirections = 100;
-                request.CookieContainer = new CookieContainer();
-                request.Method = "GET";
-
-                using (var response = (HttpWebResponse)request.GetResponse())
+                try
                 {
-                    if (response.StatusCode == HttpStatusCode.OK)
-                        return true;
-                    else
+                    if (exService.Url == null)
                         return false;
+
+                    var request = (HttpWebRequest)WebRequest.Create(exService.Url.Scheme + "://" + exService.Url.Host);
+                    request.UserAgent = ApplicationSettings.General.UserAgent;
+                    request.KeepAlive = false;
+                    request.AllowAutoRedirect = true;
+                    request.MaximumAutomaticRedirections = 100;
+                    request.CookieContainer = new CookieContainer();
+                    request.Method = "GET";
+
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                    {
+                        if (response.StatusCode == HttpStatusCode.OK)
+                            return true;
+                        else
+                            return false;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                return false;
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
         #endregion

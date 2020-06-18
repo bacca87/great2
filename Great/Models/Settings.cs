@@ -1361,6 +1361,9 @@ namespace Great2.Models
             public const string GithubClientId = "db30fa115978abf38684";
             public const string GithubClientSecret = "69b0fb16859aa6c0db9aeed534fb35cac63ad9d3";
 
+            public const string MSALClientId = "18e6ba63-ee4c-4a25-b8c1-2d2a4c55e456";
+            public const string MSALTenant = "dd1e773f-ea8f-45c5-8141-c04e4ce8344b";
+
             public const string IntranetAddress = "https://intranet.elettric80.it";
 
             public static bool ImportInProgress = false;
