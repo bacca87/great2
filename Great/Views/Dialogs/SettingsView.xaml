@@ -76,7 +76,7 @@
                                 Width="60"/>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Grid.Row="1" Header="Microsoft Exchange Account" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
+                    <GroupBox Grid.Row="1" Header="Sharepoint Account" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>

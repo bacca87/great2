@@ -457,9 +457,6 @@ namespace Great2.ViewModels
                 {
                     UserSettings.Email.EmailAddress = EmailAddress;
                     UserSettings.Email.EmailPassword = EmailPassword;
-
-                    Exchange.Disconnect();
-                    Exchange.Connect();
                 }
 
                 UserSettings.Advanced.AutoAddFactories = AutoAddFactories;

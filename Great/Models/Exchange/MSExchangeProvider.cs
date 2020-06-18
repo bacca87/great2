@@ -73,46 +73,28 @@ namespace Great2.Models
             exService.TraceListener = trace;
             exService.TraceFlags = TraceFlags.AutodiscoverConfiguration;
             exService.TraceEnabled = true;
-                        
+            exService.Url = new Uri(ApplicationSettings.General.Outlook365ewsEndpoint);
+
+            // trick for display the Oauth login form after application startup
+            Thread.Sleep(ApplicationSettings.General.WaitForApplicationStartup);
+
+            string token = string.Empty;
+
             do
             {
                 try
                 {
-                    if (UserSettings.Email.UseDefaultCredentials)
-                    {
-                        exService.AutodiscoverUrl(UserPrincipal.Current.EmailAddress, (string redirectionUrl) =>
-                        {
-                            // The default for the validation callback is to reject the URL.
-                            bool result = false;
-                            Uri redirectionUri = new Uri(redirectionUrl);
-
-                            // Validate the contents of the redirection URL. In this simple validation
-                            // callback, the redirection URL is considered valid if it is using HTTPS
-                            // to encrypt the authentication credentials. 
-                            if (redirectionUri.Scheme == "https")
-                                result = true;
-
-                            return result;
-                        });
-                    }
-                    else
-                    {
-                        exService.Credentials = new OAuthCredentials(GetAuthenticationToken());
-                        exService.Url = new Uri("https://outlook.office365.com/EWS/Exchange.asmx");
-                    }
+                    if(IsServiceAvailable())
+                        token = GetAuthenticationToken();                    
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    if (trace.Result == ETraceResult.LoginError)
-                    {
-                        Status = EProviderStatus.LoginError;
-                        return;
-                    }
-                    else
-                        Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
+                    Wait(ApplicationSettings.General.WaitForNextConnectionRetry);
                 }
-            } while (exService.Url == null && !exitToken.IsCancellationRequested);
+            } while (string.IsNullOrEmpty(token) && !exitToken.IsCancellationRequested);
 
+            exService.Credentials = new OAuthCredentials(token);
+            
             if (exitToken.IsCancellationRequested)
                 return;
 
@@ -312,7 +294,7 @@ namespace Great2.Models
                         Status = EProviderStatus.Offline;
 
                     connection.Dispose();
-                    Connect();
+                    Reconnect();
                 }
             }
         }
@@ -330,7 +312,7 @@ namespace Great2.Models
 
                 connection.Dispose();
                 Status = EProviderStatus.Error;
-                Connect();
+                Reconnect();
             }
         }
         #endregion
@@ -350,8 +332,8 @@ namespace Great2.Models
                         .Build();
 
                 MsalTokenCacheHelper.EnableSerialization(_clientApp.UserTokenCache);
-                
-                // Force disconnect (debug use)
+
+                #region Force Logoff (debug test)
                 //var accounts = await _clientApp.GetAccountsAsync();
                 //if (accounts.Any())
                 //{
@@ -364,6 +346,7 @@ namespace Great2.Models
                 //        Debug.WriteLine($"Error signing-out user: {ex.Message}");
                 //    }
                 //}
+                #endregion
 
                 List<string> scopes = new List<string>();
                 scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All");
@@ -530,6 +513,12 @@ namespace Great2.Models
         #endregion
 
         #region Public Methods
+        public void Reconnect()
+        {
+            Disconnect();
+            Connect();
+        }
+        
         public void Connect()
         {
             if (mainThread == null || !mainThread.IsAlive)

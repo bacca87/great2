@@ -150,11 +150,12 @@ namespace Great2.ViewModels
             {
                 ExchangeStatus = x.Content;
 
-                if (ExchangeStatus == EProviderStatus.LoginError)
-                {
-                    ExchangeLoginView loginView = new ExchangeLoginView();
-                    loginView.ShowDialog();
-                }
+                // no more needed with OAuth2
+                //if (ExchangeStatus == EProviderStatus.LoginError)
+                //{
+                //    ExchangeLoginView loginView = new ExchangeLoginView();
+                //    loginView.ShowDialog();
+                //}
             }));
         }
 
