@@ -441,6 +441,9 @@ namespace Great2.ViewModels
 
         private void ApplyChanges()
         {
+            if (!CheckInputs())
+                return;
+
             using (new WaitCursor())
             {
                 UserSettings.Options.ShowSplashScreen = ShowSplashScreen;
@@ -465,11 +468,11 @@ namespace Great2.ViewModels
                 UserSettings.Email.Recipients.AskOrderRecipients = AskOrderRecipients;
 
                 StringCollection OrderRecipients = new StringCollection();
-                OrderRecipients.AddRange(NewOrderDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                OrderRecipients.AddRange(NewOrderDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray());
                 UserSettings.Email.Recipients.NewOrderDefaults = OrderRecipients;
 
                 StringCollection CancellationRecipients = new StringCollection();
-                CancellationRecipients.AddRange(FDLCancelRequestRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                CancellationRecipients.AddRange(FDLCancelRequestRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray());
                 UserSettings.Email.Recipients.FDLCancelRequest = CancellationRecipients;
 
                 UserSettings.Localization.DefaultCurrency = DefaultCurrency;
@@ -478,7 +481,7 @@ namespace Great2.ViewModels
                 UserSettings.Advanced.CDC = CDC;
 
                 StringCollection EARecipients = new StringCollection();
-                EARecipients.AddRange(EANewMessageDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                EARecipients.AddRange(EANewMessageDefaultRecipients?.Replace(" ", string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray());
                 UserSettings.Email.Recipients.EANewMessageDefaultRecipients = EARecipients;
 
                 UserSettings.Themes.Theme = Theme;
@@ -505,6 +508,11 @@ namespace Great2.ViewModels
 
                 Close();
             }
+        }
+
+        private bool CheckInputs()
+        {
+            return true;
         }
 
         private void RegisterInStartup(bool isChecked)

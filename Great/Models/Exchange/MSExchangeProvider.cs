@@ -15,6 +15,7 @@ using System.Net.Mail;
 using System.Threading;
 using System.Linq;
 using static Great2.Models.ExchangeTraceListener;
+using NLog;
 
 namespace Great2.Models
 {
@@ -23,6 +24,8 @@ namespace Great2.Models
 
     public class MSExchangeProvider : IProvider
     {
+        private NLog.Logger log = LogManager.GetCurrentClassLogger();
+
         private ExchangeService exService;
         private StreamingSubscriptionConnection subconn;
         private CancellationTokenSource exitToken;
@@ -261,18 +264,25 @@ namespace Great2.Models
             {
                 foreach (NotificationEvent e in args.Events)
                 {
-                    var itemEvent = (ItemEvent)e;
-                    EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
-
-                    switch (e.EventType)
+                    try
                     {
-                        case EventType.NewMail:
-                            if (message.From.Address == ApplicationSettings.EmailRecipients.FDLSystem || message.DisplayTo == ApplicationSettings.EmailRecipients.FDL_CHK_Display)
-                                NotifyNewMessage(message);
-                            break;
+                        var itemEvent = (ItemEvent)e;
+                        EmailMessage message = EmailMessage.Bind(args.Subscription.Service, itemEvent.ItemId);
 
-                        default:
-                            break;
+                        switch (e.EventType)
+                        {
+                            case EventType.NewMail:
+                                if (message.From.Address == ApplicationSettings.EmailRecipients.FDLSystem || message.DisplayTo == ApplicationSettings.EmailRecipients.FDL_CHK_Display)
+                                    NotifyNewMessage(message);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error(ex, "Connection_OnNotificationEvent()");
                     }
                 }
             }
