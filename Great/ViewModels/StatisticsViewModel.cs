@@ -687,7 +687,7 @@ namespace Great2.ViewModels
                 var expenses = db.ExpenseAccounts.Where(ea => ea.FDL1.StartDay >= startDate && ea.FDL1.StartDay <= endDate && ea.Status == 2).ToList()
                                .Select(e => new
                                {
-                                   day = new DayEVM(e.FDL1.Timesheets.FirstOrDefault().Day),
+                                   day = new DayEVM(db.Days.SingleOrDefault(d => d.Timestamp == e.FDL1.StartDay)),
                                    expense = new ExpenseAccountEVM(e)
                                });
                 
